@@ -1,0 +1,41 @@
+{
+  "version": "SYNTHETIC-DEMO-1.0",
+  "provenance": "Original synthetic questions authored for DeepAuditCrossWalk. No NSW AIAF text is reproduced.",
+  "core_questions": [
+    {"question": "Who owns the AI system's risk assessment and approval?", "options": []},
+    {"question": "Which lifecycle stage and deployment boundary are being assessed?", "options": []},
+    {"question": "What customer information can the AI access and why?", "options": []},
+    {"question": "How are customers told about personal information collection and use?", "options": []},
+    {"question": "What information security controls protect the AI system?", "options": []},
+    {"question": "What human oversight applies to decisions and payment actions?", "options": []},
+    {"question": "How can a customer challenge an AI-assisted outcome?", "options": []},
+    {"question": "How are customer complaints recorded and assigned to an owner?", "options": []},
+    {"question": "Which third-party services support the workflow?", "options": []},
+    {"question": "Which business operations depend on this system?", "options": []},
+    {"question": "How are operational risk assessments maintained?", "options": []},
+    {"question": "What fallback and business continuity arrangements exist?", "options": []},
+    {"question": "How are access rights granted and reviewed?", "options": []},
+    {"question": "What audit logs record actions and approvals?", "options": []},
+    {"question": "How are security incidents detected and escalated?", "options": []},
+    {"question": "Who reviews identified deficiencies and remediation actions?", "options": []}
+  ],
+  "focus_questions": [
+    {
+      "id": "FQ01", "question": "Has an information security control testing program been documented for this system?",
+      "response_tags": ["phase:concept"], "phase_tags": ["phase:concept"],
+      "risk_area": "information_security", "sme_tags": ["cybersecurity"],
+      "risk_factor_ids": ["DEMO-RISK-01"], "treatment_ids": ["DEMO-CTRL-01"]
+    },
+    {
+      "id": "FQ02", "question": "What review process checks the third-party service provider's security assurance?",
+      "response_tags": ["service:third_party"], "phase_tags": ["phase:production"],
+      "risk_area": "third_party", "sme_tags": ["procurement", "cybersecurity"]
+    },
+    {
+      "id": "FQ03", "question": "What risk-based testing frequency is specified for the information security controls?",
+      "response_tags": ["risk:security"], "phase_tags": ["phase:production"],
+      "risk_area": "information_security", "sme_tags": ["cybersecurity"]
+    }
+  ],
+  "triggers": [], "treatments": {}, "risks": {}
+}

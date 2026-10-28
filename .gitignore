@@ -1,0 +1,26 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+node_modules/
+.next/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+coverage/
+playwright-report/
+test-results/
+*.log
+*.pem
+*.key
+local-data/
+# Bring your own authorised source documents; never publish bank policies.
+*.xlsx
+*.pdf
+*.docx

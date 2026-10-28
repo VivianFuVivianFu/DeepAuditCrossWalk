@@ -1,0 +1,17 @@
+DeepAuditCrossWalk
+Copyright 2026 Vivian Fu and contributors
+
+The banking_crosswalk engine originated in DeepAudit, copyright 2026 Vivian Fu
+and DeepAudit contributors, licensed under Apache-2.0. This independent
+distribution adds its own application, UI, packaging, policy file import,
+synthetic demo data, tests and deployment configuration.
+
+NSW AIAF is referenced for import interoperability. The NSW Government owns
+its framework and related materials. This repository does not redistribute
+the original AIAF workbook or its full question text. Obtain an authorised
+copy and verify its licence before importing or redistributing it.
+
+Regulatory pack entries are proposed engineering paraphrases. Names and
+trademarks of NSW Government, APRA, ASIC, NIST, ISO and the European Union
+remain their owners' property. No endorsement is implied. ISO standard text
+is not distributed.

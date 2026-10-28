@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If this project helps your research or engineering work, please cite it."
+title: DeepAuditCrossWalk
+version: 0.1.0
+date-released: '2026-10-28'
+type: software
+authors:
+  - given-names: Vivian
+    family-names: Fu
+repository-code: https://github.com/VivianFuVivianFu/DeepAuditCrossWalk
+license: Apache-2.0
