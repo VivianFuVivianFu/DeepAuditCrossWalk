@@ -31,6 +31,11 @@ checks and live container/browser smoke tests are therefore configured as a
 separate CI job; local Compose syntax validation is not recorded as an image
 build or deployment success.
 
+The first Linux container job built both images, passed their health checks,
+and passed both live smoke workflows. Its browser-install step exposed an
+`ubuntu-latest` change to Ubuntu 26.04, unsupported by the pinned Playwright.
+Runners are now explicitly pinned to supported Ubuntu 24.04.
+
 CI additionally checks Python 3.11/3.13 and Node.js 24. This repository has no
 automatic cloud deployment. The project remains an experimental MVP while
 durable storage, identity integration and expert mapping validation are pending.
