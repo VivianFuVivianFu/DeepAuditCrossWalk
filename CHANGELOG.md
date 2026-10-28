@@ -8,3 +8,4 @@
 - Preserve rules, reviewer gates, version traceability and tenant-scoped local workflows.
 - Add bounded PDF/DOCX policy import and exact multi-threshold questionnaire checks.
 - Document production persistence and identity integration boundaries.
+- Enforce patched pip/setuptools tooling in CI, isolated builds and Docker images.
