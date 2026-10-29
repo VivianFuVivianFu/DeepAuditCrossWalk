@@ -21,12 +21,18 @@ Configure explicit CORS origins and terminate HTTPS at a trusted ingress.
 The web app is a public, non-persistent demo; it is not an authenticated bank
 workspace. Protect an enterprise instance with an identity-aware gateway before
 exposing internal documents, reviewer headers or administrative routes.
+For reviewer routes, explicitly configure `BANKING_CROSSWALK_ACTOR` and
+`BANKING_CROSSWALK_ROLE` on the API service; missing configuration disables
+review with 503. This single trusted-service identity is not federated RBAC.
 
-The current store is in memory. Production stateful routes fail with 503.
-`ALLOW_EPHEMERAL_CROSSWALK=true` is an explicit demonstration override, not a
-durability feature. Do not run multiple replicas/processes for a local stateful
-evaluation. PostgreSQL persistence and migrations are future work.
+The default store is in memory. Production stateful routes fail with 503 unless
+a migrated PostgreSQL repository is connected. `ALLOW_EPHEMERAL_CROSSWALK=true`
+is an explicit demonstration override, not a durability feature. Use one process
+for memory-backed evaluation. See [PostgreSQL setup](PERSISTENCE.md) for the
+optional Compose stack, separate migration/runtime roles and recovery steps.
 
-Health endpoints indicate process health, not readiness of a database or external
-assurance service. No cloud credentials, deployment account or automatic
+`/health` indicates process liveness. `/ready` checks the configured database's
+connectivity, schema version, tenant-security flags and (in production) runtime
+role. API container health checks use `/ready`. Neither endpoint verifies an
+external assurance service. No cloud credentials, deployment account or automatic
 production deployment is configured in this repository.

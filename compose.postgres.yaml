@@ -1,0 +1,37 @@
+# Optional local persistent evaluation. Create fresh URL-safe passwords first.
+# docker compose -f compose.yaml -f compose.postgres.yaml up --build -d --wait
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: crosswalk
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a fresh URL-safe database admin password}
+      CROSSWALK_DATABASE_PASSWORD: ${CROSSWALK_DATABASE_PASSWORD:?Set a different URL-safe runtime password}
+    volumes:
+      - crosswalk-postgres:/var/lib/postgresql/data
+      - ./scripts/postgres-init.sql:/docker-entrypoint-initdb.d/01-runtime.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d crosswalk"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    mem_limit: 512m
+    security_opt: ["no-new-privileges:true"]
+  migrate:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://postgres:${POSTGRES_PASSWORD}@db:5432/crosswalk
+    command: ["python", "-m", "banking_crosswalk.database", "upgrade", "--runtime-role", "crosswalk_app"]
+    depends_on:
+      db:
+        condition: service_healthy
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+  api:
+    environment:
+      DATABASE_URL: postgresql+psycopg://crosswalk_app:${CROSSWALK_DATABASE_PASSWORD}@db:5432/crosswalk
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+volumes:
+  crosswalk-postgres:

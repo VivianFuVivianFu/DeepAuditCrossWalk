@@ -40,20 +40,26 @@ ActorHeader = Annotated[str, Header(alias="X-Actor", min_length=1, max_length=25
 RoleHeader = Annotated[str, Header(alias="X-Role", min_length=1, max_length=64)]
 
 
+def _production() -> bool:
+    return os.getenv("ENV", "").strip().lower() == "production"
+
+
+def _constant_match(value: str, expected: str) -> bool:
+    return secrets.compare_digest(value.encode("utf-8"), expected.encode("utf-8"))
+
+
 def _require_crosswalk_api_key(
     x_api_key: Annotated[Optional[str], Header(alias="X-API-Key")] = None,
 ) -> None:
     """Authenticate the server-to-server gateway before trusting context headers."""
 
     configured = os.getenv("CROSSWALK_API_KEY", "")
-    if os.getenv("ENV") == "production" and not configured:
+    if _production() and not configured:
         raise HTTPException(
             status_code=500,
             detail="Server configuration error: CROSSWALK_API_KEY is required in production.",
         )
-    if configured and (
-        not x_api_key or not secrets.compare_digest(x_api_key, configured)
-    ):
+    if configured and (not x_api_key or not _constant_match(x_api_key, configured)):
         raise HTTPException(
             status_code=401, detail="Invalid or missing X-API-Key header"
         )
@@ -62,9 +68,11 @@ def _require_crosswalk_api_key(
 def _tenant_context(x_tenant_id: RawTenantHeader) -> str:
     """Bind production requests to the tenant configured on the trusted gateway."""
 
-    if os.getenv("ENV") == "production":
-        expected = os.getenv("BANKING_CROSSWALK_TENANT_ID", "demo-bank")
-        if not secrets.compare_digest(x_tenant_id, expected):
+    if not x_tenant_id.strip():
+        raise HTTPException(status_code=422, detail="Tenant context must not be blank")
+    if _production():
+        expected = os.getenv("BANKING_CROSSWALK_TENANT_ID", "")
+        if not expected or not _constant_match(x_tenant_id, expected):
             raise HTTPException(
                 status_code=403,
                 detail="Tenant context does not match the server-bound tenant",
@@ -78,11 +86,16 @@ TenantHeader = Annotated[str, Depends(_tenant_context)]
 def _validate_reviewer_identity(actor: str, role: str) -> None:
     """Reject spoofed reviewer identity in production service deployments."""
 
-    if os.getenv("ENV") != "production":
+    if not _production():
         return
-    expected_actor = os.getenv("BANKING_CROSSWALK_ACTOR", "demo.reviewer@bank.example")
-    expected_role = os.getenv("BANKING_CROSSWALK_ROLE", "reviewer")
-    if not secrets.compare_digest(actor, expected_actor) or not secrets.compare_digest(
+    expected_actor = os.getenv("BANKING_CROSSWALK_ACTOR", "")
+    expected_role = os.getenv("BANKING_CROSSWALK_ROLE", "")
+    if not expected_actor.strip() or not expected_role.strip():
+        raise HTTPException(
+            status_code=503,
+            detail="Reviewer identity is not configured on this service",
+        )
+    if not _constant_match(actor, expected_actor) or not _constant_match(
         role.lower(), expected_role.lower()
     ):
         raise HTTPException(
@@ -94,15 +107,14 @@ def _allow_ephemeral_crosswalk_state() -> bool:
     """Return whether this process may rely on its in-memory Crosswalk store.
 
     Local development and tests intentionally use the runnable in-memory MVP.
-    Production must fail closed unless a durable repository is wired, or an
-    operator explicitly opts into ephemeral demo behaviour.  DATABASE_URL is
-    not considered here: the Crosswalk SQLModel schema is a contract only and
-    is not currently connected to ``TenantStore``.
+    Production fails closed unless a migrated PostgreSQL repository is wired,
+    or an operator explicitly opts into ephemeral demo behaviour. Merely
+    setting DATABASE_URL does not bypass startup and runtime storage checks.
     """
 
     if getattr(store, "is_durable", False):
         return True
-    if os.getenv("ENV", "").strip().lower() != "production":
+    if not _production():
         return True
     return os.getenv("ALLOW_EPHEMERAL_CROSSWALK", "").strip().lower() in {
         "1",
@@ -243,6 +255,16 @@ class GapReviewRequest(BaseModel):
     approved: bool = False
     evidence_artifact_ids: List[str] = Field(default_factory=list, max_length=100)
     retest_record_id: Optional[str] = None
+    expected_revision: Optional[int] = Field(default=None, ge=1)
+
+    @model_validator(mode="after")
+    def nonempty_closure_references(self):
+        if self.action == "close":
+            if any(not value.strip() for value in self.evidence_artifact_ids):
+                raise ValueError("Evidence artifact references must not be blank")
+            if self.retest_record_id is not None and not self.retest_record_id.strip():
+                raise ValueError("Retest reference must not be blank")
+        return self
 
 
 def _not_found(exc: NotFoundError) -> HTTPException:
@@ -645,6 +667,10 @@ def review_gap(
         gap = store.get_gap(x_tenant_id, gap_id)
     except NotFoundError as exc:
         raise _not_found(exc) from exc
+    if req.expected_revision is not None and req.expected_revision != gap.revision:
+        raise HTTPException(
+            status_code=409, detail="Gap changed; refresh before reviewing again"
+        )
     if req.action == "close" and not (
         req.validated
         and req.scope_rechecked

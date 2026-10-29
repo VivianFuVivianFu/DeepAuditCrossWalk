@@ -23,10 +23,22 @@ server paths. There are no document-triggered shell or model calls. Resource
 caps reduce risk but do not replace process isolation and memory/CPU limits for
 hostile enterprise uploads.
 
-`TenantStore` is an in-memory repository, protected by a process lock. It is a
-local-evaluation implementation, not a distributed database. Production disables
-stateful operations by default; inline demo analyses remain stateless. The
-`persisted` terminology in API descriptions refers to this local repository,
-not durable storage. A PostgreSQL implementation, migrations, durable audit log,
-backup/restore drills and authenticated identity integration are required before
-bank production deployment.
+The ASGI lifespan selects `TenantStore` for in-memory local evaluation or
+`SQLTenantStore` when `DATABASE_URL` is configured. Configured storage errors
+never fall back to memory. The SQL repository stores validated domain snapshots
+in tenant-keyed relational envelopes; gap ownership has a composite foreign key.
+Assessments, their gaps and their creation event commit together. Review changes
+and their complete audit snapshots also commit together. Gap revisions use a
+compare-and-update condition so stale concurrent reviews return 409.
+
+PostgreSQL tables enforce row-level security with transaction-local tenant
+context, in addition to explicit tenant predicates. Production rejects database
+owners, superusers and BYPASSRLS roles. An audit trigger rejects UPDATE, DELETE
+and TRUNCATE; database administrators can still alter the database and require
+separate operational oversight. Schema changes run through explicit Alembic
+migrations, never automatic startup DDL. See [persistence](PERSISTENCE.md).
+
+Federated identity, tenant membership, independently controlled audit retention
+and operational recovery procedures remain prerequisites for bank deployment.
+Database tenant context is derived from the service gateway; it does not
+authenticate end users or replace authorisation at that gateway.

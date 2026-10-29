@@ -1,6 +1,7 @@
 # Roadmap
 
-- Durable PostgreSQL repository, migrations and restore verification.
+- Operational backup scheduling, recovery objectives and managed-database deployment drills
+  (PostgreSQL persistence, migrations and a synthetic CI restore drill are implemented).
 - Federated authentication, tenant membership and role-based review controls.
 - Web UI for workbook import, focus-question routing, overlay editing and gap closure.
 - Expert-labelled applicability and false-coverage evaluation sets.

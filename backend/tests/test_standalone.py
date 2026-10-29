@@ -151,3 +151,31 @@ def test_exact_multiple_policy_thresholds_cannot_be_partially_matched():
     assert not _questionnaire_covers_generic_facet(
         "approval_threshold_defined", bank, clause
     )
+
+
+def test_production_gateway_casing_and_explicit_reviewer_configuration(monkeypatch):
+    from fastapi import HTTPException
+    from banking_crosswalk.api import _tenant_context, _validate_reviewer_identity
+
+    monkeypatch.setenv("ENV", " Production ")
+    monkeypatch.setenv("BANKING_CROSSWALK_TENANT_ID", "production-bank")
+    monkeypatch.delenv("BANKING_CROSSWALK_ACTOR", raising=False)
+    monkeypatch.delenv("BANKING_CROSSWALK_ROLE", raising=False)
+    with pytest.raises(HTTPException) as tenant_error:
+        _tenant_context("different-bank")
+    assert tenant_error.value.status_code == 403
+    with pytest.raises(HTTPException) as reviewer_error:
+        _validate_reviewer_identity("demo.reviewer@bank.example", "admin")
+    assert reviewer_error.value.status_code == 503
+    monkeypatch.setenv("BANKING_CROSSWALK_ACTOR", "合规审核员")
+    monkeypatch.setenv("BANKING_CROSSWALK_ROLE", "risk")
+    _validate_reviewer_identity("合规审核员", "risk")
+
+
+def test_blank_tenant_is_rejected_by_http_boundary():
+    response = TestClient(app).post(
+        "/v1/assessments/coverage",
+        headers={"X-Tenant-ID": " "},
+        json={"use_case": {}, "persist": False},
+    )
+    assert response.status_code == 422

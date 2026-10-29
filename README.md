@@ -28,7 +28,7 @@ across questionnaire coverage validation and enterprise policy gap detection.
 - Parses policy text, PDF and DOCX files with resource limits and inert treatment
   of embedded instructions.
 - Records reviewer decisions, closure requirements, retest references and audit
-  events within a local, tenant-scoped workspace.
+  events in a tenant-scoped workspace, optionally backed by PostgreSQL.
 
 ```text
 Applicable obligation → Control objective → Assessment question
@@ -105,7 +105,7 @@ curl -X POST http://localhost:8000/v1/assessments/coverage \
 
 | Endpoint | Purpose |
 | --- | --- |
-| `GET /health`, `GET /v1/demo` | Health, synthetic data provenance and pack metadata |
+| `GET /health`, `GET /ready`, `GET /v1/demo` | Liveness, storage readiness, synthetic data provenance and pack metadata |
 | `POST /v1/questionnaires/import` | Read-only base64 XLSX import |
 | `POST /v1/questionnaires/route` | Version-bound focus-question selection |
 | `POST /v1/regulatory-packs/validate` | Validate the active obligation pack |
@@ -120,9 +120,12 @@ curl -X POST http://localhost:8000/v1/assessments/coverage \
 
 ## Current boundaries
 
-- The repository is in memory. Records disappear when the process restarts; use a
-  single process for local evaluation. **Production stateful routes return 503**
-  until durable persistence is implemented. `DATABASE_URL` alone enables nothing.
+- Without `DATABASE_URL`, the workspace is in memory and records disappear on
+  restart. Optional PostgreSQL persistence includes explicit Alembic migrations,
+  forced row security, transactional audit events and conflict-checked reviews.
+  Production rejects an unmigrated database or an owner/superuser runtime role;
+  stateful routes return 503 when only memory storage is available.
+  See [PostgreSQL setup and recovery](docs/PERSISTENCE.md).
 - The public web demo uses non-persistent inline analyses and the synthetic core
   questions. Full workbook import, routing, mapping review and gap closure are
   available through the API for local evaluation, not yet through the web UI.
@@ -133,12 +136,14 @@ curl -X POST http://localhost:8000/v1/assessments/coverage \
   currently covers body paragraphs and tables; headers, footnotes and tracked
   changes require reviewer inspection in the original document. PDF page
   delimiters remain in extracted text; clause-level page references are pending.
-- JSON export is available. PDF/CSV reports, durable PostgreSQL persistence,
-  federated RBAC, and behavioural-test evidence integration remain roadmap items.
+- JSON export is available. PDF/CSV reports, federated RBAC, and behavioural-test
+  evidence integration remain roadmap items. Database persistence does not make
+  the public demo an authenticated enterprise workspace.
 
 ## Verification and contribution
 
 ```bash
+pip install -e './backend[dev,postgres]'
 python -m pytest backend/tests -q
 python -m ruff check backend
 python scripts/check_secrets.py

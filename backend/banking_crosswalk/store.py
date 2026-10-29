@@ -28,12 +28,23 @@ class NotFoundError(KeyError):
     pass
 
 
+class StorageUnavailable(RuntimeError):
+    """Sanitised storage failure; never expose driver/connection details."""
+
+
+class ConflictError(RuntimeError):
+    """The record changed or an immutable snapshot already exists."""
+
+
 class TenantStore:
-    # The API uses this capability flag rather than assuming that a configured
-    # DATABASE_URL makes Crosswalk records durable.  The SQLModel contract in
-    # A PostgreSQL repository is a future extension; DATABASE_URL alone must
-    # never be interpreted as durable storage being available.
+    # Production permits this store only with an explicit demo override.
     is_durable = False
+
+    def check_ready(self) -> None:
+        pass
+
+    def close(self) -> None:
+        pass
 
     def __init__(self) -> None:
         self._lock = threading.RLock()
@@ -217,6 +228,10 @@ class TenantStore:
 
     def save_gap(self, tenant_id: str, gap: GapRecord, actor: str) -> GapRecord:
         with self._lock:
+            current = self.get_gap(tenant_id, gap.gap_id)
+            if current.revision != gap.revision:
+                raise ConflictError("Gap changed; refresh it before reviewing again")
+            gap = gap.model_copy(update={"revision": gap.revision + 1})
             self._bucket(self._gaps, tenant_id)[gap.gap_id] = gap
             assessment_id = self._gap_assessments.get(tenant_id, {}).get(gap.gap_id)
             if assessment_id:
@@ -278,4 +293,32 @@ class TenantStore:
         return list(self._audit_events.get(tenant_id, []))
 
 
-store = TenantStore()
+class RepositoryHandle:
+    """Keep imports stable while the ASGI lifespan selects one repository."""
+
+    def __init__(self):
+        self.repository = TenantStore()
+
+    def __getattr__(self, name):
+        return getattr(self.repository, name)
+
+    def configure(self, database_url: str | None, *, production: bool) -> None:
+        if not database_url:
+            return
+        try:
+            from .sql_store import SQLTenantStore
+
+            repository = SQLTenantStore(database_url, production=production)
+        except Exception:
+            raise StorageUnavailable(
+                "Configured database is unavailable or unsafe. Check migrations and runtime role."
+            ) from None
+        self.repository.close()
+        self.repository = repository
+
+    def reset(self) -> None:
+        self.repository.close()
+        self.repository = TenantStore()
+
+
+store = RepositoryHandle()

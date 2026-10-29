@@ -15,6 +15,7 @@ from .catalog import (
     load_regulatory_pack,
     validate_regulatory_pack,
 )
+from .store import ConflictError, StorageUnavailable, store
 
 MAX_REQUEST_BYTES = 32 * 1024 * 1024
 
@@ -65,14 +66,19 @@ class RequestLimit:
 
 @asynccontextmanager
 async def lifespan(_app):
-    if os.getenv("ENV", "development").lower() == "production":
+    production = os.getenv("ENV", "development").strip().lower() == "production"
+    if production:
         if len(os.getenv("CROSSWALK_API_KEY", "").encode()) < 32:
             raise RuntimeError(
                 "Production CROSSWALK_API_KEY must contain at least 32 bytes"
             )
         if not os.getenv("BANKING_CROSSWALK_TENANT_ID", "").strip():
             raise RuntimeError("Production BANKING_CROSSWALK_TENANT_ID is required")
-    yield
+    store.configure(os.getenv("DATABASE_URL"), production=production)
+    try:
+        yield
+    finally:
+        store.reset()
 
 
 app = FastAPI(
@@ -110,7 +116,32 @@ async def security_headers(request, call_next):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "version": "0.1.0", "stateful_storage": "ephemeral"}
+    return {
+        "status": "ok",
+        "version": "0.1.0",
+        "stateful_storage": "postgresql" if store.is_durable else "ephemeral",
+    }
+
+
+@app.get("/ready")
+def readiness():
+    store.check_ready()
+    return {
+        "status": "ready",
+        "stateful_storage": "postgresql" if store.is_durable else "ephemeral",
+    }
+
+
+@app.exception_handler(StorageUnavailable)
+async def storage_unavailable(_request, _exc):
+    return JSONResponse(
+        {"detail": "Storage unavailable. Check database readiness and migrations."}, 503
+    )
+
+
+@app.exception_handler(ConflictError)
+async def storage_conflict(_request, exc):
+    return JSONResponse({"detail": str(exc)}, 409)
 
 
 @app.get("/v1/demo")

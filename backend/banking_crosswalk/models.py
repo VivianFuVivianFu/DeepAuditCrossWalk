@@ -356,6 +356,7 @@ class PolicyPack(BaseModel):
 
 class GapRecord(BaseModel):
     gap_id: str
+    revision: int = Field(default=1, ge=1)
     gap_type: GapType
     title: str
     status: Literal["open", "in_review", "closed", "rejected"] = "open"
