@@ -368,3 +368,11 @@ def test_postgresql_audit_cannot_be_modified_or_truncated(repository):
                 )
                 connection.execute(statement)
     assert len(repo.audit_events(tenant)) == 1
+
+
+def test_postgresql_production_rejects_migration_superuser():
+    url = os.getenv("MIGRATION_DATABASE_URL")
+    if not url:
+        pytest.skip("Disposable PostgreSQL migration URL is absent")
+    with pytest.raises(StorageUnavailable):
+        SQLTenantStore(url, production=True)

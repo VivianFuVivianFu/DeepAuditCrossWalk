@@ -10,6 +10,7 @@ services:
       BANKING_CROSSWALK_ROLE: ${BANKING_CROSSWALK_ROLE:-}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3000}
       ALLOW_EPHEMERAL_CROSSWALK: ${ALLOW_EPHEMERAL_CROSSWALK:-false}
+      DATABASE_URL: ${DATABASE_URL:-}
     mem_limit: 768m
     cpus: 1.0
     security_opt: ["no-new-privileges:true"]
