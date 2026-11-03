@@ -1,0 +1,1275 @@
+{
+  "library_id": "AU-BANKING-UNIFIED-CONTROL-LIBRARY-1.0",
+  "version": "1.0.0",
+  "title": "Australian Banking AI Governance Unified Control Library",
+  "verified_as_of": "2026-11-02",
+  "domains": [
+    "AI governance and accountability",
+    "AI risk assessment",
+    "Privacy and personal information",
+    "Data quality and data governance",
+    "Information security",
+    "Third-party AI and service-provider risk",
+    "Operational resilience",
+    "Human oversight and approval",
+    "Customer complaints and contestability",
+    "Monitoring and incident management",
+    "Evidence, assurance and control testing"
+  ],
+  "total_controls": 33,
+  "controls": [
+    {
+      "control_id": "CTRL-PRIV-GOVERNANCE",
+      "domain": "Privacy and personal information",
+      "title": "Privacy-by-Design Governance & PIA Gate",
+      "control_objective": "Establish open and transparent privacy governance, embed privacy by design into AI systems, and execute Privacy Impact Assessments (PIAs) prior to deploying personal-information AI workflows.",
+      "objective": "Establish open and transparent privacy governance, embed privacy by design into AI systems, and execute Privacy Impact Assessments (PIAs) prior to deploying personal-information AI workflows.",
+      "assessment_scope": "entity",
+      "control_facets": [
+        "privacy_accountability_assigned",
+        "privacy_practices_implemented",
+        "privacy_policy_current",
+        "pia_threshold_screen_completed",
+        "pia_recommendations_tracked_to_closure",
+        "privacy_by_design_controls_embedded"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP1-GOV",
+        "AU-OAIC-APPG-CH1-PIA"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP1-GOV",
+        "AU-OAIC-APPG-CH1-PIA"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT",
+        "AU-OAIC-APP-GUIDELINES"
+      ],
+      "evidence_requirements": [
+        "Privacy governance roles",
+        "Current privacy policy",
+        "Privacy impact assessment",
+        "PIA threshold screening record",
+        "Completed Privacy Impact Assessment (PIA)",
+        "PIA action tracking register"
+      ],
+      "testing_and_assurance_guidance": "Owner: Chief Privacy Officer / Line 1 AI Product Owner | Frequency: Per release and annual policy review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Chief Privacy Officer / Line 1 AI Product Owner",
+      "testing_frequency": "Per release and annual policy review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-COLLECTION",
+      "domain": "Privacy and personal information",
+      "title": "Lawful & Minimised AI Personal Information Collection",
+      "control_objective": "Restrict AI prompts, ingestion pipelines and feature engineering to reasonably necessary personal information and obtain valid consent before collecting or inferring sensitive information.",
+      "objective": "Restrict AI prompts, ingestion pipelines and feature engineering to reasonably necessary personal information and obtain valid consent before collecting or inferring sensitive information.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "collection_purpose_defined",
+        "necessity_assessed",
+        "sensitive_information_consent"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP3-COLLECT"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP3-COLLECT"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Data inventory",
+        "Collection purpose record",
+        "Consent record where applicable"
+      ],
+      "testing_and_assurance_guidance": "Owner: Data Privacy & AI Engineering | Frequency: Pre-deployment and semi-annual sampling",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Data Privacy & AI Engineering",
+      "testing_frequency": "Pre-deployment and semi-annual sampling",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-NOTICE",
+      "domain": "Privacy and personal information",
+      "title": "AI Collection & Automated Processing Customer Notice",
+      "control_objective": "Notify individuals at or before collection when their personal information enters an AI workflow, including collection purpose, third-party disclosures and overseas recipients.",
+      "objective": "Notify individuals at or before collection when their personal information enters an AI workflow, including collection purpose, third-party disclosures and overseas recipients.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "collection_notice_exists",
+        "notice_content_complete",
+        "notice_timing_defined"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP5-NOTICE"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP5-NOTICE"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Collection notice",
+        "Customer journey screenshot",
+        "Notice approval record"
+      ],
+      "testing_and_assurance_guidance": "Owner: Customer Channels & Legal/Privacy | Frequency: Per customer journey change and annual review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Customer Channels & Legal/Privacy",
+      "testing_frequency": "Per customer journey change and annual review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-USE-DISCLOSURE",
+      "domain": "Privacy and personal information",
+      "title": "Secondary Purpose & Model-Training Restriction Control",
+      "control_objective": "Enforce technical and contractual prohibitions on secondary use or external model training with banking personal information unless APP 6 consent or a lawful exception is verified.",
+      "objective": "Enforce technical and contractual prohibitions on secondary use or external model training with banking personal information unless APP 6 consent or a lawful exception is verified.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "primary_purpose_recorded",
+        "secondary_use_basis_checked",
+        "disclosures_logged"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP6-USE"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP6-USE"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Purpose and use register",
+        "Consent or exception record",
+        "Disclosure log"
+      ],
+      "testing_and_assurance_guidance": "Owner: Privacy Engineering & Vendor Governance | Frequency: Continuous technical guardrail and annual contract audit",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Privacy Engineering & Vendor Governance",
+      "testing_frequency": "Continuous technical guardrail and annual contract audit",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-CROSS-BORDER",
+      "domain": "Privacy and personal information",
+      "title": "Cross-Border AI Data Residency & APP 8 Safeguards",
+      "control_objective": "Identify all overseas AI inference, hosting and support locations and implement APP 8 contractual and technical safeguards before cross-border disclosure.",
+      "objective": "Identify all overseas AI inference, hosting and support locations and implement APP 8 contractual and technical safeguards before cross-border disclosure.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "overseas_recipients_and_regions_mapped",
+        "app8_reasonable_steps_and_contracts_in_place",
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP8-CROSSBORDER"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP8-CROSSBORDER"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Cross-border data flow map",
+        "Overseas recipient privacy due diligence",
+        "APP 8 contractual clauses"
+      ],
+      "testing_and_assurance_guidance": "Owner: Privacy Officer & Cloud Architecture | Frequency: Pre-onboarding and annual residency verification",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Privacy Officer & Cloud Architecture",
+      "testing_frequency": "Pre-onboarding and annual residency verification",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-SECURITY-RETENTION",
+      "domain": "Information security",
+      "title": "Personal Information Security, De-identification & Retention",
+      "control_objective": "Protect personal information in AI prompts, retrieval stores, logs and outputs from misuse, interference and unauthorised access, and destroy or de-identify data when no longer needed.",
+      "objective": "Protect personal information in AI prompts, retrieval stores, logs and outputs from misuse, interference and unauthorised access, and destroy or de-identify data when no longer needed.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "security_controls_defined",
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP11-SECURITY"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP11-SECURITY"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Security control design",
+        "Retention schedule",
+        "Deletion or de-identification record"
+      ],
+      "testing_and_assurance_guidance": "Owner: Information Security & Data Governance | Frequency: Quarterly access/retention audit",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Information Security & Data Governance",
+      "testing_frequency": "Quarterly access/retention audit",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-ACCESS-CORRECTION",
+      "domain": "Privacy and personal information",
+      "title": "Customer Access & Correction for AI-Generated Records",
+      "control_objective": "Provide workflows to locate, disclose and correct customer personal information—including AI-generated case notes, summaries and inferred attributes—within statutory 30-day timeframes.",
+      "objective": "Provide workflows to locate, disclose and correct customer personal information—including AI-generated case notes, summaries and inferred attributes—within statutory 30-day timeframes.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "ai_personal_records_retrievable_for_access",
+        "correction_propagated_to_ai_stores",
+        "access_and_correction_timeframes_tracked"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP12-13-RIGHTS"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP12-13-RIGHTS"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "APP 12/13 operating procedure",
+        "Data store retrieval and correction mechanism",
+        "Request SLA register"
+      ],
+      "testing_and_assurance_guidance": "Owner: Customer Operations & Privacy Operations | Frequency: Semi-annual SLA and propagation testing",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Customer Operations & Privacy Operations",
+      "testing_frequency": "Semi-annual SLA and propagation testing",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-NDB-RESPONSE",
+      "domain": "Monitoring and incident management",
+      "title": "AI Data Leakage Detection & Notifiable Data Breach Response",
+      "control_objective": "Detect cross-customer or external personal-information leakage in AI systems, complete Part IIIC serious-harm assessments within 30 days, and notify the OAIC and affected individuals when required.",
+      "objective": "Detect cross-customer or external personal-information leakage in AI systems, complete Part IIIC serious-harm assessments within 30 days, and notify the OAIC and affected individuals when required.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "ai_data_leakage_detection_enabled",
+        "ndb_30day_assessment_workflow_defined",
+        "oaic_and_individual_notification_prepared"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-NDB-S26WE"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-NDB-S26WE"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Data breach response plan",
+        "Prompt/output leakage monitoring logs",
+        "NDB assessment register"
+      ],
+      "testing_and_assurance_guidance": "Owner: Cyber Incident Response & Privacy Legal | Frequency: Annual tabletop exercise and continuous DLP monitoring",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Cyber Incident Response & Privacy Legal",
+      "testing_frequency": "Annual tabletop exercise and continuous DLP monitoring",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-PRIV-AUTOMATED-DISCLOSURE",
+      "domain": "Privacy and personal information",
+      "title": "APP 1.7–1.9 Automated Decision-Making Transparency Control",
+      "control_objective": "Inventory AI systems that make or substantially assist significant decisions and disclose prescribed personal-information and decision details in the APP privacy policy.",
+      "objective": "Inventory AI systems that make or substantially assist significant decisions and disclose prescribed personal-information and decision details in the APP privacy policy.",
+      "assessment_scope": "entity",
+      "control_facets": [
+        "significant_decision_screened",
+        "personal_information_kinds_disclosed",
+        "decision_kinds_disclosed"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP1.7-AUTOMATED"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP1.7-AUTOMATED"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Automated-decision inventory",
+        "Updated privacy policy",
+        "Legal commencement assessment"
+      ],
+      "testing_and_assurance_guidance": "Owner: Privacy Office & AI Governance Secretariat | Frequency: Quarterly inventory review prior to and after 10 Dec 2026 commencement",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Privacy Office & AI Governance Secretariat",
+      "testing_frequency": "Quarterly inventory review prior to and after 10 Dec 2026 commencement",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-DATA-QUALITY-GOV",
+      "domain": "Data quality and data governance",
+      "title": "AI Input, Grounding & Inferred Data Quality Assurance",
+      "control_objective": "Validate the accuracy, completeness, currency and relevance of personal and operational data entering or generated by AI systems proportionately to customer and business impact.",
+      "objective": "Validate the accuracy, completeness, currency and relevance of personal and operational data entering or generated by AI systems proportionately to customer and business impact.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "input_personal_data_accuracy_checked",
+        "ai_output_and_inference_relevance_verified",
+        "stale_or_incomplete_records_prevented",
+        "inferred_attributes_classified_as_collection",
+        "training_data_purpose_compatibility_verified",
+        "proportional_accuracy_checks_before_customer_impact",
+        "critical_ai_data_elements_owned",
+        "data_risk_appetite_and_tolerances_defined",
+        "metadata_and_data_dictionary_maintained"
+      ],
+      "associated_obligation_ids": [
+        "AU-PRIV-APP10-QUALITY",
+        "AU-OAIC-APPG-CH6-CH10-INF",
+        "AU-APRA-CPG235-GOV"
+      ],
+      "associated_obligations": [
+        "AU-PRIV-APP10-QUALITY",
+        "AU-OAIC-APPG-CH6-CH10-INF",
+        "AU-APRA-CPG235-GOV"
+      ],
+      "associated_source_ids": [
+        "AU-PRIVACY-ACT",
+        "AU-OAIC-APP-GUIDELINES",
+        "APRA-CPG235"
+      ],
+      "evidence_requirements": [
+        "Data quality validation rules",
+        "Hallucination and accuracy evaluation report",
+        "Source-data currency checks",
+        "AI feature and inference catalog",
+        "APP 3/6 lawful basis assessment for inferred data",
+        "Inference validation test results",
+        "Critical data element (CDE) register",
+        "Data owner and steward assignment",
+        "Data dictionary and metadata schema"
+      ],
+      "testing_and_assurance_guidance": "Owner: Chief Data Office & Model Risk Management | Frequency: Pre-deployment and monthly data quality monitoring",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Chief Data Office & Model Risk Management",
+      "testing_frequency": "Pre-deployment and monthly data quality monitoring",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-DATA-LIFECYCLE-LINEAGE",
+      "domain": "Data quality and data governance",
+      "title": "End-to-End AI Data Lineage & Lifecycle Governance",
+      "control_objective": "Document data ownership, authoritative source systems, transformation lineage, grounding corpus provenance and validation controls across the AI data lifecycle.",
+      "objective": "Document data ownership, authoritative source systems, transformation lineage, grounding corpus provenance and validation controls across the AI data lifecycle.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "end_to_end_data_lineage_documented",
+        "automated_ingestion_and_transformation_validation",
+        "lifecycle_archival_and_disposal_enforced"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPG235-LIFECYCLE"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPG235-LIFECYCLE"
+      ],
+      "associated_source_ids": [
+        "APRA-CPG235"
+      ],
+      "evidence_requirements": [
+        "Data lineage diagram",
+        "Pipeline validation and reconciliation test logs",
+        "Data retention and disposal schedule"
+      ],
+      "testing_and_assurance_guidance": "Owner: Chief Data Office & Data Engineering | Frequency: Per data pipeline change and annual lineage audit",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Chief Data Office & Data Engineering",
+      "testing_frequency": "Per data pipeline change and annual lineage audit",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-RISK-FRAMEWORK",
+      "domain": "AI risk assessment",
+      "title": "Enterprise Risk Management Framework Integration for AI",
+      "control_objective": "Identify, assess, assign ownership for, mitigate and monitor material AI risks within the bank's CPS 220 Risk Management Framework and Board risk appetite.",
+      "objective": "Identify, assess, assign ownership for, mitigate and monitor material AI risks within the bank's CPS 220 Risk Management Framework and Board risk appetite.",
+      "assessment_scope": "entity",
+      "control_facets": [
+        "ai_risk_identified",
+        "risk_ownership_assigned",
+        "risk_controls_monitored",
+        "board_or_senior_oversight",
+        "ai_specific_risk_sources_and_consequences_identified",
+        "risk_criteria_and_likelihood_severity_evaluated",
+        "iterative_risk_treatment_and_monitoring_recorded"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS220-RMF",
+        "ISO23894-AI-RISK-PROCESS"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS220-RMF",
+        "ISO23894-AI-RISK-PROCESS"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS220",
+        "ISO-23894"
+      ],
+      "evidence_requirements": [
+        "Risk register",
+        "Risk appetite linkage",
+        "Committee or Board reporting",
+        "AI risk register with AI-specific risk sources",
+        "Risk evaluation matrix against approved criteria",
+        "Iterative risk treatment and review log"
+      ],
+      "testing_and_assurance_guidance": "Owner: Enterprise Risk Management (Line 2) & Business Risk Owners | Frequency: Annual RMF review and continuous risk register tracking",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Enterprise Risk Management (Line 2) & Business Risk Owners",
+      "testing_frequency": "Annual RMF review and continuous risk register tracking",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-INDEPENDENT-AUDIT-ASSURANCE",
+      "domain": "Evidence, assurance and control testing",
+      "title": "Independent Second-Line Challenge & Third-Line AI Assurance",
+      "control_objective": "Subject AI risk assessments, governance controls and management systems to independent second-line risk challenge, internal audit and triennial CPS 220 comprehensive reviews.",
+      "objective": "Subject AI risk assessments, governance controls and management systems to independent second-line risk challenge, internal audit and triennial CPS 220 comprehensive reviews.",
+      "assessment_scope": "entity",
+      "control_facets": [
+        "second_line_risk_challenge_recorded",
+        "independent_framework_review_covers_ai",
+        "material_ai_control_gaps_escalated_for_declaration"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS220-REVIEW"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS220-REVIEW"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS220"
+      ],
+      "evidence_requirements": [
+        "Second-line CRO/Risk challenge opinion",
+        "CPS 220 comprehensive review scope and report",
+        "CPS 220 Risk Management Declaration attestation pack"
+      ],
+      "testing_and_assurance_guidance": "Owner: Line 2 Operational/Model Risk & Line 3 Internal Audit | Frequency: Annual internal audit plan and triennial comprehensive review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Line 2 Operational/Model Risk & Line 3 Internal Audit",
+      "testing_frequency": "Annual internal audit plan and triennial comprehensive review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-OPS-RISK",
+      "domain": "Operational resilience",
+      "title": "Operational Risk Assessment & Control Environment for AI",
+      "control_objective": "Assess operational risk impacts of new or changed AI processes, maintain documented preventive and detective controls, and manage operational incidents and control weaknesses.",
+      "objective": "Assess operational risk impacts of new or changed AI processes, maintain documented preventive and detective controls, and manage operational incidents and control weaknesses.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "operational_risks_assessed",
+        "control_environment_documented",
+        "incidents_and_weaknesses_managed"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS230-OPS"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS230-OPS"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS230"
+      ],
+      "evidence_requirements": [
+        "Operational risk assessment",
+        "Control register",
+        "Incident and remediation register"
+      ],
+      "testing_and_assurance_guidance": "Owner: Operational Risk Management & AI Service Owner | Frequency: Pre-change assessment and quarterly control effectiveness review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Operational Risk Management & AI Service Owner",
+      "testing_frequency": "Pre-change assessment and quarterly control effectiveness review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-BCP-AI",
+      "domain": "Operational resilience",
+      "title": "Critical Operation Continuity & AI Fallback Control",
+      "control_objective": "Map AI dependencies supporting CPS 230 critical operations, define Board-approved disruption tolerances and manual/degraded fallback procedures, and test continuity arrangements.",
+      "objective": "Map AI dependencies supporting CPS 230 critical operations, define Board-approved disruption tolerances and manual/degraded fallback procedures, and test continuity arrangements.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "critical_operation_dependency_mapped",
+        "tolerance_and_fallback_defined",
+        "continuity_plan_tested"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS230-BCP"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS230-BCP"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS230"
+      ],
+      "evidence_requirements": [
+        "Dependency map",
+        "Tolerance and fallback design",
+        "Continuity exercise results"
+      ],
+      "testing_and_assurance_guidance": "Owner: Business Continuity Management & Critical Operation Owner | Frequency: Annual business continuity exercise",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Business Continuity Management & Critical Operation Owner",
+      "testing_frequency": "Annual business continuity exercise",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-THIRD-PARTY-AI",
+      "domain": "Third-party AI and service-provider risk",
+      "title": "Third-Party AI & Material Service Provider Lifecycle Control",
+      "control_objective": "Assess third-party AI provider materiality, perform security/AI/fourth-party due diligence, enforce mandatory CPS 230 contract clauses and monitor ongoing performance and exit readiness.",
+      "objective": "Assess third-party AI provider materiality, perform security/AI/fourth-party due diligence, enforce mandatory CPS 230 contract clauses and monitor ongoing performance and exit readiness.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "provider_materiality_assessed",
+        "due_diligence_completed",
+        "contract_controls_defined",
+        "performance_and_exit_monitored"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS230-SP"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS230-SP"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS230"
+      ],
+      "evidence_requirements": [
+        "Materiality assessment",
+        "Due-diligence pack",
+        "Contract schedule",
+        "Monitoring and exit plan"
+      ],
+      "testing_and_assurance_guidance": "Owner: Third-Party Risk Management & Procurement Legal | Frequency: Pre-contract, annual vendor review and exit-plan testing",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Third-Party Risk Management & Procurement Legal",
+      "testing_frequency": "Pre-contract, annual vendor review and exit-plan testing",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-MSP-NOTIFICATION",
+      "domain": "Third-party AI and service-provider risk",
+      "title": "APRA Material Service Provider, Offshoring & Incident Notification Control",
+      "control_objective": "Maintain the CPS 230 Material Service Provider Register and execute mandatory APRA notifications (prior offshoring notice, 20-business-day MSP agreement notice, 72-hour material incident notice).",
+      "objective": "Maintain the CPS 230 Material Service Provider Register and execute mandatory APRA notifications (prior offshoring notice, 20-business-day MSP agreement notice, 72-hour material incident notice).",
+      "assessment_scope": "entity",
+      "control_facets": [
+        "msp_register_updated_for_ai_vendors",
+        "prior_apra_consultation_for_material_offshoring",
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS230-NOTIFY",
+        "AU-PRIV-APP8-CROSSBORDER"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS230-NOTIFY",
+        "AU-PRIV-APP8-CROSSBORDER"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS230",
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "CPS 230 Material Service Provider Register entry",
+        "Offshoring notification assessment record",
+        "Regulatory notification workflow and log"
+      ],
+      "testing_and_assurance_guidance": "Owner: Regulatory Affairs & Operational Risk | Frequency: Event-driven and annual MSP register submission",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Regulatory Affairs & Operational Risk",
+      "testing_frequency": "Event-driven and annual MSP register submission",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-SEC-COMMENSURATE",
+      "domain": "Information security",
+      "title": "AI Information Asset Classification & Commensurate Security Controls",
+      "control_objective": "Classify all internal and third-party AI information assets by criticality and sensitivity and maintain security controls commensurate with AI threat vectors and vulnerabilities.",
+      "objective": "Classify all internal and third-party AI information assets by criticality and sensitivity and maintain security controls commensurate with AI threat vectors and vulnerabilities.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "security_roles_and_asset_owners_assigned",
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "third_party_managed_ai_assets_catalogued",
+        "information_assets_identified",
+        "threats_and_vulnerabilities_assessed",
+        "controls_commensurate",
+        "third_party_assets_in_scope"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS234-ROLES-ASSETS",
+        "AU-APRA-CPS234-CONTROLS",
+        "AU-PRIV-APP11-SECURITY",
+        "ISO27001-ISMS-CONTROLS"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS234-ROLES-ASSETS",
+        "AU-APRA-CPS234-CONTROLS",
+        "AU-PRIV-APP11-SECURITY",
+        "ISO27001-ISMS-CONTROLS"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS234",
+        "AU-PRIVACY-ACT",
+        "ISO-27001"
+      ],
+      "evidence_requirements": [
+        "AI information asset register",
+        "Criticality and sensitivity classification record",
+        "Information security RACI matrix",
+        "Information-asset register",
+        "Threat model",
+        "Security control matrix"
+      ],
+      "testing_and_assurance_guidance": "Owner: Chief Information Security Officer (CISO) & AI Platform Team | Frequency: Pre-deployment and annual asset/control review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Chief Information Security Officer (CISO) & AI Platform Team",
+      "testing_frequency": "Pre-deployment and annual asset/control review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-SEC-TESTING",
+      "domain": "Evidence, assurance and control testing",
+      "title": "AI Security Control Testing, Red-Teaming & Independent Assurance",
+      "control_objective": "Systematically test AI information security controls through adversarial red-teaming, prompt-injection/jailbreak testing, vulnerability scanning and independent internal audit review.",
+      "objective": "Systematically test AI information security controls through adversarial red-teaming, prompt-injection/jailbreak testing, vulnerability scanning and independent internal audit review.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "testing_program_exists",
+        "testing_scope_defined",
+        "testing_frequency_risk_based",
+        "testing_results_reviewed",
+        "deficiencies_remediated"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS234-TEST"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS234-TEST"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS234"
+      ],
+      "evidence_requirements": [
+        "Security test plan",
+        "Test execution record",
+        "Findings register",
+        "Remediation tracking"
+      ],
+      "testing_and_assurance_guidance": "Owner: Offensive Security / AI Red Team & Internal Audit | Frequency: Pre-release, upon material model change, and annual assurance",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Offensive Security / AI Red Team & Internal Audit",
+      "testing_frequency": "Pre-release, upon material model change, and annual assurance",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-SEC-INCIDENT",
+      "domain": "Monitoring and incident management",
+      "title": "Information Security Incident Detection, Response & 72-Hour APRA Notification",
+      "control_objective": "Maintain tested cyber/AI incident detection and containment playbooks and notify APRA as soon as possible and within 72 hours of material information security incidents or control weaknesses.",
+      "objective": "Maintain tested cyber/AI incident detection and containment playbooks and notify APRA as soon as possible and within 72 hours of material information security incidents or control weaknesses.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined",
+        "apra_notification_screened",
+        "material_weaknesses_tracked"
+      ],
+      "associated_obligation_ids": [
+        "AU-APRA-CPS234-INCIDENT",
+        "AU-PRIV-NDB-S26WE"
+      ],
+      "associated_obligations": [
+        "AU-APRA-CPS234-INCIDENT",
+        "AU-PRIV-NDB-S26WE"
+      ],
+      "associated_source_ids": [
+        "APRA-CPS234",
+        "AU-PRIVACY-ACT"
+      ],
+      "evidence_requirements": [
+        "Incident response plan",
+        "Notification decision record",
+        "Control weakness register"
+      ],
+      "testing_and_assurance_guidance": "Owner: Security Operations Centre (SOC) & Regulatory Reporting | Frequency: Annual incident response test and continuous monitoring",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Security Operations Centre (SOC) & Regulatory Reporting",
+      "testing_frequency": "Annual incident response test and continuous monitoring",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-IDR-HANDLING",
+      "domain": "Customer complaints and contestability",
+      "title": "RG 271 Internal Dispute Resolution (IDR) Intake & SLA Control",
+      "control_objective": "Ensure AI-assisted customer service and complaints workflows accurately recognise complaints, log required attributes, route to qualified staff and meet statutory RG 271 response timeframes.",
+      "objective": "Ensure AI-assisted customer service and complaints workflows accurately recognise complaints, log required attributes, route to qualified staff and meet statutory RG 271 response timeframes.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "complaints_broadly_recognised",
+        "complaints_recorded",
+        "response_timeframes_enforced",
+        "response_content_complete",
+        "human_escalation_available"
+      ],
+      "associated_obligation_ids": [
+        "AU-ASIC-RG271-COMPLAINT"
+      ],
+      "associated_obligations": [
+        "AU-ASIC-RG271-COMPLAINT"
+      ],
+      "associated_source_ids": [
+        "ASIC-RG271"
+      ],
+      "evidence_requirements": [
+        "Complaint classification rules",
+        "Complaint register",
+        "Response template",
+        "SLA monitoring"
+      ],
+      "testing_and_assurance_guidance": "Owner: Head of Customer Complaints / IDR Team | Frequency: Monthly QA sampling and SLA compliance monitoring",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Head of Customer Complaints / IDR Team",
+      "testing_frequency": "Monthly QA sampling and SLA compliance monitoring",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-IDR-SYSTEMIC",
+      "domain": "Customer complaints and contestability",
+      "title": "Systemic AI Issue Identification, Remediation & Contestability",
+      "control_objective": "Analyse complaint data to identify systemic AI errors or fairness defects, escalate root causes to senior management/Board, and provide clear customer contestability and AFCA escalation notices.",
+      "objective": "Analyse complaint data to identify systemic AI errors or fairness defects, escalate root causes to senior management/Board, and provide clear customer contestability and AFCA escalation notices.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "complaint_data_analysed",
+        "systemic_issue_thresholds_defined",
+        "systemic_issues_escalated",
+        "affected_customers_remediated"
+      ],
+      "associated_obligation_ids": [
+        "AU-ASIC-RG271-SYSTEMIC"
+      ],
+      "associated_obligations": [
+        "AU-ASIC-RG271-SYSTEMIC"
+      ],
+      "associated_source_ids": [
+        "ASIC-RG271"
+      ],
+      "evidence_requirements": [
+        "Complaint analytics",
+        "Systemic issue register",
+        "Customer remediation plan"
+      ],
+      "testing_and_assurance_guidance": "Owner: IDR Analytics & Conduct Risk Governance | Frequency: Monthly systemic trend review and quarterly Board reporting",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "IDR Analytics & Conduct Risk Governance",
+      "testing_frequency": "Monthly systemic trend review and quarterly Board reporting",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-AI-GOV-ACCOUNTABILITY",
+      "domain": "AI governance and accountability",
+      "title": "Executive AI Accountability, Inventory & Competency Control",
+      "control_objective": "Assign named executive accountability for AI outcomes, maintain an enterprise AI use-case inventory and risk tiering, and ensure role-based AI literacy and staff competence.",
+      "objective": "Assign named executive accountability for AI outcomes, maintain an enterprise AI use-case inventory and risk tiering, and ensure role-based AI literacy and staff competence.",
+      "assessment_scope": "entity",
+      "control_facets": [
+        "afsl_compliance_measures_cover_ai",
+        "technological_resources_adequacy_reviewed",
+        "efficient_honest_fair_outcome_tested",
+        "use_case_registered_in_enterprise_ai_inventory",
+        "consumer_harm_and_bias_assessed_pre_deployment",
+        "generative_and_third_party_ai_governance_updated",
+        "credit_activity_fairness_and_honesty_verified",
+        "credit_compliance_and_breach_monitoring_active",
+        "credit_technological_resources_and_oversight_adequate"
+      ],
+      "associated_obligation_ids": [
+        "AU-ASIC-RG104-COMPLIANCE-TECH",
+        "AU-ASIC-REP798-AI-GAP",
+        "AU-NCCP-S47-CONDUCT",
+        "NIST-AI-RMF-GMMM",
+        "ISO42001-AIMS-ORG"
+      ],
+      "associated_obligations": [
+        "AU-ASIC-RG104-COMPLIANCE-TECH",
+        "AU-ASIC-REP798-AI-GAP",
+        "AU-NCCP-S47-CONDUCT",
+        "NIST-AI-RMF-GMMM",
+        "ISO42001-AIMS-ORG"
+      ],
+      "associated_source_ids": [
+        "ASIC-RG104",
+        "ASIC-REP798",
+        "AU-NCCP-ACT",
+        "NIST-AI-RMF",
+        "ISO-42001"
+      ],
+      "evidence_requirements": [
+        "AFSL compliance plan AI mapping",
+        "Technological resource adequacy & capacity review",
+        "Customer fairness and conduct outcome evaluation",
+        "Enterprise AI use-case register entry",
+        "Consumer harm and bias testing report",
+        "Pre-deployment governance approval gate",
+        "ACL s 47 compliance attestation",
+        "Credit AI fairness and conduct test report",
+        "Credit system monitoring and breach log"
+      ],
+      "testing_and_assurance_guidance": "Owner: Enterprise AI Governance Committee & Accountable Executive | Frequency: Quarterly inventory attestation and annual competency audit",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Enterprise AI Governance Committee & Accountable Executive",
+      "testing_frequency": "Quarterly inventory attestation and annual competency audit",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-HUMAN-OVERSIGHT",
+      "domain": "Human oversight and approval",
+      "title": "Meaningful Human-in-the-Loop Oversight & Authority Gate",
+      "control_objective": "Enforce trained, authority-bounded human review, override capability and stop/kill-switch controls before consequential customer, financial or regulatory actions are executed.",
+      "objective": "Enforce trained, authority-bounded human review, override capability and stop/kill-switch controls before consequential customer, financial or regulatory actions are executed.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "operator_ai_competence_and_training_completed",
+        "supervisory_quality_assurance_on_ai_assisted_staff",
+        "clear_escalation_and_override_authority",
+        "pre_deployment_and_ongoing_drift_monitoring",
+        "meaningful_human_oversight_and_kill_switch",
+        "customer_contestability_and_recourse_pathway"
+      ],
+      "associated_obligation_ids": [
+        "AU-ASIC-RG104-REPRESENTATIVES",
+        "AU-NAIC-AI6-TEST-HUMAN",
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT",
+        "ENT-AI-DELEGATED-APPROVAL"
+      ],
+      "associated_obligations": [
+        "AU-ASIC-RG104-REPRESENTATIVES",
+        "AU-NAIC-AI6-TEST-HUMAN",
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT",
+        "ENT-AI-DELEGATED-APPROVAL"
+      ],
+      "associated_source_ids": [
+        "ASIC-RG104",
+        "AU-AI-GUIDANCE-2025",
+        "EU-AI-ACT",
+        "ENTERPRISE-AI-STD"
+      ],
+      "evidence_requirements": [
+        "Representative AI training curriculum and completion logs",
+        "Quality assurance sampling records",
+        "Operator override SOP",
+        "Pre-deployment evaluation and production drift dashboard",
+        "Human-in-the-loop and kill-switch runbook",
+        "Customer contestability workflow"
+      ],
+      "testing_and_assurance_guidance": "Owner: Business Operations Lead & AI Product Owner | Frequency: Pre-deployment gate verification and monthly override QA",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Business Operations Lead & AI Product Owner",
+      "testing_frequency": "Pre-deployment gate verification and monthly override QA",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-AFSL-COMPETENCE",
+      "domain": "AI governance and accountability",
+      "title": "AFS Licensee Compliance, Supervision & Resource Adequacy Control",
+      "control_objective": "Verify that AI systems used in financial services comply with s 912A obligations, have designated responsible manager oversight, and are supported by adequate technological and human resources.",
+      "objective": "Verify that AI systems used in financial services comply with s 912A obligations, have designated responsible manager oversight, and are supported by adequate technological and human resources.",
+      "assessment_scope": "organisation",
+      "control_facets": [
+        "responsible_manager_accountability_mapped",
+        "organisational_competence_reviewed_on_ai_change",
+        "technical_and_domain_expertise_maintained"
+      ],
+      "associated_obligation_ids": [
+        "AU-ASIC-RG105-COMPETENCE"
+      ],
+      "associated_obligations": [
+        "AU-ASIC-RG105-COMPETENCE"
+      ],
+      "associated_source_ids": [
+        "ASIC-RG105"
+      ],
+      "evidence_requirements": [
+        "Responsible Manager competency matrix",
+        "Material technology change competence review",
+        "Continuing professional development / briefing records"
+      ],
+      "testing_and_assurance_guidance": "Owner: AFSL Responsible Managers & Line 2 Compliance | Frequency: Annual AFSL compliance review and pre-deployment sign-off",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "AFSL Responsible Managers & Line 2 Compliance",
+      "testing_frequency": "Annual AFSL compliance review and pre-deployment sign-off",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-CREDIT-UNSUITABILITY",
+      "domain": "Human oversight and approval",
+      "title": "Responsible Lending Inquiry, Verification & Unsuitability Safeguard",
+      "control_objective": "Ensure AI tools used in consumer credit workflows preserve verifiable statutory inquiries into consumer requirements/objectives and financial situation and prevent automated unsuitability breaches.",
+      "objective": "Ensure AI tools used in consumer credit workflows preserve verifiable statutory inquiries into consumer requirements/objectives and financial situation and prevent automated unsuitability breaches.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "consumer_requirements_and_objectives_captured",
+        "financial_situation_verified_from_reliable_evidence",
+        "unsuitability_and_substantial_hardship_screen_enforced",
+        "written_unsuitability_assessment_retrievable"
+      ],
+      "associated_obligation_ids": [
+        "AU-NCCP-S128-131-LENDING",
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
+      ],
+      "associated_obligations": [
+        "AU-NCCP-S128-131-LENDING",
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
+      ],
+      "associated_source_ids": [
+        "AU-NCCP-ACT",
+        "EU-AI-ACT"
+      ],
+      "evidence_requirements": [
+        "Responsible lending model logic specification",
+        "Income and expense verification rules",
+        "Sample unsuitability assessment records (s 132)"
+      ],
+      "testing_and_assurance_guidance": "Owner: Credit Risk Governance & Lending Operations | Frequency: Pre-deployment validation and monthly credit file QA",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Credit Risk Governance & Lending Operations",
+      "testing_frequency": "Pre-deployment validation and monthly credit file QA",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-AI-IMPACT-ASSESSMENT",
+      "domain": "AI risk assessment",
+      "title": "AI Impact, Bias, Fairness & Pre-Deployment Testing Control",
+      "control_objective": "Conduct structured AI risk and impact assessments covering customer harm, fairness, bias, robustness and explainability prior to production release and after material changes.",
+      "objective": "Conduct structured AI risk and impact assessments covering customer harm, fairness, bias, robustness and explainability prior to production release and after material changes.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "accountable_ai_owner_designated",
+        "ai_impact_and_stakeholder_assessment_completed",
+        "risk_tier_and_governance_proportionality_screened",
+        "ai_specific_risks_measured_and_treated",
+        "user_interaction_and_ai_use_disclosed",
+        "supply_chain_and_model_provenance_documented",
+        "system_impact_on_individuals_and_society_assessed",
+        "statement_of_applicability_controls_mapped",
+        "lifecycle_verification_and_interested_party_documentation"
+      ],
+      "associated_obligation_ids": [
+        "AU-NAIC-AI6-ACCOUNTABILITY-IMPACT",
+        "AU-NAIC-AI6-RISK-TRANSPARENCY",
+        "ISO42001-IMPACT-LIFECYCLE"
+      ],
+      "associated_obligations": [
+        "AU-NAIC-AI6-ACCOUNTABILITY-IMPACT",
+        "AU-NAIC-AI6-RISK-TRANSPARENCY",
+        "ISO42001-IMPACT-LIFECYCLE"
+      ],
+      "associated_source_ids": [
+        "AU-AI-GUIDANCE-2025",
+        "ISO-42001"
+      ],
+      "evidence_requirements": [
+        "Accountable AI owner charter",
+        "AI screening and impact assessment record",
+        "AI systems register entry",
+        "AI risk treatment plan",
+        "Customer-facing AI transparency disclosure",
+        "Model card / supplier provenance documentation",
+        "AI system impact assessment record",
+        "AIMS Statement of Applicability (SoA)",
+        "System lifecycle verification and external documentation pack"
+      ],
+      "testing_and_assurance_guidance": "Owner: AI Risk & Model Validation Team | Frequency: Pre-deployment and upon material model/workflow change",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "AI Risk & Model Validation Team",
+      "testing_frequency": "Pre-deployment and upon material model/workflow change",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-EU-HIGH-RISK",
+      "domain": "AI governance and accountability",
+      "title": "EU AI Act Extraterritorial Scope, Prohibited Practice & High-Risk Screening",
+      "control_objective": "Screen AI systems for EU AI Act Article 2 territorial nexus, Article 5 prohibited practices, Article 4 literacy duties, and Annex III (creditworthiness/employment) high-risk deployer obligations.",
+      "objective": "Screen AI systems for EU AI Act Article 2 territorial nexus, Article 5 prohibited practices, Article 4 literacy duties, and Annex III (creditworthiness/employment) high-risk deployer obligations.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "territorial_nexus_confirmed",
+        "regulated_role_confirmed",
+        "risk_classification_confirmed",
+        "risk_management_and_logging",
+        "human_oversight_and_robustness",
+        "article5_prohibited_practices_screened_out",
+        "article4_staff_ai_literacy_evidenced",
+        "phased_commencement_2feb2025_verified",
+        "annex3_5b_credit_vs_fraud_exemption_assessed",
+        "deployer_human_oversight_and_6month_log_retention",
+        "article27_fundamental_rights_impact_assessment_completed",
+        "article50_ai_interaction_transparency_provided"
+      ],
+      "associated_obligation_ids": [
+        "EU-AIA-ART2-HIGH-RISK",
+        "EU-AIA-ART4-5-PROHIBITED-LITERACY",
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
+      ],
+      "associated_obligations": [
+        "EU-AIA-ART2-HIGH-RISK",
+        "EU-AIA-ART4-5-PROHIBITED-LITERACY",
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
+      ],
+      "associated_source_ids": [
+        "EU-AI-ACT"
+      ],
+      "evidence_requirements": [
+        "EU nexus memorandum",
+        "Role and classification assessment",
+        "Risk file and logs",
+        "Article 5 prohibited-practice negative screening record",
+        "Article 4 AI literacy training syllabus and completion log",
+        "Legal territorial scope sign-off",
+        "Annex III point 5(b) classification memo",
+        "Article 27 Fundamental Rights Impact Assessment (FRIA)",
+        "6-month+ automated log retention configuration"
+      ],
+      "testing_and_assurance_guidance": "Owner: International Regulatory Legal & AI Governance | Frequency: At use-case intake and prior to cross-border rollout",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "International Regulatory Legal & AI Governance",
+      "testing_frequency": "At use-case intake and prior to cross-border rollout",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-NIST-AI-RMF",
+      "domain": "AI risk assessment",
+      "title": "NIST AI RMF Govern-Map-Measure-Manage Lifecycle Control",
+      "control_objective": "Structure AI lifecycle governance across NIST AI RMF 1.0 functions (GOVERN, MAP, MEASURE, MANAGE) with documented context mapping, TEVV metrics and incident treatments.",
+      "objective": "Structure AI lifecycle governance across NIST AI RMF 1.0 functions (GOVERN, MAP, MEASURE, MANAGE) with documented context mapping, TEVV metrics and incident treatments.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "governance_defined",
+        "context_mapped",
+        "risk_measured",
+        "risk_managed",
+        "intended_purpose_and_out_of_scope_boundaries_documented",
+        "ai_supply_chain_and_open_weight_risks_assessed",
+        "safe_decommissioning_and_rollback_criteria_defined"
+      ],
+      "associated_obligation_ids": [
+        "NIST-AI-RMF-GMMM",
+        "NIST-AI-RMF-GOVERN-MAP"
+      ],
+      "associated_obligations": [
+        "NIST-AI-RMF-GMMM",
+        "NIST-AI-RMF-GOVERN-MAP"
+      ],
+      "associated_source_ids": [
+        "NIST-AI-RMF"
+      ],
+      "evidence_requirements": [
+        "AI governance record",
+        "Context map",
+        "Risk measurement results",
+        "Risk treatment plan",
+        "System boundary and intended-use specification",
+        "AI supply-chain risk assessment (GOVERN 6)",
+        "Decommissioning and model rollback procedure (GOVERN 1.7)"
+      ],
+      "testing_and_assurance_guidance": "Owner: Enterprise AI Risk & Model Governance | Frequency: Per lifecycle stage gate and annual profile review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Enterprise AI Risk & Model Governance",
+      "testing_frequency": "Per lifecycle stage gate and annual profile review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-AI-DRIFT-MONITORING",
+      "domain": "Monitoring and incident management",
+      "title": "Continuous AI Performance, Drift, Hallucination & Override Monitoring",
+      "control_objective": "Monitor production AI accuracy, data/concept drift, hallucination rates, complaint triggers and human override patterns against pre-defined alert and rollback thresholds.",
+      "objective": "Monitor production AI accuracy, data/concept drift, hallucination rates, complaint triggers and human override patterns against pre-defined alert and rollback thresholds.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "tevv_validity_and_reliability_benchmarked",
+        "fairness_and_explainability_metrics_evaluated",
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "associated_obligation_ids": [
+        "NIST-AI-RMF-MEASURE-MANAGE",
+        "AU-NAIC-AI6-TEST-HUMAN"
+      ],
+      "associated_obligations": [
+        "NIST-AI-RMF-MEASURE-MANAGE",
+        "AU-NAIC-AI6-TEST-HUMAN"
+      ],
+      "associated_source_ids": [
+        "NIST-AI-RMF",
+        "AU-AI-GUIDANCE-2025"
+      ],
+      "evidence_requirements": [
+        "TEVV benchmark report (MEASURE 2)",
+        "Fairness and explainability evaluation results",
+        "Residual risk sign-off and production monitoring log (MANAGE 1/4)"
+      ],
+      "testing_and_assurance_guidance": "Owner: MLOps / AI Operations & Model Monitoring Team | Frequency: Continuous telemetry with monthly governance review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "MLOps / AI Operations & Model Monitoring Team",
+      "testing_frequency": "Continuous telemetry with monthly governance review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-ISO-AIMS",
+      "domain": "AI governance and accountability",
+      "title": "ISO/IEC 42001 AI Management System (AIMS) & Statement of Applicability",
+      "control_objective": "Maintain an ISO/IEC 42001-aligned AI Management System covering context, leadership policy, risk/impact assessment, Statement of Applicability, internal audit and continual improvement.",
+      "objective": "Maintain an ISO/IEC 42001-aligned AI Management System covering context, leadership policy, risk/impact assessment, Statement of Applicability, internal audit and continual improvement.",
+      "assessment_scope": "organisation",
+      "control_facets": [
+        "ai_policy_and_roles",
+        "ai_risk_and_impact_process",
+        "performance_monitoring",
+        "internal_audit",
+        "management_review"
+      ],
+      "associated_obligation_ids": [
+        "ISO42001-AIMS-ORG"
+      ],
+      "associated_obligations": [
+        "ISO42001-AIMS-ORG"
+      ],
+      "associated_source_ids": [
+        "ISO-42001"
+      ],
+      "evidence_requirements": [
+        "AI policy",
+        "AIMS scope",
+        "Internal audit results",
+        "Management review minutes"
+      ],
+      "testing_and_assurance_guidance": "Owner: AI Management System Lead & Quality/Risk Assurance | Frequency: Annual AIMS internal audit and management review",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "AI Management System Lead & Quality/Risk Assurance",
+      "testing_frequency": "Annual AIMS internal audit and management review",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-ISMS-CONTROLS",
+      "domain": "Information security",
+      "title": "ISO/IEC 27001 ISMS Integration for AI Platforms & Pipelines",
+      "control_objective": "Include AI models, prompts, vector stores and deployment pipelines within the bank's ISO/IEC 27001 ISMS risk register, Statement of Applicability and Annex A technical controls.",
+      "objective": "Include AI models, prompts, vector stores and deployment pipelines within the bank's ISO/IEC 27001 ISMS risk register, Statement of Applicability and Annex A technical controls.",
+      "assessment_scope": "organisation",
+      "control_facets": [
+        "ai_environment_in_isms_scope_and_risk_assessment",
+        "access_cryptography_and_secure_engineering_applied",
+        "supplier_security_and_isms_internal_audit_verified"
+      ],
+      "associated_obligation_ids": [
+        "ISO27001-ISMS-CONTROLS"
+      ],
+      "associated_obligations": [
+        "ISO27001-ISMS-CONTROLS"
+      ],
+      "associated_source_ids": [
+        "ISO-27001"
+      ],
+      "evidence_requirements": [
+        "ISMS scope and Statement of Applicability",
+        "Access control, encryption and secure SDLC/MLOps records",
+        "ISMS internal audit and management review report"
+      ],
+      "testing_and_assurance_guidance": "Owner: Information Security Management System (ISMS) Manager | Frequency: Annual ISMS surveillance/recertification audit",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Information Security Management System (ISMS) Manager",
+      "testing_frequency": "Annual ISMS surveillance/recertification audit",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "control_id": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+      "domain": "Human oversight and approval",
+      "title": "Enterprise Delegated Financial Authority & Pre-Execution Approval Gate",
+      "control_objective": "Enforce deterministic pre-execution human approval gates and 7-year immutable audit log retention for any AI-initiated refund, payment, fee waiver or credit adjustment exceeding the enterprise AUD limit.",
+      "objective": "Enforce deterministic pre-execution human approval gates and 7-year immutable audit log retention for any AI-initiated refund, payment, fee waiver or credit adjustment exceeding the enterprise AUD limit.",
+      "assessment_scope": "use_case",
+      "control_facets": [
+        "human_approval_required",
+        "approval_threshold_defined",
+        "pre_execution_block",
+        "approval_logs_retained"
+      ],
+      "associated_obligation_ids": [
+        "ENT-AI-DELEGATED-APPROVAL"
+      ],
+      "associated_obligations": [
+        "ENT-AI-DELEGATED-APPROVAL"
+      ],
+      "associated_source_ids": [
+        "ENTERPRISE-AI-STD"
+      ],
+      "evidence_requirements": [
+        "Approved delegated-authority schedule",
+        "Production workflow pre-execution gate configuration",
+        "Immutable 7-year approval audit log sample"
+      ],
+      "testing_and_assurance_guidance": "Owner: Chief Operations Officer / Financial Delegations Governance | Frequency: Pre-release automated integration test and quarterly log audit",
+      "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
+      "owner_function": "Chief Operations Officer / Financial Delegations Governance",
+      "testing_frequency": "Pre-release automated integration test and quarterly log audit",
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    }
+  ]
+}

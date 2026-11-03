@@ -82,6 +82,8 @@ export interface Assessment {
   questionnaire_gaps?: Gap[];
   control_conflicts?: Gap[];
   implementation_evidence_gaps?: Gap[];
+  enterprise_gaps?: Gap[];
+  enterprise_baseline_id?: string;
   metrics?: Record<string, number>;
   warnings?: string[];
   selection_warning?: string;
@@ -93,6 +95,7 @@ export function gapsFor(result: Assessment): Gap[] {
       ...(result.questionnaire_gaps ?? []),
       ...(result.control_conflicts ?? []),
       ...(result.implementation_evidence_gaps ?? []),
+      ...(result.enterprise_gaps ?? []),
     ]
   );
 }

@@ -2,22 +2,39 @@
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
+import os
 from pathlib import Path
-from typing import Iterable, List
+from typing import Iterable, List, Optional
 
 from .models import (
+    AtomicObligation,
+    ObligationControlMappingCatalogue,
     QuestionBank,
     QuestionnaireMetadata,
     QuestionRecord,
     RegulatoryPack,
+    SourceRecord,
+    UnifiedControlLibrary,
 )
 
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 REGULATORY_PACK_PATH = PACKAGE_DIR / "data" / "regulatory_pack.v0.1.json"
+SOURCE_REGISTER_PATH = PACKAGE_DIR / "data" / "regulatory_source_register.csv"
+ATOMIC_OBLIGATION_CATALOGUE_PATH = (
+    PACKAGE_DIR / "data" / "atomic_obligation_catalogue.json"
+)
+UNIFIED_CONTROL_LIBRARY_PATH = (
+    PACKAGE_DIR / "data" / "unified_control_library.json"
+)
+OBLIGATION_CONTROL_MAPPINGS_PATH = (
+    PACKAGE_DIR / "data" / "obligation_control_mappings.json"
+)
 AIAF_CATALOG_PATH = PACKAGE_DIR / "data" / "demo_questionnaire.json"
+PRIVATE_REGULATORY_OVERLAY_ENV = "BANKING_CROSSWALK_PRIVATE_OVERLAY_PATH"
 
 
 def _stable_core_id(text: str) -> str:
@@ -37,15 +54,53 @@ def _unique(values: Iterable[str]) -> List[str]:
     return output
 
 
-def load_regulatory_pack(path: Path | str = REGULATORY_PACK_PATH) -> RegulatoryPack:
-    """Load and validate the versioned pack.
+def load_regulatory_pack(
+    path: Path | str = REGULATORY_PACK_PATH,
+    private_overlay_path: Optional[Path | str] = None,
+) -> RegulatoryPack:
+    """Load and validate the versioned pack, optionally applying a private licensed overlay.
 
     Pydantic validation makes a malformed or duplicated facet list fail fast
-    before an assessment can be created.
+    before an assessment can be created. Proprietary standard text (e.g. ISO/IEC
+    42001, 23894, 27001 licensed clauses) can be merged at runtime from a path
+    configured via ``BANKING_CROSSWALK_PRIVATE_OVERLAY_PATH`` without committing
+    copyrighted text to the public repository.
     """
 
     raw = Path(path).read_text(encoding="utf-8")
     pack = RegulatoryPack.model_validate_json(raw)
+
+    overlay_target = private_overlay_path or os.environ.get(
+        PRIVATE_REGULATORY_OVERLAY_ENV
+    )
+    if overlay_target:
+        overlay_file = Path(overlay_target)
+        if not overlay_file.exists():
+            raise FileNotFoundError(
+                f"Configured private regulatory overlay not found: {overlay_file}"
+            )
+        overlay_data = json.loads(overlay_file.read_text(encoding="utf-8"))
+        overlay_sources = [
+            SourceRecord.model_validate(item)
+            for item in overlay_data.get("sources", [])
+        ]
+        overlay_obligations = [
+            AtomicObligation.model_validate(item)
+            for item in overlay_data.get("obligations", [])
+        ]
+        source_map = {src.source_id: src for src in pack.sources}
+        for src in overlay_sources:
+            source_map[src.source_id] = src
+        obligation_map = {ob.obligation_id: ob for ob in pack.obligations}
+        for ob in overlay_obligations:
+            obligation_map[ob.obligation_id] = ob
+        pack = pack.model_copy(
+            update={
+                "sources": list(source_map.values()),
+                "obligations": list(obligation_map.values()),
+            }
+        )
+
     ids = [item.obligation_id for item in pack.obligations]
     if len(ids) != len(set(ids)):
         raise ValueError("Regulatory pack contains duplicate obligation IDs")
@@ -54,6 +109,53 @@ def load_regulatory_pack(path: Path | str = REGULATORY_PACK_PATH) -> RegulatoryP
     if missing:
         raise ValueError(f"Obligations reference missing sources: {missing}")
     return pack
+
+
+def load_source_register(
+    path: Path | str = SOURCE_REGISTER_PATH,
+) -> List[SourceRecord]:
+    """Load the regulatory source register from CSV and validate each SourceRecord."""
+    records: List[SourceRecord] = []
+    with Path(path).open("r", encoding="utf-8", newline="") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            entity_types_raw = row.get("applicable_entity_types") or ""
+            entity_types = [
+                item.strip()
+                for item in entity_types_raw.split(";")
+                if item.strip()
+            ]
+            payload = dict(row)
+            payload["applicable_entity_types"] = entity_types
+            records.append(SourceRecord.model_validate(payload))
+    return records
+
+
+def load_atomic_obligation_catalogue(
+    path: Path | str = ATOMIC_OBLIGATION_CATALOGUE_PATH,
+) -> List[AtomicObligation]:
+    """Load and validate the standalone atomic obligation catalogue."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    return [
+        AtomicObligation.model_validate(item)
+        for item in data.get("obligations", [])
+    ]
+
+
+def load_unified_control_library(
+    path: Path | str = UNIFIED_CONTROL_LIBRARY_PATH,
+) -> UnifiedControlLibrary:
+    """Load and validate the unified control library."""
+    raw = Path(path).read_text(encoding="utf-8")
+    return UnifiedControlLibrary.model_validate_json(raw)
+
+
+def load_obligation_control_mappings(
+    path: Path | str = OBLIGATION_CONTROL_MAPPINGS_PATH,
+) -> ObligationControlMappingCatalogue:
+    """Load and validate the obligation-to-control crosswalk mappings."""
+    raw = Path(path).read_text(encoding="utf-8")
+    return ObligationControlMappingCatalogue.model_validate_json(raw)
 
 
 def load_aiaf_question_bank(path: Path | str = AIAF_CATALOG_PATH) -> QuestionBank:

@@ -1,0 +1,3235 @@
+{
+  "catalogue_id": "AU-BANKING-ATOMIC-OBLIGATION-CATALOGUE-1.0",
+  "version": "1.0.0",
+  "verified_as_of": "2026-11-02",
+  "jurisdiction_focus": "AU-banking",
+  "review_policy": "All extracted obligations default to reviewer_status='proposed' and require qualified Australian financial-services legal and compliance review before promotion to 'approved'.",
+  "authority_classification_taxonomy": {
+    "binding_legal_or_prudential_obligation": "Primary legislation (Acts), subordinate legislation, and legally binding APRA Prudential Standards made under statute.",
+    "enforceable_regulatory_requirement": "Regulatory instruments with specific statutory enforcement hooks or mandatory licence/dispute-resolution paragraphs (e.g. ASIC RG 271 enforceable paragraphs, EU AI Act conditional extraterritorial obligations).",
+    "regulatory_guidance_and_expectation": "Non-binding regulator practice guides, supervisory guidance and thematic surveillance reports (APRA CPG 235, OAIC APP Guidelines, ASIC RG 104/105 guidance, ASIC REP 798).",
+    "voluntary_framework": "Voluntary domestic and international AI governance and security frameworks/standards (Australian Guidance for AI Adoption Oct 2025, NIST AI RMF 1.0, ISO/IEC 42001, ISO/IEC 23894, ISO/IEC 27001).",
+    "enterprise_defined_control": "Internal bank policy and delegated-authority control baselines evaluated separately from external regulatory obligations."
+  },
+  "total_obligations": 46,
+  "obligations": [
+    {
+      "obligation_id": "AU-PRIV-APP1-GOV",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 1",
+      "provision": "Schedule 1, APP 1.1–1.6",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 1, clauses 1.1–1.6 (APP 1)",
+      "title": "Open and accountable management of personal information",
+      "concise_obligation_summary": "An APP entity must take reasonable steps to implement practices, procedures and systems that ensure compliance with the Australian Privacy Principles and enable handling of privacy inquiries and complaints, and must maintain a clearly expressed and up-to-date APP privacy policy.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "Entity is an APP entity under Privacy Act 1988 s 6C",
+        "AI system collects, holds, uses or discloses personal information"
+      ],
+      "entity_and_business_scope": "All Australian banks (ADIs) and APP entities operating AI workflows handling personal information.",
+      "assessment_scope": "entity",
+      "control_id": "CTRL-PRIV-GOVERNANCE",
+      "control_objective": "Maintain accountable privacy governance and practices for the AI use case.",
+      "coverage_facets": [
+        "privacy_accountability_assigned",
+        "privacy_practices_implemented",
+        "privacy_policy_current"
+      ],
+      "evidence_requirements": [
+        "Privacy governance roles",
+        "Current privacy policy",
+        "Privacy impact assessment"
+      ],
+      "facet_keywords": {
+        "privacy_accountability_assigned": [
+          "privacy owner",
+          "accountability",
+          "responsible for privacy"
+        ],
+        "privacy_practices_implemented": [
+          "privacy by design",
+          "privacy practices",
+          "privacy impact assessment"
+        ],
+        "privacy_policy_current": [
+          "privacy policy",
+          "policy reviewed",
+          "policy current"
+        ]
+      },
+      "suggested_questions": {
+        "privacy_accountability_assigned": "Has an accountable privacy owner been assigned for this AI use case?",
+        "privacy_practices_implemented": "Has the bank documented and implemented the privacy practices required for this AI use case?",
+        "privacy_policy_current": "Does the current privacy policy accurately describe the bank's handling of personal information relevant to this AI use case?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 1.1–1.6",
+      "source_location": "Schedule 1, Part 1 — Consideration of personal information privacy",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Reasonable steps under APP 1.2 depend on the sensitivity, volume and risk profile of the AI use case.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP3-COLLECT",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 3",
+      "provision": "Schedule 1, APP 3.1–3.6",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 2, clauses 3.1–3.6 (APP 3)",
+      "title": "Collection of solicited personal information",
+      "concise_obligation_summary": "An organisation must not collect personal information unless reasonably necessary for one or more of its functions or activities, must collect only by lawful and fair means directly from the individual unless unreasonable or impracticable, and must obtain consent before collecting sensitive information unless an exception applies.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "Entity is an APP entity",
+        "AI system ingests, prompts for, scrapes or solicits personal or sensitive information"
+      ],
+      "entity_and_business_scope": "APP entities collecting customer, employee or third-party personal information for AI training, fine-tuning, RAG or inference.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-COLLECTION",
+      "control_objective": "Limit collection to information reasonably necessary for the function and obtain consent where required.",
+      "coverage_facets": [
+        "collection_purpose_defined",
+        "necessity_assessed",
+        "sensitive_information_consent"
+      ],
+      "evidence_requirements": [
+        "Data inventory",
+        "Collection purpose record",
+        "Consent record where applicable"
+      ],
+      "facet_keywords": {
+        "collection_purpose_defined": [
+          "collection purpose",
+          "purpose defined",
+          "why personal information"
+        ],
+        "necessity_assessed": [
+          "data minimisation",
+          "reasonably necessary",
+          "minimum data"
+        ],
+        "sensitive_information_consent": [
+          "sensitive information",
+          "consent",
+          "explicit consent"
+        ]
+      },
+      "suggested_questions": {
+        "collection_purpose_defined": "Is each category of personal information collected by the AI system linked to a documented business purpose?",
+        "necessity_assessed": "Has the bank verified that each collected personal-information field is reasonably necessary for that purpose?",
+        "sensitive_information_consent": "Where sensitive information is collected, is the required consent or other lawful basis documented?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 3.2–3.6",
+      "source_location": "Schedule 1, Part 2 — Collection of personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Whether inferred attributes generated by an AI model constitute 'collection' of solicited/unsolicited personal information under APP 3/4 requires legal review.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP5-NOTICE",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 5",
+      "provision": "Schedule 1, APP 5.1–5.2",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 2, clauses 5.1–5.2 (APP 5)",
+      "title": "Notification of collection",
+      "concise_obligation_summary": "At or before the time an APP entity collects personal information about an individual (or if not practicable, as soon as practicable after), it must take reasonable steps to notify the individual of prescribed matters including collection purposes, consequences of non-collection, usual disclosures and overseas disclosures.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "Entity is an APP entity",
+        "AI workflow collects personal information from or about individuals"
+      ],
+      "entity_and_business_scope": "Customer-facing and internal banking AI touchpoints collecting personal information.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-NOTICE",
+      "control_objective": "Provide required collection notices at or before collection, or as soon as practicable.",
+      "coverage_facets": [
+        "collection_notice_exists",
+        "notice_content_complete",
+        "notice_timing_defined"
+      ],
+      "evidence_requirements": [
+        "Collection notice",
+        "Customer journey screenshot",
+        "Notice approval record"
+      ],
+      "facet_keywords": {
+        "collection_notice_exists": [
+          "collection notice",
+          "privacy notice",
+          "notified"
+        ],
+        "notice_content_complete": [
+          "notice content",
+          "purpose of collection",
+          "disclosure"
+        ],
+        "notice_timing_defined": [
+          "at collection",
+          "before collection",
+          "notice timing"
+        ]
+      },
+      "suggested_questions": {
+        "collection_notice_exists": "Is a privacy collection notice presented wherever the AI use case collects personal information?",
+        "notice_content_complete": "Does the notice include the required purposes, disclosures, access and complaint information?",
+        "notice_timing_defined": "Is the notice provided at or before collection, or as soon as practicable afterward?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 5.1–5.2",
+      "source_location": "Schedule 1, Part 2 — Notification of the collection of personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "None; statutory notice elements in APP 5.2(a)-(j) are explicit.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP6-USE",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 6",
+      "provision": "Schedule 1, APP 6.1–6.3",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 3, clauses 6.1–6.3 (APP 6)",
+      "title": "Use or disclosure of personal information",
+      "concise_obligation_summary": "Personal information held for a primary purpose must not be used or disclosed for a secondary purpose unless the individual has consented, the secondary purpose is related (or directly related for sensitive information) and within reasonable expectations, or another statutory exception applies.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "Entity holds personal information",
+        "AI system uses personal information for model training, testing, prompting or disclosure"
+      ],
+      "entity_and_business_scope": "All banking AI use cases repurposing customer transaction, interaction or credit records.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-USE-DISCLOSURE",
+      "control_objective": "Constrain personal-information use and disclosure to permitted purposes.",
+      "coverage_facets": [
+        "primary_purpose_recorded",
+        "secondary_use_basis_checked",
+        "disclosures_logged"
+      ],
+      "evidence_requirements": [
+        "Purpose and use register",
+        "Consent or exception record",
+        "Disclosure log"
+      ],
+      "facet_keywords": {
+        "primary_purpose_recorded": [
+          "primary purpose",
+          "purpose limitation",
+          "intended purpose"
+        ],
+        "secondary_use_basis_checked": [
+          "secondary use",
+          "consent",
+          "lawful disclosure"
+        ],
+        "disclosures_logged": [
+          "disclosure log",
+          "data sharing record",
+          "audit log"
+        ]
+      },
+      "suggested_questions": {
+        "primary_purpose_recorded": "Is the primary purpose for each use of personal information by the AI system documented?",
+        "secondary_use_basis_checked": "Does every secondary use or disclosure have documented consent, reasonable expectation or another permitted basis?",
+        "disclosures_logged": "Are external and internal disclosures by the AI workflow recorded and reviewable?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 6.1–6.3",
+      "source_location": "Schedule 1, Part 3 — Dealing with personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Using production customer data for secondary AI model training or fine-tuning requires case-by-case APP 6.2(a) reasonable-expectation or consent analysis.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP8-CROSSBORDER",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 8 & s 16C",
+      "provision": "Schedule 1, APP 8.1–8.2; s 16C",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) s 16C and Sch 1, Part 3, clauses 8.1–8.2 (APP 8)",
+      "title": "Cross-border disclosure of personal information",
+      "concise_obligation_summary": "Before disclosing personal information to an overseas recipient (such as an offshore cloud AI model provider or foreign support team), an APP entity must take reasonable steps to ensure the overseas recipient does not breach the APPs and remains accountable under s 16C unless an APP 8.2 exception applies.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_cross_border",
+      "applicability_conditions": [
+        "AI workflow handles personal information",
+        "Personal information is transmitted to, accessed from, or inferenced in an overseas jurisdiction"
+      ],
+      "entity_and_business_scope": "Banking AI systems using cross-border LLM APIs, global cloud regions or offshore subcontractors.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-CROSS-BORDER",
+      "control_objective": "Assess overseas data flows and enforce APP 8 / s 16C cross-border privacy protections before offshore AI processing.",
+      "coverage_facets": [
+        "overseas_recipients_and_regions_mapped",
+        "app8_reasonable_steps_and_contracts_in_place",
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "evidence_requirements": [
+        "Cross-border data flow map",
+        "Overseas recipient privacy due diligence",
+        "APP 8 contractual clauses"
+      ],
+      "facet_keywords": {
+        "overseas_recipients_and_regions_mapped": [
+          "overseas",
+          "cross border",
+          "data residency",
+          "offshore"
+        ],
+        "app8_reasonable_steps_and_contracts_in_place": [
+          "APP 8",
+          "overseas recipient",
+          "contractual privacy"
+        ],
+        "s16c_accountability_and_exception_assessed": [
+          "16C",
+          "cross-border disclosure",
+          "substantially similar"
+        ]
+      },
+      "suggested_questions": {
+        "overseas_recipients_and_regions_mapped": "Are all countries, cloud regions and overseas recipients that can access personal information in the AI workflow mapped?",
+        "app8_reasonable_steps_and_contracts_in_place": "Are binding contractual and technical controls in place to ensure any overseas AI recipient complies with the APPs?",
+        "s16c_accountability_and_exception_assessed": "Has Legal assessed whether transfers constitute a disclosure vs. limited use and confirmed s 16C accountability or an APP 8.2 exception?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) s 16C; Sch 1, APP 8.1–8.2",
+      "source_location": "Section 16C & Schedule 1, Part 3 — Cross-border disclosure of personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Distinguishing 'use' (where the bank retains strict technical control over offshore infrastructure) from 'disclosure' under OAIC Chapter 8 v1.3 guidelines requires fact-specific legal review.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP10-QUALITY",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 10",
+      "provision": "Schedule 1, APP 10.1–10.2",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 4, clauses 10.1–10.2 (APP 10)",
+      "title": "Quality of personal information collected, used or disclosed",
+      "concise_obligation_summary": "An APP entity must take reasonable steps to ensure personal information it collects is accurate, up-to-date and complete (APP 10.1), and that personal information it uses or discloses is, having regard to the purpose of the use or disclosure, accurate, up-to-date, complete and relevant (APP 10.2).",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "AI workflow collects, uses, infers or discloses personal information about individuals"
+      ],
+      "entity_and_business_scope": "Banking AI systems generating customer summaries, risk scores, eligibility assessments or automated correspondence.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-DATA-QUALITY-GOV",
+      "control_objective": "Ensure personal information and AI-generated inferences about individuals are accurate, complete, up-to-date and relevant for the decision purpose.",
+      "coverage_facets": [
+        "input_personal_data_accuracy_checked",
+        "ai_output_and_inference_relevance_verified",
+        "stale_or_incomplete_records_prevented"
+      ],
+      "evidence_requirements": [
+        "Data quality validation rules",
+        "Hallucination and accuracy evaluation report",
+        "Source-data currency checks"
+      ],
+      "facet_keywords": {
+        "input_personal_data_accuracy_checked": [
+          "accurate",
+          "data quality",
+          "complete",
+          "up-to-date"
+        ],
+        "ai_output_and_inference_relevance_verified": [
+          "hallucination",
+          "output accuracy",
+          "relevant",
+          "inference validation"
+        ],
+        "stale_or_incomplete_records_prevented": [
+          "stale data",
+          "data currency",
+          "completeness check"
+        ]
+      },
+      "suggested_questions": {
+        "input_personal_data_accuracy_checked": "What controls verify that customer personal information fed into the AI system is accurate, complete and up-to-date?",
+        "ai_output_and_inference_relevance_verified": "How does the bank prevent inaccurate or hallucinated AI outputs about a customer from being used or disclosed?",
+        "stale_or_incomplete_records_prevented": "Are automated checks in place to reject stale or incomplete customer records before AI inference?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 10.1–10.2",
+      "source_location": "Schedule 1, Part 4 — Integrity of personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Application of APP 10.2 to probabilistic generative AI summaries requires thresholds aligned to the consequence of the banking use or disclosure.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP11-SECURITY",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 11",
+      "provision": "Schedule 1, APP 11.1–11.2 ( including APP 11.3 retention commentary )",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 4, clauses 11.1–11.2 (APP 11)",
+      "title": "Security, retention and destruction of personal information",
+      "concise_obligation_summary": "An APP entity must take reasonable technical and organisational steps to protect personal information it holds from misuse, interference, loss and unauthorised access, modification or disclosure, and must destroy or de-identify it once no longer needed for any permitted purpose and not required by law to be retained.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "Entity holds personal information in prompts, embeddings, training corpora, logs or outputs"
+      ],
+      "entity_and_business_scope": "All banking AI systems storing or processing personal information.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-SECURITY-RETENTION",
+      "control_objective": "Protect personal information and securely destroy or de-identify it when no longer required.",
+      "coverage_facets": [
+        "security_controls_defined",
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "evidence_requirements": [
+        "Security control design",
+        "Retention schedule",
+        "Deletion or de-identification record"
+      ],
+      "facet_keywords": {
+        "security_controls_defined": [
+          "information security controls",
+          "protect personal information",
+          "access controls"
+        ],
+        "retention_schedule_applied": [
+          "retention period",
+          "retention schedule",
+          "data lifecycle"
+        ],
+        "destruction_or_deidentification_verified": [
+          "destroy",
+          "delete",
+          "de-identify",
+          "data disposal"
+        ]
+      },
+      "suggested_questions": {
+        "security_controls_defined": "Are security controls for all personal-information assets used by the AI system documented and implemented?",
+        "retention_schedule_applied": "Is an approved retention period applied to prompts, outputs, logs and source data containing personal information?",
+        "destruction_or_deidentification_verified": "Is destruction or de-identification verified when personal information is no longer required?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 11.1–11.2",
+      "source_location": "Schedule 1, Part 4 — Security of personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Technical feasibility of deleting personal information embedded in trained model weights vs. RAG vector indices requires architectural review.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP12-13-RIGHTS",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 12 & APP 13",
+      "provision": "Schedule 1, APP 12.1–12.10; APP 13.1–13.5",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 5, clauses 12.1–12.10 and 13.1–13.5 (APP 12 & APP 13)",
+      "title": "Access to and correction of personal information in AI workflows",
+      "concise_obligation_summary": "An APP entity that holds personal information about an individual must give the individual access on request within a reasonable period (APP 12) and take reasonable steps to correct inaccurate, out-of-date, incomplete, irrelevant or misleading personal information across relevant records and downstream recipients (APP 13).",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2014-03-12",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "Entity holds personal information in AI data stores, vector indices, logs or customer profiles"
+      ],
+      "entity_and_business_scope": "Banking AI systems retaining customer profiles, transcripts, vector embeddings or generated case notes.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-ACCESS-CORRECTION",
+      "control_objective": "Enable individuals to access and correct personal information held or generated by the AI system within statutory timeframes.",
+      "coverage_facets": [
+        "ai_personal_records_retrievable_for_access",
+        "correction_propagated_to_ai_stores",
+        "access_and_correction_timeframes_tracked"
+      ],
+      "evidence_requirements": [
+        "APP 12/13 operating procedure",
+        "Data store retrieval and correction mechanism",
+        "Request SLA register"
+      ],
+      "facet_keywords": {
+        "ai_personal_records_retrievable_for_access": [
+          "access request",
+          "APP 12",
+          "retrieve personal information"
+        ],
+        "correction_propagated_to_ai_stores": [
+          "correction",
+          "APP 13",
+          "amend record",
+          "update personal information"
+        ],
+        "access_and_correction_timeframes_tracked": [
+          "30 days",
+          "reasonable period",
+          "access timeframe"
+        ]
+      },
+      "suggested_questions": {
+        "ai_personal_records_retrievable_for_access": "Can personal information stored in AI logs, vector databases and generated case notes be located and provided for an APP 12 access request?",
+        "correction_propagated_to_ai_stores": "When a customer record is corrected under APP 13, is the correction propagated to downstream AI caches, vector stores and context windows?",
+        "access_and_correction_timeframes_tracked": "Are access and correction requests involving AI-held records completed within the 30-calendar-day statutory benchmark?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 12 & APP 13",
+      "source_location": "Schedule 1, Part 5 — Access to, and correction of, personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Scope of APP 12 exceptions for commercially sensitive evaluative algorithms (APP 12.3(j)) must be separated from the underlying personal information.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-NDB-S26WE",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / Part IIIC Notifiable Data Breaches",
+      "provision": "Part IIIC, ss 26WE–26WL",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Part IIIC, Divisions 1–3, sections 26WE–26WL",
+      "title": "Eligible data breach assessment and notification for AI incidents",
+      "concise_obligation_summary": "Where unauthorised access to, unauthorised disclosure of, or loss of personal information held by an APP entity occurs (including via prompt injection, model data leakage or vendor breach) and is likely to result in serious harm, the entity must assess suspected breaches expeditiously (within 30 days) and notify the OAIC and affected individuals.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation 104",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2018-02-22",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "Entity is an APP entity holding personal information in the AI system or third-party AI environment"
+      ],
+      "entity_and_business_scope": "All banking AI workflows processing personal information.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-NDB-RESPONSE",
+      "control_objective": "Detect AI-related personal data leakage, complete Part IIIC serious-harm assessments within 30 days, and notify the OAIC and affected individuals of eligible data breaches.",
+      "coverage_facets": [
+        "ai_data_leakage_detection_enabled",
+        "ndb_30day_assessment_workflow_defined",
+        "oaic_and_individual_notification_prepared"
+      ],
+      "evidence_requirements": [
+        "Data breach response plan",
+        "Prompt/output leakage monitoring logs",
+        "NDB assessment register"
+      ],
+      "facet_keywords": {
+        "ai_data_leakage_detection_enabled": [
+          "data leakage",
+          "unauthorised disclosure",
+          "prompt leak"
+        ],
+        "ndb_30day_assessment_workflow_defined": [
+          "notifiable data breach",
+          "eligible data breach",
+          "serious harm",
+          "30 days"
+        ],
+        "oaic_and_individual_notification_prepared": [
+          "OAIC notification",
+          "notify individuals",
+          "data breach statement"
+        ]
+      },
+      "suggested_questions": {
+        "ai_data_leakage_detection_enabled": "Can the bank detect cross-session or cross-customer personal information leakage in AI prompts, retrieval context and outputs?",
+        "ndb_30day_assessment_workflow_defined": "Are suspected AI personal-data breaches routed to Privacy/Legal for a Part IIIC serious-harm assessment within 30 calendar days?",
+        "oaic_and_individual_notification_prepared": "Does the incident playbooks cover OAIC and individual notification under s 26WK/26WL including shared third-party AI breaches under s 26WC?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Part IIIC, ss 26WC, 26WE–26WL",
+      "source_location": "Part IIIC — Notification of eligible data breaches",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "None; statutory 30-day assessment expectation (s 26WH(2)) and serious-harm criteria (s 26WG) are explicit.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-PRIV-APP1.7-AUTOMATED",
+      "source_id": "AU-PRIVACY-ACT",
+      "instrument": "Privacy Act 1988 / APP 1.7-1.9",
+      "provision": "Schedule 1, APP 1.7–1.9 (commencing 10 December 2026)",
+      "exact_clause_reference": "Privacy and Other Legislation Amendment Act 2024 (Cth) Sch 1, Part 15, items 94–95 inserting Privacy Act 1988 (Cth) Sch 1, clauses 1.7–1.9",
+      "title": "Privacy-policy transparency for significant automated decisions",
+      "concise_obligation_summary": "Where an entity has arranged for a computer program to make, or do a thing substantially and directly related to making, a decision that could reasonably be expected to significantly affect the rights or interests of an individual and personal information is used in the operation of the program, the APP privacy policy must disclose the kinds of personal information used, the kinds of decisions made, and whether decisions are made solely or substantially assisted by the program.",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Privacy and Other Legislation Amendment Act 2024",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "effective_from": "2026-12-10",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_automated_decision_future",
+      "applicability_conditions": [
+        "AI computer program uses personal information",
+        "Program makes, or does a thing substantially and directly related to making, a decision that could reasonably be expected to significantly affect an individual's rights or interests",
+        "Assessment date is on or after 10 December 2026 (conditional prior to commencement)"
+      ],
+      "entity_and_business_scope": "Banking AI systems making or materially assisting credit, hardship, fraud account blocks, claims, pricing or refund decisions.",
+      "assessment_scope": "entity",
+      "control_id": "CTRL-PRIV-AUTOMATED-DISCLOSURE",
+      "control_objective": "Disclose prescribed information about significant automated decisions in the APP privacy policy when the amendment applies.",
+      "coverage_facets": [
+        "significant_decision_screened",
+        "personal_information_kinds_disclosed",
+        "decision_kinds_disclosed"
+      ],
+      "evidence_requirements": [
+        "Automated-decision inventory",
+        "Updated privacy policy",
+        "Legal commencement assessment"
+      ],
+      "facet_keywords": {
+        "significant_decision_screened": [
+          "significantly affect",
+          "automated decision",
+          "decision inventory"
+        ],
+        "personal_information_kinds_disclosed": [
+          "kinds of personal information",
+          "privacy policy"
+        ],
+        "decision_kinds_disclosed": [
+          "kinds of decisions",
+          "automated decisions disclosure"
+        ]
+      },
+      "suggested_questions": {
+        "significant_decision_screened": "Has the use case been screened for decisions that could reasonably be expected to significantly affect an individual's rights or interests?",
+        "personal_information_kinds_disclosed": "Where APP 1.7 applies, does the privacy policy identify the kinds of personal information used by the automated-decision program?",
+        "decision_kinds_disclosed": "Where APP 1.7 applies, does the privacy policy identify the kinds of decisions made or materially assisted by the program?"
+      },
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 1.7–1.9 (inserted by C2024A00128 Sch 1 Pt 15)",
+      "source_location": "Schedule 1, Part 1, clauses 1.7–1.9",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Future-dated to 10 December 2026 (24 months after Royal Assent on 10 December 2024). Interpretation of 'substantially and directly related' follows OAIC Chapter 1 v2.0 (30 Sep 2026) guidance.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Future-dated at the pack verification date; do not treat as currently in-force before 10 December 2026.",
+      "temporal_status": "future",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-OAIC-APPG-CH1-PIA",
+      "source_id": "AU-OAIC-APP-GUIDELINES",
+      "instrument": "OAIC APP Guidelines / Chapter 1 (APP 1)",
+      "provision": "Chapter 1 (APP 1), paras 1.7–1.18 (v2.0, 30 Sep 2026)",
+      "exact_clause_reference": "OAIC Australian Privacy Principles Guidelines, Chapter 1: APP 1, paragraphs 1.7–1.18",
+      "title": "Privacy by design and Privacy Impact Assessment (PIA) expectations for AI",
+      "concise_obligation_summary": "OAIC guidance expects APP entities to embed privacy by design into new technologies and conduct a threshold privacy assessment and Privacy Impact Assessment (PIA) for projects involving automated decision-making, novel AI processing, or high privacy risk.",
+      "jurisdiction": "AU",
+      "layer": "regulatory_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "Chapter 1 v2.0 (30 September 2026)",
+      "source_url": "https://www.oaic.gov.au/privacy/australian-privacy-principles/australian-privacy-principles-guidelines",
+      "effective_from": "2026-09-30",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "AI use case processes personal information"
+      ],
+      "entity_and_business_scope": "APP entities designing or deploying AI systems handling personal information.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-PRIV-GOVERNANCE",
+      "control_objective": "Conduct a threshold privacy assessment and Privacy Impact Assessment (PIA) prior to deploying AI workflows that handle personal information.",
+      "coverage_facets": [
+        "pia_threshold_screen_completed",
+        "pia_recommendations_tracked_to_closure",
+        "privacy_by_design_controls_embedded"
+      ],
+      "evidence_requirements": [
+        "PIA threshold screening record",
+        "Completed Privacy Impact Assessment (PIA)",
+        "PIA action tracking register"
+      ],
+      "facet_keywords": {
+        "pia_threshold_screen_completed": [
+          "privacy impact assessment",
+          "PIA",
+          "privacy threshold"
+        ],
+        "pia_recommendations_tracked_to_closure": [
+          "PIA recommendations",
+          "privacy remediation",
+          "privacy sign-off"
+        ],
+        "privacy_by_design_controls_embedded": [
+          "privacy by design",
+          "data minimisation",
+          "default privacy"
+        ]
+      },
+      "suggested_questions": {
+        "pia_threshold_screen_completed": "Has a Privacy Impact Assessment (PIA) threshold screen been completed for this AI use case before deployment?",
+        "pia_recommendations_tracked_to_closure": "Where a PIA was required, have all privacy risk treatments been signed off and tracked to closure?",
+        "privacy_by_design_controls_embedded": "How are privacy-by-design controls embedded into the AI system architecture and data pipeline?"
+      },
+      "source_citation": "OAIC APP Guidelines Ch 1 (v2.0, 30 Sep 2026), paras 1.7–1.18",
+      "source_location": "Chapter 1: APP 1 — Open and transparent management of personal information",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Issued under s 28(1)(a) of the Privacy Act as non-binding supervisory guidance explaining how OAIC assesses APP 1.2 compliance.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-OAIC-APPG-CH6-CH10-INF",
+      "source_id": "AU-OAIC-APP-GUIDELINES",
+      "instrument": "OAIC APP Guidelines / Chapters 3, 6 & 10",
+      "provision": "Chapter 3 paras 3.14–3.25; Chapter 6 paras 6.14–6.32; Chapter 10 paras 10.8–10.21",
+      "exact_clause_reference": "OAIC Australian Privacy Principles Guidelines, Ch 3 (paras 3.14–3.25), Ch 6 (paras 6.14–6.32) and Ch 10 (paras 10.8–10.21)",
+      "title": "Inferred personal information governance and proportional quality verification",
+      "concise_obligation_summary": "OAIC guidelines state that generating new personal information by inference, profiling or AI prediction constitutes a 'collection' subject to APP 3 necessity rules, secondary use for AI training requires APP 6 alignment, and APP 10 quality checks must be proportionate to the risk of adverse impact on the individual.",
+      "jurisdiction": "AU",
+      "layer": "regulatory_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "Combined Guidelines (July 2019 / Sep 2026)",
+      "source_url": "https://www.oaic.gov.au/privacy/australian-privacy-principles/australian-privacy-principles-guidelines",
+      "effective_from": "2019-07-22",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "privacy_personal_information",
+      "applicability_conditions": [
+        "AI system generates inferences, profiles, scores or summaries about identifiable individuals"
+      ],
+      "entity_and_business_scope": "Banking AI systems generating customer risk scores, vulnerability indicators, propensity scores or case summaries.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-DATA-QUALITY-GOV",
+      "control_objective": "Treat AI-inferred personal attributes as regulated collection under APP 3 and verify inference accuracy proportionately under APP 10.",
+      "coverage_facets": [
+        "inferred_attributes_classified_as_collection",
+        "training_data_purpose_compatibility_verified",
+        "proportional_accuracy_checks_before_customer_impact"
+      ],
+      "evidence_requirements": [
+        "AI feature and inference catalog",
+        "APP 3/6 lawful basis assessment for inferred data",
+        "Inference validation test results"
+      ],
+      "facet_keywords": {
+        "inferred_attributes_classified_as_collection": [
+          "inferred",
+          "profiling",
+          "prediction",
+          "generated personal information"
+        ],
+        "training_data_purpose_compatibility_verified": [
+          "training data",
+          "secondary purpose",
+          "purpose compatibility"
+        ],
+        "proportional_accuracy_checks_before_customer_impact": [
+          "accuracy check",
+          "verification",
+          "customer impact"
+        ]
+      },
+      "suggested_questions": {
+        "inferred_attributes_classified_as_collection": "Are AI-inferred customer attributes or scores inventoried and assessed as newly collected personal information under APP 3?",
+        "training_data_purpose_compatibility_verified": "Has the bank documented the APP 6 basis or de-identification standard before using customer records to train or tune AI models?",
+        "proportional_accuracy_checks_before_customer_impact": "Are higher-rigour accuracy and human-verification checks applied when AI inferences can adversely affect a customer?"
+      },
+      "source_citation": "OAIC APP Guidelines Ch 3 paras 3.14–3.25, Ch 6 paras 6.14–6.32, Ch 10 paras 10.8–10.21",
+      "source_location": "Chapters 3, 6 and 10 of the OAIC APP Guidelines",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Non-binding interpretive guidance; however, OAIC applies these interpretations in regulatory investigations and determinations.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS220-RMF",
+      "source_id": "APRA-CPS220",
+      "instrument": "APRA CPS 220",
+      "provision": "CPS 220 paras 9, 19–22, 26–28 (Risk management framework, RAS and RMS)",
+      "exact_clause_reference": "Prudential Standard CPS 220 Risk Management, paragraphs 9, 19–22, 26–28",
+      "title": "AI risk incorporated into the risk management framework",
+      "concise_obligation_summary": "An APRA-regulated institution must maintain a risk management framework (including a Board-approved Risk Appetite Statement and Risk Management Strategy) that identifies, assesses, manages, mitigates and monitors material risks across all operations, with clear risk ownership and Board/senior management oversight.",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "current at 27 October 2026",
+      "source_url": "https://www.apra.gov.au/standards/cps-220",
+      "effective_from": "2015-01-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated institution (e.g., ADI, insurer, authorised NOHC)"
+      ],
+      "entity_and_business_scope": "All APRA-regulated institutions deploying or relying on AI systems.",
+      "assessment_scope": "entity",
+      "control_id": "CTRL-RISK-FRAMEWORK",
+      "control_objective": "Identify, assess, manage and oversee material AI risks within the entity's risk management framework.",
+      "coverage_facets": [
+        "ai_risk_identified",
+        "risk_ownership_assigned",
+        "risk_controls_monitored",
+        "board_or_senior_oversight"
+      ],
+      "evidence_requirements": [
+        "Risk register",
+        "Risk appetite linkage",
+        "Committee or Board reporting"
+      ],
+      "facet_keywords": {
+        "ai_risk_identified": [
+          "risk assessment",
+          "risk register",
+          "identify risks"
+        ],
+        "risk_ownership_assigned": [
+          "risk owner",
+          "accountability",
+          "roles and responsibilities"
+        ],
+        "risk_controls_monitored": [
+          "control monitoring",
+          "control effectiveness",
+          "ongoing monitoring"
+        ],
+        "board_or_senior_oversight": [
+          "board oversight",
+          "senior management",
+          "governance committee"
+        ]
+      },
+      "suggested_questions": {
+        "ai_risk_identified": "Are the material risks created or changed by this AI use case recorded in the bank's risk management framework?",
+        "risk_ownership_assigned": "Is an accountable risk owner assigned for each material AI risk?",
+        "risk_controls_monitored": "Are the controls for material AI risks subject to defined ongoing monitoring?",
+        "board_or_senior_oversight": "Is reporting and escalation to the appropriate senior-management or Board forum defined?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 220, paras 9, 19–22, 26–28",
+      "source_location": "CPS 220 Risk Management Framework, Risk Appetite and Risk Management Strategy",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "CPS 220 does not name AI explicitly; AI risks fall under strategic, operational, compliance and conduct material risk categories in para 26.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS220-REVIEW",
+      "source_id": "APRA-CPS220",
+      "instrument": "APRA CPS 220",
+      "provision": "CPS 220 paras 37–47, 51 (Risk management function, independent review and declaration)",
+      "exact_clause_reference": "Prudential Standard CPS 220 Risk Management, paragraphs 37–47 and 51",
+      "title": "Independent review and risk management challenge for AI governance",
+      "concise_obligation_summary": "An APRA-regulated institution must maintain a designated risk management function providing effective challenge, subject its risk management framework to regular appropriateness, effectiveness and comprehensiveness reviews by operationally independent persons, and support the Board's annual Risk Management Declaration.",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "current at 27 October 2026",
+      "source_url": "https://www.apra.gov.au/standards/cps-220",
+      "effective_from": "2015-01-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated institution"
+      ],
+      "entity_and_business_scope": "Entity-level 2nd and 3rd line assurance functions in APRA-regulated banks.",
+      "assessment_scope": "entity",
+      "control_id": "CTRL-INDEPENDENT-AUDIT-ASSURANCE",
+      "control_objective": "Ensure independent second-line challenge and third-line audit/comprehensive review cover AI risk management controls.",
+      "coverage_facets": [
+        "second_line_risk_challenge_recorded",
+        "independent_framework_review_covers_ai",
+        "material_ai_control_gaps_escalated_for_declaration"
+      ],
+      "evidence_requirements": [
+        "Second-line CRO/Risk challenge opinion",
+        "CPS 220 comprehensive review scope and report",
+        "CPS 220 Risk Management Declaration attestation pack"
+      ],
+      "facet_keywords": {
+        "second_line_risk_challenge_recorded": [
+          "second line",
+          "independent challenge",
+          "risk function review"
+        ],
+        "independent_framework_review_covers_ai": [
+          "independent review",
+          "internal audit",
+          "comprehensive review"
+        ],
+        "material_ai_control_gaps_escalated_for_declaration": [
+          "risk management declaration",
+          "material deficiency",
+          "board attestation"
+        ]
+      },
+      "suggested_questions": {
+        "second_line_risk_challenge_recorded": "Has the independent risk management function (Line 2) reviewed and challenged the risk assessment for this AI use case?",
+        "independent_framework_review_covers_ai": "Are AI risk governance and model/agent controls included within the scope of independent CPS 220 reviews?",
+        "material_ai_control_gaps_escalated_for_declaration": "Are unresolved material AI control deficiencies escalated into the CPS 220 annual Risk Management Declaration process?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 220, paras 37–47, 51",
+      "source_location": "CPS 220 Risk Management Function, Review of the Risk Management Framework, and Risk Management Declaration",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "None; CPS 220 paras 45–47 mandate comprehensive review at least every three years.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-OPS",
+      "source_id": "APRA-CPS230",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 22–33 (Operational risk management, change assessment and incidents)",
+      "exact_clause_reference": "Prudential Standard CPS 230 Operational Risk Management (Revised 30 April 2026, effective 1 July 2026), paragraphs 22–33",
+      "title": "Operational risk controls for the AI service",
+      "concise_obligation_summary": "An APRA-regulated entity must assess the impact of new or changed products, processes and technology on its operational risk profile (para 26), design and test internal controls to mitigate operational risks within appetite (paras 27–30), and identify, escalate and remediate operational incidents and near misses (paras 31–33).",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Revised 30 April 2026 (effective 1 July 2026; superseding F2023L01025)",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "effective_from": "2026-07-01",
+      "effective_to": "NONE_CURRENT",
+      "temporal_status": "current",
+      "supersedes": "AU-APRA-CPS230-OPS@F2023L01025 (effective 2025-07-01 to 2026-06-30)",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated entity subject to CPS 230"
+      ],
+      "entity_and_business_scope": "All APRA-regulated entities introducing or operating AI technologies.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-OPS-RISK",
+      "control_objective": "Manage AI-related operational risk through documented controls, monitoring, incidents and remediation.",
+      "coverage_facets": [
+        "operational_risks_assessed",
+        "control_environment_documented",
+        "incidents_and_weaknesses_managed"
+      ],
+      "evidence_requirements": [
+        "Operational risk assessment",
+        "Control register",
+        "Incident and remediation register"
+      ],
+      "facet_keywords": {
+        "operational_risks_assessed": [
+          "operational risk",
+          "failure mode",
+          "impact assessment"
+        ],
+        "control_environment_documented": [
+          "control environment",
+          "controls documented",
+          "guardrails"
+        ],
+        "incidents_and_weaknesses_managed": [
+          "incident management",
+          "control weakness",
+          "remediation"
+        ]
+      },
+      "suggested_questions": {
+        "operational_risks_assessed": "Has the bank assessed operational risks arising from failure, misuse, model drift and dependency outages for this AI use case?",
+        "control_environment_documented": "Are preventive, detective and corrective controls for those operational risks documented with owners?",
+        "incidents_and_weaknesses_managed": "Are AI incidents and control weaknesses captured, escalated and tracked to remediation?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 230 (effective 1 July 2026), paras 22–33",
+      "source_location": "CPS 230 Operational risk management — Risk profile, internal controls and incident management",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Core operational risk management clauses (paras 22–33) commenced 1 July 2025 under F2023L01025 and continue in force under the revised 1 July 2026 CPS 230 determination.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-BCP",
+      "source_id": "APRA-CPS230",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 34–47 (Critical operations, tolerance levels and business continuity)",
+      "exact_clause_reference": "Prudential Standard CPS 230 Operational Risk Management (Revised 30 April 2026, effective 1 July 2026), paragraphs 34–47",
+      "title": "Continuity for critical operations dependent on AI",
+      "concise_obligation_summary": "An APRA-regulated entity must identify its critical operations (including payments, customer inquiries and core banking processes), set Board-approved tolerance levels (maximum period of disruption, maximum data loss and minimum service levels), and maintain and systematically test a credible Business Continuity Plan (with Non-SFI deferral concluded on 1 July 2026).",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Revised 30 April 2026 (effective 1 July 2026; superseding F2023L01025)",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "effective_from": "2026-07-01",
+      "effective_to": "NONE_CURRENT",
+      "temporal_status": "current",
+      "supersedes": "AU-APRA-CPS230-BCP@F2023L01025 (effective 2025-07-01 to 2026-06-30; Non-SFI BCP transition ended 2026-07-01)",
+      "applicability_key": "apra_critical_operation",
+      "applicability_conditions": [
+        "Entity is APRA-regulated",
+        "AI system supports or is a dependency of a CPS 230 critical operation"
+      ],
+      "entity_and_business_scope": "AI systems supporting critical banking operations (payments, deposit taking, settlements, customer inquiries/complaints, credit management).",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-BCP-AI",
+      "control_objective": "Maintain and test continuity arrangements where an AI service supports a critical operation.",
+      "coverage_facets": [
+        "critical_operation_dependency_mapped",
+        "tolerance_and_fallback_defined",
+        "continuity_plan_tested"
+      ],
+      "evidence_requirements": [
+        "Dependency map",
+        "Tolerance and fallback design",
+        "Continuity exercise results"
+      ],
+      "facet_keywords": {
+        "critical_operation_dependency_mapped": [
+          "critical operation",
+          "dependency map",
+          "business service"
+        ],
+        "tolerance_and_fallback_defined": [
+          "tolerance",
+          "fallback",
+          "manual process",
+          "failover"
+        ],
+        "continuity_plan_tested": [
+          "business continuity test",
+          "recovery exercise",
+          "continuity plan"
+        ]
+      },
+      "suggested_questions": {
+        "critical_operation_dependency_mapped": "Is the AI service mapped to every critical operation and dependent process it supports?",
+        "tolerance_and_fallback_defined": "Are disruption tolerances and an executable fallback or manual process defined?",
+        "continuity_plan_tested": "Has the continuity arrangement been tested under a realistic AI-service failure scenario?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 230 (effective 1 July 2026), paras 34–47",
+      "source_location": "CPS 230 Business continuity planning — Critical operations, tolerance levels and testing",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Para 36 prescribes baseline critical operations for ADIs (payments, deposit-taking, customer inquiries) unless justified otherwise; Non-SFI BCP transitional deferral expired 1 July 2026.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-SP",
+      "source_id": "APRA-CPS230",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 48–58 & Attachment (Management of service provider arrangements & NTSP exemptions)",
+      "exact_clause_reference": "Prudential Standard CPS 230 Operational Risk Management (Revised 30 April 2026, effective 1 July 2026), paragraphs 48–58 and Attachment",
+      "title": "Third-party AI service provider risk management",
+      "concise_obligation_summary": "An APRA-regulated entity must maintain a Board-approved service provider management policy and register of material service providers, perform due diligence (including fourth-party risk), include mandatory clauses in legally binding agreements (service levels, APRA access, termination, subject to Attachment exemptions for Non-Traditional Service Providers effective 1 July 2026), and monitor performance and exit feasibility across all new and legacy contracts.",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Revised 30 April 2026 (effective 1 July 2026; superseding F2023L01025)",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "effective_from": "2026-07-01",
+      "effective_to": "NONE_CURRENT",
+      "temporal_status": "current",
+      "supersedes": "AU-APRA-CPS230-SP@F2023L01025 (effective 2025-07-01 to 2026-06-30; legacy contract transition ended 2026-07-01)",
+      "applicability_key": "apra_third_party_service",
+      "applicability_conditions": [
+        "Entity is APRA-regulated",
+        "Use case relies on a third-party AI model, platform or service provider assessed as a Material Service Provider under CPS 230 para 49/50"
+      ],
+      "entity_and_business_scope": "APRA-regulated entities contracting external foundation model providers, cloud AI hosts or SaaS AI vendors.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-THIRD-PARTY-AI",
+      "control_objective": "Assess, contract for, monitor and exit material third-party AI service arrangements.",
+      "coverage_facets": [
+        "provider_materiality_assessed",
+        "due_diligence_completed",
+        "contract_controls_defined",
+        "performance_and_exit_monitored"
+      ],
+      "evidence_requirements": [
+        "Materiality assessment",
+        "Due-diligence pack",
+        "Contract schedule",
+        "Monitoring and exit plan"
+      ],
+      "facet_keywords": {
+        "provider_materiality_assessed": [
+          "material service provider",
+          "materiality",
+          "critical supplier"
+        ],
+        "due_diligence_completed": [
+          "vendor due diligence",
+          "supplier assessment",
+          "third party review"
+        ],
+        "contract_controls_defined": [
+          "contract",
+          "audit rights",
+          "security obligations",
+          "service level"
+        ],
+        "performance_and_exit_monitored": [
+          "vendor monitoring",
+          "exit plan",
+          "transition plan"
+        ]
+      },
+      "suggested_questions": {
+        "provider_materiality_assessed": "Has the third-party AI provider been assessed for materiality under the bank's CPS 230 framework?",
+        "due_diligence_completed": "Does approved due diligence cover the provider's AI, data, security, resilience and subcontractor risks?",
+        "contract_controls_defined": "Do binding contract terms cover required controls, incident notification, audit/access rights and data handling?",
+        "performance_and_exit_monitored": "Are service performance, control changes and a feasible exit plan monitored and tested?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 230 (effective 1 July 2026), paras 48–58 & Attachment",
+      "source_location": "CPS 230 Management of service provider arrangements and Attachment (NTSP exemptions)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Materiality classification of foundation-model API providers depends on whether the arrangement supports a critical operation or exposes the bank to material operational risk. Commercial AI model/cloud vendors do not qualify for the 1 July 2026 Non-Traditional Service Provider (NTSP) contractual exemption.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-NOTIFY",
+      "source_id": "APRA-CPS230",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 32–33, 59–60 (APRA notification for operational incidents and material service providers)",
+      "exact_clause_reference": "Prudential Standard CPS 230 Operational Risk Management (Revised 30 April 2026, effective 1 July 2026), paragraphs 32–33 and 59–60",
+      "title": "APRA notifications for material operational incidents, MSP agreements and offshoring",
+      "concise_obligation_summary": "An APRA-regulated entity must notify APRA as soon as possible and no later than 72 hours after becoming aware of a material operational incident (para 33), submit its register of material service providers annually using the updated 1 July 2026 MSP Register template including 'exempt' NTSP classifications where applicable (para 59), notify APRA within 20 business days of entering or materially changing an MSP agreement for a critical operation (para 60(a)), and notify APRA prior to entering into any material offshoring arrangement (para 60(b)).",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Revised 30 April 2026 (effective 1 July 2026; superseding F2023L01025)",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "effective_from": "2026-07-01",
+      "effective_to": "NONE_CURRENT",
+      "temporal_status": "current",
+      "supersedes": "AU-APRA-CPS230-NOTIFY@F2023L01025 (effective 2025-07-01 to 2026-06-30)",
+      "applicability_key": "apra_third_party_service",
+      "applicability_conditions": [
+        "Entity is APRA-regulated",
+        "Material operational incident occurs OR entity enters/changes a material service provider or material offshoring AI arrangement"
+      ],
+      "entity_and_business_scope": "APRA-regulated entities engaging material third-party or offshore AI providers.",
+      "assessment_scope": "entity",
+      "control_id": "CTRL-MSP-NOTIFICATION",
+      "control_objective": "Screen AI vendor arrangements and operational incidents against CPS 230 72-hour, 20-business-day, annual register and prior-offshoring APRA notification triggers.",
+      "coverage_facets": [
+        "msp_register_updated_for_ai_vendors",
+        "prior_apra_consultation_for_material_offshoring",
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "evidence_requirements": [
+        "CPS 230 Material Service Provider Register entry",
+        "Offshoring notification assessment record",
+        "Regulatory notification workflow and log"
+      ],
+      "facet_keywords": {
+        "msp_register_updated_for_ai_vendors": [
+          "MSP register",
+          "material service provider register",
+          "annual submission"
+        ],
+        "prior_apra_consultation_for_material_offshoring": [
+          "offshoring",
+          "prior notification",
+          "offshore arrangement"
+        ],
+        "incident_72h_and_agreement_20bd_notifications_defined": [
+          "72 hours",
+          "20 business days",
+          "notify APRA"
+        ]
+      },
+      "suggested_questions": {
+        "msp_register_updated_for_ai_vendors": "Is the AI vendor recorded on the bank's CPS 230 Material Service Provider Register where applicable?",
+        "prior_apra_consultation_for_material_offshoring": "Where the AI service involves a material offshoring arrangement, was APRA notified prior to entering into or materially changing the arrangement?",
+        "incident_72h_and_agreement_20bd_notifications_defined": "Do governance procedures enforce the 20-business-day MSP contract notification and 72-hour material operational incident notification to APRA?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 230 (effective 1 July 2026), paras 32–33, 59–60",
+      "source_location": "CPS 230 Notification requirements (Operational incidents & Service provider arrangements)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "None; statutory timeframes (72 hours, 20 business days, prior offshoring notice) and the 1 July 2026 updated MSP Register template are explicitly specified in CPS 230.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-ROLES-ASSETS",
+      "source_id": "APRA-CPS234",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 13–20 (Roles, responsibilities and information asset classification)",
+      "exact_clause_reference": "Prudential Standard CPS 234 Information Security, paragraphs 13–20",
+      "title": "Information security accountability and AI information asset classification",
+      "concise_obligation_summary": "The Board of an APRA-regulated entity is ultimately responsible for information security (para 13), must clearly define security roles and responsibilities (paras 14–18), maintain an information security policy framework (para 19), and classify and catalogue all information assets (including those managed by related parties and third parties) by criticality and sensitivity (para 20).",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "current at 27 October 2026",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "effective_from": "2019-07-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated entity"
+      ],
+      "entity_and_business_scope": "All APRA-regulated entities managing AI prompts, training data, vector databases, model weights and API credentials.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-SEC-COMMENSURATE",
+      "control_objective": "Classify all AI information assets (including prompts, embeddings, weights and third-party hosted assets) by criticality and sensitivity with clear security ownership.",
+      "coverage_facets": [
+        "security_roles_and_asset_owners_assigned",
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "third_party_managed_ai_assets_catalogued"
+      ],
+      "evidence_requirements": [
+        "AI information asset register",
+        "Criticality and sensitivity classification record",
+        "Information security RACI matrix"
+      ],
+      "facet_keywords": {
+        "security_roles_and_asset_owners_assigned": [
+          "asset owner",
+          "security responsibilities",
+          "information security policy"
+        ],
+        "ai_assets_classified_by_criticality_and_sensitivity": [
+          "criticality",
+          "sensitivity",
+          "asset classification"
+        ],
+        "third_party_managed_ai_assets_catalogued": [
+          "third party assets",
+          "external information assets",
+          "cloud assets"
+        ]
+      },
+      "suggested_questions": {
+        "security_roles_and_asset_owners_assigned": "Are information security responsibilities and an accountable asset owner assigned for all AI datasets, models and prompts?",
+        "ai_assets_classified_by_criticality_and_sensitivity": "Have all AI information assets been formally classified by both criticality and sensitivity in accordance with CPS 234 para 20?",
+        "third_party_managed_ai_assets_catalogued": "Does the asset classification register include AI information assets hosted or processed by third parties and related entities?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 234, paras 13–20",
+      "source_location": "CPS 234 Roles and responsibilities, Policy framework, and Information asset identification and classification",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "None; CPS 234 para 20 explicitly applies to assets managed by the entity, related parties and third parties.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-CONTROLS",
+      "source_id": "APRA-CPS234",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 21–26 (Implementation of information security controls)",
+      "exact_clause_reference": "Prudential Standard CPS 234 Information Security, paragraphs 21–26",
+      "title": "Commensurate information security controls",
+      "concise_obligation_summary": "An APRA-regulated entity must maintain information security controls commensurate with the vulnerabilities and threats to its information assets, their criticality and sensitivity, and the stage of the asset lifecycle, and must evaluate the design of third-party information security controls where assets are managed by third parties.",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "current at 27 October 2026",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "effective_from": "2019-07-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated entity"
+      ],
+      "entity_and_business_scope": "All APRA-regulated entities operating internal or third-party AI systems.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-SEC-COMMENSURATE",
+      "control_objective": "Implement security controls commensurate with threats, vulnerabilities, criticality and sensitivity of relevant information assets.",
+      "coverage_facets": [
+        "information_assets_identified",
+        "threats_and_vulnerabilities_assessed",
+        "controls_commensurate",
+        "third_party_assets_in_scope"
+      ],
+      "evidence_requirements": [
+        "Information-asset register",
+        "Threat model",
+        "Security control matrix"
+      ],
+      "facet_keywords": {
+        "information_assets_identified": [
+          "information assets",
+          "asset register",
+          "data inventory"
+        ],
+        "threats_and_vulnerabilities_assessed": [
+          "threat model",
+          "vulnerability assessment",
+          "security risk"
+        ],
+        "controls_commensurate": [
+          "commensurate",
+          "security controls",
+          "criticality",
+          "sensitivity"
+        ],
+        "third_party_assets_in_scope": [
+          "third party information assets",
+          "vendor security",
+          "supplier assets"
+        ]
+      },
+      "suggested_questions": {
+        "information_assets_identified": "Are all information assets supporting the AI system identified, classified and owned?",
+        "threats_and_vulnerabilities_assessed": "Has the bank assessed AI-specific threats and vulnerabilities for those assets?",
+        "controls_commensurate": "Are information security controls demonstrably commensurate with the assets' threats, vulnerabilities, criticality and sensitivity?",
+        "third_party_assets_in_scope": "Are relevant third-party managed information assets included in the control scope?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 234, paras 21–26",
+      "source_location": "CPS 234 Implementation of controls",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "AI-specific attack vectors (indirect prompt injection, model inversion, tool-use privilege escalation) must be mapped as threats under para 21(a).",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-TEST",
+      "source_id": "APRA-CPS234",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 27–34 (Testing of controls and internal audit)",
+      "exact_clause_reference": "Prudential Standard CPS 234 Information Security, paragraphs 27–34",
+      "title": "Systematic testing of information security controls",
+      "concise_obligation_summary": "An APRA-regulated entity must test the effectiveness of its information security controls through a systematic testing program whose scope and frequency are commensurate with threat/vulnerability exposure, asset criticality/sensitivity and material change, and escalate and remediate control deficiencies.",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "current at 27 October 2026",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "effective_from": "2019-07-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated entity"
+      ],
+      "entity_and_business_scope": "All APRA-regulated entities operating AI systems.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-SEC-TESTING",
+      "control_objective": "Systematically test information security controls and remediate identified deficiencies.",
+      "coverage_facets": [
+        "testing_program_exists",
+        "testing_scope_defined",
+        "testing_frequency_risk_based",
+        "testing_results_reviewed",
+        "deficiencies_remediated"
+      ],
+      "evidence_requirements": [
+        "Security test plan",
+        "Test execution record",
+        "Findings register",
+        "Remediation tracking"
+      ],
+      "facet_keywords": {
+        "testing_program_exists": [
+          "security testing program",
+          "control testing",
+          "test plan"
+        ],
+        "testing_scope_defined": [
+          "testing scope",
+          "controls in scope",
+          "test coverage"
+        ],
+        "testing_frequency_risk_based": [
+          "risk based frequency",
+          "testing frequency",
+          "test schedule"
+        ],
+        "testing_results_reviewed": [
+          "test results reviewed",
+          "assurance report",
+          "findings review"
+        ],
+        "deficiencies_remediated": [
+          "remediation tracking",
+          "control deficiencies",
+          "findings register"
+        ]
+      },
+      "suggested_questions": {
+        "testing_program_exists": "Has the bank established and executed a testing program for the AI system's relevant information security controls?",
+        "testing_scope_defined": "Does the program define the information assets, controls, attack paths and third-party components in scope?",
+        "testing_frequency_risk_based": "Is test frequency based on material changes, threats, vulnerabilities, criticality and prior findings?",
+        "testing_results_reviewed": "Are test results independently reviewed and reported to the accountable control owners?",
+        "deficiencies_remediated": "Are identified deficiencies prioritised, owned, tracked and retested to closure?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 234, paras 27–34",
+      "source_location": "CPS 234 Testing control effectiveness and Internal audit",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "None; paras 27–31 set explicit criteria for systematic testing.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-INCIDENT",
+      "source_id": "APRA-CPS234",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 32–36 (Incident management and APRA notification)",
+      "exact_clause_reference": "Prudential Standard CPS 234 Information Security, paragraphs 32–36",
+      "title": "Information security incident management and notification",
+      "concise_obligation_summary": "An APRA-regulated entity must maintain robust detection and response plans for information security incidents, notify APRA as soon as possible and no later than 72 hours after becoming aware of a material information security incident (para 35), and notify APRA within 10 business days after becoming aware of a material information security control weakness not remediable in a timely manner (para 36).",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "current at 27 October 2026",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "effective_from": "2019-07-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated entity"
+      ],
+      "entity_and_business_scope": "All APRA-regulated entities operating internal or third-party AI systems.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-SEC-INCIDENT",
+      "control_objective": "Detect, respond to, escalate and notify material AI-related information security incidents and control weaknesses.",
+      "coverage_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined",
+        "apra_notification_screened",
+        "material_weaknesses_tracked"
+      ],
+      "evidence_requirements": [
+        "Incident response plan",
+        "Notification decision record",
+        "Control weakness register"
+      ],
+      "facet_keywords": {
+        "incident_detection_defined": [
+          "security incident detection",
+          "monitoring alerts",
+          "incident triggers"
+        ],
+        "response_and_escalation_defined": [
+          "incident response",
+          "escalation",
+          "response plan"
+        ],
+        "apra_notification_screened": [
+          "APRA notification",
+          "regulator notification",
+          "material incident"
+        ],
+        "material_weaknesses_tracked": [
+          "material control weakness",
+          "weakness notification",
+          "remediation register"
+        ]
+      },
+      "suggested_questions": {
+        "incident_detection_defined": "Are detection signals and thresholds defined for AI-related information security incidents?",
+        "response_and_escalation_defined": "Does the incident plan identify containment, escalation, decision and communication responsibilities?",
+        "apra_notification_screened": "Is every relevant incident assessed promptly against APRA notification requirements with the rationale recorded?",
+        "material_weaknesses_tracked": "Are material information-security control weaknesses assessed, notified where required and tracked to closure?"
+      },
+      "source_citation": "APRA Prudential Standard CPS 234, paras 32–36",
+      "source_location": "CPS 234 Incident management and APRA notification",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Note CPS 234 para 35 (72 hours for material information security incident) and para 36 (10 business days for material information security control weakness).",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPG235-GOV",
+      "source_id": "APRA-CPG235",
+      "instrument": "APRA CPG 235",
+      "provision": "CPG 235 paras 12–19 (Data risk governance, roles and accountability)",
+      "exact_clause_reference": "Prudential Practice Guide CPG 235 Managing Data Risk, paragraphs 12–19",
+      "title": "Data risk governance, ownership and stewardship for AI",
+      "concise_obligation_summary": "APRA guidance expects regulated institutions to manage data risk systematically within their risk management framework, establishing clear data ownership, stewardship, metadata standards and accountability for critical data elements used in business and risk decisions.",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "September 2013",
+      "source_url": "https://www.apra.gov.au/practice-guides/cpg-235",
+      "effective_from": "2013-09-09",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated institution"
+      ],
+      "entity_and_business_scope": "APRA-regulated entities managing training, retrieval and inference datasets for AI.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-DATA-QUALITY-GOV",
+      "control_objective": "Assign data owners, stewards and data quality tolerances for critical data elements supporting the AI system.",
+      "coverage_facets": [
+        "critical_ai_data_elements_owned",
+        "data_risk_appetite_and_tolerances_defined",
+        "metadata_and_data_dictionary_maintained"
+      ],
+      "evidence_requirements": [
+        "Critical data element (CDE) register",
+        "Data owner and steward assignment",
+        "Data dictionary and metadata schema"
+      ],
+      "facet_keywords": {
+        "critical_ai_data_elements_owned": [
+          "data owner",
+          "data steward",
+          "critical data"
+        ],
+        "data_risk_appetite_and_tolerances_defined": [
+          "data risk",
+          "data quality tolerance",
+          "data governance"
+        ],
+        "metadata_and_data_dictionary_maintained": [
+          "metadata",
+          "data dictionary",
+          "data catalogue"
+        ]
+      },
+      "suggested_questions": {
+        "critical_ai_data_elements_owned": "Are accountable data owners and stewards assigned for all critical data feeds and corpora used by the AI system?",
+        "data_risk_appetite_and_tolerances_defined": "Are data quality tolerances (accuracy, completeness, timeliness) defined in alignment with the bank's data risk appetite?",
+        "metadata_and_data_dictionary_maintained": "Is a current data dictionary and provenance record maintained for all training, RAG and prompt datasets?"
+      },
+      "source_citation": "APRA Prudential Practice Guide CPG 235, paras 12–19",
+      "source_location": "CPG 235 Governance and managing data risk",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "CPG 235 is a non-binding Prudential Practice Guide; it illustrates sound practices rather than creating standalone legal obligations.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-APRA-CPG235-LIFECYCLE",
+      "source_id": "APRA-CPG235",
+      "instrument": "APRA CPG 235",
+      "provision": "CPG 235 paras 20–45 (Data lifecycle: capture, lineage, validation, availability and disposal)",
+      "exact_clause_reference": "Prudential Practice Guide CPG 235 Managing Data Risk, paragraphs 20–45",
+      "title": "End-to-end data lifecycle, lineage and validation controls",
+      "concise_obligation_summary": "CPG 235 outlines sound practices across the data lifecycle—from capture and transformation through storage, retention and disposal—including automated input validation, end-to-end data lineage, reconciliation after system changes, and protection against corruption or unauthorized alteration.",
+      "jurisdiction": "AU",
+      "layer": "banking_prudential_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "September 2013",
+      "source_url": "https://www.apra.gov.au/practice-guides/cpg-235",
+      "effective_from": "2013-09-09",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "apra_entity",
+      "applicability_conditions": [
+        "Entity is an APRA-regulated institution"
+      ],
+      "entity_and_business_scope": "Data pipelines, feature stores, RAG knowledge bases and model outputs in APRA-regulated banks.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-DATA-LIFECYCLE-LINEAGE",
+      "control_objective": "Maintain end-to-end data lineage, automated ingestion validation, and lifecycle archival/disposal controls for AI data pipelines.",
+      "coverage_facets": [
+        "end_to_end_data_lineage_documented",
+        "automated_ingestion_and_transformation_validation",
+        "lifecycle_archival_and_disposal_enforced"
+      ],
+      "evidence_requirements": [
+        "Data lineage diagram",
+        "Pipeline validation and reconciliation test logs",
+        "Data retention and disposal schedule"
+      ],
+      "facet_keywords": {
+        "end_to_end_data_lineage_documented": [
+          "data lineage",
+          "source to target",
+          "data provenance"
+        ],
+        "automated_ingestion_and_transformation_validation": [
+          "data validation",
+          "reconciliation",
+          "data integrity"
+        ],
+        "lifecycle_archival_and_disposal_enforced": [
+          "data lifecycle",
+          "archival",
+          "data disposal"
+        ]
+      },
+      "suggested_questions": {
+        "end_to_end_data_lineage_documented": "Is end-to-end data lineage documented from authoritative banking systems through to AI prompts, embeddings and outputs?",
+        "automated_ingestion_and_transformation_validation": "Do automated validation controls check for corruption, schema drift or poisoning during AI data ingestion and transformation?",
+        "lifecycle_archival_and_disposal_enforced": "Are AI training snapshots, embeddings and inference logs archived or disposed of in accordance with CPG 235 lifecycle standards?"
+      },
+      "source_citation": "APRA Prudential Practice Guide CPG 235, paras 20–45",
+      "source_location": "CPG 235 Managing data across its life-cycle and Data validation",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Non-binding prudential practice guide; supports CPS 220 and CPS 230 operational controls.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-ASIC-RG271-COMPLAINT",
+      "source_id": "ASIC-RG271",
+      "instrument": "ASIC RG 271",
+      "provision": "RG 271 paras 271.27–271.32, 271.51–271.68 (Enforceable IDR complaint handling and response)",
+      "exact_clause_reference": "ASIC Regulatory Guide 271 Internal dispute resolution, paragraphs 271.27–271.32 and 271.51–271.68 (ASIC Instrument 2020/98)",
+      "title": "Recognise, record and respond to complaints fairly and on time",
+      "concise_obligation_summary": "A financial firm must recognise any expression of dissatisfaction made to or about the firm where a response or resolution is explicitly or implicitly expected (RG 271.27), record all complaints, handle them fairly and objectively, and provide a compliant written IDR response within 30 calendar days (RG 271.56) including reasons and AFCA escalation details.",
+      "jurisdiction": "AU",
+      "layer": "financial_conduct",
+      "authority": "enforceable_guidance",
+      "legal_authority_classification": "enforceable_regulatory_requirement",
+      "version": "current at 27 October 2026",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-271-internal-dispute-resolution/",
+      "effective_from": "2021-10-05",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "asic_idr",
+      "applicability_conditions": [
+        "Entity is a financial firm (AFSL holder, ACL holder, ADI) subject to RG 271 IDR duties",
+        "AI workflow receives, triages, assists or responds to retail customer complaints or disputes"
+      ],
+      "entity_and_business_scope": "Retail banking, credit and customer-service AI agents handling customer inquiries, disputes or complaints.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-IDR-HANDLING",
+      "control_objective": "Identify expressions of dissatisfaction, record them, handle them fairly and issue compliant responses within applicable timeframes.",
+      "coverage_facets": [
+        "complaints_broadly_recognised",
+        "complaints_recorded",
+        "response_timeframes_enforced",
+        "response_content_complete",
+        "human_escalation_available"
+      ],
+      "evidence_requirements": [
+        "Complaint classification rules",
+        "Complaint register",
+        "Response template",
+        "SLA monitoring"
+      ],
+      "facet_keywords": {
+        "complaints_broadly_recognised": [
+          "expression of dissatisfaction",
+          "identify complaints",
+          "complaint definition"
+        ],
+        "complaints_recorded": [
+          "complaints recorded",
+          "complaint register",
+          "case record"
+        ],
+        "response_timeframes_enforced": [
+          "response timeframe",
+          "30 calendar days",
+          "delay notification"
+        ],
+        "response_content_complete": [
+          "IDR response",
+          "reasons",
+          "AFCA",
+          "written response"
+        ],
+        "human_escalation_available": [
+          "human escalation",
+          "complaints officer",
+          "manual review"
+        ]
+      },
+      "suggested_questions": {
+        "complaints_broadly_recognised": "Can the AI workflow identify a broad expression of dissatisfaction as a complaint even when the customer does not use the word 'complaint'?",
+        "complaints_recorded": "Is every identified complaint recorded in the bank's IDR system with a complete audit trail?",
+        "response_timeframes_enforced": "Are applicable RG 271 response timeframes and delay notifications enforced by workflow controls?",
+        "response_content_complete": "Does every required written IDR response contain reasons, rights and AFCA information appropriate to the matter?",
+        "human_escalation_available": "Can a customer obtain timely human complaint review without the AI treating its own output as final?"
+      },
+      "source_citation": "ASIC RG 271, paras 271.27–271.32, 271.51–271.68; ASIC Instrument 2020/98",
+      "source_location": "RG 271 Section B (Definition of complaint) and Section C (Maximum timeframes and IDR responses)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Shorter timeframes apply to credit hardship/default notice complaints (21 calendar days under RG 271.64).",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-ASIC-RG271-SYSTEMIC",
+      "source_id": "ASIC-RG271",
+      "instrument": "ASIC RG 271",
+      "provision": "RG 271 paras 271.116–271.124, 271.165–271.182 (Systemic issues and IDR data reporting)",
+      "exact_clause_reference": "ASIC Regulatory Guide 271 Internal dispute resolution, paragraphs 271.116–271.124 and 271.165–271.182 (ASIC Instrument 2020/98)",
+      "title": "Identify and remediate systemic issues from complaints",
+      "concise_obligation_summary": "Boards and senior management must ensure systemic issues are identified through complaint data analysis, escalated promptly, investigated for root cause, and remediated for all affected consumers, with regular IDR reporting to the Board/executive committees and ASIC.",
+      "jurisdiction": "AU",
+      "layer": "financial_conduct",
+      "authority": "enforceable_guidance",
+      "legal_authority_classification": "enforceable_regulatory_requirement",
+      "version": "current at 27 October 2026",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-271-internal-dispute-resolution/",
+      "effective_from": "2021-10-05",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "asic_idr",
+      "applicability_conditions": [
+        "Entity is subject to RG 271 IDR obligations",
+        "AI service interacts with retail customers or generates outcomes that can trigger complaints"
+      ],
+      "entity_and_business_scope": "Retail banking and credit AI systems subject to ASIC IDR oversight.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-IDR-SYSTEMIC",
+      "control_objective": "Use complaint data to detect, escalate, remediate and report systemic issues involving the AI service.",
+      "coverage_facets": [
+        "complaint_data_analysed",
+        "systemic_issue_thresholds_defined",
+        "systemic_issues_escalated",
+        "affected_customers_remediated"
+      ],
+      "evidence_requirements": [
+        "Complaint analytics",
+        "Systemic issue register",
+        "Customer remediation plan"
+      ],
+      "facet_keywords": {
+        "complaint_data_analysed": [
+          "complaint data",
+          "trend analysis",
+          "complaint analytics"
+        ],
+        "systemic_issue_thresholds_defined": [
+          "systemic issue",
+          "threshold",
+          "root cause"
+        ],
+        "systemic_issues_escalated": [
+          "systemic issue escalation",
+          "risk committee",
+          "incident escalation"
+        ],
+        "affected_customers_remediated": [
+          "customer remediation",
+          "affected customers",
+          "compensation"
+        ]
+      },
+      "suggested_questions": {
+        "complaint_data_analysed": "Are complaints involving the AI service analysed for trends, repeat causes and affected cohorts?",
+        "systemic_issue_thresholds_defined": "Are thresholds and decision rules defined for identifying a systemic issue from AI-related complaints?",
+        "systemic_issues_escalated": "Are suspected systemic issues escalated to accountable risk and product owners?",
+        "affected_customers_remediated": "Does the process identify and remediate other customers affected by the same AI-related issue?"
+      },
+      "source_citation": "ASIC RG 271, paras 271.116–271.124, 271.165–271.182; ASIC Instrument 2020/98",
+      "source_location": "RG 271 Section D (Systemic issues) and Section F (Accountability and reporting)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "None; RG 271.117–271.121 are enforceable requirements under ASIC Instrument 2020/98.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-ASIC-RG104-COMPLIANCE-TECH",
+      "source_id": "ASIC-RG104",
+      "instrument": "ASIC RG 104 / Corporations Act s 912A(1)",
+      "provision": "RG 104 paras 104.31–104.76, 104.88–104.104 (interpreting Corporations Act s 912A(1)(a), (c), (d), (h))",
+      "exact_clause_reference": "ASIC Regulatory Guide 104 AFS licensing: Meeting the general obligations, paragraphs 104.31–104.76 and 104.88–104.104",
+      "title": "Compliance arrangements and adequate technological resources for AI financial services",
+      "concise_obligation_summary": "An AFS licensee must maintain documented, regularly reviewed compliance measures and adequate technological resources (including IT systems reliability, capacity, integrity and post-implementation review) to ensure financial services are provided efficiently, honestly and fairly and in compliance with financial services laws.",
+      "jurisdiction": "AU",
+      "layer": "financial_conduct_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "Reissued 23 June 2022 (updated March 2026)",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-104-afs-licensing-meeting-the-general-obligations/",
+      "effective_from": "2022-06-23",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "asic_afs_licensee",
+      "applicability_conditions": [
+        "Entity holds an Australian Financial Services Licence (AFSL)",
+        "AI system supports or delivers regulated financial services"
+      ],
+      "entity_and_business_scope": "AFS licensees (including ADIs holding an AFSL) deploying AI in financial services operations.",
+      "assessment_scope": "entity",
+      "control_id": "CTRL-AI-GOV-ACCOUNTABILITY",
+      "control_objective": "Maintain compliance arrangements, fairness controls and adequate technological resource reviews for AI systems supporting AFSL activities.",
+      "coverage_facets": [
+        "afsl_compliance_measures_cover_ai",
+        "technological_resources_adequacy_reviewed",
+        "efficient_honest_fair_outcome_tested"
+      ],
+      "evidence_requirements": [
+        "AFSL compliance plan AI mapping",
+        "Technological resource adequacy & capacity review",
+        "Customer fairness and conduct outcome evaluation"
+      ],
+      "facet_keywords": {
+        "afsl_compliance_measures_cover_ai": [
+          "compliance arrangements",
+          "912A",
+          "financial services laws"
+        ],
+        "technological_resources_adequacy_reviewed": [
+          "technological resources",
+          "IT systems review",
+          "system capacity"
+        ],
+        "efficient_honest_fair_outcome_tested": [
+          "efficiently, honestly and fairly",
+          "fairness",
+          "unfair outcome"
+        ]
+      },
+      "suggested_questions": {
+        "afsl_compliance_measures_cover_ai": "Are the AI system's controls integrated into the bank's AFSL compliance management arrangements and breach reporting?",
+        "technological_resources_adequacy_reviewed": "Has the bank verified that the AI technological resources have adequate capacity, reliability and regular review under RG 104?",
+        "efficient_honest_fair_outcome_tested": "Has the AI workflow been tested to ensure customer outcomes remain efficient, honest and fair under s 912A(1)(a)?"
+      },
+      "source_citation": "ASIC RG 104, paras 104.31–104.76, 104.88–104.104 (Corporations Act 2001 s 912A(1))",
+      "source_location": "RG 104 Sections B (Compliance measures), C (Risk management) and E (Technological resources)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Note s 912A(1)(d) and (h) statutory carve-outs for APRA-regulated bodies; however, s 912A(1)(a) ('efficiently, honestly and fairly') and s 912A(1)(c) apply to all AFS licensees including ADIs.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-ASIC-RG104-REPRESENTATIVES",
+      "source_id": "ASIC-RG104",
+      "instrument": "ASIC RG 104 / Corporations Act s 912A(1)(ca), (f)",
+      "provision": "RG 104 paras 104.105–104.118 (Monitoring, supervision and training of representatives)",
+      "exact_clause_reference": "ASIC Regulatory Guide 104 AFS licensing: Meeting the general obligations, paragraphs 104.105–104.118",
+      "title": "Supervision and training of staff operating AI-assisted financial services",
+      "concise_obligation_summary": "Under RG 104, an AFS licensee must have measures for monitoring and supervising representatives and ensuring staff are adequately trained and competent to understand and oversee the tools and financial services they deliver.",
+      "jurisdiction": "AU",
+      "layer": "financial_conduct_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "Reissued 23 June 2022 (updated March 2026)",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-104-afs-licensing-meeting-the-general-obligations/",
+      "effective_from": "2022-06-23",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "asic_afs_licensee",
+      "applicability_conditions": [
+        "Entity holds an AFSL",
+        "Staff or representatives use or supervise the AI system in providing financial services"
+      ],
+      "entity_and_business_scope": "Frontline bankers, dispute officers and representatives using AI copilots or automated agents.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-HUMAN-OVERSIGHT",
+      "control_objective": "Train and supervise staff operating AI tools so they understand model limitations and can override erroneous outputs.",
+      "coverage_facets": [
+        "operator_ai_competence_and_training_completed",
+        "supervisory_quality_assurance_on_ai_assisted_staff",
+        "clear_escalation_and_override_authority"
+      ],
+      "evidence_requirements": [
+        "Representative AI training curriculum and completion logs",
+        "Quality assurance sampling records",
+        "Operator override SOP"
+      ],
+      "facet_keywords": {
+        "operator_ai_competence_and_training_completed": [
+          "staff training",
+          "representative competence",
+          "AI literacy"
+        ],
+        "supervisory_quality_assurance_on_ai_assisted_staff": [
+          "monitoring and supervision",
+          "quality assurance",
+          "supervise representatives"
+        ],
+        "clear_escalation_and_override_authority": [
+          "override",
+          "human intervention",
+          "escalate"
+        ]
+      },
+      "suggested_questions": {
+        "operator_ai_competence_and_training_completed": "Are representatives who use or review this AI system trained on its capabilities, limitations and error modes?",
+        "supervisory_quality_assurance_on_ai_assisted_staff": "Does supervisory quality assurance monitor how representatives rely on or override AI-generated recommendations?",
+        "clear_escalation_and_override_authority": "Do frontline operators have explicit authority and workflow controls to reject or override an AI recommendation?"
+      },
+      "source_citation": "ASIC RG 104, paras 104.105–104.118 (Corporations Act 2001 s 912A(1)(ca), (f))",
+      "source_location": "RG 104 Section F — Representatives",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Guidance interpreting binding s 912A(1)(ca) and (f) duties.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-ASIC-RG105-COMPETENCE",
+      "source_id": "ASIC-RG105",
+      "instrument": "ASIC RG 105 / Corporations Act s 912A(1)(e)",
+      "provision": "RG 105 paras 105.15–105.42, 105.87–105.98 (Organisational competence and Responsible Managers)",
+      "exact_clause_reference": "ASIC Regulatory Guide 105 AFS licensing: Organisational competence, paragraphs 105.15–105.42 and 105.87–105.98",
+      "title": "Organisational competence and Responsible Manager oversight for AI-enabled services",
+      "concise_obligation_summary": "An AFS licensee must maintain organisational competence at all times by nominating Responsible Managers with direct responsibility for significant day-to-day financial services decisions who possess appropriate knowledge and skills for the licensee's operating model, and must review competence when business activities or technology materially change.",
+      "jurisdiction": "AU",
+      "layer": "financial_conduct_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "Reissued 23 June 2022 (updated June 2025)",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-105-afs-licensing-organisational-competence/",
+      "effective_from": "2022-06-23",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "asic_afs_licensee",
+      "applicability_conditions": [
+        "Entity holds an AFSL",
+        "AI system materially affects significant day-to-day financial services decisions"
+      ],
+      "entity_and_business_scope": "AFS licensees deploying automated or AI-assisted decision systems in regulated financial services.",
+      "assessment_scope": "organisation",
+      "control_id": "CTRL-AFSL-COMPETENCE",
+      "control_objective": "Ensure nominated Responsible Managers and accountable executives maintain knowledge, skills and oversight over AI-enabled financial service operations.",
+      "coverage_facets": [
+        "responsible_manager_accountability_mapped",
+        "organisational_competence_reviewed_on_ai_change",
+        "technical_and_domain_expertise_maintained"
+      ],
+      "evidence_requirements": [
+        "Responsible Manager competency matrix",
+        "Material technology change competence review",
+        "Continuing professional development / briefing records"
+      ],
+      "facet_keywords": {
+        "responsible_manager_accountability_mapped": [
+          "responsible manager",
+          "accountable executive",
+          "significant day-to-day decisions"
+        ],
+        "organisational_competence_reviewed_on_ai_change": [
+          "organisational competence",
+          "RG 105",
+          "competence review"
+        ],
+        "technical_and_domain_expertise_maintained": [
+          "knowledge and skills",
+          "technical expertise",
+          "competency"
+        ]
+      },
+      "suggested_questions": {
+        "responsible_manager_accountability_mapped": "Is a nominated Responsible Manager or accountable executive assigned direct oversight for the financial services decisions assisted by this AI system?",
+        "organisational_competence_reviewed_on_ai_change": "Was organisational competence reviewed under RG 105 before introducing this AI capability into financial service delivery?",
+        "technical_and_domain_expertise_maintained": "Does the accountable leadership team have access to sufficient technical AI and financial-conduct expertise to challenge system behaviour?"
+      },
+      "source_citation": "ASIC RG 105, paras 105.15–105.42, 105.87–105.98 (Corporations Act 2001 s 912A(1)(e))",
+      "source_location": "RG 105 Section B (What you must do to comply) and Section D (Maintaining organisational competence)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Guidance interpreting binding s 912A(1)(e) organisational competence obligations.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-ASIC-REP798-AI-GAP",
+      "source_id": "ASIC-REP798",
+      "instrument": "ASIC REP 798",
+      "provision": "REP 798 Key Findings & Governance Expectations (pp. 4–18)",
+      "exact_clause_reference": "ASIC Report 798 Beware the gap: Governance arrangements in the face of AI innovation (29 October 2024), Key Findings pp. 4–18",
+      "title": "Close governance lag and prevent consumer harm in rapid AI adoption",
+      "concise_obligation_summary": "ASIC Report 798 warns financial services and credit licensees that AI governance arrangements must not lag behind accelerating AI adoption (especially generative and third-party AI), expecting licensees to update risk frameworks, maintain comprehensive AI inventories, test for consumer bias/unfairness, and ensure human oversight is real rather than symbolic.",
+      "jurisdiction": "AU",
+      "layer": "financial_conduct_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "29 October 2024",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/reports/rep-798-beware-the-gap-governance-arrangements-in-the-face-of-ai-innovation/",
+      "effective_from": "2024-10-29",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "asic_afs_licensee",
+      "applicability_conditions": [
+        "Entity is an AFS or credit licensee reviewed by ASIC"
+      ],
+      "entity_and_business_scope": "Banks, insurers and licensees adopting predictive, generative or agentic AI.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-AI-GOV-ACCOUNTABILITY",
+      "control_objective": "Maintain an up-to-date AI use-case inventory, evaluate consumer harm/bias risks before deployment, and prevent governance lag.",
+      "coverage_facets": [
+        "use_case_registered_in_enterprise_ai_inventory",
+        "consumer_harm_and_bias_assessed_pre_deployment",
+        "generative_and_third_party_ai_governance_updated"
+      ],
+      "evidence_requirements": [
+        "Enterprise AI use-case register entry",
+        "Consumer harm and bias testing report",
+        "Pre-deployment governance approval gate"
+      ],
+      "facet_keywords": {
+        "use_case_registered_in_enterprise_ai_inventory": [
+          "AI inventory",
+          "AI register",
+          "use case register"
+        ],
+        "consumer_harm_and_bias_assessed_pre_deployment": [
+          "consumer harm",
+          "bias",
+          "unfairness",
+          "vulnerable customers"
+        ],
+        "generative_and_third_party_ai_governance_updated": [
+          "generative AI",
+          "governance gap",
+          "pre-deployment approval"
+        ]
+      },
+      "suggested_questions": {
+        "use_case_registered_in_enterprise_ai_inventory": "Is this AI use case recorded in the bank's central AI inventory with its lifecycle stage, risk tier and owner?",
+        "consumer_harm_and_bias_assessed_pre_deployment": "Has the use case been assessed for unfair consumer outcomes, bias and impacts on vulnerable customers?",
+        "generative_and_third_party_ai_governance_updated": "Have governance controls been updated for generative/agentic AI risks before moving the system past pilot stage?"
+      },
+      "source_citation": "ASIC Report 798 (29 October 2024), pp. 4–18",
+      "source_location": "Executive Summary and Key Findings — Governance arrangements and consumer risks",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Supervisory report rather than a legislative instrument; reflects how ASIC evaluates compliance with s 912A and NCCP Act s 47.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-NCCP-S47-CONDUCT",
+      "source_id": "AU-NCCP-ACT",
+      "instrument": "NCCP Act 2009",
+      "provision": "Chapter 2, Part 2-2, Division 5, s 47(1)(a), (d), (g), (h), (l)",
+      "exact_clause_reference": "National Consumer Credit Protection Act 2009 (Cth) section 47(1)(a), (d), (g), (h), (l)",
+      "title": "General conduct obligations of Australian credit licensees using AI",
+      "concise_obligation_summary": "A credit licensee must do all things necessary to ensure credit activities authorised by the licence are engaged in efficiently, honestly and fairly (s 47(1)(a)), comply with credit legislation (s 47(1)(d)), maintain an internal dispute resolution procedure (s 47(1)(h)), and have adequate risk management systems and human/technological resources (s 47(1)(l)).",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation No. 52 (1 July 2026)",
+      "source_url": "https://www.legislation.gov.au/C2009A00134/latest",
+      "effective_from": "2010-07-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "nccp_credit_activity",
+      "applicability_conditions": [
+        "Entity holds an Australian Credit Licence (ACL)",
+        "AI workflow supports or performs regulated credit activities under the NCCP Act"
+      ],
+      "entity_and_business_scope": "ADIs and credit licensees deploying AI in consumer lending, credit limit management, collections or hardship workflows.",
+      "assessment_scope": "entity",
+      "control_id": "CTRL-AI-GOV-ACCOUNTABILITY",
+      "control_objective": "Ensure AI-assisted credit activities operate efficiently, honestly and fairly with adequate compliance, dispute and technological controls under NCCP Act s 47.",
+      "coverage_facets": [
+        "credit_activity_fairness_and_honesty_verified",
+        "credit_compliance_and_breach_monitoring_active",
+        "credit_technological_resources_and_oversight_adequate"
+      ],
+      "evidence_requirements": [
+        "ACL s 47 compliance attestation",
+        "Credit AI fairness and conduct test report",
+        "Credit system monitoring and breach log"
+      ],
+      "facet_keywords": {
+        "credit_activity_fairness_and_honesty_verified": [
+          "efficiently, honestly and fairly",
+          "credit activity",
+          "fairness"
+        ],
+        "credit_compliance_and_breach_monitoring_active": [
+          "credit legislation",
+          "NCCP",
+          "breach reporting"
+        ],
+        "credit_technological_resources_and_oversight_adequate": [
+          "technological resources",
+          "credit system",
+          "human resources"
+        ]
+      },
+      "suggested_questions": {
+        "credit_activity_fairness_and_honesty_verified": "Has the AI workflow been validated to ensure regulated credit activities are conducted efficiently, honestly and fairly under NCCP Act s 47(1)(a)?",
+        "credit_compliance_and_breach_monitoring_active": "Are automated checks in place to detect and escalate potential breaches of credit legislation in AI-assisted workflows?",
+        "credit_technological_resources_and_oversight_adequate": "Are human and technological resources documented and tested for the ongoing supervision of this credit AI system?"
+      },
+      "source_citation": "National Consumer Credit Protection Act 2009 (Cth) s 47",
+      "source_location": "Chapter 2, Part 2-2, Division 5 — General conduct obligations of licensees",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Note s 47(1)(l) risk management and resource carve-out where the licensee is an APRA-regulated body, while s 47(1)(a), (d) and (h) apply in full to ADIs.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-NCCP-S128-131-LENDING",
+      "source_id": "AU-NCCP-ACT",
+      "instrument": "NCCP Act 2009",
+      "provision": "Chapter 3, Part 3-2, Division 3, ss 128–131 (Responsible lending unsuitability assessment)",
+      "exact_clause_reference": "National Consumer Credit Protection Act 2009 (Cth) sections 128, 129, 130 and 131",
+      "title": "Responsible lending inquiries, verification and unsuitability assessment for AI credit decisions",
+      "concise_obligation_summary": "Before entering a consumer credit contract or increasing a credit limit, a credit provider must make an unsuitability assessment (ss 128–129), make reasonable inquiries about the consumer's requirements/objectives and financial situation (s 130(1)(a)–(b)), take reasonable steps to verify the consumer's financial situation (s 130(1)(c)), and assess the contract as unsuitable if the consumer could not comply or could only comply with substantial hardship (s 131).",
+      "jurisdiction": "AU",
+      "layer": "australian_legislation",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Compilation No. 52 (1 July 2026)",
+      "source_url": "https://www.legislation.gov.au/C2009A00134/latest",
+      "effective_from": "2010-07-01",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "nccp_responsible_lending",
+      "applicability_conditions": [
+        "Entity is a credit provider under the NCCP Act",
+        "AI system makes or assists credit origination, credit limit increase or serviceability/unsuitability assessments"
+      ],
+      "entity_and_business_scope": "AI credit scoring, income/expense categorisation, serviceability engines and loan origination assistants.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-CREDIT-UNSUITABILITY",
+      "control_objective": "Ensure AI-assisted credit origination and limit increases verify consumer financial data and enforce statutory unsuitability and substantial-hardship checks.",
+      "coverage_facets": [
+        "consumer_requirements_and_objectives_captured",
+        "financial_situation_verified_from_reliable_evidence",
+        "unsuitability_and_substantial_hardship_screen_enforced",
+        "written_unsuitability_assessment_retrievable"
+      ],
+      "evidence_requirements": [
+        "Responsible lending model logic specification",
+        "Income and expense verification rules",
+        "Sample unsuitability assessment records (s 132)"
+      ],
+      "facet_keywords": {
+        "consumer_requirements_and_objectives_captured": [
+          "requirements and objectives",
+          "loan purpose",
+          "consumer objectives"
+        ],
+        "financial_situation_verified_from_reliable_evidence": [
+          "verify financial situation",
+          "income verification",
+          "expense verification"
+        ],
+        "unsuitability_and_substantial_hardship_screen_enforced": [
+          "unsuitable",
+          "substantial hardship",
+          "responsible lending"
+        ],
+        "written_unsuitability_assessment_retrievable": [
+          "copy of assessment",
+          "unsuitability assessment record",
+          "section 132"
+        ]
+      },
+      "suggested_questions": {
+        "consumer_requirements_and_objectives_captured": "Does the AI credit workflow capture and evaluate the consumer's specific requirements and objectives under NCCP Act s 130(1)(a)?",
+        "financial_situation_verified_from_reliable_evidence": "How does the workflow verify income, expenses and liabilities rather than relying on unverified AI inferences?",
+        "unsuitability_and_substantial_hardship_screen_enforced": "Are deterministic rules and human review gates enforced so a credit contract is blocked whenever substantial hardship or unsuitability is indicated under s 131?",
+        "written_unsuitability_assessment_retrievable": "Can the bank produce an auditable written record of the unsuitability assessment upon consumer request under s 132?"
+      },
+      "source_citation": "National Consumer Credit Protection Act 2009 (Cth) ss 128–132",
+      "source_location": "Chapter 3, Part 3-2, Division 3 — Obligation to assess unsuitability",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "In ASIC v Westpac (2019/2020), courts clarified flexibility in verification methods, but statutory duties under ss 128–131 remain binding.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-NAIC-AI6-ACCOUNTABILITY-IMPACT",
+      "source_id": "AU-AI-GUIDANCE-2025",
+      "instrument": "Australian Guidance for AI Adoption (Oct 2025)",
+      "provision": "Essential Practice 1 (Decide who is accountable) & Essential Practice 2 (Understand impacts and plan accordingly)",
+      "exact_clause_reference": "Department of Industry, Science and Resources / National AI Centre, Guidance for AI Adoption (21 October 2025), Practices 1 and 2",
+      "title": "Accountable AI ownership, use-case risk screening and stakeholder impact planning",
+      "concise_obligation_summary": "Organisations adopting AI should designate an accountable executive/owner for AI governance and system outcomes, maintain an AI systems register, and assess potential impacts on individuals, groups, operations and human rights before deployment using proportionality screening.",
+      "jurisdiction": "AU",
+      "layer": "national_ai_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "October 2025",
+      "source_url": "https://www.industry.gov.au/publications/guidance-for-ai-adoption",
+      "effective_from": "2025-10-21",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "au_ai_guidance_adopted",
+      "applicability_conditions": [
+        "Organisation has adopted the Australian Government Guidance for AI Adoption (Oct 2025)"
+      ],
+      "entity_and_business_scope": "Australian organisations and banks adopting the NAIC 6 Essential Practices (AI6).",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-AI-IMPACT-ASSESSMENT",
+      "control_objective": "Assign executive accountability, log the system in the AI register, and complete an AI impact and proportionality assessment before deployment.",
+      "coverage_facets": [
+        "accountable_ai_owner_designated",
+        "ai_impact_and_stakeholder_assessment_completed",
+        "risk_tier_and_governance_proportionality_screened"
+      ],
+      "evidence_requirements": [
+        "Accountable AI owner charter",
+        "AI screening and impact assessment record",
+        "AI systems register entry"
+      ],
+      "facet_keywords": {
+        "accountable_ai_owner_designated": [
+          "accountable owner",
+          "decide who is accountable",
+          "executive owner"
+        ],
+        "ai_impact_and_stakeholder_assessment_completed": [
+          "understand impacts",
+          "impact assessment",
+          "affected stakeholders"
+        ],
+        "risk_tier_and_governance_proportionality_screened": [
+          "risk tier",
+          "screening tool",
+          "proportionality"
+        ]
+      },
+      "suggested_questions": {
+        "accountable_ai_owner_designated": "Has a single accountable executive or system owner been designated for this AI use case in line with Practice 1?",
+        "ai_impact_and_stakeholder_assessment_completed": "Has the bank assessed potential impacts on customers, employees and vulnerable groups in line with Practice 2?",
+        "risk_tier_and_governance_proportionality_screened": "Has the use case been screened to determine its risk tier and proportionate governance gates?"
+      },
+      "source_citation": "Australian Government Guidance for AI Adoption (21 October 2025), Practices 1 & 2",
+      "source_location": "Foundations and Implementation Practices — Practice 1 & Practice 2",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Non-binding national guidance; does not create independent statutory duties unless adopted by policy or contract.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-NAIC-AI6-RISK-TRANSPARENCY",
+      "source_id": "AU-AI-GUIDANCE-2025",
+      "instrument": "Australian Guidance for AI Adoption (Oct 2025)",
+      "provision": "Essential Practice 3 (Measure and manage risks) & Essential Practice 4 (Share essential information)",
+      "exact_clause_reference": "Department of Industry, Science and Resources / National AI Centre, Guidance for AI Adoption (21 October 2025), Practices 3 and 4",
+      "title": "AI-specific risk management and user/supply-chain transparency disclosures",
+      "concise_obligation_summary": "Organisations should identify, measure and treat AI-specific risks across data quality, bias, security and supply-chain dependencies (Practice 3), and share essential information with users, customers and downstream deployers when AI is used to interact with them or inform material decisions (Practice 4).",
+      "jurisdiction": "AU",
+      "layer": "national_ai_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "October 2025",
+      "source_url": "https://www.industry.gov.au/publications/guidance-for-ai-adoption",
+      "effective_from": "2025-10-21",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "au_ai_guidance_adopted",
+      "applicability_conditions": [
+        "Organisation has adopted the Australian Government Guidance for AI Adoption (Oct 2025)"
+      ],
+      "entity_and_business_scope": "Australian organisations and banks adopting the NAIC 6 Essential Practices (AI6).",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-AI-IMPACT-ASSESSMENT",
+      "control_objective": "Measure and mitigate AI-specific technical/bias/supply-chain risks and provide clear transparency notices to users interacting with the AI system.",
+      "coverage_facets": [
+        "ai_specific_risks_measured_and_treated",
+        "user_interaction_and_ai_use_disclosed",
+        "supply_chain_and_model_provenance_documented"
+      ],
+      "evidence_requirements": [
+        "AI risk treatment plan",
+        "Customer-facing AI transparency disclosure",
+        "Model card / supplier provenance documentation"
+      ],
+      "facet_keywords": {
+        "ai_specific_risks_measured_and_treated": [
+          "measure and manage risks",
+          "bias",
+          "hallucination",
+          "AI risk"
+        ],
+        "user_interaction_and_ai_use_disclosed": [
+          "share essential information",
+          "AI disclosure",
+          "inform users",
+          "transparency"
+        ],
+        "supply_chain_and_model_provenance_documented": [
+          "model provenance",
+          "supply chain",
+          "model card"
+        ]
+      },
+      "suggested_questions": {
+        "ai_specific_risks_measured_and_treated": "Have AI-specific risks (hallucination, bias, data drift, prompt injection) been measured and mitigated under Practice 3?",
+        "user_interaction_and_ai_use_disclosed": "Are customers clearly informed when they are interacting with an AI agent or receiving AI-generated content under Practice 4?",
+        "supply_chain_and_model_provenance_documented": "Has the bank documented essential model provenance, training-data boundaries and vendor limitations?"
+      },
+      "source_citation": "Australian Government Guidance for AI Adoption (21 October 2025), Practices 3 & 4",
+      "source_location": "Foundations and Implementation Practices — Practice 3 & Practice 4",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Non-binding national guidance.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "AU-NAIC-AI6-TEST-HUMAN",
+      "source_id": "AU-AI-GUIDANCE-2025",
+      "instrument": "Australian Guidance for AI Adoption (Oct 2025)",
+      "provision": "Essential Practice 5 (Test and monitor) & Essential Practice 6 (Maintain human control)",
+      "exact_clause_reference": "Department of Industry, Science and Resources / National AI Centre, Guidance for AI Adoption (21 October 2025), Practices 5 and 6",
+      "title": "Pre-deployment testing, continuous monitoring, human control and contestability",
+      "concise_obligation_summary": "Organisations should test AI systems in realistic conditions before deployment and continuously monitor performance, drift and incidents in production (Practice 5), while maintaining meaningful human control, intervention/deactivation capability and accessible contestability pathways for affected individuals (Practice 6).",
+      "jurisdiction": "AU",
+      "layer": "national_ai_guidance",
+      "authority": "guidance",
+      "legal_authority_classification": "regulatory_guidance_and_expectation",
+      "version": "October 2025",
+      "source_url": "https://www.industry.gov.au/publications/guidance-for-ai-adoption",
+      "effective_from": "2025-10-21",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "au_ai_guidance_adopted",
+      "applicability_conditions": [
+        "Organisation has adopted the Australian Government Guidance for AI Adoption (Oct 2025)"
+      ],
+      "entity_and_business_scope": "Australian organisations and banks adopting the NAIC 6 Essential Practices (AI6).",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-HUMAN-OVERSIGHT",
+      "control_objective": "Test AI behaviour pre-launch, monitor drift in production, retain human override/kill-switch capability, and provide customer contestability.",
+      "coverage_facets": [
+        "pre_deployment_and_ongoing_drift_monitoring",
+        "meaningful_human_oversight_and_kill_switch",
+        "customer_contestability_and_recourse_pathway"
+      ],
+      "evidence_requirements": [
+        "Pre-deployment evaluation and production drift dashboard",
+        "Human-in-the-loop and kill-switch runbook",
+        "Customer contestability workflow"
+      ],
+      "facet_keywords": {
+        "pre_deployment_and_ongoing_drift_monitoring": [
+          "test and monitor",
+          "model drift",
+          "ongoing monitoring"
+        ],
+        "meaningful_human_oversight_and_kill_switch": [
+          "maintain human control",
+          "human oversight",
+          "kill switch",
+          "deactivation"
+        ],
+        "customer_contestability_and_recourse_pathway": [
+          "challenge",
+          "contestability",
+          "human review"
+        ]
+      },
+      "suggested_questions": {
+        "pre_deployment_and_ongoing_drift_monitoring": "Are pre-deployment evaluation benchmarks and continuous production drift monitors active under Practice 5?",
+        "meaningful_human_oversight_and_kill_switch": "Do operators have meaningful human control and an immediate kill-switch/fallback mechanism under Practice 6?",
+        "customer_contestability_and_recourse_pathway": "Is there a clear, accessible pathway for a customer to contest an AI-assisted outcome and obtain human review?"
+      },
+      "source_citation": "Australian Government Guidance for AI Adoption (21 October 2025), Practices 5 & 6",
+      "source_location": "Foundations and Implementation Practices — Practice 5 & Practice 6",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Non-binding national guidance.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "EU-AIA-ART2-HIGH-RISK",
+      "source_id": "EU-AI-ACT",
+      "instrument": "EU AI Act",
+      "provision": "Articles 2, 3, 6, 9–15, Annex III (Territorial scope and high-risk AI system requirements)",
+      "exact_clause_reference": "Regulation (EU) 2024/1689 Articles 2, 3, 6, 9–15 and Annex III",
+      "title": "Conditional EU AI Act high-risk governance controls",
+      "concise_obligation_summary": "Where an Australian bank places an AI system on the EU market, has an EU establishment, or has the AI system's output used in the Union (Art 2), and acts in a regulated operator role for a high-risk AI system (Art 6 & Annex III), it must satisfy applicable risk-management, data-governance, technical-documentation, automatic-logging, transparency, human-oversight and accuracy/robustness/cybersecurity requirements (Arts 9–15).",
+      "jurisdiction": "EU",
+      "layer": "eu_ai_act",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Regulation (EU) 2024/1689",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "effective_from": "2026-08-02",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "eu_ai_act_nexus",
+      "applicability_conditions": [
+        "Article 2(1) territorial nexus is met (EU establishment, EU market placement, or AI output used in the EU)",
+        "Bank holds a regulated operator role (provider, deployer, importer, distributor)",
+        "System is classified as high-risk under Article 6 / Annex III and applicable phased commencement date under Article 113 is reached"
+      ],
+      "entity_and_business_scope": "Australian banks with EU branches/clients or AI outputs used inside the European Union.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-EU-HIGH-RISK",
+      "control_objective": "Where territorial, role, use and commencement tests are met, implement applicable high-risk AI governance controls.",
+      "coverage_facets": [
+        "territorial_nexus_confirmed",
+        "regulated_role_confirmed",
+        "risk_classification_confirmed",
+        "risk_management_and_logging",
+        "human_oversight_and_robustness"
+      ],
+      "evidence_requirements": [
+        "EU nexus memorandum",
+        "Role and classification assessment",
+        "Risk file and logs"
+      ],
+      "facet_keywords": {
+        "territorial_nexus_confirmed": [
+          "EU market",
+          "European Union",
+          "output used in EU",
+          "territorial scope"
+        ],
+        "regulated_role_confirmed": [
+          "provider",
+          "deployer",
+          "importer",
+          "distributor"
+        ],
+        "risk_classification_confirmed": [
+          "high risk AI",
+          "risk classification",
+          "Annex III"
+        ],
+        "risk_management_and_logging": [
+          "risk management system",
+          "technical documentation",
+          "automatic logs"
+        ],
+        "human_oversight_and_robustness": [
+          "human oversight",
+          "accuracy",
+          "robustness",
+          "cybersecurity"
+        ]
+      },
+      "suggested_questions": {
+        "territorial_nexus_confirmed": "Has Legal confirmed whether Article 2 territorial scope is met for this use case?",
+        "regulated_role_confirmed": "Has the bank's relevant EU AI Act role or roles been documented?",
+        "risk_classification_confirmed": "Has the system's EU AI Act classification and applicable commencement date been documented?",
+        "risk_management_and_logging": "If high-risk obligations apply, are the required risk-management, documentation and logging controls implemented?",
+        "human_oversight_and_robustness": "If high-risk obligations apply, are human oversight, accuracy, robustness and cybersecurity controls implemented and evidenced?"
+      },
+      "source_citation": "Regulation (EU) 2024/1689 Arts 2, 6, 9–15, 113 & Annex III",
+      "source_location": "Chapters I, III and XII of Regulation (EU) 2024/1689",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Never applies by default to a purely domestic Australian banking use case; extraterritorial nexus under Art 2(1)(c) ('output of the AI system is used in the Union') requires specific legal analysis.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Never apply by default to an Australian use case; Article 2 nexus, role, system classification and phased commencement must be confirmed.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "EU-AIA-ART4-5-PROHIBITED-LITERACY",
+      "source_id": "EU-AI-ACT",
+      "instrument": "EU AI Act",
+      "provision": "Articles 4, 5 & 113(a) (AI literacy and prohibited AI practices, applicable from 2 February 2025)",
+      "exact_clause_reference": "Regulation (EU) 2024/1689 Articles 4, 5 and 113(a)",
+      "title": "EU AI Act prohibited-practice screening and AI literacy (early commencement phase)",
+      "concise_obligation_summary": "Where Article 2 EU territorial scope applies, providers and deployers must ensure a sufficient level of AI literacy for staff and persons dealing with the operation and use of AI systems on their behalf (Art 4), and must not place on the market or use prohibited AI practices such as subliminal manipulation, exploitation of vulnerabilities, social scoring or prohibited emotion recognition in the workplace (Art 5), effective from 2 February 2025.",
+      "jurisdiction": "EU",
+      "layer": "eu_ai_act",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Regulation (EU) 2024/1689",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "effective_from": "2025-02-02",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "eu_ai_act_prohibited_or_literacy",
+      "applicability_conditions": [
+        "Article 2(1) EU territorial nexus is met",
+        "Bank acts as a provider or deployer within EU scope (applicable from 2 February 2025 under Art 113(a))"
+      ],
+      "entity_and_business_scope": "AI systems with an EU establishment, EU market or EU output-use nexus.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-EU-HIGH-RISK",
+      "control_objective": "Screen out Article 5 prohibited AI practices and ensure Article 4 AI literacy for staff operating EU-scoped AI systems.",
+      "coverage_facets": [
+        "article5_prohibited_practices_screened_out",
+        "article4_staff_ai_literacy_evidenced",
+        "phased_commencement_2feb2025_verified"
+      ],
+      "evidence_requirements": [
+        "Article 5 prohibited-practice negative screening record",
+        "Article 4 AI literacy training syllabus and completion log",
+        "Legal territorial scope sign-off"
+      ],
+      "facet_keywords": {
+        "article5_prohibited_practices_screened_out": [
+          "prohibited AI",
+          "Article 5",
+          "social scoring",
+          "subliminal"
+        ],
+        "article4_staff_ai_literacy_evidenced": [
+          "AI literacy",
+          "Article 4",
+          "staff competence"
+        ],
+        "phased_commencement_2feb2025_verified": [
+          "2 February 2025",
+          "Article 113",
+          "prohibited practices"
+        ]
+      },
+      "suggested_questions": {
+        "article5_prohibited_practices_screened_out": "Where an EU nexus exists, has the use case been screened to confirm it does not involve any Article 5 prohibited AI practices?",
+        "article4_staff_ai_literacy_evidenced": "Where an EU nexus exists, have staff operating or overseeing the AI system completed role-appropriate Article 4 AI literacy training?",
+        "phased_commencement_2feb2025_verified": "Has Legal confirmed compliance with the 2 February 2025 commencement of Chapters I and II of the EU AI Act?"
+      },
+      "source_citation": "Regulation (EU) 2024/1689 Arts 4, 5, 113(a)",
+      "source_location": "Chapter I (Article 4) and Chapter II (Article 5)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Applies only where Article 2 territorial nexus is established.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Conditional on EU Article 2 territorial nexus; Chapters I and II commenced 2 February 2025.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "EU-AIA-ART26-27-DEPLOYER-CREDIT",
+      "source_id": "EU-AI-ACT",
+      "instrument": "EU AI Act",
+      "provision": "Articles 26, 27, 50 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA)",
+      "exact_clause_reference": "Regulation (EU) 2024/1689 Articles 26, 27, 50 and Annex III point 5(b)",
+      "title": "EU AI Act deployer obligations for creditworthiness AI, log retention and FRIA",
+      "concise_obligation_summary": "Where an entity within Article 2 scope acts as a deployer of a high-risk AI system evaluating creditworthiness or credit scores of natural persons (Annex III point 5(b), excluding fraud detection), it must use the system per instructions, assign competent human oversight, ensure input data relevance, retain automatically generated logs for at least 6 months (or per financial law), inform affected individuals, and perform a Fundamental Rights Impact Assessment (Art 27) prior to deployment.",
+      "jurisdiction": "EU",
+      "layer": "eu_ai_act",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Regulation (EU) 2024/1689",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "effective_from": "2026-08-02",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "eu_ai_act_deployer_high_risk",
+      "applicability_conditions": [
+        "Article 2(1) EU territorial nexus is met",
+        "Bank acts as a deployer (Art 3(4)) of an Annex III point 5(b) creditworthiness/credit-scoring AI system (or Art 50 interactive AI system)"
+      ],
+      "entity_and_business_scope": "Banking creditworthiness/credit-scoring AI workflows with EU territorial nexus.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-EU-HIGH-RISK",
+      "control_objective": "Satisfy EU AI Act Article 26 deployer duties, 6-month minimum log retention, Article 27 Fundamental Rights Impact Assessment, and Article 50 user transparency where EU scope applies.",
+      "coverage_facets": [
+        "annex3_5b_credit_vs_fraud_exemption_assessed",
+        "deployer_human_oversight_and_6month_log_retention",
+        "article27_fundamental_rights_impact_assessment_completed",
+        "article50_ai_interaction_transparency_provided"
+      ],
+      "evidence_requirements": [
+        "Annex III point 5(b) classification memo",
+        "Article 27 Fundamental Rights Impact Assessment (FRIA)",
+        "6-month+ automated log retention configuration"
+      ],
+      "facet_keywords": {
+        "annex3_5b_credit_vs_fraud_exemption_assessed": [
+          "creditworthiness",
+          "credit score",
+          "Annex III",
+          "financial fraud"
+        ],
+        "deployer_human_oversight_and_6month_log_retention": [
+          "Article 26",
+          "six months",
+          "deployer obligations",
+          "automatic logs"
+        ],
+        "article27_fundamental_rights_impact_assessment_completed": [
+          "fundamental rights impact assessment",
+          "FRIA",
+          "Article 27"
+        ],
+        "article50_ai_interaction_transparency_provided": [
+          "Article 50",
+          "interacting with an AI system",
+          "synthetic content"
+        ]
+      },
+      "suggested_questions": {
+        "annex3_5b_credit_vs_fraud_exemption_assessed": "Where EU scope applies, has Legal assessed whether the AI system evaluates natural-person creditworthiness under Annex III point 5(b) or falls within the financial-fraud detection carve-out?",
+        "deployer_human_oversight_and_6month_log_retention": "Where Article 26 applies, are competent human oversight, input-data relevance checks and at least 6-month automatic log retention enforced?",
+        "article27_fundamental_rights_impact_assessment_completed": "Where Article 27 applies to high-risk creditworthiness AI, has a Fundamental Rights Impact Assessment (FRIA) been completed?",
+        "article50_ai_interaction_transparency_provided": "Where Article 50 applies, are natural persons informed that they are interacting with an AI system?"
+      },
+      "source_citation": "Regulation (EU) 2024/1689 Arts 26, 27, 50 & Annex III point 5(b)",
+      "source_location": "Chapter III Section 3 (Arts 26–27), Chapter IV (Art 50) and Annex III",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Note ongoing EU Omnibus legislative discussions regarding Annex III high-risk transition timelines; baseline statutory date in Art 113 is 2 August 2026.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Conditional on EU Article 2 territorial nexus and deployer role.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "NIST-AI-RMF-GMMM",
+      "source_id": "NIST-AI-RMF",
+      "instrument": "NIST AI RMF 1.0",
+      "provision": "Core Functions: GOVERN, MAP, MEASURE, MANAGE (NIST AI 100-1)",
+      "exact_clause_reference": "NIST AI 100-1 Artificial Intelligence Risk Management Framework (AI RMF 1.0), Part 2 Core Functions (GOVERN, MAP, MEASURE, MANAGE)",
+      "title": "Voluntary NIST AI RMF alignment",
+      "concise_obligation_summary": "The NIST AI RMF 1.0 organises voluntary trustworthy AI risk management across four continuous functions: GOVERN (cultivating risk culture, policies and accountability), MAP (establishing context, stakeholders and impact framing), MEASURE (applying quantitative/qualitative TEVV methods), and MANAGE (prioritising, treating and monitoring AI risks).",
+      "jurisdiction": "US",
+      "layer": "voluntary_standard",
+      "authority": "voluntary",
+      "legal_authority_classification": "voluntary_framework",
+      "version": "1.0",
+      "source_url": "https://airc.nist.gov/airmf-resources/playbook/",
+      "effective_from": "2023-01-26",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "nist_adopted",
+      "applicability_conditions": [
+        "Organisation has voluntarily adopted NIST AI RMF 1.0 as an internal governance benchmark"
+      ],
+      "entity_and_business_scope": "Voluntary adopters benchmarking AI governance and risk management.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-NIST-AI-RMF",
+      "control_objective": "Apply the organisation's adopted NIST AI RMF governance, context, measurement and management practices.",
+      "coverage_facets": [
+        "governance_defined",
+        "context_mapped",
+        "risk_measured",
+        "risk_managed"
+      ],
+      "evidence_requirements": [
+        "AI governance record",
+        "Context map",
+        "Risk measurement results",
+        "Risk treatment plan"
+      ],
+      "facet_keywords": {
+        "governance_defined": [
+          "AI governance",
+          "accountability",
+          "govern"
+        ],
+        "context_mapped": [
+          "context mapped",
+          "stakeholders",
+          "impacts"
+        ],
+        "risk_measured": [
+          "risk measurement",
+          "evaluation",
+          "metrics"
+        ],
+        "risk_managed": [
+          "risk treatment",
+          "risk managed",
+          "prioritise risk"
+        ]
+      },
+      "suggested_questions": {
+        "governance_defined": "How does this use case satisfy the organisation's adopted NIST AI RMF GOVERN practices?",
+        "context_mapped": "Has the use-case context, affected stakeholders and potential impacts been mapped?",
+        "risk_measured": "Are material AI risks measured using documented qualitative or quantitative methods?",
+        "risk_managed": "Are measured AI risks prioritised, treated, monitored and communicated?"
+      },
+      "source_citation": "NIST AI 100-1 (January 2023), Part 2 Core Functions",
+      "source_location": "NIST AI RMF 1.0 Core & AIRC Playbook",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Voluntary framework; non-binding unless incorporated into enterprise policy or contract.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Voluntary unless made mandatory by contract or enterprise policy.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "NIST-AI-RMF-GOVERN-MAP",
+      "source_id": "NIST-AI-RMF",
+      "instrument": "NIST AI RMF Playbook",
+      "provision": "Playbook Categories GOVERN 1–6 (G.1.1–G.6.2) & MAP 1–5 (MP.1.1–MP.5.2)",
+      "exact_clause_reference": "NIST AI RMF Playbook, GOVERN 1.1–6.2 and MAP 1.1–5.2",
+      "title": "NIST Playbook governance policies, decommissioning criteria and third-party AI supply chain mapping",
+      "concise_obligation_summary": "The NIST AI RMF Playbook recommends establishing clear AI risk tolerances, decommissioning/safe-shutdown procedures (GOVERN 1.7), third-party AI software/data supply-chain risk controls (GOVERN 6.1–6.2), intended-purpose boundary definition (MAP 1.1–2.3), and likelihood/magnitude impact characterisation (MAP 5.1–5.2).",
+      "jurisdiction": "US",
+      "layer": "voluntary_standard",
+      "authority": "voluntary",
+      "legal_authority_classification": "voluntary_framework",
+      "version": "1.0",
+      "source_url": "https://airc.nist.gov/airmf-resources/playbook/",
+      "effective_from": "2023-01-26",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "nist_adopted",
+      "applicability_conditions": [
+        "Organisation has voluntarily adopted NIST AI RMF 1.0"
+      ],
+      "entity_and_business_scope": "Voluntary adopters applying NIST AI RMF Playbook GOVERN and MAP subcategories.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-NIST-AI-RMF",
+      "control_objective": "Define intended deployment boundaries, third-party AI supply-chain risk controls and safe decommissioning criteria per the NIST Playbook.",
+      "coverage_facets": [
+        "intended_purpose_and_out_of_scope_boundaries_documented",
+        "ai_supply_chain_and_open_weight_risks_assessed",
+        "safe_decommissioning_and_rollback_criteria_defined"
+      ],
+      "evidence_requirements": [
+        "System boundary and intended-use specification",
+        "AI supply-chain risk assessment (GOVERN 6)",
+        "Decommissioning and model rollback procedure (GOVERN 1.7)"
+      ],
+      "facet_keywords": {
+        "intended_purpose_and_out_of_scope_boundaries_documented": [
+          "intended purpose",
+          "deployment boundary",
+          "out of scope"
+        ],
+        "ai_supply_chain_and_open_weight_risks_assessed": [
+          "supply chain",
+          "third-party AI",
+          "GOVERN 6"
+        ],
+        "safe_decommissioning_and_rollback_criteria_defined": [
+          "decommissioning",
+          "rollback",
+          "safe shutdown"
+        ]
+      },
+      "suggested_questions": {
+        "intended_purpose_and_out_of_scope_boundaries_documented": "Are the AI system's intended purpose and prohibited out-of-scope uses explicitly documented (MAP 1/2)?",
+        "ai_supply_chain_and_open_weight_risks_assessed": "Have third-party models, datasets, plugins and open-weight dependencies been assessed for supply-chain risk (GOVERN 6)?",
+        "safe_decommissioning_and_rollback_criteria_defined": "Are triggers and procedures defined for safely rolling back or decommissioning the AI model (GOVERN 1.7)?"
+      },
+      "source_citation": "NIST AI RMF Playbook, GOVERN 1.1–6.2 & MAP 1.1–5.2",
+      "source_location": "NIST AIRC Playbook — Govern and Map functions",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Voluntary companion playbook.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Voluntary framework guidance.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "NIST-AI-RMF-MEASURE-MANAGE",
+      "source_id": "NIST-AI-RMF",
+      "instrument": "NIST AI RMF Playbook",
+      "provision": "Playbook Categories MEASURE 1–4 (MS.1.1–MS.4.3) & MANAGE 1–4 (MG.1.1–MG.4.2)",
+      "exact_clause_reference": "NIST AI RMF Playbook, MEASURE 1.1–4.3 and MANAGE 1.1–4.2",
+      "title": "NIST Playbook TEVV evaluation metrics, red-teaming and post-deployment risk management",
+      "concise_obligation_summary": "The NIST AI RMF Playbook recommends independent Testing, Evaluation, Verification and Validation (TEVV) of validity, reliability, safety, security/resilience, explainability, privacy and fairness (MEASURE 2.1–2.13), continuous production tracking (MEASURE 3), and documented risk treatment, residual risk acceptance and incident response (MANAGE 1–4).",
+      "jurisdiction": "US",
+      "layer": "voluntary_standard",
+      "authority": "voluntary",
+      "legal_authority_classification": "voluntary_framework",
+      "version": "1.0",
+      "source_url": "https://airc.nist.gov/airmf-resources/playbook/",
+      "effective_from": "2023-01-26",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "nist_adopted",
+      "applicability_conditions": [
+        "Organisation has voluntarily adopted NIST AI RMF 1.0"
+      ],
+      "entity_and_business_scope": "Voluntary adopters applying NIST AI RMF Playbook MEASURE and MANAGE subcategories.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-AI-DRIFT-MONITORING",
+      "control_objective": "Conduct structured TEVV evaluations (validity, bias, robustness, explainability) and manage residual risks and post-deployment drift.",
+      "coverage_facets": [
+        "tevv_validity_and_reliability_benchmarked",
+        "fairness_and_explainability_metrics_evaluated",
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "evidence_requirements": [
+        "TEVV benchmark report (MEASURE 2)",
+        "Fairness and explainability evaluation results",
+        "Residual risk sign-off and production monitoring log (MANAGE 1/4)"
+      ],
+      "facet_keywords": {
+        "tevv_validity_and_reliability_benchmarked": [
+          "TEVV",
+          "validity",
+          "reliability",
+          "benchmark"
+        ],
+        "fairness_and_explainability_metrics_evaluated": [
+          "fairness",
+          "explainability",
+          "bias evaluation"
+        ],
+        "residual_risk_acceptance_and_drift_response_logged": [
+          "residual risk",
+          "model drift",
+          "post-deployment monitoring"
+        ]
+      },
+      "suggested_questions": {
+        "tevv_validity_and_reliability_benchmarked": "Has the AI model undergone documented TEVV testing for validity, reliability and adversarial robustness (MEASURE 2)?",
+        "fairness_and_explainability_metrics_evaluated": "Have quantitative and qualitative fairness and explainability evaluations been completed for affected customer cohorts?",
+        "residual_risk_acceptance_and_drift_response_logged": "Is residual AI risk formally accepted by the risk owner with active post-deployment drift response triggers (MANAGE 1/4)?"
+      },
+      "source_citation": "NIST AI RMF Playbook, MEASURE 1.1–4.3 & MANAGE 1.1–4.2",
+      "source_location": "NIST AIRC Playbook — Measure and Manage functions",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Voluntary companion playbook.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Voluntary framework guidance.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "ISO42001-AIMS-ORG",
+      "source_id": "ISO-42001",
+      "instrument": "ISO/IEC 42001:2023",
+      "provision": "Clauses 4–10 (Organisation-scope AI management system themes)",
+      "exact_clause_reference": "ISO/IEC 42001:2023 Clauses 4, 5, 6, 7, 8, 9 and 10 (Bibliographic clause reference only)",
+      "title": "Organisation-level AI management system alignment",
+      "concise_obligation_summary": "Independently authored summary: An organisation adopting an AI Management System (AIMS) establishes organisational context and scope (Cl 4), leadership commitment and AI policy/roles (Cl 5), AI risk and impact planning (Cl 6), support and competence (Cl 7), operational lifecycle controls (Cl 8), performance monitoring, internal audit and management review (Cl 9), and continual improvement (Cl 10).",
+      "jurisdiction": "INTL",
+      "layer": "voluntary_standard",
+      "authority": "voluntary",
+      "legal_authority_classification": "voluntary_framework",
+      "version": "2023",
+      "source_url": "https://www.iso.org/standard/81230.html",
+      "effective_from": "2023-12-18",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "iso42001_adopted",
+      "applicability_conditions": [
+        "Organisation has voluntarily adopted ISO/IEC 42001:2023",
+        "Assessment scope includes organisation-level AIMS governance"
+      ],
+      "entity_and_business_scope": "Organisation-level AI management system governance.",
+      "assessment_scope": "organisation",
+      "control_id": "CTRL-ISO-AIMS",
+      "control_objective": "Operate an organisation-level AI management system where ISO/IEC 42001 has been formally adopted.",
+      "coverage_facets": [
+        "ai_policy_and_roles",
+        "ai_risk_and_impact_process",
+        "performance_monitoring",
+        "internal_audit",
+        "management_review"
+      ],
+      "evidence_requirements": [
+        "AI policy",
+        "AIMS scope",
+        "Internal audit results",
+        "Management review minutes"
+      ],
+      "facet_keywords": {
+        "ai_policy_and_roles": [
+          "AI policy",
+          "roles and responsibilities",
+          "management system"
+        ],
+        "ai_risk_and_impact_process": [
+          "AI risk assessment",
+          "impact assessment",
+          "risk treatment"
+        ],
+        "performance_monitoring": [
+          "performance monitoring",
+          "objectives",
+          "measurement"
+        ],
+        "internal_audit": [
+          "internal audit",
+          "audit programme"
+        ],
+        "management_review": [
+          "management review",
+          "leadership review"
+        ]
+      },
+      "suggested_questions": {
+        "ai_policy_and_roles": "Does the organisation maintain an approved AI policy and defined AIMS roles?",
+        "ai_risk_and_impact_process": "Does the organisation operate documented AI risk and impact assessment processes?",
+        "performance_monitoring": "Are AIMS objectives and performance measures monitored?",
+        "internal_audit": "Is the AIMS subject to an organisation-level internal audit programme?",
+        "management_review": "Does top management conduct and record periodic AIMS management reviews?"
+      },
+      "source_citation": "ISO/IEC 42001:2023 Clauses 4–10 (independent summary only)",
+      "source_location": "Clauses 4–10 (Bibliographic reference only; no copyrighted ISO text stored)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "High-level independent control summary only; full normative verification requires a licensed copy of ISO/IEC 42001:2023 via PRIVATE_REGULATORY_OVERLAY_PATH.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "This is a high-level, non-normative crosswalk. Licensed ISO text is not stored.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "ISO42001-IMPACT-LIFECYCLE",
+      "source_id": "ISO-42001",
+      "instrument": "ISO/IEC 42001:2023",
+      "provision": "Clauses 6.1.2–6.1.4, 8.2–8.4 & Annex A themes (A.5 Impact, A.6 Lifecycle, A.7 Data, A.8 Transparency)",
+      "exact_clause_reference": "ISO/IEC 42001:2023 Clauses 6.1.2–6.1.4, 8.2–8.4 and Annex A themes A.5–A.10 (Bibliographic reference only)",
+      "title": "Use-case AI system impact assessment, Statement of Applicability and lifecycle themes",
+      "concise_obligation_summary": "Independently authored summary: At the AI system level, ISO/IEC 42001 themes cover maintaining a Statement of Applicability for selected controls, assessing potential consequences on individuals and societies (impact assessment), documenting data provenance/quality for AI, verifying system requirements across the lifecycle, and providing information to interested parties.",
+      "jurisdiction": "INTL",
+      "layer": "voluntary_standard",
+      "authority": "voluntary",
+      "legal_authority_classification": "voluntary_framework",
+      "version": "2023",
+      "source_url": "https://www.iso.org/standard/81230.html",
+      "effective_from": "2023-12-18",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "iso42001_adopted",
+      "applicability_conditions": [
+        "Organisation has voluntarily adopted ISO/IEC 42001:2023"
+      ],
+      "entity_and_business_scope": "AI system lifecycle and impact governance for voluntary ISO/IEC 42001 adopters.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-AI-IMPACT-ASSESSMENT",
+      "control_objective": "Perform a system-level AI impact assessment, maintain control applicability justifications, and verify lifecycle data and transparency controls.",
+      "coverage_facets": [
+        "system_impact_on_individuals_and_society_assessed",
+        "statement_of_applicability_controls_mapped",
+        "lifecycle_verification_and_interested_party_documentation"
+      ],
+      "evidence_requirements": [
+        "AI system impact assessment record",
+        "AIMS Statement of Applicability (SoA)",
+        "System lifecycle verification and external documentation pack"
+      ],
+      "facet_keywords": {
+        "system_impact_on_individuals_and_society_assessed": [
+          "impact assessment",
+          "societal impact",
+          "individual impact"
+        ],
+        "statement_of_applicability_controls_mapped": [
+          "statement of applicability",
+          "Annex A",
+          "control selection"
+        ],
+        "lifecycle_verification_and_interested_party_documentation": [
+          "lifecycle",
+          "interested parties",
+          "system documentation"
+        ]
+      },
+      "suggested_questions": {
+        "system_impact_on_individuals_and_society_assessed": "Has an AI system impact assessment covering individuals, groups and broader societal impacts been completed and reviewed?",
+        "statement_of_applicability_controls_mapped": "Are the AIMS controls applicable to this AI system recorded and justified in the Statement of Applicability?",
+        "lifecycle_verification_and_interested_party_documentation": "Are lifecycle verification records and user/stakeholder information documents maintained for this AI system?"
+      },
+      "source_citation": "ISO/IEC 42001:2023 Clauses 6.1.2–6.1.4, 8.2–8.4, Annex A (independent summary only)",
+      "source_location": "Clauses 6, 8 and Annex A (Bibliographic reference only; no copyrighted ISO text stored)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "High-level independent control summary only; licensed ISO text is not reproduced.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "High-level non-normative summary; licensed ISO text is not stored.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "ISO23894-AI-RISK-PROCESS",
+      "source_id": "ISO-23894",
+      "instrument": "ISO/IEC 23894:2023",
+      "provision": "Clauses 5 & 6 (AI risk management framework integration and risk assessment/treatment process)",
+      "exact_clause_reference": "ISO/IEC 23894:2023 Clauses 5 and 6 (Bibliographic reference only)",
+      "title": "AI-specific risk identification, analysis, evaluation and treatment process",
+      "concise_obligation_summary": "Independently authored summary: ISO/IEC 23894 provides voluntary guidance on integrating AI risk management into enterprise risk activities (Cl 5) and executing iterative risk identification, source/consequence analysis, risk evaluation against criteria, risk treatment, continuous monitoring, and stakeholder communication tailored to AI characteristics such as autonomy, opacity and continuous learning (Cl 6).",
+      "jurisdiction": "INTL",
+      "layer": "voluntary_standard",
+      "authority": "voluntary",
+      "legal_authority_classification": "voluntary_framework",
+      "version": "2023",
+      "source_url": "https://www.iso.org/standard/77304.html",
+      "effective_from": "2023-02-06",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "iso23894_adopted",
+      "applicability_conditions": [
+        "Organisation has voluntarily adopted ISO/IEC 23894:2023 as AI risk management guidance"
+      ],
+      "entity_and_business_scope": "Voluntary adopters applying ISO/IEC 23894 AI risk management processes.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-RISK-FRAMEWORK",
+      "control_objective": "Identify, analyse, evaluate and treat AI-specific risk sources (autonomy, opacity, data drift, bias) across the system lifecycle.",
+      "coverage_facets": [
+        "ai_specific_risk_sources_and_consequences_identified",
+        "risk_criteria_and_likelihood_severity_evaluated",
+        "iterative_risk_treatment_and_monitoring_recorded"
+      ],
+      "evidence_requirements": [
+        "AI risk register with AI-specific risk sources",
+        "Risk evaluation matrix against approved criteria",
+        "Iterative risk treatment and review log"
+      ],
+      "facet_keywords": {
+        "ai_specific_risk_sources_and_consequences_identified": [
+          "risk identification",
+          "opacity",
+          "autonomy",
+          "risk sources"
+        ],
+        "risk_criteria_and_likelihood_severity_evaluated": [
+          "risk evaluation",
+          "risk criteria",
+          "likelihood",
+          "consequence"
+        ],
+        "iterative_risk_treatment_and_monitoring_recorded": [
+          "risk treatment",
+          "residual risk",
+          "iterative review"
+        ]
+      },
+      "suggested_questions": {
+        "ai_specific_risk_sources_and_consequences_identified": "Does the risk assessment identify AI-specific risk sources (model opacity, autonomy, data drift, automation bias) and their consequences?",
+        "risk_criteria_and_likelihood_severity_evaluated": "Are identified AI risks evaluated against defined organisational risk criteria and tolerance thresholds?",
+        "iterative_risk_treatment_and_monitoring_recorded": "Are AI risk treatments and residual risks iteratively reviewed as the model or operating context changes?"
+      },
+      "source_citation": "ISO/IEC 23894:2023 Clauses 5 & 6 (independent summary only)",
+      "source_location": "Clauses 5 & 6 (Bibliographic reference only; no copyrighted ISO text stored)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "High-level independent summary only; licensed ISO text is not stored.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Voluntary guidance standard; licensed ISO text is not stored.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "ISO27001-ISMS-CONTROLS",
+      "source_id": "ISO-27001",
+      "instrument": "ISO/IEC 27001:2022",
+      "provision": "Clauses 4–10 & Annex A themes (Information security management system and control operation)",
+      "exact_clause_reference": "ISO/IEC 27001:2022 Clauses 4–10 and Annex A (Bibliographic reference only)",
+      "title": "Information security management system (ISMS) governance and Annex A control themes for AI",
+      "concise_obligation_summary": "Independently authored summary: An organisation adopting ISO/IEC 27001 operates an Information Security Management System (ISMS) covering information security risk assessment and treatment (Cl 6.1, 8.2–8.3), a Statement of Applicability, and organisational, people, physical and technological security controls (Annex A themes including access control, cryptography, secure development, supplier security and incident management).",
+      "jurisdiction": "INTL",
+      "layer": "voluntary_standard",
+      "authority": "voluntary",
+      "legal_authority_classification": "voluntary_framework",
+      "version": "2022",
+      "source_url": "https://www.iso.org/standard/27001",
+      "effective_from": "2022-10-25",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "iso27001_adopted",
+      "applicability_conditions": [
+        "Organisation has voluntarily adopted ISO/IEC 27001:2022",
+        "Assessment scope includes organisation-level ISMS governance"
+      ],
+      "entity_and_business_scope": "Organisations operating an ISMS covering AI infrastructure, models and data.",
+      "assessment_scope": "organisation",
+      "control_id": "CTRL-ISMS-CONTROLS",
+      "control_objective": "Include AI environments, models and supplier interfaces within the organisation's ISMS risk assessment, Statement of Applicability and technological security controls.",
+      "coverage_facets": [
+        "ai_environment_in_isms_scope_and_risk_assessment",
+        "access_cryptography_and_secure_engineering_applied",
+        "supplier_security_and_isms_internal_audit_verified"
+      ],
+      "evidence_requirements": [
+        "ISMS scope and Statement of Applicability",
+        "Access control, encryption and secure SDLC/MLOps records",
+        "ISMS internal audit and management review report"
+      ],
+      "facet_keywords": {
+        "ai_environment_in_isms_scope_and_risk_assessment": [
+          "ISMS",
+          "ISO 27001",
+          "information security risk assessment"
+        ],
+        "access_cryptography_and_secure_engineering_applied": [
+          "access control",
+          "encryption",
+          "cryptography",
+          "secure development"
+        ],
+        "supplier_security_and_isms_internal_audit_verified": [
+          "supplier security",
+          "internal audit",
+          "statement of applicability"
+        ]
+      },
+      "suggested_questions": {
+        "ai_environment_in_isms_scope_and_risk_assessment": "Are the AI system's hosting environment, data stores and endpoints included within the organisation's ISMS scope and security risk assessment?",
+        "access_cryptography_and_secure_engineering_applied": "Are least-privilege access controls, encryption in transit/at rest and secure engineering controls enforced for the AI pipeline?",
+        "supplier_security_and_isms_internal_audit_verified": "Are AI supplier security controls and ISMS internal audit reviews documented and current?"
+      },
+      "source_citation": "ISO/IEC 27001:2022 Clauses 4–10 & Annex A (independent summary only)",
+      "source_location": "Clauses 4–10 & Annex A (Bibliographic reference only; no copyrighted ISO text stored)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "High-level independent summary only; licensed ISO text is not stored.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Voluntary standard; licensed ISO text is not stored.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
+      "source_id": "ENTERPRISE-AI-STD",
+      "instrument": "Enterprise AI & Delegated Authority Standard",
+      "provision": "Clause E-DA-01 (Delegated financial authority, human approval threshold and non-bypass execution)",
+      "exact_clause_reference": "Enterprise AI & Delegated Authority Standard v1.0, Clause E-DA-01",
+      "title": "Mandatory human approval, pre-execution payment block and audit logging above delegated AUD threshold",
+      "concise_obligation_summary": "Any AI-initiated or AI-recommended refund, payment, fee waiver or credit adjustment exceeding the approved enterprise AUD delegated-authority threshold must be blocked from automatic execution until an authorised human officer reviews and approves the action, with immutable approval logs retained for at least seven years.",
+      "jurisdiction": "AU",
+      "layer": "enterprise_control_baseline",
+      "authority": "enterprise",
+      "legal_authority_classification": "enterprise_defined_control",
+      "version": "1.0",
+      "source_url": "https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/blob/main/APPLICABILITY_RULES.md",
+      "effective_from": "2026-10-27",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "enterprise_delegated_authority",
+      "applicability_conditions": [
+        "Enterprise internal controls are enabled OR a delegated AUD approval threshold applies to the AI workflow"
+      ],
+      "entity_and_business_scope": "Banking AI agents capable of recommending or executing refunds, payments, waivers or account adjustments.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+      "control_objective": "Enforce deterministic pre-execution human approval gates and 7-year audit log retention for AI financial actions above the enterprise AUD threshold.",
+      "coverage_facets": [
+        "human_approval_required",
+        "approval_threshold_defined",
+        "pre_execution_block",
+        "approval_logs_retained"
+      ],
+      "evidence_requirements": [
+        "Approved delegated-authority schedule",
+        "Production workflow pre-execution gate configuration",
+        "Immutable 7-year approval audit log sample"
+      ],
+      "facet_keywords": {
+        "human_approval_required": [
+          "human approval",
+          "manual approval",
+          "authorised officer"
+        ],
+        "approval_threshold_defined": [
+          "threshold",
+          "AUD",
+          "delegated authority"
+        ],
+        "pre_execution_block": [
+          "before payment",
+          "before execution",
+          "prevent execution",
+          "cannot proceed"
+        ],
+        "approval_logs_retained": [
+          "approval log",
+          "audit log",
+          "seven years",
+          "retain approval"
+        ]
+      },
+      "suggested_questions": {
+        "human_approval_required": "Does the workflow require human approval from an authorised officer for financial actions above the policy limit?",
+        "approval_threshold_defined": "Does the system configuration enforce the exact enterprise AUD delegated-authority threshold?",
+        "pre_execution_block": "Does a deterministic technical guardrail prevent payment execution prior to human approval?",
+        "approval_logs_retained": "Are approval decisions, actor identities and rationales retained in an immutable audit log for seven years?"
+      },
+      "source_citation": "Enterprise AI & Delegated Authority Standard v1.0, Clause E-DA-01",
+      "source_location": "APPLICABILITY_RULES.md — Enterprise Internal Controls",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Enterprise-defined internal control; exact AUD threshold varies by business unit and delegated authority schedule.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Enterprise internal control baseline reported separately from statutory obligations.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    }
+  ]
+}
