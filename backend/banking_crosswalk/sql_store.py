@@ -528,6 +528,9 @@ class SQLTenantStore:
         clause.reviewed_at = datetime.now(timezone.utc)
         if mappings is not None:
             clause.control_mappings = mappings
+        else:
+            for m in clause.control_mappings:
+                m.review_status = status
         self.save_enterprise_clause(tenant_id, clause)
         self._record_audit_event(
             tenant_id,
@@ -570,6 +573,18 @@ class SQLTenantStore:
             return [ClauseControlMapping.model_validate(r) for r in rows]
 
     def save_enterprise_baseline(self, tenant_id, baseline):
+        try:
+            existing = self.get_enterprise_baseline(tenant_id, baseline.baseline_id)
+            if (
+                existing.status == "active"
+                and baseline.status == "active"
+                and existing.revision == baseline.revision
+                and existing.baseline_sha256 is not None
+                and existing.baseline_sha256 != baseline.baseline_sha256
+            ):
+                raise ConflictError("Active enterprise baseline is immutable; increment revision to update.")
+        except NotFoundError:
+            pass
         return self._save(
             schema.enterprise_baselines,
             tenant_id,

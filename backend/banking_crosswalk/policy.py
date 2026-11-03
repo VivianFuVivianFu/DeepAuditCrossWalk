@@ -7,10 +7,11 @@ the parser records prompt-injection-like phrases instead of following them.
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import uuid
 from datetime import datetime
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence, Set
 
 from .applicability import decide_applicability
 from .models import (
@@ -48,6 +49,10 @@ INJECTION_PATTERNS = [
 
 MANDATORY_PATTERN = re.compile(
     r"\b(must|shall|required to|requires?|may not|must not|is prohibited|will not)\b",
+    re.IGNORECASE,
+)
+NEGATION_OR_EXEMPTION_PATTERN = re.compile(
+    r"\b(does not require|do not require|not required|no requirement|is exempt|are exempt|exemption|is prohibited|are prohibited|prohibits?|must not be used)\b",
     re.IGNORECASE,
 )
 AUD_PATTERN = re.compile(
@@ -195,6 +200,7 @@ def extract_policy_pack(
                 "before payment",
                 "before execution",
                 "prior to payment",
+                "prior to execution",
                 "must not execute",
             )
         ):
@@ -488,10 +494,10 @@ ENTERPRISE_FACET_PATTERNS: Dict[str, Sequence[str]] = {
         "traceability",
     ),
     "data_sovereignty": (
-        "sovereignty",
+        "cross-border data sovereignty",
+        "sovereign cloud",
         "on-shore",
         "australian data center",
-        "sydney",
         "cross-border",
         "stored within australia",
     ),
@@ -588,6 +594,7 @@ def extract_enterprise_policy(
                 "before payment",
                 "before execution",
                 "prior to payment",
+                "prior to execution",
                 "must not execute",
             )
         ):
@@ -595,22 +602,24 @@ def extract_enterprise_policy(
                 facets.append("pre_execution_block")
 
         clause_id = _stable_clause_id(name, raw_clause)
+        is_negated = bool(NEGATION_OR_EXEMPTION_PATTERN.search(raw_clause))
 
-        # Generate candidate mappings to 33 Unified Controls
+        # Generate candidate mappings to 33 Unified Controls only if clause is NOT a negation or exemption
         mappings: List[ClauseControlMapping] = []
-        for facet in facets:
-            controls = FACET_TO_UNIFIED_CONTROLS.get(facet, ())
-            for ctrl_id in controls:
-                mappings.append(
-                    ClauseControlMapping(
-                        tenant_id=tenant_id,
-                        clause_id=clause_id,
-                        control_id=ctrl_id,
-                        relationship=MappingRelationship.FULL,
-                        rationale=f"Clause contains facet '{facet}' associated with control {ctrl_id}.",
-                        review_status=ClauseReviewStatus.PROPOSED,
+        if not is_negated:
+            for facet in facets:
+                controls = FACET_TO_UNIFIED_CONTROLS.get(facet, ())
+                for ctrl_id in controls:
+                    mappings.append(
+                        ClauseControlMapping(
+                            tenant_id=tenant_id,
+                            clause_id=clause_id,
+                            control_id=ctrl_id,
+                            relationship=MappingRelationship.FULL,
+                            rationale=f"Clause contains facet '{facet}' associated with control {ctrl_id}.",
+                            review_status=ClauseReviewStatus.PROPOSED,
+                        )
                     )
-                )
 
         clauses.append(
             EnterpriseClause(
@@ -623,6 +632,7 @@ def extract_enterprise_policy(
                 authority_level=authority_level,
                 control_facets=facets,
                 thresholds_aud=thresholds,
+                is_unmapped=len(mappings) == 0,
                 control_mappings=mappings,
             )
         )
@@ -651,6 +661,129 @@ def extract_enterprise_policy(
     )
 
 
+def compile_enterprise_baseline(
+    *,
+    tenant_id: str,
+    name: str,
+    description: Optional[str] = None,
+    policies: Sequence[EnterprisePolicy],
+    version: str = "1.0.0",
+    baseline_id: Optional[str] = None,
+    revision: int = 1,
+    created_by: Optional[str] = None,
+) -> EnterpriseBaseline:
+    """Compile uploaded and reviewed enterprise policies into a versioned, immutable baseline.
+
+    Workflow:
+    Enterprise Policy Upload -> Clause Extraction -> Atomic Enterprise Requirements ->
+    Candidate Unified Control Mapping -> Human Review -> Versioned Enterprise Baseline.
+    """
+    policy_ids = [p.policy_id for p in policies]
+    all_clauses = [c for p in policies for c in p.clauses]
+    warnings: List[str] = []
+
+    # 1. Deduplication: detect duplicate requirements across policies
+    seen_norm_texts: Dict[str, str] = {}
+    for c in all_clauses:
+        norm = " ".join(c.text.lower().split())
+        if norm in seen_norm_texts:
+            warnings.append(
+                f"Duplicate requirement detected: clause in '{c.source_name}' duplicates requirement in '{seen_norm_texts[norm]}'."
+            )
+        else:
+            seen_norm_texts[norm] = c.source_name
+
+    # 2. Policy Versioning & Status: detect superseded or retired policies
+    policy_names: Dict[str, List[EnterprisePolicy]] = {}
+    for p in policies:
+        policy_names.setdefault(p.name, []).append(p)
+    for pname, plist in policy_names.items():
+        if len(plist) > 1:
+            vers = [p.version for p in plist]
+            warnings.append(
+                f"Multiple versions of policy '{pname}' detected in baseline: {vers}. Ensure superseded versions are retired."
+            )
+        for p in plist:
+            if p.status in {"superseded", "retired"}:
+                warnings.append(
+                    f"Policy '{p.name}' (v{p.version}) has status '{p.status}'. Superseded policies should be excluded from active baselines."
+                )
+
+    # 3. Classify clauses and control mappings
+    confirmed_controls: Set[str] = set()
+    pending_clause_ids: List[str] = []
+    unmapped_clause_ids: List[str] = []
+
+    for c in all_clauses:
+        is_approved = c.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+        has_mappings = len(c.control_mappings) > 0
+
+        if not has_mappings:
+            unmapped_clause_ids.append(c.clause_id)
+        elif not is_approved:
+            pending_clause_ids.append(c.clause_id)
+
+        # Only approved/confirmed mappings contribute to confirmed baseline controls
+        for m in c.control_mappings:
+            if m.control_id and (
+                is_approved
+                or m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+            ):
+                confirmed_controls.add(m.control_id)
+
+    # 4. Inconsistency and Conflict Detection (internal review items, not statutory breaches)
+    conflicts: List[GapRecord] = []
+    mandatory_clauses = [c for c in all_clauses if c.mandatory]
+    observed_thresholds = sorted(
+        {t for c in mandatory_clauses for t in c.thresholds_aud}
+    )
+    if len(observed_thresholds) > 1:
+        conflicts.append(
+            GapRecord(
+                gap_id=str(uuid.uuid4()),
+                gap_type=GapType.CONTROL_CONFLICT,
+                title="Enterprise policies contain conflicting AUD approval thresholds",
+                severity="high",
+                missing_facets=["single_authoritative_threshold"],
+                recommendation=f"Reconcile contradictory thresholds across policies: {observed_thresholds}.",
+                evidence_required=["Approved delegated-authority schedule"],
+            )
+        )
+
+    # 5. Compute cryptographic SHA-256 fingerprint for immutability
+    fingerprint_obj = {
+        "tenant_id": tenant_id,
+        "name": name,
+        "version": version,
+        "revision": revision,
+        "policy_ids": sorted(policy_ids),
+        "confirmed_controls": sorted(confirmed_controls),
+        "clause_ids": sorted([c.clause_id for c in all_clauses]),
+    }
+    baseline_sha256 = hashlib.sha256(
+        json.dumps(fingerprint_obj, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+
+    return EnterpriseBaseline(
+        baseline_id=baseline_id or str(uuid.uuid4()),
+        tenant_id=tenant_id,
+        name=name,
+        description=description,
+        version=version,
+        revision=revision,
+        policy_ids=policy_ids,
+        confirmed_control_ids=sorted(confirmed_controls),
+        pending_clause_ids=pending_clause_ids,
+        unmapped_clause_ids=unmapped_clause_ids,
+        conflicts=conflicts,
+        warnings=warnings,
+        baseline_sha256=baseline_sha256,
+        status="active",
+        created_at=utc_now(),
+        created_by=created_by,
+    )
+
+
 def assess_enterprise_policy_gaps(
     *,
     tenant_id: str,
@@ -659,6 +792,7 @@ def assess_enterprise_policy_gaps(
     question_bank: QuestionBank,
     regulatory_pack: RegulatoryPack,
     baseline_id: Optional[str] = None,
+    full_regulatory_scope: bool = False,
 ) -> PolicyGapAssessment:
     if use_case is None:
         use_case = BankingUseCase.enterprise_baseline()
@@ -674,11 +808,41 @@ def assess_enterprise_policy_gaps(
     evidence_gaps: List[GapRecord] = []
     gaps_by_layer: Dict[str, List[GapRecord]] = {}
 
-    # 1. Regulatory-to-Policy Gaps: Does enterprise baseline cover applicable statutory obligations?
+    # Unified Controls and facets addressed by the uploaded policies
+    addressed_controls = {
+        m.control_id
+        for clause in all_clauses
+        for m in clause.control_mappings
+        if m.control_id
+    }
+    addressed_facets = {
+        facet
+        for clause in all_clauses
+        for facet in clause.control_facets
+    }
+    has_general_policy = any(
+        (p.category or "").lower() in ("general", "governance", "all")
+        for p in policies
+    )
+
+    # 1. Regulatory-to-Policy Gaps:
+    # Crucial boundary: Only evaluate regulatory obligations that are relevant to the scope
+    # of the uploaded policies (by matching mapped controls, facets, or general category),
+    # unless full_regulatory_scope is explicitly requested.
+    # Single-domain policies must never generate statutory non-compliance findings for
+    # completely unrelated regulatory obligations.
     for obligation in regulatory_pack.obligations:
         applicability = decide_applicability(obligation, use_case)
         if applicability.status is not ApplicabilityStatus.APPLICABLE:
             continue
+
+        if not full_regulatory_scope and not has_general_policy:
+            is_relevant = (
+                obligation.control_id in addressed_controls
+                or any(f in addressed_facets for f in obligation.coverage_facets)
+            )
+            if not is_relevant:
+                continue
 
         missing_facets = []
         for facet in obligation.coverage_facets:

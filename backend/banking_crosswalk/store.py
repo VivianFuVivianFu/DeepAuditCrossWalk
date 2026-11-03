@@ -85,6 +85,7 @@ class TenantStore:
                 "action": action,
                 "object_id": object_id,
                 "actor": actor,
+                "detail": detail or {},
             }
         )
 
@@ -375,6 +376,10 @@ class TenantStore:
             clause.control_mappings = mappings
             for m in mappings:
                 self._bucket(self._clause_mappings, tenant_id)[m.mapping_id] = m
+        else:
+            for m in clause.control_mappings:
+                m.review_status = status
+                self._bucket(self._clause_mappings, tenant_id)[m.mapping_id] = m
         self._bucket(self._enterprise_clauses, tenant_id)[clause_id] = clause
         if tenant_id in self._enterprise_policies and clause.policy_id in self._enterprise_policies[tenant_id]:
             pol = self._enterprise_policies[tenant_id][clause.policy_id]
@@ -405,7 +410,18 @@ class TenantStore:
     def save_enterprise_baseline(
         self, tenant_id: str, baseline: EnterpriseBaseline
     ) -> EnterpriseBaseline:
-        self._bucket(self._enterprise_baselines, tenant_id)[baseline.baseline_id] = baseline
+        bucket = self._bucket(self._enterprise_baselines, tenant_id)
+        if baseline.baseline_id in bucket:
+            existing = bucket[baseline.baseline_id]
+            if (
+                existing.status == "active"
+                and baseline.status == "active"
+                and existing.revision == baseline.revision
+                and existing.baseline_sha256 is not None
+                and existing.baseline_sha256 != baseline.baseline_sha256
+            ):
+                raise ConflictError("Active enterprise baseline is immutable; increment revision to update.")
+        bucket[baseline.baseline_id] = baseline
         self._record(tenant_id, "enterprise_baseline.saved", baseline.baseline_id)
         return baseline
 

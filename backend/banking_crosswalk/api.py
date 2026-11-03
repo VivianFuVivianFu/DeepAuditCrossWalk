@@ -33,8 +33,14 @@ from .models import (
     QuestionRoutingSnapshot,
     ReviewStatus,
 )
-from .policy import assess_policy_gaps, extract_policy_pack, extract_enterprise_policy, assess_enterprise_policy_gaps
-from .store import NotFoundError, store
+from .policy import (
+    assess_enterprise_policy_gaps,
+    assess_policy_gaps,
+    compile_enterprise_baseline,
+    extract_enterprise_policy,
+    extract_policy_pack,
+)
+from .store import ConflictError, NotFoundError, store
 
 
 regulatory_pack = load_regulatory_pack()
@@ -189,7 +195,12 @@ class CoverageAssessmentRequest(BaseModel):
     use_case: Optional[BankingUseCase] = None
     questionnaire_id: Optional[str] = None
     questionnaire_pack: Optional[Literal["DEMO_BANKING_V1"]] = None
-    assessment_mode: Literal["provisional"] = "provisional"
+    assessment_mode: Optional[
+        Literal["regulatory_only", "enterprise_enhanced", "provisional"]
+    ] = "regulatory_only"
+    assessment_target_type: Optional[
+        Literal["questionnaire", "strategy", "use_case"]
+    ] = "questionnaire"
     routing_snapshot_id: Optional[str] = None
     enterprise_baseline_id: Optional[str] = None
     persist: bool = True
@@ -200,6 +211,8 @@ class CoverageAssessmentRequest(BaseModel):
             raise ValueError("Provide at most one of use_case_id or use_case")
         if self.questionnaire_id and self.questionnaire_pack:
             raise ValueError("Provide questionnaire_id or questionnaire_pack, not both")
+        if self.assessment_mode == "enterprise_enhanced" and not self.enterprise_baseline_id:
+            raise ValueError("enterprise_baseline_id is required when assessment_mode is enterprise_enhanced")
         return self
 
 
@@ -495,11 +508,42 @@ def create_coverage_assessment(
         if _allow_ephemeral_crosswalk_state()
         else []
     )
+    is_enterprise_mode = req.assessment_mode == "enterprise_enhanced" or (
+        bool(req.enterprise_baseline_id)
+        and req.assessment_mode not in ("regulatory_only", "provisional")
+    )
+    effective_mode = "enterprise_enhanced" if is_enterprise_mode else "regulatory_only"
+
     enterprise_baseline = None
     enterprise_clauses = []
-    if req.enterprise_baseline_id:
+    if effective_mode == "enterprise_enhanced":
+        if not req.enterprise_baseline_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="enterprise_baseline_id is required when assessment_mode is enterprise_enhanced",
+            )
         try:
-            enterprise_baseline = store.get_enterprise_baseline(x_tenant_id, req.enterprise_baseline_id)
+            enterprise_baseline = store.get_enterprise_baseline(
+                x_tenant_id, req.enterprise_baseline_id
+            )
+            if enterprise_baseline.status != "active":
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Enterprise baseline '{req.enterprise_baseline_id}' is not active",
+                )
+            for pid in enterprise_baseline.policy_ids:
+                try:
+                    p = store.get_enterprise_policy(x_tenant_id, pid)
+                    enterprise_clauses.extend(p.clauses)
+                except NotFoundError:
+                    pass
+        except NotFoundError as exc:
+            raise _not_found(exc) from exc
+    elif req.enterprise_baseline_id:
+        try:
+            enterprise_baseline = store.get_enterprise_baseline(
+                x_tenant_id, req.enterprise_baseline_id
+            )
             for pid in enterprise_baseline.policy_ids:
                 try:
                     p = store.get_enterprise_policy(x_tenant_id, pid)
@@ -810,6 +854,7 @@ class ClauseReviewRequest(BaseModel):
     actor: str = Field(min_length=1, max_length=128)
     role: str = Field(min_length=1, max_length=64)
     control_mappings: Optional[List[ClauseControlMapping]] = None
+    review_comment: Optional[str] = None
 
 
 class DeleteResponse(BaseModel):
@@ -820,6 +865,7 @@ class EnterpriseBaselineCreateRequest(BaseModel):
     name: str = Field(min_length=1, max_length=256)
     description: Optional[str] = None
     policy_ids: List[str] = Field(default_factory=list)
+    version: Optional[str] = "1.0.0"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -934,15 +980,30 @@ def create_enterprise_baseline_endpoint(
     req: EnterpriseBaselineCreateRequest, x_tenant_id: TenantHeader
 ) -> EnterpriseBaseline:
     _require_crosswalk_state()
-    baseline = EnterpriseBaseline(
-        baseline_id=str(uuid.uuid4()),
+    policies = []
+    for pid in req.policy_ids:
+        try:
+            pol = store.get_enterprise_policy(x_tenant_id, pid)
+            policies.append(pol)
+        except NotFoundError as exc:
+            raise _not_found(exc) from exc
+
+    existing = store.list_enterprise_baselines(x_tenant_id)
+    same_name = [b for b in existing if b.name == req.name]
+    revision = max([b.revision for b in same_name], default=0) + 1
+
+    baseline = compile_enterprise_baseline(
         tenant_id=x_tenant_id,
         name=req.name,
         description=req.description,
-        policy_ids=req.policy_ids,
-        status="active",
+        policies=policies,
+        version=req.version or "1.0.0",
+        revision=revision,
     )
-    return store.save_enterprise_baseline(x_tenant_id, baseline)
+    try:
+        return store.save_enterprise_baseline(x_tenant_id, baseline)
+    except ConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
 
 
 @router.get("/enterprise/baselines", response_model=List[EnterpriseBaseline])
