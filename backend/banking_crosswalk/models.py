@@ -588,9 +588,11 @@ class EnterpriseClause(BaseModel):
     control_facets: List[str] = Field(default_factory=list)
     thresholds_aud: List[float] = Field(default_factory=list)
     page: Optional[int] = None
+    is_unmapped: bool = False
     review_status: ClauseReviewStatus = ClauseReviewStatus.PROPOSED
     reviewer_actor: Optional[str] = None
     reviewer_role: Optional[str] = None
+    review_comment: Optional[str] = None
     reviewed_at: Optional[datetime] = None
     control_mappings: List[ClauseControlMapping] = Field(default_factory=list)
 
@@ -616,10 +618,18 @@ class EnterpriseBaseline(BaseModel):
     tenant_id: str
     name: str
     description: Optional[str] = None
+    version: str = "1.0.0"
     revision: int = 1
     policy_ids: List[str] = Field(default_factory=list)
-    status: Literal["active", "archived"] = "active"
+    confirmed_control_ids: List[str] = Field(default_factory=list)
+    pending_clause_ids: List[str] = Field(default_factory=list)
+    unmapped_clause_ids: List[str] = Field(default_factory=list)
+    conflicts: List[GapRecord] = Field(default_factory=list)
+    warnings: List[str] = Field(default_factory=list)
+    baseline_sha256: Optional[str] = None
+    status: Literal["active", "archived", "draft"] = "active"
     created_at: datetime = Field(default_factory=utc_now)
+    created_by: Optional[str] = None
 
 
 class PolicyPack(BaseModel):
@@ -684,3 +694,6 @@ class PolicyGapAssessment(BaseModel):
             *self.control_conflicts,
             *self.implementation_evidence_gaps,
         ]
+
+
+EnterpriseBaseline.model_rebuild()
