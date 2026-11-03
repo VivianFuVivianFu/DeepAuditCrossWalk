@@ -353,6 +353,12 @@ class BankingUseCase(BaseModel):
     approval_threshold_aud: Optional[float] = Field(
         default=None, ge=0, allow_inf_nan=False
     )
+    approval_threshold_operator: Optional[Literal[">", ">=", "<", "<="]] = None
+    approval_threshold_currency: Optional[str] = "AUD"
+    approval_timing: Optional[Literal["pre_execution", "post_execution"]] = None
+    approval_role: Optional[str] = None
+    has_approved_exception: Optional[bool] = None
+    exception_reference: Optional[str] = None
     as_of_date: date = Field(default_factory=date.today)
 
     @classmethod
@@ -555,6 +561,13 @@ class PolicyClause(BaseModel):
     control_facets: List[str] = Field(default_factory=list)
     thresholds_aud: List[float] = Field(default_factory=list)
     page: Optional[int] = None
+    threshold_operator: Optional[Literal[">", ">=", "<", "<="]] = None
+    threshold_currency: Optional[str] = None
+    approval_timing: Optional[Literal["pre_execution", "post_execution"]] = None
+    required_approval_role: Optional[str] = None
+    is_conditional: bool = False
+    has_exception_clause: bool = False
+    implementation_status: Optional[str] = None
 
 
 
@@ -606,6 +619,15 @@ class EnterpriseClause(BaseModel):
     review_comment: Optional[str] = None
     reviewed_at: Optional[datetime] = None
     control_mappings: List[ClauseControlMapping] = Field(default_factory=list)
+    threshold_operator: Optional[Literal[">", ">=", "<", "<="]] = None
+    threshold_currency: Optional[str] = None
+    approval_timing: Optional[Literal["pre_execution", "post_execution"]] = None
+    required_approval_role: Optional[str] = None
+    is_conditional: bool = False
+    condition_description: Optional[str] = None
+    has_exception_clause: bool = False
+    exception_description: Optional[str] = None
+    implementation_status: Optional[Literal["implemented", "unimplemented", "unverified"]] = None
 
 
 class EnterprisePolicy(BaseModel):
@@ -678,6 +700,15 @@ class GapRecord(BaseModel):
     closure_evidence_artifact_ids: List[str] = Field(default_factory=list)
     source_type: Optional[Literal["regulatory", "enterprise_policy", "internal_conflict"]] = None
     closure_retest_record_id: Optional[str] = None
+    required_threshold: Optional[float] = None
+    use_case_threshold: Optional[float] = None
+    threshold_operator: Optional[str] = None
+    use_case_operator: Optional[str] = None
+    timing_required: Optional[str] = None
+    use_case_timing: Optional[str] = None
+    role_required: Optional[str] = None
+    use_case_role: Optional[str] = None
+    evidence_missing: Optional[bool] = None
 
 
 class PolicyGapAssessment(BaseModel):
