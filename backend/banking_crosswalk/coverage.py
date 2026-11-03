@@ -5,10 +5,15 @@ from __future__ import annotations
 import re
 import uuid
 from collections import defaultdict
-from typing import Dict, List, Sequence, Set, Tuple
+from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from .applicability import decide_applicability
+import uuid
 from .models import (
+    EnterpriseBaseline,
+    EnterpriseClause,
+    GapRecord,
+    GapType,
     ApplicabilityStatus,
     AtomicObligation,
     Authority,
@@ -18,12 +23,14 @@ from .models import (
     CoverageStatus,
     GapRecord,
     GapType,
+    LayerCoverageMetrics,
     MappingDecision,
     ObligationCoverage,
     QuestionBank,
     QuestionRecord,
     RegulatoryPack,
     ReviewStatus,
+    authority_layer_bucket,
 )
 
 
@@ -198,14 +205,62 @@ def _candidate_mappings(
     return output
 
 
+def _layer_metrics_for(
+    layer_key: str, items: Sequence[ObligationCoverage]
+) -> LayerCoverageMetrics:
+    applicable = [
+        item
+        for item in items
+        if item.applicability.status is ApplicabilityStatus.APPLICABLE
+    ]
+    confirmed_counts = defaultdict(int)
+    provisional_counts = defaultdict(int)
+    for item in applicable:
+        confirmed_counts[item.confirmed_status] += 1
+        provisional_counts[item.provisional_status] += 1
+    denominator = len(applicable)
+    return LayerCoverageMetrics(
+        layer_key=layer_key,
+        applicable_obligations=denominator,
+        confirmed_covered=confirmed_counts[CoverageStatus.COVERED],
+        confirmed_partial=confirmed_counts[CoverageStatus.PARTIAL],
+        confirmed_missing=confirmed_counts[CoverageStatus.MISSING],
+        provisional_covered=provisional_counts[CoverageStatus.COVERED],
+        provisional_partial=provisional_counts[CoverageStatus.PARTIAL],
+        provisional_missing=provisional_counts[CoverageStatus.MISSING],
+        applicability_conditional=sum(
+            item.applicability.status is ApplicabilityStatus.CONDITIONAL
+            for item in items
+        ),
+        applicability_undetermined=sum(
+            item.applicability.status is ApplicabilityStatus.UNDETERMINED
+            for item in items
+        ),
+        confirmed_coverage_rate=round(
+            100 * confirmed_counts[CoverageStatus.COVERED] / denominator, 1
+        )
+        if denominator
+        else 0.0,
+        provisional_coverage_rate=round(
+            100 * provisional_counts[CoverageStatus.COVERED] / denominator, 1
+        )
+        if denominator
+        else 0.0,
+    )
+
+
 def evaluate_questionnaire_coverage(
     *,
     tenant_id: str,
-    use_case: BankingUseCase,
+    use_case: Optional[BankingUseCase] = None,
     question_bank: QuestionBank,
     regulatory_pack: RegulatoryPack,
     review_mappings: Sequence[MappingDecision] = (),
+    enterprise_baseline: Optional[EnterpriseBaseline] = None,
+    enterprise_clauses: Sequence[EnterpriseClause] = (),
 ) -> CoverageAssessment:
+    if use_case is None:
+        use_case = BankingUseCase.enterprise_baseline()
     results: List[ObligationCoverage] = []
 
     for obligation in regulatory_pack.obligations:
@@ -306,6 +361,19 @@ def evaluate_questionnaire_coverage(
         confirmed_counts[item.confirmed_status] += 1
         provisional_counts[item.provisional_status] += 1
     denominator = len(applicable_binding)
+    layer_buckets = (
+        "binding_regulatory",
+        "regulatory_guidance",
+        "voluntary_frameworks",
+        "enterprise_internal_controls",
+    )
+    by_layer: Dict[str, LayerCoverageMetrics] = {
+        bucket: _layer_metrics_for(
+            bucket,
+            [item for item in results if authority_layer_bucket(item.authority) == bucket],
+        )
+        for bucket in layer_buckets
+    }
     metrics = CoverageMetrics(
         applicable_binding_obligations=denominator,
         confirmed_covered=confirmed_counts[CoverageStatus.COVERED],
@@ -332,6 +400,7 @@ def evaluate_questionnaire_coverage(
         )
         if denominator
         else 0.0,
+        by_authority_layer=by_layer,
     )
     assessment_id = str(uuid.uuid4())
     gaps: List[GapRecord] = []
@@ -390,6 +459,43 @@ def evaluate_questionnaire_coverage(
 
     selection_mode = question_bank.routing_metadata.get("selection_mode", "core_only")
     selection_warning = question_bank.routing_metadata.get("selection_warning")
+
+    enterprise_gaps: List[GapRecord] = []
+    if enterprise_clauses:
+        for clause in enterprise_clauses:
+            if not clause.mandatory:
+                continue
+            missing_facets = []
+            for facet in clause.control_facets:
+                facet_covered = False
+                facet_terms = [facet.replace("_", " "), *facet.split("_")]
+                for q in question_bank.questions:
+                    ql = q.question_text.lower()
+                    if any(term in ql for term in facet_terms if len(term) > 3):
+                        facet_covered = True
+                        break
+                if not facet_covered:
+                    missing_facets.append(facet)
+            if missing_facets:
+                is_voluntary = (
+                    clause.authority_level.value == "industry_framework"
+                    if hasattr(clause.authority_level, "value")
+                    else str(clause.authority_level) == "industry_framework"
+                )
+                severity = "low" if is_voluntary else "high"
+                egap = GapRecord(
+                    gap_id=str(uuid.uuid4()),
+                    gap_type=GapType.QUESTIONNAIRE,
+                    title="Questionnaire does not test a mandatory enterprise-policy control",
+                    severity=severity,
+                    policy_clause_id=clause.clause_id,
+                    missing_facets=missing_facets,
+                    recommendation=f"Add a question testing enterprise policy requirement: {missing_facets}.",
+                    evidence_required=["Approved policy clause", "Question-to-policy mapping review"],
+                )
+                enterprise_gaps.append(egap)
+                gaps.append(egap)
+
     return CoverageAssessment(
         assessment_id=assessment_id,
         tenant_id=tenant_id,
@@ -408,4 +514,6 @@ def evaluate_questionnaire_coverage(
         else "core_only",
         selected_question_count=len(question_bank.questions),
         selection_warning=selection_warning,
+        enterprise_baseline_id=enterprise_baseline.baseline_id if enterprise_baseline else None,
+        enterprise_gaps=enterprise_gaps,
     )

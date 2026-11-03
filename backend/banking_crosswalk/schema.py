@@ -43,6 +43,26 @@ gaps = document_table(
 )
 sa.Index("gaps_assessment_idx", gaps.c.tenant_id, gaps.c.assessment_id)
 mappings = document_table("mappings")
+enterprise_policies = document_table("enterprise_policies")
+enterprise_clauses = document_table(
+    "enterprise_clauses", sa.Column("policy_id", sa.Text, nullable=False)
+)
+sa.Index(
+    "enterprise_clauses_policy_idx",
+    enterprise_clauses.c.tenant_id,
+    enterprise_clauses.c.policy_id,
+)
+clause_control_mappings = document_table(
+    "clause_control_mappings",
+    sa.Column("clause_id", sa.Text, nullable=False),
+    sa.Column("control_id", sa.Text, nullable=False),
+)
+sa.Index(
+    "clause_mappings_control_idx",
+    clause_control_mappings.c.tenant_id,
+    clause_control_mappings.c.control_id,
+)
+enterprise_baselines = document_table("enterprise_baselines")
 audit_events = sa.Table(
     "audit_events",
     metadata,

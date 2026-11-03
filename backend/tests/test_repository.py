@@ -11,6 +11,7 @@ pytest.importorskip("alembic")
 from banking_crosswalk import api, schema
 from banking_crosswalk.database import create_database_engine, upgrade_database
 from banking_crosswalk.models import BankingUseCase, MappingDecision, ReviewStatus
+from banking_crosswalk.policy import extract_enterprise_policy
 from banking_crosswalk.sql_store import SQLTenantStore
 from banking_crosswalk.store import ConflictError, NotFoundError, StorageUnavailable
 
@@ -330,9 +331,17 @@ def test_postgresql_rls_protects_queries_even_without_tenant_predicates(reposito
     if repo.engine.dialect.name != "postgresql":
         pytest.skip("PostgreSQL-only forced RLS test")
     repo.save_use_case(tenant, BankingUseCase(use_case_id=str(uuid.uuid4())))
+    ep = extract_enterprise_policy(
+        tenant_id=tenant,
+        name="RLS Enterprise Test",
+        text="All customer transfers above AUD 500 require dual approval.",
+    )
+    repo.save_enterprise_policy(tenant, ep)
     # A pooled connection must retain no tenant context after transaction end.
     with repo.engine.begin() as connection:
         assert connection.execute(sa.select(schema.use_cases)).all() == []
+        assert connection.execute(sa.select(schema.enterprise_policies)).all() == []
+        assert connection.execute(sa.select(schema.enterprise_clauses)).all() == []
     with repo._transaction(f"other-{tenant}") as connection:
         assert connection.execute(sa.select(schema.use_cases)).all() == []
     with repo._transaction(tenant) as connection:
@@ -369,6 +378,57 @@ def test_postgresql_audit_cannot_be_modified_or_truncated(repository):
                 connection.execute(statement)
     assert len(repo.audit_events(tenant)) == 1
 
+
+
+
+def test_enterprise_policy_layer_persists_survives_restart_and_enforces_tenant_isolation(
+    repository, monkeypatch
+):
+    repo, url, tenant = repository
+    monkeypatch.setattr(api, "store", repo)
+    policy = extract_enterprise_policy(
+        tenant_id=tenant,
+        name="Internal Fraud & Credit Policy",
+        text="All customer refunds above AUD 1,000 require dual senior management sign-off.",
+        category="credit_risk",
+    )
+    saved = repo.save_enterprise_policy(tenant, policy)
+    assert len(saved.clauses) > 0
+    repo.close()
+
+    restored = SQLTenantStore(url)
+    try:
+        retrieved = restored.get_enterprise_policy(tenant, policy.policy_id)
+        assert retrieved.name == "Internal Fraud & Credit Policy"
+        assert len(retrieved.clauses) == len(saved.clauses)
+        assert len(restored.list_enterprise_policies(tenant)) == 1
+
+        # Multi-tenant isolation: other tenant cannot read policy or its clauses
+        other_tenant = f"other-{tenant}"
+        with pytest.raises(NotFoundError):
+            restored.get_enterprise_policy(other_tenant, policy.policy_id)
+        assert restored.list_enterprise_policies(other_tenant) == []
+    finally:
+        restored.close()
+
+
+def test_enterprise_policy_deduplication_detection(repository, monkeypatch):
+    repo, url, tenant = repository
+    monkeypatch.setattr(api, "store", repo)
+    p1 = extract_enterprise_policy(
+        tenant_id=tenant,
+        name="Credit Card Rules v1",
+        text="All customer refund credits above AUD 1000 require manual sign-off.",
+    )
+    repo.save_enterprise_policy(tenant, p1)
+
+    p2 = extract_enterprise_policy(
+        tenant_id=tenant,
+        name="Credit Card Rules Copy",
+        text="All customer refund credits above AUD 1000 require manual sign-off.",
+    )
+    saved_p2 = repo.save_enterprise_policy(tenant, p2)
+    assert any("Identical policy content already uploaded" in w for w in saved_p2.warnings)
 
 def test_postgresql_production_rejects_migration_superuser():
     url = os.getenv("MIGRATION_DATABASE_URL")

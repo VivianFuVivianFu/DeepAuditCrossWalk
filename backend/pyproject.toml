@@ -25,7 +25,7 @@ postgres = ["SQLAlchemy>=2.0.55,<2.1", "alembic>=1.20.1,<2", "psycopg[binary]>=3
 include = ["banking_crosswalk*"]
 
 [tool.setuptools.package-data]
-banking_crosswalk = ["data/*.json", "migrations/*.py", "migrations/versions/*.py"]
+banking_crosswalk = ["data/*.json", "data/*.csv", "migrations/*.py", "migrations/versions/*.py"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

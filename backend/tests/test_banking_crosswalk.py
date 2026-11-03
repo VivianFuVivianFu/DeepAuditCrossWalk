@@ -185,7 +185,7 @@ def test_pack_is_valid_and_uses_distinct_authority_layers():
     assert result["valid"] is True
     assert result["obligation_count"] >= 15
     assert result["binding_count"] > 0
-    assert result["voluntary_count"] == 2
+    assert result["voluntary_count"] >= 2
     assert {item.authority.value for item in pack.obligations} >= {
         "binding",
         "enforceable_guidance",

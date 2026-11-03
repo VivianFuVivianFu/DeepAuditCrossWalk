@@ -9,10 +9,16 @@ from __future__ import annotations
 
 import threading
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 from .catalog import load_aiaf_question_bank
 from .models import (
+    ClauseControlMapping,
+    ClauseReviewStatus,
+    EnterpriseAuthorityLevel,
+    EnterpriseBaseline,
+    EnterpriseClause,
+    EnterprisePolicy,
     BankingUseCase,
     CoverageAssessment,
     GapRecord,
@@ -52,6 +58,10 @@ class TenantStore:
         self._routing_snapshots: Dict[str, Dict[str, QuestionRoutingSnapshot]] = {}
         self._use_cases: Dict[str, Dict[str, BankingUseCase]] = {}
         self._policies: Dict[str, Dict[str, PolicyPack]] = {}
+        self._enterprise_policies: Dict[str, Dict[str, EnterprisePolicy]] = {}
+        self._enterprise_clauses: Dict[str, Dict[str, EnterpriseClause]] = {}
+        self._clause_mappings: Dict[str, Dict[str, ClauseControlMapping]] = {}
+        self._enterprise_baselines: Dict[str, Dict[str, EnterpriseBaseline]] = {}
         self._assessments: Dict[
             str, Dict[str, CoverageAssessment | PolicyGapAssessment]
         ] = {}
@@ -67,7 +77,7 @@ class TenantStore:
         return registry.setdefault(tenant_id, {})
 
     def _record(
-        self, tenant_id: str, action: str, object_id: str, actor: str = "api"
+        self, tenant_id: str, action: str, object_id: str, actor: str = "api", detail: Optional[Dict[str, Any]] = None
     ) -> None:
         self._audit_events.setdefault(tenant_id, []).append(
             {
@@ -291,6 +301,124 @@ class TenantStore:
 
     def audit_events(self, tenant_id: str) -> List[Dict[str, Any]]:
         return list(self._audit_events.get(tenant_id, []))
+
+
+
+    # --- Enterprise Regulatory & Policy Layer Methods ---
+
+    def save_enterprise_policy(
+        self, tenant_id: str, policy: EnterprisePolicy
+    ) -> EnterprisePolicy:
+        for existing in self._enterprise_policies.get(tenant_id, {}).values():
+            if existing.file_sha256 == policy.file_sha256 and existing.policy_id != policy.policy_id:
+                warning = f"Identical policy content already uploaded as '{existing.name}' (version {existing.version})."
+                if warning not in policy.warnings:
+                    policy.warnings.append(warning)
+        self._bucket(self._enterprise_policies, tenant_id)[policy.policy_id] = policy
+        self._record(tenant_id, "enterprise_policy.saved", policy.policy_id)
+        for clause in policy.clauses:
+            self._bucket(self._enterprise_clauses, tenant_id)[clause.clause_id] = clause
+            for mapping in clause.control_mappings:
+                self._bucket(self._clause_mappings, tenant_id)[mapping.mapping_id] = mapping
+        return policy
+
+    def get_enterprise_policy(
+        self, tenant_id: str, policy_id: str
+    ) -> EnterprisePolicy:
+        try:
+            return self._enterprise_policies[tenant_id][policy_id]
+        except KeyError as exc:
+            raise NotFoundError("Enterprise policy not found for this tenant") from exc
+
+    def list_enterprise_policies(self, tenant_id: str) -> List[EnterprisePolicy]:
+        return list(self._enterprise_policies.get(tenant_id, {}).values())
+
+    def delete_enterprise_policy(self, tenant_id: str, policy_id: str) -> None:
+        if tenant_id in self._enterprise_policies and policy_id in self._enterprise_policies[tenant_id]:
+            policy = self._enterprise_policies[tenant_id].pop(policy_id)
+            if tenant_id in self._enterprise_clauses:
+                for clause in policy.clauses:
+                    self._enterprise_clauses[tenant_id].pop(clause.clause_id, None)
+            self._record(tenant_id, "enterprise_policy.deleted", policy_id)
+
+    def get_enterprise_clause(
+        self, tenant_id: str, clause_id: str
+    ) -> EnterpriseClause:
+        try:
+            return self._enterprise_clauses[tenant_id][clause_id]
+        except KeyError as exc:
+            raise NotFoundError("Enterprise clause not found for this tenant") from exc
+
+    def list_enterprise_clauses(
+        self, tenant_id: str, policy_id: Optional[str] = None
+    ) -> List[EnterpriseClause]:
+        clauses = list(self._enterprise_clauses.get(tenant_id, {}).values())
+        if policy_id:
+            clauses = [c for c in clauses if c.policy_id == policy_id]
+        return clauses
+
+    def update_clause_review(
+        self,
+        tenant_id: str,
+        clause_id: str,
+        status: ClauseReviewStatus,
+        actor: str,
+        role: str,
+        mappings: Optional[List[ClauseControlMapping]] = None,
+    ) -> EnterpriseClause:
+        clause = self.get_enterprise_clause(tenant_id, clause_id)
+        clause.review_status = status
+        clause.reviewer_actor = actor
+        clause.reviewer_role = role
+        clause.reviewed_at = datetime.now(timezone.utc)
+        if mappings is not None:
+            clause.control_mappings = mappings
+            for m in mappings:
+                self._bucket(self._clause_mappings, tenant_id)[m.mapping_id] = m
+        self._bucket(self._enterprise_clauses, tenant_id)[clause_id] = clause
+        if tenant_id in self._enterprise_policies and clause.policy_id in self._enterprise_policies[tenant_id]:
+            pol = self._enterprise_policies[tenant_id][clause.policy_id]
+            for idx, c in enumerate(pol.clauses):
+                if c.clause_id == clause_id:
+                    pol.clauses[idx] = clause
+                    break
+        self._record(tenant_id, "clause.reviewed", clause_id, actor=actor, detail={"status": status.value})
+        return clause
+
+    def save_clause_mapping(
+        self, tenant_id: str, mapping: ClauseControlMapping
+    ) -> ClauseControlMapping:
+        self._bucket(self._clause_mappings, tenant_id)[mapping.mapping_id] = mapping
+        self._record(tenant_id, "clause_mapping.saved", mapping.mapping_id)
+        return mapping
+
+    def list_clause_mappings(
+        self, tenant_id: str, clause_id: Optional[str] = None, control_id: Optional[str] = None
+    ) -> List[ClauseControlMapping]:
+        items = list(self._clause_mappings.get(tenant_id, {}).values())
+        if clause_id:
+            items = [m for m in items if m.clause_id == clause_id]
+        if control_id:
+            items = [m for m in items if m.control_id == control_id]
+        return items
+
+    def save_enterprise_baseline(
+        self, tenant_id: str, baseline: EnterpriseBaseline
+    ) -> EnterpriseBaseline:
+        self._bucket(self._enterprise_baselines, tenant_id)[baseline.baseline_id] = baseline
+        self._record(tenant_id, "enterprise_baseline.saved", baseline.baseline_id)
+        return baseline
+
+    def get_enterprise_baseline(
+        self, tenant_id: str, baseline_id: str
+    ) -> EnterpriseBaseline:
+        try:
+            return self._enterprise_baselines[tenant_id][baseline_id]
+        except KeyError as exc:
+            raise NotFoundError("Enterprise baseline not found for this tenant") from exc
+
+    def list_enterprise_baselines(self, tenant_id: str) -> List[EnterpriseBaseline]:
+        return list(self._enterprise_baselines.get(tenant_id, {}).values())
 
 
 class RepositoryHandle:

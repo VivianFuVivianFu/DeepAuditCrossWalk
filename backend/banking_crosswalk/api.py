@@ -17,6 +17,12 @@ from .catalog import load_regulatory_pack, validate_regulatory_pack
 from .coverage import evaluate_questionnaire_coverage
 from .importer import MAX_WORKBOOK_BYTES, import_aiaf_workbook
 from .models import (
+    ClauseControlMapping,
+    ClauseReviewStatus,
+    EnterpriseAuthorityLevel,
+    EnterpriseBaseline,
+    EnterpriseClause,
+    EnterprisePolicy,
     BankingUseCase,
     CoverageAssessment,
     GapRecord,
@@ -27,7 +33,7 @@ from .models import (
     QuestionRoutingSnapshot,
     ReviewStatus,
 )
-from .policy import assess_policy_gaps, extract_policy_pack
+from .policy import assess_policy_gaps, extract_policy_pack, extract_enterprise_policy, assess_enterprise_policy_gaps
 from .store import NotFoundError, store
 
 
@@ -185,12 +191,13 @@ class CoverageAssessmentRequest(BaseModel):
     questionnaire_pack: Optional[Literal["DEMO_BANKING_V1"]] = None
     assessment_mode: Literal["provisional"] = "provisional"
     routing_snapshot_id: Optional[str] = None
+    enterprise_baseline_id: Optional[str] = None
     persist: bool = True
 
     @model_validator(mode="after")
     def one_use_case_source(self) -> "CoverageAssessmentRequest":
-        if bool(self.use_case_id) == bool(self.use_case):
-            raise ValueError("Provide exactly one of use_case_id or use_case")
+        if self.use_case_id and self.use_case is not None:
+            raise ValueError("Provide at most one of use_case_id or use_case")
         if self.questionnaire_id and self.questionnaire_pack:
             raise ValueError("Provide questionnaire_id or questionnaire_pack, not both")
         return self
@@ -217,17 +224,21 @@ class PolicyGapAssessmentRequest(BaseModel):
     policy_version: str = Field(default="unversioned", min_length=1, max_length=128)
     questionnaire_id: Optional[str] = None
     questionnaire_pack: Optional[Literal["DEMO_BANKING_V1"]] = None
+    enterprise_baseline_id: Optional[str] = None
+    enterprise_policy_ids: Optional[List[str]] = None
     routing_snapshot_id: Optional[str] = None
     persist: bool = True
 
     @model_validator(mode="after")
     def stored_or_inline(self) -> "PolicyGapAssessmentRequest":
-        if bool(self.use_case_id) == bool(self.use_case):
-            raise ValueError("Provide exactly one of use_case_id or inline use_case")
-        if bool(self.policy_pack_id) == bool(self.policy_text):
-            raise ValueError(
-                "Provide exactly one of policy_pack_id or inline policy_text"
-            )
+        if self.use_case_id and self.use_case is not None:
+            raise ValueError("Provide at most one of use_case_id or inline use_case")
+        has_enterprise = bool(self.enterprise_baseline_id or self.enterprise_policy_ids)
+        if not has_enterprise:
+            if bool(self.policy_pack_id) == bool(self.policy_text):
+                raise ValueError(
+                    "Provide exactly one of policy_pack_id, inline policy_text, or enterprise_baseline_id"
+                )
         if self.questionnaire_id and self.questionnaire_pack:
             raise ValueError("Provide questionnaire_id or questionnaire_pack, not both")
         return self
@@ -456,9 +467,12 @@ def create_coverage_assessment(
     ):
         _require_crosswalk_state()
     try:
-        use_case = req.use_case or store.get_use_case(
-            x_tenant_id, req.use_case_id or ""
-        )
+        if req.use_case is not None:
+            use_case = req.use_case
+        elif req.use_case_id:
+            use_case = store.get_use_case(x_tenant_id, req.use_case_id)
+        else:
+            use_case = BankingUseCase.enterprise_baseline()
         source_question_bank = store.get_questionnaire(
             x_tenant_id, req.questionnaire_id
         )
@@ -481,12 +495,28 @@ def create_coverage_assessment(
         if _allow_ephemeral_crosswalk_state()
         else []
     )
+    enterprise_baseline = None
+    enterprise_clauses = []
+    if req.enterprise_baseline_id:
+        try:
+            enterprise_baseline = store.get_enterprise_baseline(x_tenant_id, req.enterprise_baseline_id)
+            for pid in enterprise_baseline.policy_ids:
+                try:
+                    p = store.get_enterprise_policy(x_tenant_id, pid)
+                    enterprise_clauses.extend(p.clauses)
+                except NotFoundError:
+                    pass
+        except NotFoundError as exc:
+            raise _not_found(exc) from exc
+
     assessment = evaluate_questionnaire_coverage(
         tenant_id=x_tenant_id,
         use_case=use_case,
         question_bank=question_bank,
         regulatory_pack=regulatory_pack,
         review_mappings=mappings,
+        enterprise_baseline=enterprise_baseline,
+        enterprise_clauses=enterprise_clauses,
     )
     if req.persist:
         store.save_assessment(x_tenant_id, assessment)
@@ -544,9 +574,12 @@ def create_policy_gap_assessment(
     ):
         _require_crosswalk_state()
     try:
-        use_case = req.use_case or store.get_use_case(
-            x_tenant_id, req.use_case_id or ""
-        )
+        if req.use_case is not None:
+            use_case = req.use_case
+        elif req.use_case_id:
+            use_case = store.get_use_case(x_tenant_id, req.use_case_id)
+        else:
+            use_case = BankingUseCase.enterprise_baseline()
         if req.policy_text is not None:
             policy = extract_policy_pack(
                 tenant_id=x_tenant_id,
@@ -571,13 +604,31 @@ def create_policy_gap_assessment(
     question_bank = _assessment_question_snapshot(
         source_question_bank, routing_snapshot
     )
-    assessment = assess_policy_gaps(
-        tenant_id=x_tenant_id,
-        use_case=use_case,
-        policy_pack=policy,
-        question_bank=question_bank,
-        regulatory_pack=regulatory_pack,
-    )
+    if req.enterprise_baseline_id or req.enterprise_policy_ids:
+        policies_to_assess = []
+        if req.enterprise_baseline_id:
+            baseline = store.get_enterprise_baseline(x_tenant_id, req.enterprise_baseline_id)
+            for pid in baseline.policy_ids:
+                policies_to_assess.append(store.get_enterprise_policy(x_tenant_id, pid))
+        if req.enterprise_policy_ids:
+            for pid in req.enterprise_policy_ids:
+                policies_to_assess.append(store.get_enterprise_policy(x_tenant_id, pid))
+        assessment = assess_enterprise_policy_gaps(
+            tenant_id=x_tenant_id,
+            use_case=use_case,
+            policies=policies_to_assess,
+            question_bank=question_bank,
+            regulatory_pack=regulatory_pack,
+            baseline_id=req.enterprise_baseline_id,
+        )
+    else:
+        assessment = assess_policy_gaps(
+            tenant_id=x_tenant_id,
+            use_case=use_case,
+            policy_pack=policy,
+            question_bank=question_bank,
+            regulatory_pack=regulatory_pack,
+        )
     if req.persist:
         store.save_assessment(x_tenant_id, assessment)
     return assessment
@@ -733,3 +784,181 @@ def get_report(assessment_id: str, x_tenant_id: TenantHeader) -> dict:
         "audit_events": store.audit_events(x_tenant_id),
         "legal_disclaimer": regulatory_pack.disclaimer,
     }
+
+
+class EnterprisePolicyImportRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=256)
+    text: str = Field(min_length=1, max_length=10 * 1024 * 1024)
+    version: str = Field(default="1.0.0", min_length=1, max_length=128)
+    category: str = Field(default="general", max_length=64)
+    authority_level: EnterpriseAuthorityLevel = EnterpriseAuthorityLevel.ENTERPRISE_POLICY
+    effective_date: Optional[datetime] = None
+
+
+class EnterprisePolicyFileImportRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=256)
+    filename: str = Field(min_length=1, max_length=256)
+    file_base64: str = Field(min_length=1)
+    version: str = Field(default="1.0.0", min_length=1, max_length=128)
+    category: str = Field(default="general", max_length=64)
+    authority_level: EnterpriseAuthorityLevel = EnterpriseAuthorityLevel.ENTERPRISE_POLICY
+    effective_date: Optional[datetime] = None
+
+
+class ClauseReviewRequest(BaseModel):
+    status: ClauseReviewStatus
+    actor: str = Field(min_length=1, max_length=128)
+    role: str = Field(min_length=1, max_length=64)
+    control_mappings: Optional[List[ClauseControlMapping]] = None
+
+
+class DeleteResponse(BaseModel):
+    status: str
+    policy_id: str
+
+class EnterpriseBaselineCreateRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=256)
+    description: Optional[str] = None
+    policy_ids: List[str] = Field(default_factory=list)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Enterprise Policy Layer REST API Endpoints
+# ─────────────────────────────────────────────────────────────────────────────
+
+@router.post("/enterprise/policies/import", response_model=EnterprisePolicy, status_code=201)
+def import_enterprise_policy(
+    req: EnterprisePolicyImportRequest, x_tenant_id: TenantHeader
+) -> EnterprisePolicy:
+    _require_crosswalk_state()
+    try:
+        policy = extract_enterprise_policy(
+            tenant_id=x_tenant_id,
+            name=req.name,
+            text=req.text,
+            version=req.version,
+            category=req.category,
+            authority_level=req.authority_level,
+            effective_date=req.effective_date,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return store.save_enterprise_policy(x_tenant_id, policy)
+
+
+@router.post("/enterprise/policies/import-file", response_model=EnterprisePolicy, status_code=201)
+def import_enterprise_policy_file(
+    req: EnterprisePolicyFileImportRequest, x_tenant_id: TenantHeader
+) -> EnterprisePolicy:
+    _require_crosswalk_state()
+    from .policy_documents import extract_policy_file
+
+    try:
+        content = base64.b64decode(req.file_base64, validate=True)
+        text = extract_policy_file(req.filename, content)
+        if not text.strip():
+            raise ValueError("No policy text was extracted; scanned PDFs require OCR")
+    except Exception as exc:
+        raise HTTPException(
+            status_code=422,
+            detail="Policy file could not be extracted within supported limits",
+        ) from exc
+    return import_enterprise_policy(
+        EnterprisePolicyImportRequest(
+            name=req.name,
+            text=text,
+            version=req.version,
+            category=req.category,
+            authority_level=req.authority_level,
+            effective_date=req.effective_date,
+        ),
+        x_tenant_id,
+    )
+
+
+@router.get("/enterprise/policies", response_model=List[EnterprisePolicy])
+def list_enterprise_policies(x_tenant_id: TenantHeader) -> List[EnterprisePolicy]:
+    _require_crosswalk_state()
+    return store.list_enterprise_policies(x_tenant_id)
+
+
+@router.get("/enterprise/policies/{policy_id}", response_model=EnterprisePolicy)
+def get_enterprise_policy_endpoint(
+    policy_id: str, x_tenant_id: TenantHeader
+) -> EnterprisePolicy:
+    _require_crosswalk_state()
+    try:
+        return store.get_enterprise_policy(x_tenant_id, policy_id)
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc
+
+
+@router.delete("/enterprise/policies/{policy_id}", status_code=200)
+def delete_enterprise_policy_endpoint(
+    policy_id: str, x_tenant_id: TenantHeader
+) -> DeleteResponse:
+    _require_crosswalk_state()
+    store.delete_enterprise_policy(x_tenant_id, policy_id)
+    return DeleteResponse(status="deleted", policy_id=policy_id)
+
+
+@router.get("/enterprise/policies/{policy_id}/clauses", response_model=List[EnterpriseClause])
+def list_policy_clauses_endpoint(
+    policy_id: str, x_tenant_id: TenantHeader
+) -> List[EnterpriseClause]:
+    _require_crosswalk_state()
+    return store.list_enterprise_clauses(x_tenant_id, policy_id=policy_id)
+
+
+@router.put("/enterprise/clauses/{clause_id}/review", response_model=EnterpriseClause)
+def review_enterprise_clause_endpoint(
+    clause_id: str, req: ClauseReviewRequest, x_tenant_id: TenantHeader
+) -> EnterpriseClause:
+    _require_crosswalk_state()
+    _validate_reviewer_identity(req.actor, req.role)
+    try:
+        return store.update_clause_review(
+            x_tenant_id,
+            clause_id,
+            status=req.status,
+            actor=req.actor,
+            role=req.role,
+            mappings=req.control_mappings,
+        )
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc
+
+
+@router.post("/enterprise/baselines", response_model=EnterpriseBaseline, status_code=201)
+def create_enterprise_baseline_endpoint(
+    req: EnterpriseBaselineCreateRequest, x_tenant_id: TenantHeader
+) -> EnterpriseBaseline:
+    _require_crosswalk_state()
+    baseline = EnterpriseBaseline(
+        baseline_id=str(uuid.uuid4()),
+        tenant_id=x_tenant_id,
+        name=req.name,
+        description=req.description,
+        policy_ids=req.policy_ids,
+        status="active",
+    )
+    return store.save_enterprise_baseline(x_tenant_id, baseline)
+
+
+@router.get("/enterprise/baselines", response_model=List[EnterpriseBaseline])
+def list_enterprise_baselines_endpoint(
+    x_tenant_id: TenantHeader
+) -> List[EnterpriseBaseline]:
+    _require_crosswalk_state()
+    return store.list_enterprise_baselines(x_tenant_id)
+
+
+@router.get("/enterprise/baselines/{baseline_id}", response_model=EnterpriseBaseline)
+def get_enterprise_baseline_endpoint(
+    baseline_id: str, x_tenant_id: TenantHeader
+) -> EnterpriseBaseline:
+    _require_crosswalk_state()
+    try:
+        return store.get_enterprise_baseline(x_tenant_id, baseline_id)
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc

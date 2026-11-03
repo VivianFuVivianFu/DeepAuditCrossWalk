@@ -7,6 +7,7 @@ undetermined rather than silently excluded from a coverage denominator.
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Callable, Dict, Iterable, Tuple
 
 from .models import (
@@ -223,26 +224,291 @@ def _iso(use_case: BankingUseCase, obligation: AtomicObligation) -> RuleResult:
         )
     return (
         ApplicabilityStatus.APPLICABLE,
-        "ISO/IEC 42001 is adopted and the assessment is organisation-scoped.",
+        "ISO/IEC 42001 is adopted and the assessment scope is compatible.",
+    )
+
+
+def _privacy_cross_border(
+    use_case: BankingUseCase, obligation: AtomicObligation
+) -> RuleResult:
+    base, reason = _privacy(use_case, obligation)
+    if base is not ApplicabilityStatus.APPLICABLE:
+        return base, reason
+    if use_case.cross_border_disclosure is True:
+        return (
+            ApplicabilityStatus.APPLICABLE,
+            "Personal information is disclosed to or processed by an overseas recipient.",
+        )
+    if use_case.cross_border_disclosure is False:
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "Personal information is confirmed not to be disclosed to overseas recipients.",
+        )
+    if use_case.third_party_ai_service is True:
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "Personal information and a third-party AI service are used; overseas hosting, inference or subprocessor access under APP 8 must be confirmed.",
+        )
+    return (
+        ApplicabilityStatus.UNDETERMINED,
+        "Cross-border personal-information disclosure status has not been confirmed.",
+    )
+
+
+def _asic_afs_licensee(
+    use_case: BankingUseCase, _: AtomicObligation
+) -> RuleResult:
+    if use_case.afs_licensee is True:
+        return (
+            ApplicabilityStatus.APPLICABLE,
+            "Entity holds an Australian Financial Services Licence (AFSL) and the activity falls within financial services conduct obligations.",
+        )
+    if use_case.afs_licensee is False:
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "Entity or use case is confirmed outside AFSL financial services obligations.",
+        )
+    if use_case.apra_regulated is True or use_case.entity_type.upper() == "ADI":
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "Entity is an APRA-regulated institution/ADI; confirm AFSL scope and s 912A(1) applicability for this workflow.",
+        )
+    return (
+        ApplicabilityStatus.UNDETERMINED,
+        "AFSL holder status and financial-service scope have not been confirmed.",
+    )
+
+
+def _nccp_credit_activity(
+    use_case: BankingUseCase, _: AtomicObligation
+) -> RuleResult:
+    if use_case.credit_licensee_or_credit_activity is True:
+        return (
+            ApplicabilityStatus.APPLICABLE,
+            "Entity holds an Australian Credit Licence (ACL) or engages in regulated credit activities under the NCCP Act.",
+        )
+    if use_case.credit_licensee_or_credit_activity is False:
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "Use case does not involve regulated consumer credit activities under the NCCP Act.",
+        )
+    if use_case.entity_type.upper() == "ADI" or use_case.apra_regulated is True:
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "Entity is an ADI/APRA-regulated institution; confirm whether the AI workflow engages in regulated credit activities under s 47 of the NCCP Act.",
+        )
+    return (
+        ApplicabilityStatus.UNDETERMINED,
+        "Australian Credit Licence (ACL) status and regulated credit-activity scope are unknown.",
+    )
+
+
+def _nccp_responsible_lending(
+    use_case: BankingUseCase, obligation: AtomicObligation
+) -> RuleResult:
+    if (
+        use_case.credit_licensee_or_credit_activity is False
+        or use_case.assists_consumer_credit_decision is False
+    ):
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "Use case does not enter into, increase or assess consumer credit contracts under Chapter 3 of the NCCP Act.",
+        )
+    if (
+        use_case.credit_licensee_or_credit_activity is True
+        and use_case.assists_consumer_credit_decision is True
+    ):
+        return (
+            ApplicabilityStatus.APPLICABLE,
+            "Use case assists or executes consumer credit assessments subject to NCCP Act ss 128-131 responsible lending obligations.",
+        )
+    if (
+        use_case.credit_licensee_or_credit_activity is True
+        and use_case.makes_or_assists_significant_decisions is True
+    ):
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "Entity is a credit licensee and the AI assists significant decisions; confirm whether consumer credit contract entry or limit increases are in scope.",
+        )
+    return _nccp_credit_activity(use_case, obligation)
+
+
+def _au_ai_guidance(
+    use_case: BankingUseCase, _: AtomicObligation
+) -> RuleResult:
+    if use_case.au_ai_guidance_adopted is True:
+        return (
+            ApplicabilityStatus.APPLICABLE,
+            "Organisation has adopted the Australian Government Guidance for AI Adoption (Oct 2025) as a governance benchmark.",
+        )
+    if use_case.au_ai_guidance_adopted is False:
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "Australian Government Guidance for AI Adoption is non-binding and has not been selected for this assessment.",
+        )
+    return (
+        ApplicabilityStatus.UNDETERMINED,
+        "Adoption of the Australian Government Guidance for AI Adoption (Oct 2025) has not been specified.",
+    )
+
+
+def _eu_prohibited_or_literacy(
+    use_case: BankingUseCase, obligation: AtomicObligation
+) -> RuleResult:
+    base, reason = _eu(use_case, obligation)
+    if base is ApplicabilityStatus.NOT_APPLICABLE:
+        return base, reason
+    if base is ApplicabilityStatus.CONDITIONAL:
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "EU Article 2 nexus is indicated; Chapter I/II AI literacy (Art 4) and prohibited practice screening (Art 5, applicable from 2 Feb 2025) require Legal confirmation.",
+        )
+    return base, reason
+
+
+def _eu_deployer_high_risk(
+    use_case: BankingUseCase, obligation: AtomicObligation
+) -> RuleResult:
+    base, reason = _eu(use_case, obligation)
+    if base is ApplicabilityStatus.NOT_APPLICABLE:
+        return base, reason
+    if use_case.eu_operator_role == "none":
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "Entity has confirmed no operator role under the EU AI Act.",
+        )
+    if base is ApplicabilityStatus.CONDITIONAL:
+        if obligation.effective_from and use_case.as_of_date < obligation.effective_from:
+            return (
+                ApplicabilityStatus.CONDITIONAL,
+                f"EU nexus is indicated; deployer/high-risk provisions are phased to {obligation.effective_from.isoformat()}.",
+            )
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "EU nexus is indicated; Annex III point 5(b) creditworthiness/credit-scoring classification and Articles 26-27 deployer duties require Legal confirmation.",
+        )
+    return base, reason
+
+
+def _iso23894(use_case: BankingUseCase, _: AtomicObligation) -> RuleResult:
+    if use_case.iso_23894_adopted is True:
+        return (
+            ApplicabilityStatus.APPLICABLE,
+            "Organisation has adopted ISO/IEC 23894:2023 as an AI risk management benchmark.",
+        )
+    if use_case.iso_23894_adopted is False:
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "ISO/IEC 23894:2023 is voluntary and has not been adopted.",
+        )
+    if use_case.iso_42001_adopted is True:
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "ISO/IEC 42001 is adopted; confirm whether ISO/IEC 23894 risk management guidance is also used as a supporting reference.",
+        )
+    return (
+        ApplicabilityStatus.UNDETERMINED,
+        "ISO/IEC 23894:2023 adoption status is unknown.",
+    )
+
+
+def _iso27001(
+    use_case: BankingUseCase, obligation: AtomicObligation
+) -> RuleResult:
+    if use_case.iso_27001_adopted is False:
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "ISO/IEC 27001:2022 is voluntary and has not been adopted.",
+        )
+    if use_case.iso_27001_adopted is None:
+        return (
+            ApplicabilityStatus.UNDETERMINED,
+            "ISO/IEC 27001:2022 adoption status is unknown.",
+        )
+    if (
+        obligation.assessment_scope == "organisation"
+        and use_case.assessment_scope != "organisation"
+    ):
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "ISO/IEC 27001:2022 is adopted, but this obligation requires organisation-scope ISMS evidence outside a use-case questionnaire.",
+        )
+    return (
+        ApplicabilityStatus.APPLICABLE,
+        "ISO/IEC 27001:2022 is adopted and the assessment scope is compatible.",
+    )
+
+
+def _enterprise_delegated_authority(
+    use_case: BankingUseCase, _: AtomicObligation
+) -> RuleResult:
+    if use_case.enterprise_controls_enabled is False:
+        return (
+            ApplicabilityStatus.NOT_APPLICABLE,
+            "Enterprise delegated-authority payment/refund control is confirmed not applicable to this workflow.",
+        )
+    if (
+        use_case.enterprise_controls_enabled is True
+        or use_case.approval_threshold_aud is not None
+    ):
+        return (
+            ApplicabilityStatus.APPLICABLE,
+            "Enterprise delegated-authority control applies based on configured approval threshold or enterprise control baseline.",
+        )
+    return (
+        ApplicabilityStatus.CONDITIONAL,
+        "Confirm whether the AI system can initiate, recommend or execute financial transactions subject to enterprise delegated authority.",
     )
 
 
 RULES: Dict[str, Callable[[BankingUseCase, AtomicObligation], RuleResult]] = {
     "privacy_personal_information": _privacy,
     "privacy_automated_decision_future": _privacy_automated_future,
+    "privacy_cross_border": _privacy_cross_border,
     "apra_entity": _apra,
     "apra_critical_operation": _apra_critical,
     "apra_third_party_service": _apra_third_party,
     "asic_idr": _asic_idr,
+    "asic_afs_licensee": _asic_afs_licensee,
+    "nccp_credit_activity": _nccp_credit_activity,
+    "nccp_responsible_lending": _nccp_responsible_lending,
+    "au_ai_guidance_adopted": _au_ai_guidance,
     "eu_ai_act_nexus": _eu,
+    "eu_ai_act_prohibited_or_literacy": _eu_prohibited_or_literacy,
+    "eu_ai_act_deployer_high_risk": _eu_deployer_high_risk,
     "nist_adopted": _nist,
     "iso42001_adopted": _iso,
+    "iso23894_adopted": _iso23894,
+    "iso27001_adopted": _iso27001,
+    "enterprise_delegated_authority": _enterprise_delegated_authority,
 }
 
 
 def decide_applicability(
     obligation: AtomicObligation, use_case: BankingUseCase
 ) -> ApplicabilityDecision:
+    if (
+        obligation.effective_to
+        and obligation.effective_to not in {"NONE_CURRENT", "UNKNOWN", "N/A"}
+    ):
+        try:
+            eff_to = date.fromisoformat(str(obligation.effective_to))
+            if use_case.as_of_date > eff_to:
+                replacement = (
+                    f" (replaced by {obligation.superseded_by})"
+                    if obligation.superseded_by
+                    else ""
+                )
+                return ApplicabilityDecision(
+                    obligation_id=obligation.obligation_id,
+                    status=ApplicabilityStatus.NOT_APPLICABLE,
+                    reason=f"Obligation version was superseded after {eff_to.isoformat()}{replacement}.",
+                    authority=obligation.authority,
+                    assessment_scope=obligation.assessment_scope,
+                    rule_key=obligation.applicability_key,
+                )
+        except ValueError:
+            pass
     rule = RULES.get(obligation.applicability_key)
     if rule is None:
         status, reason = (

@@ -7,6 +7,8 @@ coverage result is never represented as a legal-compliance conclusion.
 
 from __future__ import annotations
 
+import uuid
+
 from datetime import date, datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Literal, Optional
@@ -32,6 +34,43 @@ class Authority(str, Enum):
     GUIDANCE = "guidance"
     VOLUNTARY = "voluntary"
     ENTERPRISE = "enterprise"
+
+
+class LegalAuthorityClassification(str, Enum):
+    BINDING_LEGAL_OR_PRUDENTIAL = "binding_legal_or_prudential_obligation"
+    ENFORCEABLE_REGULATORY = "enforceable_regulatory_requirement"
+    REGULATORY_GUIDANCE = "regulatory_guidance_and_expectation"
+    VOLUNTARY_FRAMEWORK = "voluntary_framework"
+    ENTERPRISE_CONTROL = "enterprise_defined_control"
+
+
+class MappingRelationship(str, Enum):
+    FULL = "full"
+    PARTIAL = "partial"
+    RELATED = "related"
+    NON_EQUIVALENT = "non_equivalent"
+    NOT_EQUIVALENT = "not_equivalent"
+    MISSING = "missing"
+    UNDETERMINED = "undetermined"
+
+
+AUTHORITY_TO_LEGAL_CLASSIFICATION: Dict[Authority, LegalAuthorityClassification] = {
+    Authority.BINDING: LegalAuthorityClassification.BINDING_LEGAL_OR_PRUDENTIAL,
+    Authority.ENFORCEABLE_GUIDANCE: LegalAuthorityClassification.ENFORCEABLE_REGULATORY,
+    Authority.GUIDANCE: LegalAuthorityClassification.REGULATORY_GUIDANCE,
+    Authority.VOLUNTARY: LegalAuthorityClassification.VOLUNTARY_FRAMEWORK,
+    Authority.ENTERPRISE: LegalAuthorityClassification.ENTERPRISE_CONTROL,
+}
+
+
+def authority_layer_bucket(authority: Authority) -> str:
+    if authority in {Authority.BINDING, Authority.ENFORCEABLE_GUIDANCE}:
+        return "binding_regulatory"
+    if authority is Authority.GUIDANCE:
+        return "regulatory_guidance"
+    if authority is Authority.VOLUNTARY:
+        return "voluntary_frameworks"
+    return "enterprise_internal_controls"
 
 
 class ApplicabilityStatus(str, Enum):
@@ -71,6 +110,24 @@ class SourceRecord(BaseModel):
     source_url: str
     effective_from: Optional[date] = None
     notes: Optional[str] = None
+    regulator_or_publisher: str = "UNKNOWN"
+    instrument_title: Optional[str] = None
+    legal_authority_type: Optional[LegalAuthorityClassification] = None
+    version_id: Optional[str] = None
+    publication_date: Optional[str] = "UNKNOWN"
+    effective_to: str = "NONE_CURRENT"
+    verified_as_of: Optional[date] = None
+    applicable_entity_types: List[str] = Field(default_factory=list)
+    licence_conditions: str = "NONE_SPECIFIED"
+    source_sha256: str = "NOT_DOWNLOADED_URL_REFERENCED"
+    source_location: str = "OFFICIAL_EXTERNAL_URL"
+    licensing_or_copyright_status: str = "UNKNOWN"
+    extraction_status: str = "extracted_candidate_provisions"
+    reviewer_status: ReviewStatus = ReviewStatus.PROPOSED
+    temporal_status: Literal["current", "superseded", "future"] = "current"
+    supersedes: Optional[str] = None
+    superseded_by: Optional[str] = None
+    historical_versions: List[Dict[str, Any]] = Field(default_factory=list)
 
 
 class AtomicObligation(BaseModel):
@@ -95,6 +152,20 @@ class AtomicObligation(BaseModel):
     suggested_questions: Dict[str, str] = Field(default_factory=dict)
     review_status: ReviewStatus = ReviewStatus.PROPOSED
     legal_note: Optional[str] = None
+    exact_clause_reference: Optional[str] = None
+    concise_obligation_summary: Optional[str] = None
+    legal_authority_classification: Optional[LegalAuthorityClassification] = None
+    applicability_conditions: List[str] = Field(default_factory=list)
+    entity_and_business_scope: Optional[str] = None
+    effective_to: Optional[str] = "NONE_CURRENT"
+    source_citation: Optional[str] = None
+    source_location: Optional[str] = None
+    extraction_confidence: Literal["high", "medium", "low"] = "high"
+    extraction_uncertainty: Optional[str] = None
+    reviewer_status: ReviewStatus = ReviewStatus.PROPOSED
+    temporal_status: Literal["current", "superseded", "future"] = "current"
+    supersedes: Optional[str] = None
+    superseded_by: Optional[str] = None
 
     @field_validator("coverage_facets")
     @classmethod
@@ -102,6 +173,64 @@ class AtomicObligation(BaseModel):
         if len(facets) != len(set(facets)):
             raise ValueError("coverage_facets must be unique")
         return facets
+
+
+class UnifiedControl(BaseModel):
+    control_id: str
+    domain: str
+    title: str
+    control_objective: str
+    assessment_scope: Literal["use_case", "entity", "organisation"] = "use_case"
+    control_facets: List[str] = Field(min_length=1)
+    associated_obligation_ids: List[str] = Field(default_factory=list)
+    associated_source_ids: List[str] = Field(default_factory=list)
+    evidence_requirements: List[str] = Field(default_factory=list)
+    testing_and_assurance_guidance: Optional[str] = None
+    copyright_and_provenance_note: Optional[str] = None
+    review_status: ReviewStatus = ReviewStatus.PROPOSED
+
+    @field_validator("control_facets")
+    @classmethod
+    def unique_control_facets(cls, facets: List[str]) -> List[str]:
+        if len(facets) != len(set(facets)):
+            raise ValueError("control_facets must be unique")
+        return facets
+
+
+class UnifiedControlLibrary(BaseModel):
+    library_id: str
+    version: str
+    title: str
+    verified_as_of: date
+    domains: List[str]
+    controls: List[UnifiedControl]
+
+
+class ObligationControlMapping(BaseModel):
+    mapping_id: str
+    obligation_id: str
+    source_id: str
+    provision: str
+    authority: Authority
+    control_id: str
+    control_domain: str
+    mapping_relationship: MappingRelationship
+    mapped_facets: List[str] = Field(default_factory=list)
+    unmapped_obligation_facets: List[str] = Field(default_factory=list)
+    equivalence_rationale: str
+    mapping_uncertainty: Optional[str] = None
+    requires_human_validation: bool = True
+    review_status: ReviewStatus = ReviewStatus.PROPOSED
+    reviewer: Optional[str] = None
+    reviewed_at: Optional[datetime] = None
+
+
+class ObligationControlMappingCatalogue(BaseModel):
+    catalogue_id: str
+    version: str
+    verified_as_of: date
+    disclaimer: str
+    mappings: List[ObligationControlMapping]
 
 
 class RegulatoryPack(BaseModel):
@@ -183,11 +312,15 @@ class BankingUseCase(BaseModel):
         ),
     )
     handles_sensitive_information: Optional[bool] = None
+    cross_border_disclosure: Optional[bool] = None
     makes_or_assists_significant_decisions: Optional[bool] = None
     handles_regulated_complaints: Optional[bool] = None
     idr_obligations: Optional[bool] = Field(
         default=None, validation_alias=AliasChoices("idr_obligations", "idr_obligation")
     )
+    afs_licensee: Optional[bool] = None
+    credit_licensee_or_credit_activity: Optional[bool] = None
+    assists_consumer_credit_decision: Optional[bool] = None
     third_party_ai_service: Optional[bool] = Field(
         default=None,
         validation_alias=AliasChoices("third_party_ai_service", "uses_third_party_ai"),
@@ -207,13 +340,58 @@ class BankingUseCase(BaseModel):
     )
     eu_output_used: Optional[bool] = None
     eu_deployer_or_provider_role: Optional[bool] = None
+    eu_operator_role: Optional[
+        Literal["provider", "deployer", "importer", "distributor", "none"]
+    ] = None
     nist_ai_rmf_adopted: Optional[bool] = None
+    au_ai_guidance_adopted: Optional[bool] = None
     iso_42001_adopted: Optional[bool] = None
+    iso_23894_adopted: Optional[bool] = None
+    iso_27001_adopted: Optional[bool] = None
+    enterprise_controls_enabled: Optional[bool] = None
     assessment_scope: Literal["use_case", "entity", "organisation"] = "use_case"
     approval_threshold_aud: Optional[float] = Field(
         default=None, ge=0, allow_inf_nan=False
     )
     as_of_date: date = Field(default_factory=date.today)
+
+    @classmethod
+    def enterprise_baseline(cls, **overrides: Any) -> "BankingUseCase":
+        """Enterprise-level baseline for an Australian bank (ADI/AFSL/ACL).
+
+        Allows comparing enterprise policies or questionnaires without requiring
+        a complete AI use-case intake, while keeping EU AI Act out of scope by
+        default unless a territorial nexus is explicitly specified.
+        """
+        defaults: Dict[str, Any] = {
+            "name": "Australian Banking Enterprise Baseline",
+            "entity_type": "ADI",
+            "assessment_scope": "organisation",
+            "apra_regulated": True,
+            "handles_personal_information": True,
+            "handles_sensitive_information": False,
+            "cross_border_disclosure": False,
+            "makes_or_assists_significant_decisions": True,
+            "handles_regulated_complaints": True,
+            "idr_obligations": True,
+            "afs_licensee": True,
+            "credit_licensee_or_credit_activity": True,
+            "assists_consumer_credit_decision": True,
+            "third_party_ai_service": True,
+            "supports_critical_operation": True,
+            "material_service_provider": True,
+            "eu_establishment_or_market": False,
+            "eu_output_used": False,
+            "eu_deployer_or_provider_role": False,
+            "nist_ai_rmf_adopted": True,
+            "au_ai_guidance_adopted": True,
+            "iso_42001_adopted": True,
+            "iso_23894_adopted": True,
+            "iso_27001_adopted": True,
+            "enterprise_controls_enabled": True,
+        }
+        defaults.update(overrides)
+        return cls(**defaults)
 
     @model_validator(mode="before")
     @classmethod
@@ -244,6 +422,12 @@ class BankingUseCase(BaseModel):
                 "iso_42001_adopted",
                 any("42001" in item or "iso" in item for item in standards),
             )
+            if any("23894" in item for item in standards):
+                normalised.setdefault("iso_23894_adopted", True)
+            if any("27001" in item for item in standards):
+                normalised.setdefault("iso_27001_adopted", True)
+            if any("ai6" in item or "guidance" in item or "naic" in item for item in standards):
+                normalised.setdefault("au_ai_guidance_adopted", True)
         return normalised
 
 
@@ -297,6 +481,21 @@ class ObligationCoverage(BaseModel):
     )
 
 
+class LayerCoverageMetrics(BaseModel):
+    layer_key: str
+    applicable_obligations: int = 0
+    confirmed_covered: int = 0
+    confirmed_partial: int = 0
+    confirmed_missing: int = 0
+    provisional_covered: int = 0
+    provisional_partial: int = 0
+    provisional_missing: int = 0
+    applicability_conditional: int = 0
+    applicability_undetermined: int = 0
+    confirmed_coverage_rate: float = 0.0
+    provisional_coverage_rate: float = 0.0
+
+
 class CoverageMetrics(BaseModel):
     applicable_binding_obligations: int = 0
     confirmed_covered: int = 0
@@ -309,6 +508,7 @@ class CoverageMetrics(BaseModel):
     applicability_undetermined: int = 0
     confirmed_coverage_rate: float = 0.0
     provisional_coverage_rate: float = 0.0
+    by_authority_layer: Dict[str, LayerCoverageMetrics] = Field(default_factory=dict)
 
 
 class CoverageAssessment(BaseModel):
@@ -325,6 +525,8 @@ class CoverageAssessment(BaseModel):
     metrics: CoverageMetrics
     results: List[ObligationCoverage]
     gaps: List["GapRecord"] = Field(default_factory=list)
+    enterprise_baseline_id: Optional[str] = None
+    enterprise_gaps: List["GapRecord"] = Field(default_factory=list)
     question_scope: Literal["core_only", "routed_snapshot"] = "core_only"
     selected_question_count: int = 0
     selection_warning: Optional[str] = None
@@ -342,6 +544,82 @@ class PolicyClause(BaseModel):
     control_facets: List[str] = Field(default_factory=list)
     thresholds_aud: List[float] = Field(default_factory=list)
     page: Optional[int] = None
+
+
+
+
+class EnterpriseAuthorityLevel(str, Enum):
+    STATUTORY = "statutory"
+    REGULATORY_GUIDANCE = "regulatory_guidance"
+    INDUSTRY_FRAMEWORK = "industry_framework"
+    ENTERPRISE_POLICY = "enterprise_policy"
+    CONTRACTUAL = "contractual"
+    AUDIT_FINDING = "audit_finding"
+
+
+class ClauseReviewStatus(str, Enum):
+    UNREVIEWED = "unreviewed"
+    PROPOSED = "proposed"
+    CONFIRMED = "confirmed"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+
+
+class ClauseControlMapping(BaseModel):
+    mapping_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    tenant_id: str
+    clause_id: str
+    control_id: str
+    relationship: MappingRelationship = MappingRelationship.FULL
+    rationale: Optional[str] = None
+    review_status: ClauseReviewStatus = ClauseReviewStatus.PROPOSED
+    created_at: datetime = Field(default_factory=utc_now)
+
+
+class EnterpriseClause(BaseModel):
+    clause_id: str
+    policy_id: str
+    tenant_id: str
+    source_name: str
+    clause_number: Optional[str] = None
+    text: str
+    mandatory: bool = True
+    authority_level: EnterpriseAuthorityLevel = EnterpriseAuthorityLevel.ENTERPRISE_POLICY
+    control_facets: List[str] = Field(default_factory=list)
+    thresholds_aud: List[float] = Field(default_factory=list)
+    page: Optional[int] = None
+    review_status: ClauseReviewStatus = ClauseReviewStatus.PROPOSED
+    reviewer_actor: Optional[str] = None
+    reviewer_role: Optional[str] = None
+    reviewed_at: Optional[datetime] = None
+    control_mappings: List[ClauseControlMapping] = Field(default_factory=list)
+
+
+class EnterprisePolicy(BaseModel):
+    policy_id: str
+    tenant_id: str
+    name: str
+    category: str = "general"
+    authority_level: EnterpriseAuthorityLevel = EnterpriseAuthorityLevel.ENTERPRISE_POLICY
+    version: str = "1.0.0"
+    status: Literal["active", "draft", "superseded", "retired"] = "active"
+    effective_date: Optional[datetime] = None
+    file_sha256: str = ""
+    clauses: List[EnterpriseClause] = Field(default_factory=list)
+    warnings: List[str] = Field(default_factory=list)
+    created_at: datetime = Field(default_factory=utc_now)
+    created_by: Optional[str] = None
+
+
+class EnterpriseBaseline(BaseModel):
+    baseline_id: str
+    tenant_id: str
+    name: str
+    description: Optional[str] = None
+    revision: int = 1
+    policy_ids: List[str] = Field(default_factory=list)
+    status: Literal["active", "archived"] = "active"
+    created_at: datetime = Field(default_factory=utc_now)
 
 
 class PolicyPack(BaseModel):
@@ -393,6 +671,7 @@ class PolicyGapAssessment(BaseModel):
     questionnaire_gaps: List[GapRecord] = Field(default_factory=list)
     control_conflicts: List[GapRecord] = Field(default_factory=list)
     implementation_evidence_gaps: List[GapRecord] = Field(default_factory=list)
+    gaps_by_authority_layer: Dict[str, List[GapRecord]] = Field(default_factory=dict)
     policy_clauses: List[PolicyClause] = Field(default_factory=list)
     warnings: List[str] = Field(default_factory=list)
 

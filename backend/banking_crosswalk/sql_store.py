@@ -20,6 +20,12 @@ from . import schema
 from .catalog import load_aiaf_question_bank
 from .database import check_schema, create_database_engine
 from .models import (
+    ClauseControlMapping,
+    ClauseReviewStatus,
+    EnterpriseAuthorityLevel,
+    EnterpriseBaseline,
+    EnterpriseClause,
+    EnterprisePolicy,
     BankingUseCase,
     CoverageAssessment,
     GapRecord,
@@ -414,3 +420,172 @@ class SQLTenantStore:
                     .order_by(schema.audit_events.c.event_id)
                 ).scalars()
             )
+
+
+    # --- Enterprise Regulatory & Policy Layer SQL Methods ---
+
+    def save_enterprise_policy(self, tenant_id, policy):
+        for existing in self.list_enterprise_policies(tenant_id):
+            if existing.file_sha256 == policy.file_sha256 and existing.policy_id != policy.policy_id:
+                warning = f"Identical policy content already uploaded as '{existing.name}' (version {existing.version})."
+                if warning not in policy.warnings:
+                    policy.warnings.append(warning)
+        self._save(
+            schema.enterprise_policies,
+            tenant_id,
+            policy.policy_id,
+            policy,
+            "enterprise_policy.saved",
+        )
+        for clause in policy.clauses:
+            self.save_enterprise_clause(tenant_id, clause)
+            for m in clause.control_mappings:
+                self.save_clause_mapping(tenant_id, m)
+        return policy
+
+    def get_enterprise_policy(self, tenant_id, policy_id):
+        policy = self._read(schema.enterprise_policies, tenant_id, policy_id, EnterprisePolicy)
+        # Hydrate clauses from clauses table
+        clauses = self.list_enterprise_clauses(tenant_id, policy_id=policy_id)
+        if clauses:
+            policy.clauses = clauses
+        return policy
+
+    def list_enterprise_policies(self, tenant_id):
+        with self._transaction(tenant_id) as connection:
+            rows = connection.execute(
+                sa.select(schema.enterprise_policies.c.payload).where(
+                    schema.enterprise_policies.c.tenant_id == tenant_id
+                )
+            ).scalars().all()
+            policies = [EnterprisePolicy.model_validate(r) for r in rows]
+            for p in policies:
+                clauses = self.list_enterprise_clauses(tenant_id, policy_id=p.policy_id)
+                if clauses:
+                    p.clauses = clauses
+            return policies
+
+    def delete_enterprise_policy(self, tenant_id, policy_id):
+        with self._transaction(tenant_id) as connection:
+            connection.execute(
+                schema.enterprise_policies.delete().where(
+                    schema.enterprise_policies.c.tenant_id == tenant_id,
+                    schema.enterprise_policies.c.object_id == policy_id,
+                )
+            )
+            connection.execute(
+                schema.enterprise_clauses.delete().where(
+                    schema.enterprise_clauses.c.tenant_id == tenant_id,
+                    schema.enterprise_clauses.c.policy_id == policy_id,
+                )
+            )
+            self._record(connection, tenant_id, "enterprise_policy.deleted", policy_id)
+
+    def save_enterprise_clause(self, tenant_id, clause):
+        self._check_tenant(tenant_id, clause)
+        with self._transaction(tenant_id) as connection:
+            self._upsert(
+                connection,
+                schema.enterprise_clauses,
+                tenant_id,
+                clause.clause_id,
+                clause.model_dump(mode="json"),
+                policy_id=clause.policy_id,
+            )
+            self._record(connection, tenant_id, "enterprise_clause.saved", clause.clause_id)
+            for m in clause.control_mappings:
+                self._upsert(
+                    connection,
+                    schema.clause_control_mappings,
+                    tenant_id,
+                    m.mapping_id,
+                    m.model_dump(mode="json"),
+                    clause_id=m.clause_id,
+                    control_id=m.control_id,
+                )
+        return clause
+
+    def get_enterprise_clause(self, tenant_id, clause_id):
+        return self._read(schema.enterprise_clauses, tenant_id, clause_id, EnterpriseClause)
+
+    def list_enterprise_clauses(self, tenant_id, policy_id=None):
+        with self._transaction(tenant_id) as connection:
+            query = sa.select(schema.enterprise_clauses.c.payload).where(
+                schema.enterprise_clauses.c.tenant_id == tenant_id
+            )
+            if policy_id:
+                query = query.where(schema.enterprise_clauses.c.policy_id == policy_id)
+            rows = connection.execute(query).scalars().all()
+            return [EnterpriseClause.model_validate(r) for r in rows]
+
+    def update_clause_review(
+        self, tenant_id, clause_id, status, actor, role, mappings=None
+    ):
+        clause = self.get_enterprise_clause(tenant_id, clause_id)
+        clause.review_status = status
+        clause.reviewer_actor = actor
+        clause.reviewer_role = role
+        clause.reviewed_at = datetime.now(timezone.utc)
+        if mappings is not None:
+            clause.control_mappings = mappings
+        self.save_enterprise_clause(tenant_id, clause)
+        self._record_audit_event(
+            tenant_id,
+            "clause.reviewed",
+            clause_id,
+            actor=actor,
+            detail={"status": status.value if hasattr(status, "value") else str(status)},
+        )
+        return clause
+
+    def _record_audit_event(self, tenant_id, action, object_id, actor="api", detail=None):
+        with self._transaction(tenant_id) as connection:
+            self._record(connection, tenant_id, action, object_id, actor=actor, detail=detail)
+
+    def save_clause_mapping(self, tenant_id, mapping):
+        self._check_tenant(tenant_id, mapping)
+        with self._transaction(tenant_id) as connection:
+            self._upsert(
+                connection,
+                schema.clause_control_mappings,
+                tenant_id,
+                mapping.mapping_id,
+                mapping.model_dump(mode="json"),
+                clause_id=mapping.clause_id,
+                control_id=mapping.control_id,
+            )
+            self._record(connection, tenant_id, "clause_mapping.saved", mapping.mapping_id)
+        return mapping
+
+    def list_clause_mappings(self, tenant_id, clause_id=None, control_id=None):
+        with self._transaction(tenant_id) as connection:
+            query = sa.select(schema.clause_control_mappings.c.payload).where(
+                schema.clause_control_mappings.c.tenant_id == tenant_id
+            )
+            if clause_id:
+                query = query.where(schema.clause_control_mappings.c.clause_id == clause_id)
+            if control_id:
+                query = query.where(schema.clause_control_mappings.c.control_id == control_id)
+            rows = connection.execute(query).scalars().all()
+            return [ClauseControlMapping.model_validate(r) for r in rows]
+
+    def save_enterprise_baseline(self, tenant_id, baseline):
+        return self._save(
+            schema.enterprise_baselines,
+            tenant_id,
+            baseline.baseline_id,
+            baseline,
+            "enterprise_baseline.saved",
+        )
+
+    def get_enterprise_baseline(self, tenant_id, baseline_id):
+        return self._read(schema.enterprise_baselines, tenant_id, baseline_id, EnterpriseBaseline)
+
+    def list_enterprise_baselines(self, tenant_id):
+        with self._transaction(tenant_id) as connection:
+            rows = connection.execute(
+                sa.select(schema.enterprise_baselines.c.payload).where(
+                    schema.enterprise_baselines.c.tenant_id == tenant_id
+                )
+            ).scalars().all()
+            return [EnterpriseBaseline.model_validate(r) for r in rows]
