@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import threading
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 from .catalog import load_aiaf_question_bank
 from .models import (
@@ -309,6 +309,11 @@ class TenantStore:
     def save_enterprise_policy(
         self, tenant_id: str, policy: EnterprisePolicy
     ) -> EnterprisePolicy:
+        for existing in self._enterprise_policies.get(tenant_id, {}).values():
+            if existing.file_sha256 == policy.file_sha256 and existing.policy_id != policy.policy_id:
+                warning = f"Identical policy content already uploaded as '{existing.name}' (version {existing.version})."
+                if warning not in policy.warnings:
+                    policy.warnings.append(warning)
         self._bucket(self._enterprise_policies, tenant_id)[policy.policy_id] = policy
         self._record(tenant_id, "enterprise_policy.saved", policy.policy_id)
         for clause in policy.clauses:

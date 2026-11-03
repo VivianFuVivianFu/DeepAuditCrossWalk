@@ -6,20 +6,20 @@
   "scenario_count": 22,
   "aggregate_metrics": {
     "applicability_detection": {
-      "tp": 90,
+      "tp": 94,
       "fp": 0,
-      "fn": 4,
+      "fn": 0,
       "precision": 1.0,
-      "recall": 0.9574,
-      "f1": 0.9782
+      "recall": 1.0,
+      "f1": 1.0
     },
     "conditional_detection": {
-      "tp": 19,
+      "tp": 20,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "precision": 1.0,
-      "recall": 0.95,
-      "f1": 0.9744
+      "recall": 1.0,
+      "f1": 1.0
     },
     "not_applicable_detection": {
       "tp": 34,
@@ -38,12 +38,12 @@
       "f1": 0.8148
     },
     "questionnaire_gap_detection": {
-      "tp": 30,
+      "tp": 31,
       "fp": 6,
-      "fn": 5,
-      "precision": 0.8333,
-      "recall": 0.8571,
-      "f1": 0.845
+      "fn": 4,
+      "precision": 0.8378,
+      "recall": 0.8857,
+      "f1": 0.8611
     },
     "enterprise_policy_gap_detection": {
       "tp": 13,
@@ -57,7 +57,7 @@
   "end_to_end_file_import_verification": {
     "xlsx_workbook_import": {
       "passed": true,
-      "questionnaire_id": "AIAF-a66e5a0f8a3b",
+      "questionnaire_id": "AIAF-989c2955d573",
       "core_questions": 1,
       "focus_questions": 1
     },
@@ -310,7 +310,7 @@
         "AU-APRA-CPS234-CONTROLS",
         "AU-APRA-CPS234-TEST",
         "AU-APRA-CPS234-INCIDENT",
-        "AU-APRA-CPG235-QUALITY",
+        "AU-APRA-CPG235-GOV",
         "AU-APRA-CPG235-LIFECYCLE"
       ],
       "expected_not_applicable_subset": [
@@ -350,13 +350,14 @@
           "AU-APRA-CPS234-INCIDENT"
         ],
         "applicability_metrics": {
-          "tp": 8,
+          "tp": 9,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "precision": 1.0,
-          "recall": 0.8889,
-          "f1": 0.9412,
+          "recall": 1.0,
+          "f1": 1.0,
           "tp_items": [
+            "AU-APRA-CPG235-GOV",
             "AU-APRA-CPG235-LIFECYCLE",
             "AU-APRA-CPS220-REVIEW",
             "AU-APRA-CPS220-RMF",
@@ -367,9 +368,7 @@
             "AU-APRA-CPS234-TEST"
           ],
           "fp_items": [],
-          "fn_items": [
-            "AU-APRA-CPG235-QUALITY"
-          ]
+          "fn_items": []
         },
         "conditional_metrics": {
           "tp": 0,
@@ -1488,7 +1487,7 @@
       "expected_applicable_subset": [
         "AU-ASIC-RG271-COMPLAINT",
         "AU-ASIC-RG271-SYSTEMIC",
-        "AU-ASIC-REP798-GOVERNANCE",
+        "AU-ASIC-REP798-AI-GAP",
         "AU-ASIC-RG104-COMPLIANCE-TECH",
         "AU-ASIC-RG105-COMPETENCE"
       ],
@@ -1518,22 +1517,21 @@
           "AU-ASIC-RG271-COMPLAINT"
         ],
         "applicability_metrics": {
-          "tp": 4,
+          "tp": 5,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "precision": 1.0,
-          "recall": 0.8,
-          "f1": 0.8889,
+          "recall": 1.0,
+          "f1": 1.0,
           "tp_items": [
+            "AU-ASIC-REP798-AI-GAP",
             "AU-ASIC-RG104-COMPLIANCE-TECH",
             "AU-ASIC-RG105-COMPETENCE",
             "AU-ASIC-RG271-COMPLAINT",
             "AU-ASIC-RG271-SYSTEMIC"
           ],
           "fp_items": [],
-          "fn_items": [
-            "AU-ASIC-REP798-GOVERNANCE"
-          ]
+          "fn_items": []
         },
         "conditional_metrics": {
           "tp": 1,
@@ -1646,7 +1644,7 @@
       "expected_conditional_subset": [
         "AU-ASIC-RG271-COMPLAINT",
         "AU-ASIC-RG271-SYSTEMIC",
-        "AU-ASIC-REP798-GOVERNANCE",
+        "AU-ASIC-REP798-AI-GAP",
         "AU-PRIV-APP1.7-AUTOMATED"
       ],
       "expected_provisional_covered_subset": [],
@@ -1677,21 +1675,20 @@
           "fn_items": []
         },
         "conditional_metrics": {
-          "tp": 3,
+          "tp": 4,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "precision": 1.0,
-          "recall": 0.75,
-          "f1": 0.8571,
+          "recall": 1.0,
+          "f1": 1.0,
           "tp_items": [
+            "AU-ASIC-REP798-AI-GAP",
             "AU-ASIC-RG271-COMPLAINT",
             "AU-ASIC-RG271-SYSTEMIC",
             "AU-PRIV-APP1.7-AUTOMATED"
           ],
           "fp_items": [],
-          "fn_items": [
-            "AU-ASIC-REP798-GOVERNANCE"
-          ]
+          "fn_items": []
         },
         "not_applicable_metrics": {
           "tp": 1,
@@ -2748,7 +2745,7 @@
       "expected_applicable_subset": [
         "AU-PRIV-APP10-QUALITY",
         "AU-OAIC-APPG-CH6-CH10-INF",
-        "AU-APRA-CPG235-QUALITY",
+        "AU-APRA-CPG235-GOV",
         "AU-APRA-CPG235-LIFECYCLE"
       ],
       "expected_not_applicable_subset": [
@@ -2779,21 +2776,20 @@
           "AU-PRIV-APP10-QUALITY"
         ],
         "applicability_metrics": {
-          "tp": 3,
+          "tp": 4,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "precision": 1.0,
-          "recall": 0.75,
-          "f1": 0.8571,
+          "recall": 1.0,
+          "f1": 1.0,
           "tp_items": [
+            "AU-APRA-CPG235-GOV",
             "AU-APRA-CPG235-LIFECYCLE",
             "AU-OAIC-APPG-CH6-CH10-INF",
             "AU-PRIV-APP10-QUALITY"
           ],
           "fp_items": [],
-          "fn_items": [
-            "AU-APRA-CPG235-QUALITY"
-          ]
+          "fn_items": []
         },
         "conditional_metrics": {
           "tp": 1,
@@ -2913,7 +2909,7 @@
       "expected_applicable_subset": [
         "AU-ASIC-RG104-COMPLIANCE-TECH",
         "AU-ASIC-RG105-COMPETENCE",
-        "AU-ASIC-REP798-GOVERNANCE"
+        "AU-ASIC-REP798-AI-GAP"
       ],
       "expected_not_applicable_subset": [
         "AU-NCCP-S47-CONDUCT",
@@ -2925,7 +2921,7 @@
         "AU-ASIC-RG105-COMPETENCE"
       ],
       "expected_provisional_gap_subset": [
-        "AU-ASIC-REP798-GOVERNANCE"
+        "AU-ASIC-REP798-AI-GAP"
       ],
       "explanatory_evidence": [
         "Verifies that AFSL-specific obligations (RG 104 compliance/resources and RG 105 responsible manager competence) are applicable and covered while credit-licensee obligations (NCCP Act) are excluded."
@@ -2939,20 +2935,19 @@
           "AU-ASIC-RG105-COMPETENCE"
         ],
         "applicability_metrics": {
-          "tp": 2,
+          "tp": 3,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "precision": 1.0,
-          "recall": 0.6667,
-          "f1": 0.8,
+          "recall": 1.0,
+          "f1": 1.0,
           "tp_items": [
+            "AU-ASIC-REP798-AI-GAP",
             "AU-ASIC-RG104-COMPLIANCE-TECH",
             "AU-ASIC-RG105-COMPETENCE"
           ],
           "fp_items": [],
-          "fn_items": [
-            "AU-ASIC-REP798-GOVERNANCE"
-          ]
+          "fn_items": []
         },
         "conditional_metrics": {
           "tp": 0,
@@ -2994,17 +2989,17 @@
           "fn_items": []
         },
         "questionnaire_gap_metrics": {
-          "tp": 0,
+          "tp": 1,
           "fp": 0,
-          "fn": 1,
+          "fn": 0,
           "precision": 1.0,
-          "recall": 0.0,
-          "f1": 0.0,
-          "tp_items": [],
+          "recall": 1.0,
+          "f1": 1.0,
+          "tp_items": [
+            "AU-ASIC-REP798-AI-GAP"
+          ],
           "fp_items": [],
-          "fn_items": [
-            "AU-ASIC-REP798-GOVERNANCE"
-          ]
+          "fn_items": []
         },
         "policy_gap_metrics": null,
         "policy_assessment_summary": {

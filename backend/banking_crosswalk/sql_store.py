@@ -425,6 +425,11 @@ class SQLTenantStore:
     # --- Enterprise Regulatory & Policy Layer SQL Methods ---
 
     def save_enterprise_policy(self, tenant_id, policy):
+        for existing in self.list_enterprise_policies(tenant_id):
+            if existing.file_sha256 == policy.file_sha256 and existing.policy_id != policy.policy_id:
+                warning = f"Identical policy content already uploaded as '{existing.name}' (version {existing.version})."
+                if warning not in policy.warnings:
+                    policy.warnings.append(warning)
         self._save(
             schema.enterprise_policies,
             tenant_id,
