@@ -39,6 +39,7 @@ from .policy import (
     compile_enterprise_baseline,
     extract_enterprise_policy,
     extract_policy_pack,
+    verify_baseline_integrity,
 )
 from .store import ConflictError, NotFoundError, store
 
@@ -203,6 +204,7 @@ class CoverageAssessmentRequest(BaseModel):
     ] = "questionnaire"
     routing_snapshot_id: Optional[str] = None
     enterprise_baseline_id: Optional[str] = None
+    enterprise_baseline_version: Optional[str] = None
     persist: bool = True
 
     @model_validator(mode="after")
@@ -211,8 +213,6 @@ class CoverageAssessmentRequest(BaseModel):
             raise ValueError("Provide at most one of use_case_id or use_case")
         if self.questionnaire_id and self.questionnaire_pack:
             raise ValueError("Provide questionnaire_id or questionnaire_pack, not both")
-        if self.assessment_mode == "enterprise_enhanced" and not self.enterprise_baseline_id:
-            raise ValueError("enterprise_baseline_id is required when assessment_mode is enterprise_enhanced")
         return self
 
 
@@ -508,50 +508,117 @@ def create_coverage_assessment(
         if _allow_ephemeral_crosswalk_state()
         else []
     )
-    is_enterprise_mode = req.assessment_mode == "enterprise_enhanced" or (
-        bool(req.enterprise_baseline_id)
-        and req.assessment_mode not in ("regulatory_only", "provisional")
-    )
-    effective_mode = "enterprise_enhanced" if is_enterprise_mode else "regulatory_only"
+    target_type = req.assessment_target_type or "questionnaire"
+    if target_type == "strategy":
+        raise HTTPException(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED,
+            detail=(
+                "AI Governance Strategy Assessment is not yet implemented in production "
+                "(scheduled for Prompt 2D). Supported target type: 'questionnaire'."
+            ),
+        )
+    elif target_type == "use_case" and not req.questionnaire_id and not req.questionnaire_pack:
+        raise HTTPException(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED,
+            detail=(
+                "Direct AI Use Case Operational Telemetry Assessment without a questionnaire "
+                "is not yet implemented in production (scheduled for Prompt 2E). "
+                "Supported target type: 'questionnaire'."
+            ),
+        )
+
+    mode = req.assessment_mode or "regulatory_only"
 
     enterprise_baseline = None
     enterprise_clauses = []
-    if effective_mode == "enterprise_enhanced":
+
+    if mode == "regulatory_only":
+        if req.enterprise_baseline_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="enterprise_baseline_id cannot be provided when assessment_mode is 'regulatory_only'",
+            )
+        enterprise_baseline = None
+        enterprise_clauses = []
+    elif mode == "enterprise_enhanced":
         if not req.enterprise_baseline_id:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="enterprise_baseline_id is required when assessment_mode is enterprise_enhanced",
+                detail="enterprise_baseline_id is required when assessment_mode is 'enterprise_enhanced'",
             )
         try:
             enterprise_baseline = store.get_enterprise_baseline(
                 x_tenant_id, req.enterprise_baseline_id
             )
-            if enterprise_baseline.status != "active":
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Enterprise baseline '{req.enterprise_baseline_id}' is not active",
+        except NotFoundError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Enterprise baseline not found for this tenant",
+            ) from exc
+
+        if enterprise_baseline.status != "active":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Enterprise baseline '{req.enterprise_baseline_id}' is not active",
+            )
+
+        if (
+            req.enterprise_baseline_version
+            and enterprise_baseline.version != req.enterprise_baseline_version
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"Enterprise baseline version mismatch: expected "
+                    f"'{req.enterprise_baseline_version}', found '{enterprise_baseline.version}'"
+                ),
+            )
+
+        if not verify_baseline_integrity(enterprise_baseline):
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Baseline integrity error: cryptographic fingerprint mismatch",
+            )
+
+        if enterprise_baseline.clause_snapshots:
+            enterprise_clauses = list(enterprise_baseline.clause_snapshots)
+        else:
+            for pid in enterprise_baseline.policy_ids:
+                try:
+                    p = store.get_enterprise_policy(x_tenant_id, pid)
+                    enterprise_clauses.extend(p.clauses)
+                except NotFoundError as exc:
+                    raise HTTPException(
+                        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                        detail=f"Baseline integrity error: referenced policy '{pid}' cannot be resolved for this tenant",
+                    ) from exc
+    elif mode == "provisional":
+        enterprise_baseline = None
+        enterprise_clauses = []
+        if req.enterprise_baseline_id:
+            try:
+                enterprise_baseline = store.get_enterprise_baseline(
+                    x_tenant_id, req.enterprise_baseline_id
                 )
-            for pid in enterprise_baseline.policy_ids:
-                try:
-                    p = store.get_enterprise_policy(x_tenant_id, pid)
-                    enterprise_clauses.extend(p.clauses)
-                except NotFoundError:
-                    pass
-        except NotFoundError as exc:
-            raise _not_found(exc) from exc
-    elif req.enterprise_baseline_id:
-        try:
-            enterprise_baseline = store.get_enterprise_baseline(
-                x_tenant_id, req.enterprise_baseline_id
-            )
-            for pid in enterprise_baseline.policy_ids:
-                try:
-                    p = store.get_enterprise_policy(x_tenant_id, pid)
-                    enterprise_clauses.extend(p.clauses)
-                except NotFoundError:
-                    pass
-        except NotFoundError as exc:
-            raise _not_found(exc) from exc
+                if enterprise_baseline.clause_snapshots:
+                    enterprise_clauses = list(enterprise_baseline.clause_snapshots)
+                else:
+                    for pid in enterprise_baseline.policy_ids:
+                        try:
+                            p = store.get_enterprise_policy(x_tenant_id, pid)
+                            enterprise_clauses.extend(p.clauses)
+                        except NotFoundError:
+                            pass
+            except NotFoundError as exc:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Enterprise baseline not found for this tenant",
+                ) from exc
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unsupported assessment mode '{mode}'",
+        )
 
     assessment = evaluate_questionnaire_coverage(
         tenant_id=x_tenant_id,
@@ -561,6 +628,8 @@ def create_coverage_assessment(
         review_mappings=mappings,
         enterprise_baseline=enterprise_baseline,
         enterprise_clauses=enterprise_clauses,
+        assessment_mode=mode,
+        assessment_target_type=target_type,
     )
     if req.persist:
         store.save_assessment(x_tenant_id, assessment)
