@@ -585,6 +585,254 @@ def evaluate_questionnaire_coverage(
                 enterprise_gaps.append(egap)
                 gaps.append(egap)
 
+        # ─────────────────────────────────────────────────────────────────────
+        # Numeric Approval Threshold & Control Constraint Validation (Prompt 2D)
+        # ─────────────────────────────────────────────────────────────────────
+        # Filter for approved mandatory enterprise clauses with thresholds or approval constraints
+        approved_mandatory_clauses = [
+            c
+            for c in source_clauses
+            if c.mandatory
+            and c.review_status
+            in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+        ]
+
+        # 1. Baseline Internal Conflict Check across approved clauses
+        threshold_map: Dict[float, List[EnterpriseClause]] = defaultdict(list)
+        for c in approved_mandatory_clauses:
+            for t in c.thresholds_aud:
+                threshold_map[t].append(c)
+
+        observed_thresholds = sorted(threshold_map.keys())
+        if len(observed_thresholds) > 1:
+            conflict_gap = GapRecord(
+                gap_id=f"GAP-C-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|internal_threshold_conflict').hex[:16].upper()}",
+                gap_type=GapType.CONTROL_CONFLICT,
+                title="Enterprise policies contain conflicting AUD approval thresholds",
+                severity="high",
+                missing_facets=["single_authoritative_threshold"],
+                recommendation=f"Reconcile contradictory thresholds across approved policies: {observed_thresholds}.",
+                evidence_required=["Approved delegated-authority schedule"],
+                source_type="internal_conflict",
+                required_threshold=observed_thresholds[0],
+                use_case_threshold=observed_thresholds[1],
+            )
+            enterprise_gaps.append(conflict_gap)
+            gaps.append(conflict_gap)
+
+        # 2. Use-Case Threshold & Constraint Validation against approved clauses
+        for clause in approved_mandatory_clauses:
+            policy_threshold = (
+                clause.thresholds_aud[0] if clause.thresholds_aud else None
+            )
+            policy_operator = clause.threshold_operator or ">"
+            policy_currency = clause.threshold_currency or "AUD"
+            policy_timing = clause.approval_timing
+            policy_role = clause.required_approval_role
+
+            # If clause has an implementation status of 'unimplemented' (Category D)
+            if clause.implementation_status == "unimplemented":
+                unimplemented_gap = GapRecord(
+                    gap_id=f"GAP-E-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|unimplemented|{clause.clause_id}').hex[:16].upper()}",
+                    gap_type=GapType.IMPLEMENTATION_EVIDENCE,
+                    title=f"Mandatory enterprise control is marked unimplemented in policy workflow ({clause.clause_id})",
+                    status="open",
+                    severity="high",
+                    policy_clause_id=clause.clause_id,
+                    missing_facets=list(clause.control_facets),
+                    recommendation=f"Deploy the operational approval workflow required by {clause.source_name} ({clause.clause_id}).",
+                    evidence_required=[
+                        "Production deployment verification",
+                        "Operational workflow trace",
+                    ],
+                    owner="Engineering & Controls Owner",
+                    source_type="enterprise_policy",
+                    evidence_missing=True,
+                )
+                enterprise_gaps.append(unimplemented_gap)
+                gaps.append(unimplemented_gap)
+
+            # If policy has a threshold requirement:
+            if policy_threshold is not None:
+                use_case_threshold = use_case.approval_threshold_aud
+                use_case_operator = use_case.approval_threshold_operator or ">"
+                use_case_currency = use_case.approval_threshold_currency or "AUD"
+
+                # Check 1: Missing use-case threshold (Scenario 5)
+                if use_case_threshold is None:
+                    missing_t_gap = GapRecord(
+                        gap_id=f"GAP-C-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|missing_threshold|{clause.clause_id}').hex[:16].upper()}",
+                        gap_type=GapType.CONTROL_CONFLICT,
+                        title=f"Use-case approval threshold is not configured; cannot verify compliance with {clause.clause_id}",
+                        status="open",
+                        severity="medium",
+                        policy_clause_id=clause.clause_id,
+                        missing_facets=["approval_threshold_defined"],
+                        recommendation=(
+                            f"Configure the use-case approval threshold to demonstrate compliance with "
+                            f"{clause.source_name} requirement of {policy_currency} {policy_threshold:g}."
+                        ),
+                        evidence_required=[
+                            "Delegated-authority schedule",
+                            "System configuration",
+                        ],
+                        owner="Use Case Owner",
+                        source_type="enterprise_policy",
+                        required_threshold=policy_threshold,
+                        threshold_operator=policy_operator,
+                        evidence_missing=True,
+                    )
+                    enterprise_gaps.append(missing_t_gap)
+                    gaps.append(missing_t_gap)
+
+                # Check 2: Currency mismatch (Scenario 6)
+                elif policy_currency != use_case_currency:
+                    curr_gap = GapRecord(
+                        gap_id=f"GAP-C-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|currency_mismatch|{clause.clause_id}').hex[:16].upper()}",
+                        gap_type=GapType.CONTROL_CONFLICT,
+                        title=f"Approval threshold currency mismatch for {clause.clause_id}",
+                        status="open",
+                        severity="high",
+                        policy_clause_id=clause.clause_id,
+                        missing_facets=["currency_conversion_verified"],
+                        recommendation=(
+                            f"Enterprise policy threshold is defined in {policy_currency} {policy_threshold:g}, "
+                            f"but use-case is configured in {use_case_currency} {use_case_threshold:g}. "
+                            f"Automated equivalence cannot be assumed without an approved currency conversion rate."
+                        ),
+                        evidence_required=[
+                            "Approved FX policy",
+                            "System multi-currency configuration",
+                        ],
+                        owner="Treasury / Risk Owner",
+                        source_type="enterprise_policy",
+                        required_threshold=policy_threshold,
+                        use_case_threshold=use_case_threshold,
+                        evidence_missing=True,
+                    )
+                    enterprise_gaps.append(curr_gap)
+                    gaps.append(curr_gap)
+
+                # Check 3: Numeric threshold comparison (Scenario 1, 2, 3, 4, 7, 8)
+                else:
+                    is_looser = use_case_threshold > policy_threshold
+                    is_boundary_mismatch = (
+                        use_case_threshold == policy_threshold
+                        and policy_operator == ">="
+                        and use_case_operator == ">"
+                    )
+
+                    if is_looser or is_boundary_mismatch:
+                        has_exception = bool(use_case.has_approved_exception)
+                        status_str = "in_review" if has_exception else "open"
+                        severity_str = "medium" if has_exception else "critical"
+
+                        title_reason = (
+                            f"Configured approval threshold ({use_case_currency} {use_case_threshold:g}) exceeds approved policy threshold ({policy_currency} {policy_threshold:g})"
+                            if is_looser
+                            else f"Configured threshold boundary operator ('{use_case_operator}') fails to cover exact boundary for '{policy_operator} {policy_currency} {policy_threshold:g}'"
+                        )
+                        rec_str = (
+                            f"Align system threshold {use_case_operator} {use_case_currency} {use_case_threshold:g} to policy requirement "
+                            f"{policy_operator} {policy_currency} {policy_threshold:g} (exposure interval: {policy_threshold:g} to {use_case_threshold:g}), or obtain an authorised policy exception."
+                            if is_looser
+                            else f"Update use-case operator from '{use_case_operator}' to '{policy_operator}' to prevent unapproved execution at boundary value {policy_currency} {policy_threshold:g}."
+                        )
+                        if has_exception:
+                            rec_str += f" [Documented Exception: {use_case.exception_reference or 'Authorised'}]"
+
+                        t_gap = GapRecord(
+                            gap_id=f"GAP-C-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|threshold_mismatch|{clause.clause_id}').hex[:16].upper()}",
+                            gap_type=GapType.CONTROL_CONFLICT,
+                            title=title_reason,
+                            status=status_str,
+                            severity=severity_str,
+                            policy_clause_id=clause.clause_id,
+                            missing_facets=["approval_threshold_aligned"],
+                            recommendation=rec_str,
+                            evidence_required=[
+                                "Delegated-authority policy",
+                                "Production configuration",
+                                *(
+                                    [
+                                        f"Authorised exception ({use_case.exception_reference})"
+                                    ]
+                                    if has_exception
+                                    else ["Exception approval"]
+                                ),
+                            ],
+                            owner="Use Case Controls Owner",
+                            source_type="enterprise_policy",
+                            required_threshold=policy_threshold,
+                            use_case_threshold=use_case_threshold,
+                            threshold_operator=policy_operator,
+                            use_case_operator=use_case_operator,
+                            evidence_missing=not has_exception,
+                        )
+                        enterprise_gaps.append(t_gap)
+                        gaps.append(t_gap)
+
+            # Check 4: Approval Timing (Scenario 10)
+            if (
+                policy_timing == "pre_execution"
+                and use_case.approval_timing == "post_execution"
+            ):
+                timing_gap = GapRecord(
+                    gap_id=f"GAP-C-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|timing_mismatch|{clause.clause_id}').hex[:16].upper()}",
+                    gap_type=GapType.CONTROL_CONFLICT,
+                    title=f"Approval timing mismatch for {clause.clause_id}: pre-execution block required",
+                    status="open",
+                    severity="critical",
+                    policy_clause_id=clause.clause_id,
+                    missing_facets=["pre_execution_block"],
+                    recommendation=(
+                        f"Enterprise policy '{clause.source_name}' mandates pre-execution blocking approval, "
+                        f"but use-case is configured for post-execution review. Configure a pre-execution blocking control."
+                    ),
+                    evidence_required=[
+                        "Pre-execution control configuration",
+                        "Execution blocking test trace",
+                    ],
+                    owner="Engineering & Architecture",
+                    source_type="enterprise_policy",
+                    timing_required="pre_execution",
+                    use_case_timing="post_execution",
+                    evidence_missing=True,
+                )
+                enterprise_gaps.append(timing_gap)
+                gaps.append(timing_gap)
+
+            # Check 5: Approval Authority Role (Scenario 11)
+            if (
+                policy_role
+                and use_case.approval_role
+                and policy_role.lower() != use_case.approval_role.lower()
+            ):
+                role_gap = GapRecord(
+                    gap_id=f"GAP-C-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|role_mismatch|{clause.clause_id}').hex[:16].upper()}",
+                    gap_type=GapType.CONTROL_CONFLICT,
+                    title=f"Approval authority role mismatch for {clause.clause_id}: {policy_role} required",
+                    status="open",
+                    severity="high",
+                    policy_clause_id=clause.clause_id,
+                    missing_facets=["delegated_authority_role_aligned"],
+                    recommendation=(
+                        f"Enterprise policy '{clause.source_name}' requires '{policy_role}' approval, "
+                        f"but use-case specifies '{use_case.approval_role}'. Elevate approval routing to '{policy_role}'."
+                    ),
+                    evidence_required=[
+                        "Delegated authority schedule",
+                        "Role-based access control configuration",
+                    ],
+                    owner="Delegated Authority Owner",
+                    source_type="enterprise_policy",
+                    role_required=policy_role,
+                    use_case_role=use_case.approval_role,
+                    evidence_missing=True,
+                )
+                enterprise_gaps.append(role_gap)
+                gaps.append(role_gap)
+
     provenance = {
         "assessment_mode": effective_mode,
         "assessment_target_type": assessment_target_type,

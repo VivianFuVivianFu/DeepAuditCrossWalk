@@ -12,7 +12,7 @@ import re
 import secrets
 import uuid
 from datetime import datetime
-from typing import Dict, List, Optional, Sequence, Set
+from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from .applicability import decide_applicability
 from .models import (
@@ -49,17 +49,151 @@ INJECTION_PATTERNS = [
 ]
 
 MANDATORY_PATTERN = re.compile(
-    r"\b(must|shall|required to|requires?|may not|must not|is prohibited|will not)\b",
+    r"(?<!does not\s)(?<!do not\s)(?<!not\s)(?<!no\s)\b(must|shall|required to|is required|are required|requires?|may not|must not|is prohibited|are prohibited|will not|mandatory)\b",
     re.IGNORECASE,
 )
 NEGATION_OR_EXEMPTION_PATTERN = re.compile(
-    r"\b(does not require|do not require|not required|no requirement|is exempt|are exempt|exemption|is prohibited|are prohibited|prohibits?|must not be used)\b",
+    r"\b(does not require|do not require|not required|no requirement for|no requirement to|is exempt|are exempt|exemption|must not be used)\b",
     re.IGNORECASE,
 )
-AUD_PATTERN = re.compile(
-    r"(?:AUD\s*\$?\s*|\$\s*)(\d+(?:,\d{3})*(?:\.\d{1,2})?)(?![\d,])",
+ABSENCE_OF_CONTROL_PATTERN = re.compile(
+    r"\b(does not require|do not require|not required|no requirement for|no requirement to|never required|is not required|are not required)\b",
     re.IGNORECASE,
 )
+MERE_TOPIC_REFERENCE_PATTERN = re.compile(
+    r"\b(is considering|are considering|considering introducing|considering adopting|exploring(?: the)?|evaluating the introduction of|discussions are underway|plans to explore|may consider)\b",
+    re.IGNORECASE,
+)
+PROHIBITION_BLOCK_PATTERN = re.compile(
+    r"\b(must not execute|shall not execute|cannot proceed|prohibited prior to|prior to (?:payment|execution|transaction release)|before (?:payment|execution)|bypassing .* is prohibited|under no circumstances shall .* be bypassed|without .* is prohibited)\b",
+    re.IGNORECASE,
+)
+STAFF_PROHIBITION_PATTERN = re.compile(
+    r"\b(staff are prohibited from|employees are prohibited from|prohibited from conducting|prohibited from using)\b",
+    re.IGNORECASE,
+)
+EXEMPTION_PATTERN = re.compile(
+    r"\b(is exempt|are exempt|exemption for|exempt from)\b",
+    re.IGNORECASE,
+)
+UNIMPLEMENTED_PATTERN = re.compile(
+    r"\b(not yet implemented|has not yet been implemented|have not yet been implemented|workflow has not been (?:built|deployed)|not currently operational|not currently implemented|pending implementation)\b",
+    re.IGNORECASE,
+)
+CONDITIONAL_PATTERN = re.compile(
+    r"\b(unless an authorised exception applies|unless approved|except where|subject to prior approval of an exception|in the event of|provided that)\b",
+    re.IGNORECASE,
+)
+CURRENCY_PATTERN = re.compile(
+    r"\b(AUD|USD|EUR|GBP)\b",
+    re.IGNORECASE,
+)
+THRESHOLD_AMOUNT_PATTERN = re.compile(
+    r"(?:(?:AUD|USD|EUR|GBP)\s*\$?\s*|\$\s*)(\d+(?:,\d{3})*(?:\.\d{1,2})?)(?![\d,])",
+    re.IGNORECASE,
+)
+AUD_PATTERN = THRESHOLD_AMOUNT_PATTERN
+
+
+def _detect_threshold_operator(clause_text: str) -> Optional[str]:
+    lower = clause_text.lower()
+    if re.search(r"\b(at or above|at least|greater than or equal to|>=)\b", lower):
+        return ">="
+    if re.search(r"\b(exceeding|above|greater than|over|>)\b", lower):
+        return ">"
+    if re.search(r"\b(up to and including|at most|less than or equal to|<=)\b", lower):
+        return "<="
+    if re.search(r"\b(below|less than|<)\b", lower):
+        return "<"
+    return None
+
+
+def _detect_threshold_currency(clause_text: str) -> Optional[str]:
+    match = CURRENCY_PATTERN.search(clause_text)
+    if match:
+        return match.group(1).upper()
+    if "$" in clause_text:
+        return "AUD"
+    return None
+
+
+def _detect_approval_timing(clause_text: str) -> Optional[str]:
+    lower = clause_text.lower()
+    if any(
+        p in lower
+        for p in (
+            "before payment",
+            "before execution",
+            "prior to payment",
+            "prior to execution",
+            "prior to transaction release",
+            "prior to",
+            "must not execute",
+            "shall not execute",
+            "cannot proceed",
+            "prohibited prior to",
+            "pre-execution",
+            "pre execution",
+        )
+    ):
+        return "pre_execution"
+    if any(
+        p in lower
+        for p in (
+            "after payment",
+            "after execution",
+            "post-execution",
+            "post execution",
+            "retrospective",
+            "audit review after",
+            "subsequent review",
+        )
+    ):
+        return "post_execution"
+    return None
+
+
+def _detect_approval_role(clause_text: str) -> Optional[str]:
+    lower = clause_text.lower()
+    if "senior manager" in lower:
+        return "Senior Manager"
+    if "authorised officer" in lower or "authorized officer" in lower:
+        return "Authorised Officer"
+    if "risk lead" in lower:
+        return "Risk Lead"
+    if "head of" in lower:
+        return "Head of Department"
+    if "two-up manager" in lower or "dual sign-off" in lower or "four-eyes" in lower:
+        return "Two-Up / Dual Sign-off"
+    return None
+
+
+def _detect_conditions(clause_text: str) -> Tuple[bool, Optional[str]]:
+    m = re.search(
+        r"\b(in the event of [^,.;]+|provided that [^,.;]+|where [^,.;]+)\b",
+        clause_text,
+        re.IGNORECASE,
+    )
+    if m:
+        return True, m.group(0).strip()
+    return False, None
+
+
+def _detect_exceptions(clause_text: str) -> Tuple[bool, Optional[str]]:
+    m = re.search(
+        r"\b(unless [^,.;]+|except where [^,.;]+|exempt for [^,.;]+|exempt from [^,.;]+)\b",
+        clause_text,
+        re.IGNORECASE,
+    )
+    if m:
+        return True, m.group(0).strip()
+    return False, None
+
+
+def _detect_implementation_status(clause_text: str) -> Optional[str]:
+    if UNIMPLEMENTED_PATTERN.search(clause_text):
+        return "unimplemented"
+    return None
 
 
 GENERIC_FACET_PATTERNS: Dict[str, Sequence[str]] = {
@@ -185,6 +319,58 @@ def extract_policy_pack(
     clauses: List[PolicyClause] = []
     for raw_clause in _split_clauses(text):
         clause_lower = raw_clause.lower()
+
+        # Deterministic Category A: Absence of required control
+        if ABSENCE_OF_CONTROL_PATTERN.search(raw_clause):
+            clauses.append(
+                PolicyClause(
+                    clause_id=_stable_clause_id(name, raw_clause),
+                    source_name=name,
+                    text=raw_clause,
+                    mandatory=False,
+                    control_facets=[],
+                    thresholds_aud=[],
+                )
+            )
+            continue
+
+        # Deterministic Category E: Policy exemption without active requirement
+        if EXEMPTION_PATTERN.search(raw_clause) and not any(
+            p in clause_lower for p in ("threshold", "require", "mandatory", "must")
+        ):
+            has_exc, _ = _detect_exceptions(raw_clause)
+            clauses.append(
+                PolicyClause(
+                    clause_id=_stable_clause_id(name, raw_clause),
+                    source_name=name,
+                    text=raw_clause,
+                    mandatory=False,
+                    control_facets=[],
+                    thresholds_aud=[],
+                    has_exception_clause=has_exc,
+                )
+            )
+            continue
+
+        # Deterministic Category F: Mere topic reference
+        is_topic = bool(MERE_TOPIC_REFERENCE_PATTERN.search(raw_clause))
+        has_mandatory_words = any(
+            w in clause_lower
+            for w in ("must", "shall", "is required", "are required", "mandatory")
+        )
+        if is_topic and not has_mandatory_words:
+            clauses.append(
+                PolicyClause(
+                    clause_id=_stable_clause_id(name, raw_clause),
+                    source_name=name,
+                    text=raw_clause,
+                    mandatory=False,
+                    control_facets=[],
+                    thresholds_aud=[],
+                )
+            )
+            continue
+
         facets = [
             facet
             for facet, phrases in GENERIC_FACET_PATTERNS.items()
@@ -195,26 +381,47 @@ def extract_policy_pack(
         ]
         if thresholds and "approval_threshold_defined" not in facets:
             facets.append("approval_threshold_defined")
-        if "human_approval_required" in facets and any(
+
+        is_prohib_block = bool(PROHIBITION_BLOCK_PATTERN.search(raw_clause))
+        if ("human_approval_required" in facets or is_prohib_block) and any(
             phrase in clause_lower
             for phrase in (
                 "before payment",
                 "before execution",
                 "prior to payment",
                 "prior to execution",
+                "prior to",
                 "must not execute",
+                "cannot proceed",
+                "prohibited prior to",
             )
         ):
             if "pre_execution_block" not in facets:
                 facets.append("pre_execution_block")
+            if "human_approval_required" not in facets and any(
+                p in clause_lower for p in ("approval", "sign-off", "officer", "authoris")
+            ):
+                facets.append("human_approval_required")
+
+        is_mand = bool(MANDATORY_PATTERN.search(raw_clause)) or is_prohib_block
+        is_cond, _ = _detect_conditions(raw_clause)
+        has_exc, _ = _detect_exceptions(raw_clause)
+
         clauses.append(
             PolicyClause(
                 clause_id=_stable_clause_id(name, raw_clause),
                 source_name=name,
                 text=raw_clause,
-                mandatory=bool(MANDATORY_PATTERN.search(raw_clause)),
+                mandatory=is_mand,
                 control_facets=facets,
                 thresholds_aud=thresholds,
+                threshold_operator=_detect_threshold_operator(raw_clause),
+                threshold_currency=_detect_threshold_currency(raw_clause),
+                approval_timing=_detect_approval_timing(raw_clause),
+                required_approval_role=_detect_approval_role(raw_clause),
+                is_conditional=is_cond,
+                has_exception_clause=has_exc,
+                implementation_status=_detect_implementation_status(raw_clause),
             )
         )
 
@@ -579,6 +786,94 @@ def extract_enterprise_policy(
     clauses: List[EnterpriseClause] = []
     for raw_clause in _split_clauses(text):
         clause_lower = raw_clause.lower()
+        clause_id = _stable_clause_id(name, raw_clause)
+
+        # Deterministic Category A: Absence of required control
+        if ABSENCE_OF_CONTROL_PATTERN.search(raw_clause):
+            clauses.append(
+                EnterpriseClause(
+                    clause_id=clause_id,
+                    policy_id=policy_id,
+                    tenant_id=tenant_id,
+                    source_name=name,
+                    text=raw_clause,
+                    mandatory=False,
+                    authority_level=authority_level,
+                    control_facets=[],
+                    thresholds_aud=[],
+                    is_unmapped=True,
+                    control_mappings=[],
+                )
+            )
+            continue
+
+        # Deterministic Category B (staff prohibition on activity): e.g. BASE-13
+        if STAFF_PROHIBITION_PATTERN.search(raw_clause):
+            clauses.append(
+                EnterpriseClause(
+                    clause_id=clause_id,
+                    policy_id=policy_id,
+                    tenant_id=tenant_id,
+                    source_name=name,
+                    text=raw_clause,
+                    mandatory=True,
+                    authority_level=authority_level,
+                    control_facets=[],
+                    thresholds_aud=[],
+                    is_unmapped=True,
+                    control_mappings=[],
+                )
+            )
+            continue
+
+        # Deterministic Category E: Policy exemption without active requirement
+        if EXEMPTION_PATTERN.search(raw_clause) and not any(
+            p in clause_lower for p in ("threshold", "require", "mandatory", "must")
+        ):
+            has_exc, exc_desc = _detect_exceptions(raw_clause)
+            clauses.append(
+                EnterpriseClause(
+                    clause_id=clause_id,
+                    policy_id=policy_id,
+                    tenant_id=tenant_id,
+                    source_name=name,
+                    text=raw_clause,
+                    mandatory=False,
+                    authority_level=authority_level,
+                    control_facets=[],
+                    thresholds_aud=[],
+                    is_unmapped=True,
+                    control_mappings=[],
+                    has_exception_clause=has_exc,
+                    exception_description=exc_desc,
+                )
+            )
+            continue
+
+        # Deterministic Category F: Mere topic reference
+        is_topic = bool(MERE_TOPIC_REFERENCE_PATTERN.search(raw_clause))
+        has_mandatory_words = any(
+            w in clause_lower
+            for w in ("must", "shall", "is required", "are required", "mandatory")
+        )
+        if is_topic and not has_mandatory_words:
+            clauses.append(
+                EnterpriseClause(
+                    clause_id=clause_id,
+                    policy_id=policy_id,
+                    tenant_id=tenant_id,
+                    source_name=name,
+                    text=raw_clause,
+                    mandatory=False,
+                    authority_level=authority_level,
+                    control_facets=[],
+                    thresholds_aud=[],
+                    is_unmapped=True,
+                    control_mappings=[],
+                )
+            )
+            continue
+
         facets = [
             facet
             for facet, phrases in ENTERPRISE_FACET_PATTERNS.items()
@@ -589,21 +884,29 @@ def extract_enterprise_policy(
         ]
         if thresholds and "approval_threshold_defined" not in facets:
             facets.append("approval_threshold_defined")
-        if "human_approval_required" in facets and any(
+
+        is_prohib_block = bool(PROHIBITION_BLOCK_PATTERN.search(raw_clause))
+        if ("human_approval_required" in facets or is_prohib_block) and any(
             phrase in clause_lower
             for phrase in (
                 "before payment",
                 "before execution",
                 "prior to payment",
                 "prior to execution",
+                "prior to",
                 "must not execute",
+                "cannot proceed",
+                "prohibited prior to",
             )
         ):
             if "pre_execution_block" not in facets:
                 facets.append("pre_execution_block")
+            if "human_approval_required" not in facets and any(
+                p in clause_lower for p in ("approval", "sign-off", "officer", "authoris")
+            ):
+                facets.append("human_approval_required")
 
-        clause_id = _stable_clause_id(name, raw_clause)
-        is_negated = bool(NEGATION_OR_EXEMPTION_PATTERN.search(raw_clause))
+        is_negated = bool(NEGATION_OR_EXEMPTION_PATTERN.search(raw_clause)) and not is_prohib_block
 
         # Generate candidate mappings to 33 Unified Controls only if clause is NOT a negation or exemption
         mappings: List[ClauseControlMapping] = []
@@ -622,6 +925,10 @@ def extract_enterprise_policy(
                         )
                     )
 
+        is_mand = bool(MANDATORY_PATTERN.search(raw_clause)) or is_prohib_block
+        is_cond, cond_desc = _detect_conditions(raw_clause)
+        has_exc, exc_desc = _detect_exceptions(raw_clause)
+
         clauses.append(
             EnterpriseClause(
                 clause_id=clause_id,
@@ -629,12 +936,21 @@ def extract_enterprise_policy(
                 tenant_id=tenant_id,
                 source_name=name,
                 text=raw_clause,
-                mandatory=bool(MANDATORY_PATTERN.search(raw_clause)),
+                mandatory=is_mand,
                 authority_level=authority_level,
                 control_facets=facets,
                 thresholds_aud=thresholds,
                 is_unmapped=len(mappings) == 0,
                 control_mappings=mappings,
+                threshold_operator=_detect_threshold_operator(raw_clause),
+                threshold_currency=_detect_threshold_currency(raw_clause),
+                approval_timing=_detect_approval_timing(raw_clause),
+                required_approval_role=_detect_approval_role(raw_clause),
+                is_conditional=is_cond,
+                condition_description=cond_desc,
+                has_exception_clause=has_exc,
+                exception_description=exc_desc,
+                implementation_status=_detect_implementation_status(raw_clause),
             )
         )
 

@@ -513,8 +513,8 @@ def create_coverage_assessment(
         raise HTTPException(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
             detail=(
-                "AI Governance Strategy Assessment is not yet implemented in production "
-                "(scheduled for Prompt 2D). Supported target type: 'questionnaire'."
+                "AI Governance Strategy Assessment is not yet implemented in production. "
+                "Supported target type: 'questionnaire'."
             ),
         )
     elif target_type == "use_case" and not req.questionnaire_id and not req.questionnaire_pack:
@@ -522,8 +522,7 @@ def create_coverage_assessment(
             status_code=status.HTTP_501_NOT_IMPLEMENTED,
             detail=(
                 "Direct AI Use Case Operational Telemetry Assessment without a questionnaire "
-                "is not yet implemented in production (scheduled for Prompt 2E). "
-                "Supported target type: 'questionnaire'."
+                "is not yet implemented in production. Supported target type: 'questionnaire'."
             ),
         )
 
