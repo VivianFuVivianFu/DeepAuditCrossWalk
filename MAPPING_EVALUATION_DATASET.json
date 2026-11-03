@@ -1,0 +1,523 @@
+{
+  "metadata": {
+    "dataset_name": "DeepAudit Crosswalk Semantic Mapping & Coverage Evaluation Dataset",
+    "version": "1.0.0",
+    "generated_at": "2026-11-04T02:20:00Z",
+    "total_cases": 63,
+    "human_verified_cases": 25,
+    "synthetic_reference_cases": 36,
+    "ambiguous_legal_cases": 2
+  },
+  "baseline_construction_cases": [
+    {
+      "id": "BASE-01",
+      "category": "exact_match",
+      "text": "Human approval is required for all automated payment refund executions.",
+      "expected_facets": [
+        "human_approval_required"
+      ],
+      "expected_control": "CTRL-GOV-OVERSIGHT",
+      "notes": "Exact match for 'human approval'"
+    },
+    {
+      "id": "BASE-02",
+      "category": "exact_match",
+      "text": "Security incident response plans must be tested systematically at least annually.",
+      "expected_facets": [
+        "incident_response_tested"
+      ],
+      "expected_control": "CTRL-TECH-INCIDENT-RESPONSE",
+      "notes": "Exact match for 'incident response'"
+    },
+    {
+      "id": "BASE-03",
+      "category": "exact_match",
+      "text": "Independent review and audit of model validation must be conducted by internal audit.",
+      "expected_facets": [
+        "independent_review_conducted"
+      ],
+      "expected_control": "CTRL-GOV-AUDITABILITY",
+      "notes": "Exact match for 'independent review'"
+    },
+    {
+      "id": "BASE-04",
+      "category": "exact_match",
+      "text": "All customer dispute complaint handling must adhere to internal dispute resolution procedures.",
+      "expected_facets": [
+        "complaint_management_procedure"
+      ],
+      "expected_control": "CTRL-COMPL-DISPUTE-RESOLUTION",
+      "notes": "Exact match for 'dispute resolution'"
+    },
+    {
+      "id": "BASE-05",
+      "category": "exact_match",
+      "text": "Third-party service provider contracts must specify business continuity and exit strategies.",
+      "expected_facets": [
+        "third_party_due_diligence"
+      ],
+      "expected_control": "CTRL-TPS-VENDOR-ASSESSMENT",
+      "notes": "Exact match for 'third-party' and 'due diligence'"
+    },
+    {
+      "id": "BASE-06",
+      "category": "semantic_synonym",
+      "text": "Manual sign-off and four-eyes authorization is mandatory prior to releasing batch disbursements.",
+      "expected_facets": [
+        "human_approval_required"
+      ],
+      "expected_control": "CTRL-GOV-OVERSIGHT",
+      "notes": "Banking terminology 'four-eyes authorization' and 'manual sign-off' instead of 'human approval'"
+    },
+    {
+      "id": "BASE-07",
+      "category": "semantic_synonym",
+      "text": "Statistical parity across demographic sub-populations must be evaluated during credit scorecard calibration.",
+      "expected_facets": [
+        "bias_testing_performed"
+      ],
+      "expected_control": "CTRL-FAIR-BIAS-EVALUATION",
+      "notes": "Data science term 'statistical parity across demographic sub-populations' instead of 'bias testing'"
+    },
+    {
+      "id": "BASE-08",
+      "category": "semantic_synonym",
+      "text": "Cryptographic material must reside exclusively inside FIPS 140-3 Level 3 hardware security modules with dual custody.",
+      "expected_facets": [
+        "encryption_enforced"
+      ],
+      "expected_control": "CTRL-TECH-ACCESS-SECURITY",
+      "notes": "Technical standard 'FIPS 140-3 HSM with dual custody' instead of generic 'encryption'"
+    },
+    {
+      "id": "BASE-09",
+      "category": "semantic_synonym",
+      "text": "Data subject rectification and erasure requests must be fulfilled within 30 calendar days.",
+      "expected_facets": [
+        "data_subject_rights_supported"
+      ],
+      "expected_control": "CTRL-DATA-PRIVACY-RIGHTS",
+      "notes": "Privacy term 'Data subject rectification and erasure' instead of 'access and correction'"
+    },
+    {
+      "id": "BASE-10",
+      "category": "semantic_synonym",
+      "text": "Counterparty insolvency contingencies and operational substitution protocols must be documented for cloud infrastructure.",
+      "expected_facets": [
+        "third_party_due_diligence"
+      ],
+      "expected_control": "CTRL-TPS-VENDOR-ASSESSMENT",
+      "notes": "CPS 230 term 'operational substitution protocols' instead of 'vendor exit strategy'"
+    },
+    {
+      "id": "BASE-11",
+      "category": "negated_control",
+      "text": "Under no circumstances shall human approval be bypassed or omitted for automated credit limits.",
+      "expected_facets": [
+        "human_approval_required"
+      ],
+      "expected_control": "CTRL-GOV-OVERSIGHT",
+      "notes": "Affirmative control expressed as a prohibition of bypass"
+    },
+    {
+      "id": "BASE-12",
+      "category": "negated_control",
+      "text": "This standalone sandbox environment does not require human approval or multi-factor authentication.",
+      "expected_facets": [],
+      "expected_control": null,
+      "notes": "Explicit negative exemption: control does NOT apply. Substring matcher might falsely trigger on 'human approval'"
+    },
+    {
+      "id": "BASE-13",
+      "category": "negated_control",
+      "text": "Staff are prohibited from conducting ad-hoc bias testing using production customer PII.",
+      "expected_facets": [],
+      "expected_control": null,
+      "notes": "Prohibition of using PII in testing; keyword 'bias testing' should not be interpreted as satisfying model validation"
+    },
+    {
+      "id": "BASE-14",
+      "category": "partial_description",
+      "text": "The team should maintain documentation of models where practicable.",
+      "expected_facets": [],
+      "expected_control": null,
+      "notes": "Non-mandatory ('should', 'where practicable') aspirational statement, lacks mandatory binding force"
+    },
+    {
+      "id": "BASE-15",
+      "category": "partial_description",
+      "text": "Logging is enabled on the web tier.",
+      "expected_facets": [],
+      "expected_control": null,
+      "notes": "Generic log mention; does NOT satisfy 7-year immutable audit trail under APRA CPS 234"
+    },
+    {
+      "id": "BASE-16",
+      "category": "partial_description",
+      "text": "Third-party models are reviewed informally during vendor selection.",
+      "expected_facets": [],
+      "expected_control": null,
+      "notes": "Informal review does not meet formal CPS 230 material service provider due diligence"
+    },
+    {
+      "id": "BASE-17",
+      "category": "threshold_conflict",
+      "text": "All automated customer refunds exceeding AUD 1,000 require senior manager approval.",
+      "expected_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_control": "CTRL-FIN-APPROVAL-THRESHOLDS",
+      "notes": "Threshold 1000 AUD"
+    },
+    {
+      "id": "BASE-18",
+      "category": "threshold_conflict",
+      "text": "All automated dispute payments above AUD 250 must be escalated for branch manager sign-off.",
+      "expected_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_control": "CTRL-FIN-APPROVAL-THRESHOLDS",
+      "notes": "Threshold 250 AUD (conflicts with 1000 AUD in BASE-17)"
+    },
+    {
+      "id": "BASE-19",
+      "category": "conditional_obligation",
+      "text": "In the event of Severity 1 core banking downtime, human approval thresholds are temporarily raised to AUD 5,000 for verified essential services.",
+      "expected_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_control": "CTRL-FIN-APPROVAL-THRESHOLDS",
+      "notes": "Disaster recovery conditional exception"
+    },
+    {
+      "id": "BASE-20",
+      "category": "conditional_obligation",
+      "text": "Model bias audits are exempt for heuristic rule-based systems processing fewer than 100 applications per month.",
+      "expected_facets": [],
+      "expected_control": null,
+      "notes": "De minimis exemption condition"
+    },
+    {
+      "id": "BASE-21",
+      "category": "duplicate_requirement",
+      "text": "Customer personal data retention must not exceed 7 years post account closure.",
+      "expected_facets": [
+        "data_retention_limited"
+      ],
+      "expected_control": "CTRL-DATA-RETENTION-DISPOSAL",
+      "notes": "Policy A retention rule"
+    },
+    {
+      "id": "BASE-22",
+      "category": "duplicate_requirement",
+      "text": "Under APP 11, customer records and transaction telemetry must be permanently deleted after 7 years.",
+      "expected_facets": [
+        "data_retention_limited"
+      ],
+      "expected_control": "CTRL-DATA-RETENTION-DISPOSAL",
+      "notes": "Policy B duplicate of BASE-21 with slight phrasing difference"
+    },
+    {
+      "id": "BASE-23",
+      "category": "exceeds_minimum",
+      "text": "All generative AI prompts and completions must be logged to write-once WORM storage with a 10-year retention horizon and cryptographic hash-chaining.",
+      "expected_facets": [
+        "audit_trail_immutable"
+      ],
+      "expected_control": "CTRL-TECH-OBSERVABILITY",
+      "notes": "Exceeds standard 7-year CPS 234 requirement with 10-year WORM storage"
+    },
+    {
+      "id": "BASE-24",
+      "category": "unrepresented_requirement",
+      "text": "Indigenous data sovereignty protocols and consultation with First Nations community representatives must precede training on regional acoustic dialect datasets.",
+      "expected_facets": [],
+      "expected_control": null,
+      "notes": "Specific cultural governance requirement not covered in standard 33 controls"
+    },
+    {
+      "id": "BASE-25",
+      "category": "superseded_version",
+      "text": "Legacy Credit Policy 2021: Machine learning algorithms may deploy with single-tier manager sign-off.",
+      "expected_facets": [
+        "human_approval_required"
+      ],
+      "expected_control": "CTRL-GOV-OVERSIGHT",
+      "notes": "Superseded 2021 policy version conflicting with 2026 multi-tier approval policy"
+    }
+  ],
+  "strategy_assessment_cases": [
+    {
+      "id": "STRAT-01",
+      "name": "Clear Board AI Governance",
+      "text": "The Board Risk Committee retains ultimate accountability for enterprise AI adoption and reviews high-risk AI inventory semi-annually.",
+      "expected_covered": true,
+      "domain": "governance"
+    },
+    {
+      "id": "STRAT-02",
+      "name": "Vague Ethical Aspiration",
+      "text": "We believe in ethical, responsible AI and aim to do the right thing for all our valued customers.",
+      "expected_covered": false,
+      "domain": "governance",
+      "reason": "No actionable commitment"
+    },
+    {
+      "id": "STRAT-03",
+      "name": "Missing Human Oversight",
+      "text": "Autonomous credit decisioning will scale unconstrained across digital channels to optimize operational throughput.",
+      "expected_covered": false,
+      "domain": "human_oversight",
+      "reason": "Omits human-in-the-loop oversight"
+    },
+    {
+      "id": "STRAT-04",
+      "name": "Formal Algorithm Validation Cadence",
+      "text": "All quantitative AI models undergo independent technical validation by Model Risk Management prior to deployment and annually thereafter.",
+      "expected_covered": true,
+      "domain": "model_risk"
+    },
+    {
+      "id": "STRAT-05",
+      "name": "Aspirational Fairness Consideration",
+      "text": "Where practicable, project teams are encouraged to think about fairness when selecting training sets.",
+      "expected_covered": false,
+      "domain": "fairness",
+      "reason": "Non-mandatory discretionary phrasing"
+    },
+    {
+      "id": "STRAT-06",
+      "name": "Strict Model Explainability Mandate",
+      "text": "Adverse credit decisions generated or assisted by AI must produce legally compliant reasons for decision under NCCP Act and ASIC guidance.",
+      "expected_covered": true,
+      "domain": "transparency"
+    },
+    {
+      "id": "STRAT-07",
+      "name": "Missing Third-Party Model Governance",
+      "text": "Third-party commercial cloud AI APIs are consumed as standard SaaS utilities under standard terms.",
+      "expected_covered": false,
+      "domain": "third_party",
+      "reason": "Fails APRA CPS 230 third-party material risk governance"
+    },
+    {
+      "id": "STRAT-08",
+      "name": "Comprehensive CPS 230 Vendor AI Due Diligence",
+      "text": "Material AI service providers must undergo formal operational risk review, fourth-party subcontracting assessment, and contractual audit-rights verification.",
+      "expected_covered": true,
+      "domain": "third_party"
+    },
+    {
+      "id": "STRAT-09",
+      "name": "Uncommitted Cybersecurity Strategy",
+      "text": "AI security is an important emerging topic which IT operations intends to address in future roadmaps.",
+      "expected_covered": false,
+      "domain": "cybersecurity",
+      "reason": "Future intent without operational commitment"
+    },
+    {
+      "id": "STRAT-10",
+      "name": "Binding Cyber Testing Framework",
+      "text": "Annual red-teaming, prompt injection resilience testing, and external cryptographic assessment are mandatory for public-facing LLMs.",
+      "expected_covered": true,
+      "domain": "cybersecurity"
+    },
+    {
+      "id": "STRAT-11",
+      "name": "Missing Privacy Governance Structure",
+      "text": "Teams are advised to consult general privacy policies available on the intranet.",
+      "expected_covered": false,
+      "domain": "privacy",
+      "reason": "No formal Privacy Impact Assessment (PIA) mandate"
+    },
+    {
+      "id": "STRAT-12",
+      "name": "Mandatory Privacy Impact Assessment",
+      "text": "A formal Privacy Impact Assessment signed by the Data Protection Officer is mandatory prior to processing personal data in AI models.",
+      "expected_covered": true,
+      "domain": "privacy"
+    }
+  ],
+  "questionnaire_assessment_cases": [
+    {
+      "id": "QUEST-01",
+      "question": "Does an executive committee approve high-risk AI systems?",
+      "expected_valid": true,
+      "facet": "governance_oversight",
+      "notes": "Assesses executive approval"
+    },
+    {
+      "id": "QUEST-02",
+      "question": "Have you considered ethical implications?",
+      "expected_valid": false,
+      "facet": "ethics_evaluation",
+      "notes": "Vague open-ended topic mention without evaluative criteria"
+    },
+    {
+      "id": "QUEST-03",
+      "question": "What is the exact maximum dollar threshold permitted before automated transaction approval must halt for human review?",
+      "expected_valid": true,
+      "facet": "approval_threshold_defined",
+      "notes": "Specific numeric control query"
+    },
+    {
+      "id": "QUEST-04",
+      "question": "Is your system fast and modern?",
+      "expected_valid": false,
+      "facet": "technical_quality",
+      "notes": "Irrelevant subjective query"
+    },
+    {
+      "id": "QUEST-05",
+      "question": "Are personal data elements masked in prompt logs sent to third-party model providers?",
+      "expected_valid": true,
+      "facet": "data_protection_privacy",
+      "notes": "Assesses concrete APP 11 privacy safeguard"
+    },
+    {
+      "id": "QUEST-06",
+      "question": "Do you like using AI?",
+      "expected_valid": false,
+      "facet": "user_acceptance",
+      "notes": "Subjective sentiment, zero governance relevance"
+    },
+    {
+      "id": "QUEST-07",
+      "question": "Is independent model validation performed by personnel independent of model developers?",
+      "expected_valid": true,
+      "facet": "independent_review_conducted",
+      "notes": "Tests structural independence under APRA CPS 220"
+    },
+    {
+      "id": "QUEST-08",
+      "question": "Do you use commercial cloud providers?",
+      "expected_valid": false,
+      "facet": "third_party_due_diligence",
+      "notes": "Fact inquiry only, does not evaluate whether due diligence is conducted"
+    },
+    {
+      "id": "QUEST-09",
+      "question": "Has a formal operational risk and exit strategy assessment been conducted for the AI supplier under CPS 230?",
+      "expected_valid": true,
+      "facet": "third_party_due_diligence",
+      "notes": "Assesses CPS 230 compliance"
+    },
+    {
+      "id": "QUEST-10",
+      "question": "Can the automated system override a human manager's rejection?",
+      "expected_valid": true,
+      "facet": "pre_execution_block",
+      "notes": "Verifies human supremacy in delegated authority"
+    },
+    {
+      "id": "QUEST-11",
+      "question": "Tell us about your AI project.",
+      "expected_valid": false,
+      "facet": "general_description",
+      "notes": "Unstructured prompt, no governance coverage"
+    },
+    {
+      "id": "QUEST-12",
+      "question": "How often are algorithmic bias audits performed across protected attributes?",
+      "expected_valid": true,
+      "facet": "bias_testing_performed",
+      "notes": "Evaluates testing cadence for fairness"
+    },
+    {
+      "id": "QUEST-13",
+      "question": "Is encryption used?",
+      "expected_valid": false,
+      "facet": "encryption_enforced",
+      "notes": "Incomplete; does not assess cipher strength, key management or transit vs rest"
+    },
+    {
+      "id": "QUEST-14",
+      "question": "Are customer complaints involving AI decisions triaged within RG 271 maximum timeframes (30 days standard, 21 days financial hardship)?",
+      "expected_valid": true,
+      "facet": "complaint_management_procedure",
+      "notes": "Specific ASIC RG 271 compliance check"
+    }
+  ],
+  "use_case_assessment_cases": [
+    {
+      "id": "UC-01",
+      "fact": "APRA Regulated = True",
+      "expected_applicable_standard": "AU-APRA-CPS234-CONTROLS",
+      "expected_status": "applicable"
+    },
+    {
+      "id": "UC-02",
+      "fact": "Processes Personal Info = True",
+      "expected_applicable_standard": "AU-PRIV-APP11-SECURITY",
+      "expected_status": "applicable"
+    },
+    {
+      "id": "UC-03",
+      "fact": "Regulated Complaints = True",
+      "expected_applicable_standard": "AU-ASIC-RG271-COMPLAINT",
+      "expected_status": "applicable"
+    },
+    {
+      "id": "UC-04",
+      "fact": "EU Territorial Nexus = False",
+      "expected_applicable_standard": "EU-AI-ACT",
+      "expected_status": "not_applicable"
+    },
+    {
+      "id": "UC-05",
+      "fact": "Human Review Threshold = AUD 500",
+      "expected_applicable_standard": "CTRL-FIN-APPROVAL-THRESHOLDS",
+      "expected_status": "applicable"
+    },
+    {
+      "id": "UC-06",
+      "fact": "Personal Info = Undetermined",
+      "expected_applicable_standard": "AU-PRIV-APP1-GOV",
+      "expected_status": "undetermined"
+    },
+    {
+      "id": "UC-07",
+      "fact": "Third-Party AI Service = True, Material Service Provider = None",
+      "expected_applicable_standard": "AU-APRA-CPS230-OPS",
+      "expected_status": "conditional"
+    },
+    {
+      "id": "UC-08",
+      "fact": "Use case claims 'System is 100% fair' without test script artifact",
+      "expected_evidence_status": "evidence_missing",
+      "notes": "Unsubstantiated effectiveness claim"
+    },
+    {
+      "id": "UC-09",
+      "fact": "Execution logs prove dual sign-off on 45 refunds > AUD 500",
+      "expected_evidence_status": "evidence_verified",
+      "notes": "Operational effectiveness proven"
+    },
+    {
+      "id": "UC-10",
+      "fact": "Policy requires AUD 500 threshold, but system config set to AUD 1,000",
+      "expected_evidence_status": "policy_conflict",
+      "notes": "Direct operational conflict with enterprise baseline"
+    },
+    {
+      "id": "UC-11",
+      "fact": "Use case documentation exists in Confluence, but no audit log retention configured",
+      "expected_evidence_status": "evidence_partial",
+      "notes": "Documented control without operational telemetry"
+    },
+    {
+      "id": "UC-12",
+      "fact": "Frontier LLM provider deployed in US East without cross-border disclosure consent",
+      "expected_evidence_status": "regulatory_breach",
+      "notes": "Breaches Australian Privacy Principle 8 cross-border disclosure"
+    }
+  ],
+  "empirical_results": {
+    "baseline_facet_precision": 0.5385,
+    "baseline_facet_recall": 0.3889,
+    "baseline_facet_f1": 0.4516,
+    "false_positive_count": 6,
+    "false_negative_count": 11,
+    "false_coverage_risks": 3
+  }
+}
