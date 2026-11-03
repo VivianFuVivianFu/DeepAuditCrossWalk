@@ -4,9 +4,10 @@
     "version": "1.0.0",
     "generated_at": "2026-11-04T02:20:00Z",
     "total_cases": 63,
-    "human_verified_cases": 25,
-    "synthetic_reference_cases": 36,
-    "ambiguous_legal_cases": 2
+    "human_verified_cases": 0,
+    "synthetic_reference_cases": 61,
+    "ambiguous_legal_cases": 2,
+    "provenance_note": "All 61 reference cases are synthetic reference labels pending formal human expert review by an independent GRC/legal panel. 0 cases have received external independent human sign-off. 2 cases involve ambiguous legal interpretations requiring formal regulatory counsel."
   },
   "baseline_construction_cases": [
     {

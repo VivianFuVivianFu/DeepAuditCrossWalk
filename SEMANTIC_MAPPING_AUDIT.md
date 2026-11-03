@@ -161,15 +161,18 @@ The empirical evaluation proves that **pure deterministic keyword matching is fu
 
 ### 7.1 Ground Truth Provenance
 The benchmark dataset [`MAPPING_EVALUATION_DATASET.json`](file:///C:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/MAPPING_EVALUATION_DATASET.json) categorizes each test case independently of the crosswalk engine:
-- **Human-Verified Cases (25 Cases):** Audited and signed off by financial services GRC and legal specialists against binding statutory texts (APRA CPS 234, CPS 230, CPS 220, Privacy Act 1988 APPs, and ASIC RG 271).
-- **Synthetic Reference Cases (36 Cases):** Synthetic operational reference labels reflecting standard Australian banking practices, pending broader multi-institution working group review.
-- **Ambiguous Legal Cases (2 Cases):** Edge cases involving legal interpretation of de minimis compliance exemptions and regional data sovereignty thresholds.
+- **Synthetic Reference Labels (61 Cases):** Synthetic operational reference labels reflecting Australian banking practices and regulatory provisions (APRA CPS 234/230, Privacy Act, ASIC RG 271), authored for benchmark evaluation and pending formal sign-off by an independent external human expert review panel.
+- **Human-Verified Cases (0 Cases):** Accurately recorded as 0 because no external independent human review panel has yet formally signed off on review records for this benchmark suite.
+- **Ambiguous Legal Cases (2 Cases):** Edge cases involving legal interpretation of de minimis compliance exemptions and regional data sovereignty thresholds requiring formal regulatory counsel.
 
-### 7.2 False-Coverage Rate Denominator
-The **12.0% false-coverage rate** is calculated strictly over the **25 baseline construction cases** ($3 / 25 = 12.0\%$). Specifically:
-- `BASE-12`: Negated sandbox exemption triggered `CTRL-GOV-OVERSIGHT` and `CTRL-FIN-APPROVAL-THRESHOLDS`.
-- `BASE-13`: PII bias testing prohibition triggered `CTRL-FAIR-BIAS-DETECTION`.
-- `BASE-24`: First Nations cultural data sovereignty triggered `CTRL-PRIV-CROSS-BORDER`.
+### 7.2 Component-Level False-Control Trigger Denominator & Limitations
+The **12.0% false-coverage rate** represents **3 false-control triggers out of 25 isolated baseline construction policy clauses** ($3 / 25 = 12.0\%$). Specifically:
+- `BASE-12`: Negated sandbox exemption triggered candidate mappings for `CTRL-GOV-OVERSIGHT` and `CTRL-FIN-APPROVAL-THRESHOLDS`.
+- `BASE-13`: PII bias testing prohibition triggered candidate mapping for `CTRL-FAIR-BIAS-DETECTION`.
+- `BASE-24`: First Nations cultural data sovereignty triggered candidate mapping for `CTRL-PRIV-CROSS-BORDER`.
+
+**Critical Measurement Limitation & Distinction:**
+This metric strictly measures a **component-level candidate mapping defect** in `extract_enterprise_policy()`. It is **NOT** a confirmed end-to-end regulatory compliance error or legal breach finding in an active baseline, because candidate mappings in production carry `review_status = ClauseReviewStatus.PROPOSED` (pending human compliance officer review). It measures the risk of noisy or misleading suggestions presented to a compliance officer during baseline ingestion.
 
 ### 7.3 Executable Evaluation Harness
 All metrics and failure cases are fully executable and reproducible using the dedicated script:

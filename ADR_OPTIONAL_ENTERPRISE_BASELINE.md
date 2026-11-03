@@ -83,3 +83,4 @@ Every assessment report must record immutable provenance metadata:
 ### Negative / Trade-Offs
 - The API and crosswalk engine must maintain two distinct resolution code paths and rigorous validation to ensure mode isolation.
 - Test suites must verify both modes independently, ensuring neither mode regresses the other.
+
