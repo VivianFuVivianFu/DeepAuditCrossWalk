@@ -10,6 +10,7 @@ from typing import Dict, List, Optional, Sequence, Set, Tuple
 from .applicability import decide_applicability
 import uuid
 from .models import (
+    ClauseReviewStatus,
     EnterpriseBaseline,
     EnterpriseClause,
     GapRecord,
@@ -21,8 +22,6 @@ from .models import (
     CoverageAssessment,
     CoverageMetrics,
     CoverageStatus,
-    GapRecord,
-    GapType,
     LayerCoverageMetrics,
     MappingDecision,
     ObligationCoverage,
@@ -31,6 +30,7 @@ from .models import (
     RegulatoryPack,
     ReviewStatus,
     authority_layer_bucket,
+    utc_now,
 )
 
 
@@ -258,10 +258,24 @@ def evaluate_questionnaire_coverage(
     review_mappings: Sequence[MappingDecision] = (),
     enterprise_baseline: Optional[EnterpriseBaseline] = None,
     enterprise_clauses: Sequence[EnterpriseClause] = (),
+    assessment_mode: Optional[str] = None,
+    assessment_target_type: str = "questionnaire",
 ) -> CoverageAssessment:
     if use_case is None:
         use_case = BankingUseCase.enterprise_baseline()
     results: List[ObligationCoverage] = []
+
+    if assessment_mode is not None:
+        effective_mode = assessment_mode
+    elif enterprise_baseline is not None or bool(enterprise_clauses):
+        effective_mode = "enterprise_enhanced"
+    else:
+        effective_mode = "regulatory_only"
+
+    is_enterprise = effective_mode in {"enterprise_enhanced", "provisional"}
+    if not is_enterprise:
+        enterprise_baseline = None
+        enterprise_clauses = ()
 
     for obligation in regulatory_pack.obligations:
         applicability = decide_applicability(obligation, use_case)
@@ -454,55 +468,150 @@ def evaluate_questionnaire_coverage(
                 or "Add or amend an AU_BANKING_OVERLAY question after control-owner review.",
                 evidence_required=obligation.evidence_requirements,
                 owner="Questionnaire Owner",
+                source_type="regulatory",
             )
         )
+
+    applicable_obligation_ids = [
+        item.obligation_id
+        for item in results
+        if item.applicability.status is ApplicabilityStatus.APPLICABLE
+    ]
 
     selection_mode = question_bank.routing_metadata.get("selection_mode", "core_only")
     selection_warning = question_bank.routing_metadata.get("selection_warning")
 
     enterprise_gaps: List[GapRecord] = []
-    if enterprise_clauses:
-        for clause in enterprise_clauses:
+    applicable_enterprise_requirement_ids: List[str] = []
+
+    if is_enterprise:
+        source_clauses = (
+            enterprise_baseline.clause_snapshots
+            if enterprise_baseline and enterprise_baseline.clause_snapshots
+            else enterprise_clauses
+        )
+        for clause in source_clauses:
+            # Superseded or retired requirements must not silently influence active assessments
+            if getattr(clause, "status", None) in {"superseded", "retired"}:
+                continue
+
+            # Rejected requirements must not contribute to confirmed coverage or gap calculations
+            if clause.review_status == ClauseReviewStatus.REJECTED:
+                continue
+
+            # Proposed / pending requirements remain visible for reviewer follow-up but must not contribute to confirmed coverage
+            is_pending = clause.review_status == ClauseReviewStatus.PROPOSED
+            is_approved = clause.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+
             if not clause.mandatory:
                 continue
+
             missing_facets = []
-            for facet in clause.control_facets:
-                facet_covered = False
-                facet_terms = [facet.replace("_", " "), *facet.split("_")]
-                for q in question_bank.questions:
-                    ql = q.question_text.lower()
-                    if any(term in ql for term in facet_terms if len(term) > 3):
-                        facet_covered = True
-                        break
-                if not facet_covered:
-                    missing_facets.append(facet)
+            if clause.control_facets:
+                for facet in clause.control_facets:
+                    facet_covered = False
+                    facet_terms = [facet.replace("_", " "), *facet.split("_")]
+                    for q in question_bank.questions:
+                        ql = q.question_text.lower()
+                        if any(term in ql for term in facet_terms if len(term) > 3):
+                            facet_covered = True
+                            break
+                    if not facet_covered:
+                        missing_facets.append(facet)
+            elif clause.is_unmapped or not clause.control_mappings:
+                # Approved but unmapped enterprise requirements: assess through distinctive clause keywords
+                generic_words = {
+                    "about", "action", "actions", "adversarial", "after", "against", "algorithmic",
+                    "apra", "approval", "approvals", "approved", "assess", "assessed", "assessment",
+                    "asset", "assets", "audit", "banking", "before", "being", "board", "business",
+                    "control", "controls", "critical", "customer", "customers", "data", "decision",
+                    "decisions", "defined", "department", "disposal", "documented", "does", "during",
+                    "element", "elements", "encryption", "ensure", "enterprise", "escalation",
+                    "evidence", "framework", "have", "impact", "incident", "including", "information",
+                    "lineage", "logs", "management", "material", "measures", "model", "models",
+                    "monitoring", "must", "operation", "operations", "oversight", "owner", "owners",
+                    "performance", "personal", "pipeline", "policy", "privacy", "process",
+                    "processes", "question", "questions", "record", "records", "regular", "regulated",
+                    "report", "reported", "reporting", "requirements", "response", "review",
+                    "reviewed", "risk", "risks", "roles", "security", "senior", "service", "services",
+                    "system", "systems", "testing", "their", "these", "third", "threshold",
+                    "thresholds", "training", "validation", "vendor", "weakness", "weaknesses", "which",
+                    "will", "with",
+                }
+                distinctive_terms = [
+                    w.lower()
+                    for w in clause.text.split()
+                    if len(w) > 3 and w.isalnum() and w.lower() not in generic_words
+                ]
+                clause_covered = False
+                if distinctive_terms:
+                    for q in question_bank.questions:
+                        ql = q.question_text.lower()
+                        if any(term in ql for term in distinctive_terms):
+                            clause_covered = True
+                            break
+                if not clause_covered:
+                    missing_facets.append(clause.clause_id)
+
+            if is_approved:
+                applicable_enterprise_requirement_ids.append(clause.clause_id)
+
             if missing_facets:
                 is_voluntary = (
                     clause.authority_level.value == "industry_framework"
                     if hasattr(clause.authority_level, "value")
                     else str(clause.authority_level) == "industry_framework"
                 )
-                severity = "low" if is_voluntary else "high"
+                severity = "low" if is_voluntary else "medium"
+                gap_status = "in_review" if is_pending else "open"
+
                 egap = GapRecord(
-                    gap_id=str(uuid.uuid4()),
+                    gap_id=f"GAP-E-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|{clause.clause_id}').hex[:16].upper()}",
                     gap_type=GapType.QUESTIONNAIRE,
-                    title="Questionnaire does not test a mandatory enterprise-policy control",
+                    title=(
+                        f"Pending review: questionnaire does not test candidate enterprise requirement ({clause.clause_id})"
+                        if is_pending
+                        else f"Questionnaire does not test approved enterprise requirement ({clause.clause_id})"
+                    ),
+                    status=gap_status,
                     severity=severity,
                     policy_clause_id=clause.clause_id,
                     missing_facets=missing_facets,
-                    recommendation=f"Add a question testing enterprise policy requirement: {missing_facets}.",
+                    recommendation=f"Add a question testing enterprise policy requirement '{clause.clause_id}' ({clause.source_name}).",
                     evidence_required=["Approved policy clause", "Question-to-policy mapping review"],
+                    owner="Enterprise Policy Owner",
+                    source_type="enterprise_policy",
                 )
                 enterprise_gaps.append(egap)
                 gaps.append(egap)
 
+    provenance = {
+        "assessment_mode": effective_mode,
+        "assessment_target_type": assessment_target_type,
+        "tenant_id": tenant_id,
+        "regulatory_pack_id": regulatory_pack.pack_id,
+        "regulatory_pack_version": regulatory_pack.version,
+        "unified_control_library_version": "2026.1",
+        "enterprise_baseline_id": enterprise_baseline.baseline_id if (is_enterprise and enterprise_baseline) else None,
+        "enterprise_baseline_version": enterprise_baseline.version if (is_enterprise and enterprise_baseline) else None,
+        "enterprise_baseline_revision": enterprise_baseline.revision if (is_enterprise and enterprise_baseline) else None,
+        "baseline_sha256": enterprise_baseline.baseline_sha256 if (is_enterprise and enterprise_baseline) else None,
+        "applicable_obligation_count": len(applicable_obligation_ids),
+        "applicable_enterprise_requirement_count": len(applicable_enterprise_requirement_ids),
+        "timestamp": utc_now().isoformat(),
+    }
+
     return CoverageAssessment(
         assessment_id=assessment_id,
         tenant_id=tenant_id,
+        created_at=utc_now(),
+        assessment_mode=effective_mode,
+        assessment_target_type=assessment_target_type,
         questionnaire_id=question_bank.metadata.questionnaire_id,
         questionnaire_sha256=question_bank.metadata.source_sha256,
         regulatory_pack_id=regulatory_pack.pack_id,
         regulatory_pack_version=regulatory_pack.version,
+        unified_control_library_version="2026.1",
         routing_snapshot_id=question_bank.routing_metadata.get("routing_snapshot_id"),
         selected_question_ids=[item.question_id for item in question_bank.questions],
         use_case=use_case,
@@ -514,6 +623,12 @@ def evaluate_questionnaire_coverage(
         else "core_only",
         selected_question_count=len(question_bank.questions),
         selection_warning=selection_warning,
-        enterprise_baseline_id=enterprise_baseline.baseline_id if enterprise_baseline else None,
-        enterprise_gaps=enterprise_gaps,
+        enterprise_baseline_id=enterprise_baseline.baseline_id if (is_enterprise and enterprise_baseline) else None,
+        enterprise_baseline_version=enterprise_baseline.version if (is_enterprise and enterprise_baseline) else None,
+        enterprise_baseline_revision=enterprise_baseline.revision if (is_enterprise and enterprise_baseline) else None,
+        enterprise_gaps=enterprise_gaps if is_enterprise else [],
+        applicable_obligation_ids=applicable_obligation_ids,
+        applicable_enterprise_requirement_ids=applicable_enterprise_requirement_ids if is_enterprise else [],
+        legal_disclaimer="Assessment gaps do not constitute judicial or regulatory findings of legal non-compliance.",
+        provenance=provenance,
     )

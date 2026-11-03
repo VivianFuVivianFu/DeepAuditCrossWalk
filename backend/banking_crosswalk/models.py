@@ -515,10 +515,13 @@ class CoverageAssessment(BaseModel):
     assessment_id: str
     tenant_id: str
     created_at: datetime = Field(default_factory=utc_now)
+    assessment_mode: Literal["regulatory_only", "enterprise_enhanced", "provisional"] = "regulatory_only"
+    assessment_target_type: Literal["questionnaire", "strategy", "use_case"] = "questionnaire"
     questionnaire_id: str
     questionnaire_sha256: str
     regulatory_pack_id: str
     regulatory_pack_version: str
+    unified_control_library_version: Optional[str] = "2026.1"
     routing_snapshot_id: Optional[str] = None
     selected_question_ids: List[str] = Field(default_factory=list)
     use_case: BankingUseCase
@@ -526,7 +529,11 @@ class CoverageAssessment(BaseModel):
     results: List[ObligationCoverage]
     gaps: List["GapRecord"] = Field(default_factory=list)
     enterprise_baseline_id: Optional[str] = None
+    enterprise_baseline_version: Optional[str] = None
+    enterprise_baseline_revision: Optional[int] = None
     enterprise_gaps: List["GapRecord"] = Field(default_factory=list)
+    applicable_obligation_ids: List[str] = Field(default_factory=list)
+    applicable_enterprise_requirement_ids: List[str] = Field(default_factory=list)
     question_scope: Literal["core_only", "routed_snapshot"] = "core_only"
     selected_question_count: int = 0
     selection_warning: Optional[str] = None
@@ -534,6 +541,10 @@ class CoverageAssessment(BaseModel):
         "Deterministic applicability plus facet-level semantic candidates. "
         "Only approved mappings count as confirmed coverage."
     )
+    legal_disclaimer: str = (
+        "Assessment gaps do not constitute judicial or regulatory findings of legal non-compliance."
+    )
+    provenance: Optional[Dict[str, Any]] = None
 
 
 class PolicyClause(BaseModel):
@@ -628,6 +639,8 @@ class EnterpriseBaseline(BaseModel):
     warnings: List[str] = Field(default_factory=list)
     baseline_sha256: Optional[str] = None
     status: Literal["active", "archived", "draft"] = "active"
+    clause_snapshots: List["EnterpriseClause"] = Field(default_factory=list)
+    source_policy_versions: Dict[str, str] = Field(default_factory=dict)
     created_at: datetime = Field(default_factory=utc_now)
     created_by: Optional[str] = None
 
@@ -663,6 +676,7 @@ class GapRecord(BaseModel):
     closure_scope_rechecked: bool = False
     closure_approved: bool = False
     closure_evidence_artifact_ids: List[str] = Field(default_factory=list)
+    source_type: Optional[Literal["regulatory", "enterprise_policy", "internal_conflict"]] = None
     closure_retest_record_id: Optional[str] = None
 
 
@@ -697,3 +711,5 @@ class PolicyGapAssessment(BaseModel):
 
 
 EnterpriseBaseline.model_rebuild()
+CoverageAssessment.model_rebuild()
+GapRecord.model_rebuild()

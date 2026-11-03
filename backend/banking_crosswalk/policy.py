@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import secrets
 import uuid
 from datetime import datetime
 from typing import Dict, List, Optional, Sequence, Set
@@ -661,6 +662,64 @@ def extract_enterprise_policy(
     )
 
 
+def compute_baseline_fingerprint(
+    *,
+    tenant_id: str,
+    name: str,
+    version: str,
+    revision: int,
+    policy_ids: Sequence[str],
+    confirmed_controls: Sequence[str],
+    clauses: Sequence[EnterpriseClause],
+    source_policy_versions: Optional[Dict[str, str]] = None,
+) -> str:
+    """Compute deterministic cryptographic SHA-256 fingerprint for baseline immutability."""
+    fingerprint_obj = {
+        "tenant_id": tenant_id,
+        "name": name,
+        "version": version,
+        "revision": revision,
+        "policy_ids": sorted(policy_ids),
+        "source_policy_versions": dict(sorted((source_policy_versions or {}).items())),
+        "confirmed_controls": sorted(confirmed_controls),
+        "clause_ids": sorted([c.clause_id for c in clauses]),
+        "clause_snapshots": [
+            {
+                "clause_id": c.clause_id,
+                "text": c.text,
+                "review_status": str(c.review_status),
+                "is_unmapped": c.is_unmapped,
+                "mandatory": c.mandatory,
+                "control_facets": sorted(c.control_facets),
+                "thresholds_aud": sorted(c.thresholds_aud),
+            }
+            for c in sorted(clauses, key=lambda x: x.clause_id)
+        ],
+    }
+    return hashlib.sha256(
+        json.dumps(fingerprint_obj, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+
+
+def verify_baseline_integrity(baseline: EnterpriseBaseline) -> bool:
+    """Validate that the baseline's recorded cryptographic fingerprint matches its snapshot content."""
+    if not baseline.baseline_sha256:
+        return True
+    if not baseline.clause_snapshots:
+        return True
+    expected = compute_baseline_fingerprint(
+        tenant_id=baseline.tenant_id,
+        name=baseline.name,
+        version=baseline.version,
+        revision=baseline.revision,
+        policy_ids=baseline.policy_ids,
+        confirmed_controls=baseline.confirmed_control_ids,
+        clauses=baseline.clause_snapshots,
+        source_policy_versions=baseline.source_policy_versions,
+    )
+    return secrets.compare_digest(baseline.baseline_sha256, expected)
+
+
 def compile_enterprise_baseline(
     *,
     tenant_id: str,
@@ -681,6 +740,7 @@ def compile_enterprise_baseline(
     policy_ids = [p.policy_id for p in policies]
     all_clauses = [c for p in policies for c in p.clauses]
     warnings: List[str] = []
+    source_policy_versions = {p.policy_id: p.version for p in policies}
 
     # 1. Deduplication: detect duplicate requirements across policies
     seen_norm_texts: Dict[str, str] = {}
@@ -747,22 +807,24 @@ def compile_enterprise_baseline(
                 missing_facets=["single_authoritative_threshold"],
                 recommendation=f"Reconcile contradictory thresholds across policies: {observed_thresholds}.",
                 evidence_required=["Approved delegated-authority schedule"],
+                source_type="internal_conflict",
             )
         )
 
-    # 5. Compute cryptographic SHA-256 fingerprint for immutability
-    fingerprint_obj = {
-        "tenant_id": tenant_id,
-        "name": name,
-        "version": version,
-        "revision": revision,
-        "policy_ids": sorted(policy_ids),
-        "confirmed_controls": sorted(confirmed_controls),
-        "clause_ids": sorted([c.clause_id for c in all_clauses]),
-    }
-    baseline_sha256 = hashlib.sha256(
-        json.dumps(fingerprint_obj, sort_keys=True).encode("utf-8")
-    ).hexdigest()
+    # 5. Build immutable clause snapshots
+    clause_snapshots = [c.model_copy(deep=True) for c in all_clauses]
+
+    # 6. Compute cryptographic SHA-256 fingerprint for immutability
+    baseline_sha256 = compute_baseline_fingerprint(
+        tenant_id=tenant_id,
+        name=name,
+        version=version,
+        revision=revision,
+        policy_ids=policy_ids,
+        confirmed_controls=list(confirmed_controls),
+        clauses=all_clauses,
+        source_policy_versions=source_policy_versions,
+    )
 
     return EnterpriseBaseline(
         baseline_id=baseline_id or str(uuid.uuid4()),
@@ -772,6 +834,8 @@ def compile_enterprise_baseline(
         version=version,
         revision=revision,
         policy_ids=policy_ids,
+        source_policy_versions=source_policy_versions,
+        clause_snapshots=clause_snapshots,
         confirmed_control_ids=sorted(confirmed_controls),
         pending_clause_ids=pending_clause_ids,
         unmapped_clause_ids=unmapped_clause_ids,
