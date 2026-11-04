@@ -1,0 +1,3680 @@
+{
+  "assessment_id": "5f7513a8-87b9-42eb-b5f4-67ed846acd8a",
+  "tenant_id": "tenant-ent-enhanced-2a6ae7f8-c405-4d3b-bc07-fa0641d65c06",
+  "created_at": "2026-11-03T21:23:45.946241Z",
+  "assessment_mode": "enterprise_enhanced",
+  "assessment_target_type": "questionnaire",
+  "questionnaire_id": "AIAF-88497954b0ba",
+  "questionnaire_sha256": "88497954b0baab20b2b0c23472f28595b1515b267f863c0a028693a80cdb1eda",
+  "regulatory_pack_id": "AU-BANKING-REG-PACK-0.1",
+  "regulatory_pack_version": "0.1.0",
+  "unified_control_library_version": "2026.1",
+  "routing_snapshot_id": null,
+  "selected_question_ids": [
+    "AIAF-CORE-5890D38ACFFA",
+    "AIAF-CORE-967560190BE0",
+    "AIAF-CORE-334EA271EDB3",
+    "AIAF-CORE-E81C5D8D3ED9",
+    "AIAF-CORE-45EC82D001D0",
+    "AIAF-CORE-2847B45E1DC4",
+    "AIAF-CORE-9A4A95DEAF2E",
+    "AIAF-CORE-0BFAE5AD1D2F",
+    "AIAF-CORE-E74885E248D6",
+    "AIAF-CORE-96D30946775B",
+    "AIAF-CORE-00D33C597D96",
+    "AIAF-CORE-562DF161D890",
+    "AIAF-CORE-963ADC7045D3",
+    "AIAF-CORE-434F63BEEB08",
+    "AIAF-CORE-6B6C011F46BA",
+    "AIAF-CORE-ED34BB664944"
+  ],
+  "use_case": {
+    "use_case_id": null,
+    "name": "Dispute and Refund AI Agent",
+    "entity_type": "UNDETERMINED",
+    "apra_regulated": true,
+    "handles_personal_information": true,
+    "handles_sensitive_information": null,
+    "cross_border_disclosure": null,
+    "makes_or_assists_significant_decisions": null,
+    "handles_regulated_complaints": null,
+    "idr_obligations": true,
+    "afs_licensee": null,
+    "credit_licensee_or_credit_activity": null,
+    "assists_consumer_credit_decision": false,
+    "third_party_ai_service": null,
+    "supports_critical_operation": null,
+    "material_service_provider": null,
+    "eu_establishment_or_market": null,
+    "eu_output_used": null,
+    "eu_deployer_or_provider_role": null,
+    "eu_operator_role": null,
+    "nist_ai_rmf_adopted": null,
+    "au_ai_guidance_adopted": null,
+    "iso_42001_adopted": null,
+    "iso_23894_adopted": null,
+    "iso_27001_adopted": null,
+    "enterprise_controls_enabled": null,
+    "assessment_scope": "use_case",
+    "approval_threshold_aud": 1000.0,
+    "approval_threshold_operator": ">",
+    "approval_threshold_currency": "AUD",
+    "approval_timing": null,
+    "approval_role": null,
+    "has_approved_exception": null,
+    "exception_reference": null,
+    "as_of_date": "2026-11-04"
+  },
+  "metrics": {
+    "applicable_binding_obligations": 17,
+    "confirmed_covered": 0,
+    "confirmed_partial": 0,
+    "confirmed_missing": 17,
+    "provisional_covered": 1,
+    "provisional_partial": 7,
+    "provisional_missing": 9,
+    "applicability_conditional": 5,
+    "applicability_undetermined": 18,
+    "confirmed_coverage_rate": 0.0,
+    "provisional_coverage_rate": 5.9,
+    "by_authority_layer": {
+      "binding_regulatory": {
+        "layer_key": "binding_regulatory",
+        "applicable_obligations": 17,
+        "confirmed_covered": 0,
+        "confirmed_partial": 0,
+        "confirmed_missing": 17,
+        "provisional_covered": 1,
+        "provisional_partial": 7,
+        "provisional_missing": 9,
+        "applicability_conditional": 1,
+        "applicability_undetermined": 8,
+        "confirmed_coverage_rate": 0.0,
+        "provisional_coverage_rate": 5.9
+      },
+      "regulatory_guidance": {
+        "layer_key": "regulatory_guidance",
+        "applicable_obligations": 4,
+        "confirmed_covered": 0,
+        "confirmed_partial": 0,
+        "confirmed_missing": 4,
+        "provisional_covered": 0,
+        "provisional_partial": 0,
+        "provisional_missing": 4,
+        "applicability_conditional": 4,
+        "applicability_undetermined": 3,
+        "confirmed_coverage_rate": 0.0,
+        "provisional_coverage_rate": 0.0
+      },
+      "voluntary_frameworks": {
+        "layer_key": "voluntary_frameworks",
+        "applicable_obligations": 0,
+        "confirmed_covered": 0,
+        "confirmed_partial": 0,
+        "confirmed_missing": 0,
+        "provisional_covered": 0,
+        "provisional_partial": 0,
+        "provisional_missing": 0,
+        "applicability_conditional": 0,
+        "applicability_undetermined": 7,
+        "confirmed_coverage_rate": 0.0,
+        "provisional_coverage_rate": 0.0
+      },
+      "enterprise_internal_controls": {
+        "layer_key": "enterprise_internal_controls",
+        "applicable_obligations": 1,
+        "confirmed_covered": 0,
+        "confirmed_partial": 0,
+        "confirmed_missing": 1,
+        "provisional_covered": 0,
+        "provisional_partial": 1,
+        "provisional_missing": 0,
+        "applicability_conditional": 0,
+        "applicability_undetermined": 0,
+        "confirmed_coverage_rate": 0.0,
+        "provisional_coverage_rate": 0.0
+      }
+    }
+  },
+  "results": [
+    {
+      "obligation_id": "AU-PRIV-APP1-GOV",
+      "instrument": "Privacy Act 1988 / APP 1",
+      "provision": "Schedule 1, APP 1.1\u20131.6",
+      "title": "Open and accountable management of personal information",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP1-GOV",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "entity",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "privacy_accountability_assigned",
+        "privacy_practices_implemented",
+        "privacy_policy_current"
+      ],
+      "provisional_missing_facets": [
+        "privacy_accountability_assigned",
+        "privacy_practices_implemented",
+        "privacy_policy_current"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Has an accountable privacy owner been assigned for this AI use case?",
+        "Has the bank documented and implemented the privacy practices required for this AI use case?",
+        "Does the current privacy policy accurately describe the bank's handling of personal information relevant to this AI use case?"
+      ],
+      "evidence_requirements": [
+        "Privacy governance roles",
+        "Current privacy policy",
+        "Privacy impact assessment"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP3-COLLECT",
+      "instrument": "Privacy Act 1988 / APP 3",
+      "provision": "Schedule 1, APP 3.1\u20133.6",
+      "title": "Collection of solicited personal information",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP3-COLLECT",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-334EA271EDB3",
+        "AIAF-CORE-E81C5D8D3ED9"
+      ],
+      "confirmed_missing_facets": [
+        "collection_purpose_defined",
+        "necessity_assessed",
+        "sensitive_information_consent"
+      ],
+      "provisional_missing_facets": [
+        "necessity_assessed",
+        "sensitive_information_consent"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "AU-PRIV-APP3-COLLECT",
+          "facet": "collection_purpose_defined",
+          "question_id": "AIAF-CORE-334EA271EDB3",
+          "review_status": "proposed",
+          "confidence": 0.4,
+          "reason": "token overlap 29%",
+          "source_reference": "Questions:AIAF-CORE-334EA271EDB3",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-PRIV-APP3-COLLECT",
+          "facet": "collection_purpose_defined",
+          "question_id": "AIAF-CORE-E81C5D8D3ED9",
+          "review_status": "proposed",
+          "confidence": 0.4,
+          "reason": "token overlap 29%",
+          "source_reference": "Questions:AIAF-CORE-E81C5D8D3ED9",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Has the bank verified that each collected personal-information field is reasonably necessary for that purpose?",
+        "Where sensitive information is collected, is the required consent or other lawful basis documented?"
+      ],
+      "evidence_requirements": [
+        "Data inventory",
+        "Collection purpose record",
+        "Consent record where applicable"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP5-NOTICE",
+      "instrument": "Privacy Act 1988 / APP 5",
+      "provision": "Schedule 1, APP 5.1\u20135.2",
+      "title": "Notification of collection",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP5-NOTICE",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "collection_notice_exists",
+        "notice_content_complete",
+        "notice_timing_defined"
+      ],
+      "provisional_missing_facets": [
+        "collection_notice_exists",
+        "notice_content_complete",
+        "notice_timing_defined"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Is a privacy collection notice presented wherever the AI use case collects personal information?",
+        "Does the notice include the required purposes, disclosures, access and complaint information?",
+        "Is the notice provided at or before collection, or as soon as practicable afterward?"
+      ],
+      "evidence_requirements": [
+        "Collection notice",
+        "Customer journey screenshot",
+        "Notice approval record"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP6-USE",
+      "instrument": "Privacy Act 1988 / APP 6",
+      "provision": "Schedule 1, APP 6.1\u20136.3",
+      "title": "Use or disclosure of personal information",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP6-USE",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "covered",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-434F63BEEB08",
+        "AIAF-CORE-E81C5D8D3ED9"
+      ],
+      "confirmed_missing_facets": [
+        "primary_purpose_recorded",
+        "secondary_use_basis_checked",
+        "disclosures_logged"
+      ],
+      "provisional_missing_facets": [],
+      "mappings": [
+        {
+          "obligation_id": "AU-PRIV-APP6-USE",
+          "facet": "primary_purpose_recorded",
+          "question_id": "AIAF-CORE-E81C5D8D3ED9",
+          "review_status": "proposed",
+          "confidence": 0.42,
+          "reason": "token overlap 31%",
+          "source_reference": "Questions:AIAF-CORE-E81C5D8D3ED9",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-PRIV-APP6-USE",
+          "facet": "secondary_use_basis_checked",
+          "question_id": "AIAF-CORE-E81C5D8D3ED9",
+          "review_status": "proposed",
+          "confidence": 0.42,
+          "reason": "token overlap 31%",
+          "source_reference": "Questions:AIAF-CORE-E81C5D8D3ED9",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-PRIV-APP6-USE",
+          "facet": "disclosures_logged",
+          "question_id": "AIAF-CORE-434F63BEEB08",
+          "review_status": "proposed",
+          "confidence": 0.5,
+          "reason": "matched phrases: audit log; token overlap 20%",
+          "source_reference": "Questions:AIAF-CORE-434F63BEEB08",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-PRIV-APP6-USE",
+          "facet": "disclosures_logged",
+          "question_id": "AIAF-CORE-E81C5D8D3ED9",
+          "review_status": "proposed",
+          "confidence": 0.373,
+          "reason": "token overlap 27%",
+          "source_reference": "Questions:AIAF-CORE-E81C5D8D3ED9",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Purpose and use register",
+        "Consent or exception record",
+        "Disclosure log"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP8-CROSSBORDER",
+      "instrument": "Privacy Act 1988 / APP 8 & s 16C",
+      "provision": "Schedule 1, APP 8.1\u20138.2; s 16C",
+      "title": "Cross-border disclosure of personal information",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP8-CROSSBORDER",
+        "status": "undetermined",
+        "reason": "Cross-border personal-information disclosure status has not been confirmed.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_cross_border"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "overseas_recipients_and_regions_mapped",
+        "app8_reasonable_steps_and_contracts_in_place",
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "provisional_missing_facets": [
+        "overseas_recipients_and_regions_mapped",
+        "app8_reasonable_steps_and_contracts_in_place",
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Cross-border data flow map",
+        "Overseas recipient privacy due diligence",
+        "APP 8 contractual clauses"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP10-QUALITY",
+      "instrument": "Privacy Act 1988 / APP 10",
+      "provision": "Schedule 1, APP 10.1\u201310.2",
+      "title": "Quality of personal information collected, used or disclosed",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP10-QUALITY",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "input_personal_data_accuracy_checked",
+        "ai_output_and_inference_relevance_verified",
+        "stale_or_incomplete_records_prevented"
+      ],
+      "provisional_missing_facets": [
+        "input_personal_data_accuracy_checked",
+        "ai_output_and_inference_relevance_verified",
+        "stale_or_incomplete_records_prevented"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "What controls verify that customer personal information fed into the AI system is accurate, complete and up-to-date?",
+        "How does the bank prevent inaccurate or hallucinated AI outputs about a customer from being used or disclosed?",
+        "Are automated checks in place to reject stale or incomplete customer records before AI inference?"
+      ],
+      "evidence_requirements": [
+        "Data quality validation rules",
+        "Hallucination and accuracy evaluation report",
+        "Source-data currency checks"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP11-SECURITY",
+      "instrument": "Privacy Act 1988 / APP 11",
+      "provision": "Schedule 1, APP 11.1\u201311.2 ( including APP 11.3 retention commentary )",
+      "title": "Security, retention and destruction of personal information",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP11-SECURITY",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-334EA271EDB3",
+        "AIAF-CORE-45EC82D001D0"
+      ],
+      "confirmed_missing_facets": [
+        "security_controls_defined",
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "provisional_missing_facets": [
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "AU-PRIV-APP11-SECURITY",
+          "facet": "security_controls_defined",
+          "question_id": "AIAF-CORE-45EC82D001D0",
+          "review_status": "proposed",
+          "confidence": 0.64,
+          "reason": "matched phrases: information security controls; token overlap 30%",
+          "source_reference": "Questions:AIAF-CORE-45EC82D001D0",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-PRIV-APP11-SECURITY",
+          "facet": "security_controls_defined",
+          "question_id": "AIAF-CORE-334EA271EDB3",
+          "review_status": "proposed",
+          "confidence": 0.42,
+          "reason": "token overlap 30%",
+          "source_reference": "Questions:AIAF-CORE-334EA271EDB3",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Is an approved retention period applied to prompts, outputs, logs and source data containing personal information?",
+        "Is destruction or de-identification verified when personal information is no longer required?"
+      ],
+      "evidence_requirements": [
+        "Security control design",
+        "Retention schedule",
+        "Deletion or de-identification record"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP12-13-RIGHTS",
+      "instrument": "Privacy Act 1988 / APP 12 & APP 13",
+      "provision": "Schedule 1, APP 12.1\u201312.10; APP 13.1\u201313.5",
+      "title": "Access to and correction of personal information in AI workflows",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP12-13-RIGHTS",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "ai_personal_records_retrievable_for_access",
+        "correction_propagated_to_ai_stores",
+        "access_and_correction_timeframes_tracked"
+      ],
+      "provisional_missing_facets": [
+        "ai_personal_records_retrievable_for_access",
+        "correction_propagated_to_ai_stores",
+        "access_and_correction_timeframes_tracked"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Can personal information stored in AI logs, vector databases and generated case notes be located and provided for an APP 12 access request?",
+        "When a customer record is corrected under APP 13, is the correction propagated to downstream AI caches, vector stores and context windows?",
+        "Are access and correction requests involving AI-held records completed within the 30-calendar-day statutory benchmark?"
+      ],
+      "evidence_requirements": [
+        "APP 12/13 operating procedure",
+        "Data store retrieval and correction mechanism",
+        "Request SLA register"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-NDB-S26WE",
+      "instrument": "Privacy Act 1988 / Part IIIC Notifiable Data Breaches",
+      "provision": "Part IIIC, ss 26WE\u201326WL",
+      "title": "Eligible data breach assessment and notification for AI incidents",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-NDB-S26WE",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "ai_data_leakage_detection_enabled",
+        "ndb_30day_assessment_workflow_defined",
+        "oaic_and_individual_notification_prepared"
+      ],
+      "provisional_missing_facets": [
+        "ai_data_leakage_detection_enabled",
+        "ndb_30day_assessment_workflow_defined",
+        "oaic_and_individual_notification_prepared"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Can the bank detect cross-session or cross-customer personal information leakage in AI prompts, retrieval context and outputs?",
+        "Are suspected AI personal-data breaches routed to Privacy/Legal for a Part IIIC serious-harm assessment within 30 calendar days?",
+        "Does the incident playbooks cover OAIC and individual notification under s 26WK/26WL including shared third-party AI breaches under s 26WC?"
+      ],
+      "evidence_requirements": [
+        "Data breach response plan",
+        "Prompt/output leakage monitoring logs",
+        "NDB assessment register"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-PRIV-APP1.7-AUTOMATED",
+      "instrument": "Privacy Act 1988 / APP 1.7-1.9",
+      "provision": "Schedule 1, APP 1.7\u20131.9 (commencing 10 December 2026)",
+      "title": "Privacy-policy transparency for significant automated decisions",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
+      "applicability": {
+        "obligation_id": "AU-PRIV-APP1.7-AUTOMATED",
+        "status": "undetermined",
+        "reason": "Personal-information and significant-decision conditions need confirmation.",
+        "authority": "binding",
+        "assessment_scope": "entity",
+        "rule_key": "privacy_automated_decision_future"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "significant_decision_screened",
+        "personal_information_kinds_disclosed",
+        "decision_kinds_disclosed"
+      ],
+      "provisional_missing_facets": [
+        "significant_decision_screened",
+        "personal_information_kinds_disclosed",
+        "decision_kinds_disclosed"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Automated-decision inventory",
+        "Updated privacy policy",
+        "Legal commencement assessment"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-OAIC-APPG-CH1-PIA",
+      "instrument": "OAIC APP Guidelines / Chapter 1 (APP 1)",
+      "provision": "Chapter 1 (APP 1), paras 1.7\u20131.18 (v2.0, 30 Sep 2026)",
+      "title": "Privacy by design and Privacy Impact Assessment (PIA) expectations for AI",
+      "authority": "guidance",
+      "source_url": "https://www.oaic.gov.au/privacy/australian-privacy-principles/australian-privacy-principles-guidelines",
+      "applicability": {
+        "obligation_id": "AU-OAIC-APPG-CH1-PIA",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "pia_threshold_screen_completed",
+        "pia_recommendations_tracked_to_closure",
+        "privacy_by_design_controls_embedded"
+      ],
+      "provisional_missing_facets": [
+        "pia_threshold_screen_completed",
+        "pia_recommendations_tracked_to_closure",
+        "privacy_by_design_controls_embedded"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Has a Privacy Impact Assessment (PIA) threshold screen been completed for this AI use case before deployment?",
+        "Where a PIA was required, have all privacy risk treatments been signed off and tracked to closure?",
+        "How are privacy-by-design controls embedded into the AI system architecture and data pipeline?"
+      ],
+      "evidence_requirements": [
+        "PIA threshold screening record",
+        "Completed Privacy Impact Assessment (PIA)",
+        "PIA action tracking register"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-OAIC-APPG-CH6-CH10-INF",
+      "instrument": "OAIC APP Guidelines / Chapters 3, 6 & 10",
+      "provision": "Chapter 3 paras 3.14\u20133.25; Chapter 6 paras 6.14\u20136.32; Chapter 10 paras 10.8\u201310.21",
+      "title": "Inferred personal information governance and proportional quality verification",
+      "authority": "guidance",
+      "source_url": "https://www.oaic.gov.au/privacy/australian-privacy-principles/australian-privacy-principles-guidelines",
+      "applicability": {
+        "obligation_id": "AU-OAIC-APPG-CH6-CH10-INF",
+        "status": "applicable",
+        "reason": "Use case handles personal information.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "privacy_personal_information"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "inferred_attributes_classified_as_collection",
+        "training_data_purpose_compatibility_verified",
+        "proportional_accuracy_checks_before_customer_impact"
+      ],
+      "provisional_missing_facets": [
+        "inferred_attributes_classified_as_collection",
+        "training_data_purpose_compatibility_verified",
+        "proportional_accuracy_checks_before_customer_impact"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Are AI-inferred customer attributes or scores inventoried and assessed as newly collected personal information under APP 3?",
+        "Has the bank documented the APP 6 basis or de-identification standard before using customer records to train or tune AI models?",
+        "Are higher-rigour accuracy and human-verification checks applied when AI inferences can adversely affect a customer?"
+      ],
+      "evidence_requirements": [
+        "AI feature and inference catalog",
+        "APP 3/6 lawful basis assessment for inferred data",
+        "Inference validation test results"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS220-RMF",
+      "instrument": "APRA CPS 220",
+      "provision": "CPS 220 paras 9, 19\u201322, 26\u201328 (Risk management framework, RAS and RMS)",
+      "title": "AI risk incorporated into the risk management framework",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-220",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS220-RMF",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "binding",
+        "assessment_scope": "entity",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-5890D38ACFFA"
+      ],
+      "confirmed_missing_facets": [
+        "ai_risk_identified",
+        "risk_ownership_assigned",
+        "risk_controls_monitored",
+        "board_or_senior_oversight"
+      ],
+      "provisional_missing_facets": [
+        "risk_ownership_assigned",
+        "risk_controls_monitored",
+        "board_or_senior_oversight"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "AU-APRA-CPS220-RMF",
+          "facet": "ai_risk_identified",
+          "question_id": "AIAF-CORE-5890D38ACFFA",
+          "review_status": "proposed",
+          "confidence": 0.593,
+          "reason": "matched phrases: risk assessment; token overlap 27%",
+          "source_reference": "Questions:AIAF-CORE-5890D38ACFFA",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Is an accountable risk owner assigned for each material AI risk?",
+        "Are the controls for material AI risks subject to defined ongoing monitoring?",
+        "Is reporting and escalation to the appropriate senior-management or Board forum defined?"
+      ],
+      "evidence_requirements": [
+        "Risk register",
+        "Risk appetite linkage",
+        "Committee or Board reporting"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS220-REVIEW",
+      "instrument": "APRA CPS 220",
+      "provision": "CPS 220 paras 37\u201347, 51 (Risk management function, independent review and declaration)",
+      "title": "Independent review and risk management challenge for AI governance",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-220",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS220-REVIEW",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "binding",
+        "assessment_scope": "entity",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "second_line_risk_challenge_recorded",
+        "independent_framework_review_covers_ai",
+        "material_ai_control_gaps_escalated_for_declaration"
+      ],
+      "provisional_missing_facets": [
+        "second_line_risk_challenge_recorded",
+        "independent_framework_review_covers_ai",
+        "material_ai_control_gaps_escalated_for_declaration"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Has the independent risk management function (Line 2) reviewed and challenged the risk assessment for this AI use case?",
+        "Are AI risk governance and model/agent controls included within the scope of independent CPS 220 reviews?",
+        "Are unresolved material AI control deficiencies escalated into the CPS 220 annual Risk Management Declaration process?"
+      ],
+      "evidence_requirements": [
+        "Second-line CRO/Risk challenge opinion",
+        "CPS 220 comprehensive review scope and report",
+        "CPS 220 Risk Management Declaration attestation pack"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-OPS",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 22\u201333 (Operational risk management, change assessment and incidents)",
+      "title": "Operational risk controls for the AI service",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS230-OPS",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-00D33C597D96",
+        "AIAF-CORE-ED34BB664944"
+      ],
+      "confirmed_missing_facets": [
+        "operational_risks_assessed",
+        "control_environment_documented",
+        "incidents_and_weaknesses_managed"
+      ],
+      "provisional_missing_facets": [
+        "control_environment_documented"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "AU-APRA-CPS230-OPS",
+          "facet": "operational_risks_assessed",
+          "question_id": "AIAF-CORE-00D33C597D96",
+          "review_status": "proposed",
+          "confidence": 0.407,
+          "reason": "matched phrases: operational risk; token overlap 13%",
+          "source_reference": "Questions:AIAF-CORE-00D33C597D96",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-APRA-CPS230-OPS",
+          "facet": "incidents_and_weaknesses_managed",
+          "question_id": "AIAF-CORE-ED34BB664944",
+          "review_status": "proposed",
+          "confidence": 0.42,
+          "reason": "matched phrases: remediation; token overlap 14%",
+          "source_reference": "Questions:AIAF-CORE-ED34BB664944",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Are preventive, detective and corrective controls for those operational risks documented with owners?"
+      ],
+      "evidence_requirements": [
+        "Operational risk assessment",
+        "Control register",
+        "Incident and remediation register"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-BCP",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 34\u201347 (Critical operations, tolerance levels and business continuity)",
+      "title": "Continuity for critical operations dependent on AI",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS230-BCP",
+        "status": "undetermined",
+        "reason": "Critical-operation dependency has not been assessed.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_critical_operation"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "critical_operation_dependency_mapped",
+        "tolerance_and_fallback_defined",
+        "continuity_plan_tested"
+      ],
+      "provisional_missing_facets": [
+        "critical_operation_dependency_mapped",
+        "tolerance_and_fallback_defined",
+        "continuity_plan_tested"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Dependency map",
+        "Tolerance and fallback design",
+        "Continuity exercise results"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-SP",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 48\u201358 & Attachment (Management of service provider arrangements & NTSP exemptions)",
+      "title": "Third-party AI service provider risk management",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS230-SP",
+        "status": "undetermined",
+        "reason": "Third-party AI dependency has not been confirmed.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_third_party_service"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "provider_materiality_assessed",
+        "due_diligence_completed",
+        "contract_controls_defined",
+        "performance_and_exit_monitored"
+      ],
+      "provisional_missing_facets": [
+        "provider_materiality_assessed",
+        "due_diligence_completed",
+        "contract_controls_defined",
+        "performance_and_exit_monitored"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Materiality assessment",
+        "Due-diligence pack",
+        "Contract schedule",
+        "Monitoring and exit plan"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS230-NOTIFY",
+      "instrument": "APRA CPS 230",
+      "provision": "CPS 230 paras 32\u201333, 59\u201360 (APRA notification for operational incidents and material service providers)",
+      "title": "APRA notifications for material operational incidents, MSP agreements and offshoring",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-230",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS230-NOTIFY",
+        "status": "undetermined",
+        "reason": "Third-party AI dependency has not been confirmed.",
+        "authority": "binding",
+        "assessment_scope": "entity",
+        "rule_key": "apra_third_party_service"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "msp_register_updated_for_ai_vendors",
+        "prior_apra_consultation_for_material_offshoring",
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "provisional_missing_facets": [
+        "msp_register_updated_for_ai_vendors",
+        "prior_apra_consultation_for_material_offshoring",
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "CPS 230 Material Service Provider Register entry",
+        "Offshoring notification assessment record",
+        "Regulatory notification workflow and log"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-ROLES-ASSETS",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 13\u201320 (Roles, responsibilities and information asset classification)",
+      "title": "Information security accountability and AI information asset classification",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS234-ROLES-ASSETS",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "security_roles_and_asset_owners_assigned",
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "third_party_managed_ai_assets_catalogued"
+      ],
+      "provisional_missing_facets": [
+        "security_roles_and_asset_owners_assigned",
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "third_party_managed_ai_assets_catalogued"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Are information security responsibilities and an accountable asset owner assigned for all AI datasets, models and prompts?",
+        "Have all AI information assets been formally classified by both criticality and sensitivity in accordance with CPS 234 para 20?",
+        "Does the asset classification register include AI information assets hosted or processed by third parties and related entities?"
+      ],
+      "evidence_requirements": [
+        "AI information asset register",
+        "Criticality and sensitivity classification record",
+        "Information security RACI matrix"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-CONTROLS",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 21\u201326 (Implementation of information security controls)",
+      "title": "Commensurate information security controls",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS234-CONTROLS",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-45EC82D001D0"
+      ],
+      "confirmed_missing_facets": [
+        "information_assets_identified",
+        "threats_and_vulnerabilities_assessed",
+        "controls_commensurate",
+        "third_party_assets_in_scope"
+      ],
+      "provisional_missing_facets": [
+        "information_assets_identified",
+        "threats_and_vulnerabilities_assessed",
+        "third_party_assets_in_scope"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "AU-APRA-CPS234-CONTROLS",
+          "facet": "controls_commensurate",
+          "question_id": "AIAF-CORE-45EC82D001D0",
+          "review_status": "proposed",
+          "confidence": 0.5,
+          "reason": "matched phrases: security controls; token overlap 20%",
+          "source_reference": "Questions:AIAF-CORE-45EC82D001D0",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Are all information assets supporting the AI system identified, classified and owned?",
+        "Has the bank assessed AI-specific threats and vulnerabilities for those assets?",
+        "Are relevant third-party managed information assets included in the control scope?"
+      ],
+      "evidence_requirements": [
+        "Information-asset register",
+        "Threat model",
+        "Security control matrix"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-TEST",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 27\u201334 (Testing of controls and internal audit)",
+      "title": "Systematic testing of information security controls",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS234-TEST",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-ED34BB664944"
+      ],
+      "confirmed_missing_facets": [
+        "testing_program_exists",
+        "testing_scope_defined",
+        "testing_frequency_risk_based",
+        "testing_results_reviewed",
+        "deficiencies_remediated"
+      ],
+      "provisional_missing_facets": [
+        "testing_frequency_risk_based",
+        "testing_results_reviewed"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "AU-APRA-CPS234-TEST",
+          "facet": "testing_program_exists",
+          "question_id": "AIAF-CORE-ED34BB664944",
+          "review_status": "proposed",
+          "confidence": 0.35,
+          "reason": "token overlap 25%",
+          "source_reference": "Questions:AIAF-CORE-ED34BB664944",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-APRA-CPS234-TEST",
+          "facet": "testing_scope_defined",
+          "question_id": "AIAF-CORE-ED34BB664944",
+          "review_status": "proposed",
+          "confidence": 0.382,
+          "reason": "token overlap 27%",
+          "source_reference": "Questions:AIAF-CORE-ED34BB664944",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "AU-APRA-CPS234-TEST",
+          "facet": "deficiencies_remediated",
+          "question_id": "AIAF-CORE-ED34BB664944",
+          "review_status": "proposed",
+          "confidence": 0.42,
+          "reason": "token overlap 31%",
+          "source_reference": "Questions:AIAF-CORE-ED34BB664944",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Is test frequency based on material changes, threats, vulnerabilities, criticality and prior findings?",
+        "Are test results independently reviewed and reported to the accountable control owners?"
+      ],
+      "evidence_requirements": [
+        "Security test plan",
+        "Test execution record",
+        "Findings register",
+        "Remediation tracking"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPS234-INCIDENT",
+      "instrument": "APRA CPS 234",
+      "provision": "CPS 234 paras 32\u201336 (Incident management and APRA notification)",
+      "title": "Information security incident management and notification",
+      "authority": "binding",
+      "source_url": "https://www.apra.gov.au/standards/cps-234",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPS234-INCIDENT",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined",
+        "apra_notification_screened",
+        "material_weaknesses_tracked"
+      ],
+      "provisional_missing_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined",
+        "apra_notification_screened",
+        "material_weaknesses_tracked"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Are detection signals and thresholds defined for AI-related information security incidents?",
+        "Does the incident plan identify containment, escalation, decision and communication responsibilities?",
+        "Is every relevant incident assessed promptly against APRA notification requirements with the rationale recorded?",
+        "Are material information-security control weaknesses assessed, notified where required and tracked to closure?"
+      ],
+      "evidence_requirements": [
+        "Incident response plan",
+        "Notification decision record",
+        "Control weakness register"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPG235-GOV",
+      "instrument": "APRA CPG 235",
+      "provision": "CPG 235 paras 12\u201319 (Data risk governance, roles and accountability)",
+      "title": "Data risk governance, ownership and stewardship for AI",
+      "authority": "guidance",
+      "source_url": "https://www.apra.gov.au/practice-guides/cpg-235",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPG235-GOV",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "critical_ai_data_elements_owned",
+        "data_risk_appetite_and_tolerances_defined",
+        "metadata_and_data_dictionary_maintained"
+      ],
+      "provisional_missing_facets": [
+        "critical_ai_data_elements_owned",
+        "data_risk_appetite_and_tolerances_defined",
+        "metadata_and_data_dictionary_maintained"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Are accountable data owners and stewards assigned for all critical data feeds and corpora used by the AI system?",
+        "Are data quality tolerances (accuracy, completeness, timeliness) defined in alignment with the bank's data risk appetite?",
+        "Is a current data dictionary and provenance record maintained for all training, RAG and prompt datasets?"
+      ],
+      "evidence_requirements": [
+        "Critical data element (CDE) register",
+        "Data owner and steward assignment",
+        "Data dictionary and metadata schema"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-APRA-CPG235-LIFECYCLE",
+      "instrument": "APRA CPG 235",
+      "provision": "CPG 235 paras 20\u201345 (Data lifecycle: capture, lineage, validation, availability and disposal)",
+      "title": "End-to-end data lifecycle, lineage and validation controls",
+      "authority": "guidance",
+      "source_url": "https://www.apra.gov.au/practice-guides/cpg-235",
+      "applicability": {
+        "obligation_id": "AU-APRA-CPG235-LIFECYCLE",
+        "status": "applicable",
+        "reason": "Entity is confirmed to be APRA regulated.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "apra_entity"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "end_to_end_data_lineage_documented",
+        "automated_ingestion_and_transformation_validation",
+        "lifecycle_archival_and_disposal_enforced"
+      ],
+      "provisional_missing_facets": [
+        "end_to_end_data_lineage_documented",
+        "automated_ingestion_and_transformation_validation",
+        "lifecycle_archival_and_disposal_enforced"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Is end-to-end data lineage documented from authoritative banking systems through to AI prompts, embeddings and outputs?",
+        "Do automated validation controls check for corruption, schema drift or poisoning during AI data ingestion and transformation?",
+        "Are AI training snapshots, embeddings and inference logs archived or disposed of in accordance with CPG 235 lifecycle standards?"
+      ],
+      "evidence_requirements": [
+        "Data lineage diagram",
+        "Pipeline validation and reconciliation test logs",
+        "Data retention and disposal schedule"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-ASIC-RG271-COMPLAINT",
+      "instrument": "ASIC RG 271",
+      "provision": "RG 271 paras 271.27\u2013271.32, 271.51\u2013271.68 (Enforceable IDR complaint handling and response)",
+      "title": "Recognise, record and respond to complaints fairly and on time",
+      "authority": "enforceable_guidance",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-271-internal-dispute-resolution/",
+      "applicability": {
+        "obligation_id": "AU-ASIC-RG271-COMPLAINT",
+        "status": "applicable",
+        "reason": "Entity/use case is confirmed within an applicable IDR obligation.",
+        "authority": "enforceable_guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "asic_idr"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-0BFAE5AD1D2F"
+      ],
+      "confirmed_missing_facets": [
+        "complaints_broadly_recognised",
+        "complaints_recorded",
+        "response_timeframes_enforced",
+        "response_content_complete",
+        "human_escalation_available"
+      ],
+      "provisional_missing_facets": [
+        "complaints_broadly_recognised",
+        "response_timeframes_enforced",
+        "response_content_complete",
+        "human_escalation_available"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "AU-ASIC-RG271-COMPLAINT",
+          "facet": "complaints_recorded",
+          "question_id": "AIAF-CORE-0BFAE5AD1D2F",
+          "review_status": "proposed",
+          "confidence": 0.453,
+          "reason": "matched phrases: complaints recorded; token overlap 17%",
+          "source_reference": "Questions:AIAF-CORE-0BFAE5AD1D2F",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Can the AI workflow identify a broad expression of dissatisfaction as a complaint even when the customer does not use the word 'complaint'?",
+        "Are applicable RG 271 response timeframes and delay notifications enforced by workflow controls?",
+        "Does every required written IDR response contain reasons, rights and AFCA information appropriate to the matter?",
+        "Can a customer obtain timely human complaint review without the AI treating its own output as final?"
+      ],
+      "evidence_requirements": [
+        "Complaint classification rules",
+        "Complaint register",
+        "Response template",
+        "SLA monitoring"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-ASIC-RG271-SYSTEMIC",
+      "instrument": "ASIC RG 271",
+      "provision": "RG 271 paras 271.116\u2013271.124, 271.165\u2013271.182 (Systemic issues and IDR data reporting)",
+      "title": "Identify and remediate systemic issues from complaints",
+      "authority": "enforceable_guidance",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-271-internal-dispute-resolution/",
+      "applicability": {
+        "obligation_id": "AU-ASIC-RG271-SYSTEMIC",
+        "status": "applicable",
+        "reason": "Entity/use case is confirmed within an applicable IDR obligation.",
+        "authority": "enforceable_guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "asic_idr"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "missing",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "complaint_data_analysed",
+        "systemic_issue_thresholds_defined",
+        "systemic_issues_escalated",
+        "affected_customers_remediated"
+      ],
+      "provisional_missing_facets": [
+        "complaint_data_analysed",
+        "systemic_issue_thresholds_defined",
+        "systemic_issues_escalated",
+        "affected_customers_remediated"
+      ],
+      "mappings": [],
+      "suggested_questions": [
+        "Are complaints involving the AI service analysed for trends, repeat causes and affected cohorts?",
+        "Are thresholds and decision rules defined for identifying a systemic issue from AI-related complaints?",
+        "Are suspected systemic issues escalated to accountable risk and product owners?",
+        "Does the process identify and remediate other customers affected by the same AI-related issue?"
+      ],
+      "evidence_requirements": [
+        "Complaint analytics",
+        "Systemic issue register",
+        "Customer remediation plan"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-ASIC-RG104-COMPLIANCE-TECH",
+      "instrument": "ASIC RG 104 / Corporations Act s 912A(1)",
+      "provision": "RG 104 paras 104.31\u2013104.76, 104.88\u2013104.104 (interpreting Corporations Act s 912A(1)(a), (c), (d), (h))",
+      "title": "Compliance arrangements and adequate technological resources for AI financial services",
+      "authority": "guidance",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-104-afs-licensing-meeting-the-general-obligations/",
+      "applicability": {
+        "obligation_id": "AU-ASIC-RG104-COMPLIANCE-TECH",
+        "status": "conditional",
+        "reason": "Entity is an APRA-regulated institution/ADI; confirm AFSL scope and s 912A(1) applicability for this workflow.",
+        "authority": "guidance",
+        "assessment_scope": "entity",
+        "rule_key": "asic_afs_licensee"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "afsl_compliance_measures_cover_ai",
+        "technological_resources_adequacy_reviewed",
+        "efficient_honest_fair_outcome_tested"
+      ],
+      "provisional_missing_facets": [
+        "afsl_compliance_measures_cover_ai",
+        "technological_resources_adequacy_reviewed",
+        "efficient_honest_fair_outcome_tested"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "AFSL compliance plan AI mapping",
+        "Technological resource adequacy & capacity review",
+        "Customer fairness and conduct outcome evaluation"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-ASIC-RG104-REPRESENTATIVES",
+      "instrument": "ASIC RG 104 / Corporations Act s 912A(1)(ca), (f)",
+      "provision": "RG 104 paras 104.105\u2013104.118 (Monitoring, supervision and training of representatives)",
+      "title": "Supervision and training of staff operating AI-assisted financial services",
+      "authority": "guidance",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-104-afs-licensing-meeting-the-general-obligations/",
+      "applicability": {
+        "obligation_id": "AU-ASIC-RG104-REPRESENTATIVES",
+        "status": "conditional",
+        "reason": "Entity is an APRA-regulated institution/ADI; confirm AFSL scope and s 912A(1) applicability for this workflow.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "asic_afs_licensee"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "operator_ai_competence_and_training_completed",
+        "supervisory_quality_assurance_on_ai_assisted_staff",
+        "clear_escalation_and_override_authority"
+      ],
+      "provisional_missing_facets": [
+        "operator_ai_competence_and_training_completed",
+        "supervisory_quality_assurance_on_ai_assisted_staff",
+        "clear_escalation_and_override_authority"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Representative AI training curriculum and completion logs",
+        "Quality assurance sampling records",
+        "Operator override SOP"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-ASIC-RG105-COMPETENCE",
+      "instrument": "ASIC RG 105 / Corporations Act s 912A(1)(e)",
+      "provision": "RG 105 paras 105.15\u2013105.42, 105.87\u2013105.98 (Organisational competence and Responsible Managers)",
+      "title": "Organisational competence and Responsible Manager oversight for AI-enabled services",
+      "authority": "guidance",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/regulatory-guides/rg-105-afs-licensing-organisational-competence/",
+      "applicability": {
+        "obligation_id": "AU-ASIC-RG105-COMPETENCE",
+        "status": "conditional",
+        "reason": "Entity is an APRA-regulated institution/ADI; confirm AFSL scope and s 912A(1) applicability for this workflow.",
+        "authority": "guidance",
+        "assessment_scope": "organisation",
+        "rule_key": "asic_afs_licensee"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "responsible_manager_accountability_mapped",
+        "organisational_competence_reviewed_on_ai_change",
+        "technical_and_domain_expertise_maintained"
+      ],
+      "provisional_missing_facets": [
+        "responsible_manager_accountability_mapped",
+        "organisational_competence_reviewed_on_ai_change",
+        "technical_and_domain_expertise_maintained"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Responsible Manager competency matrix",
+        "Material technology change competence review",
+        "Continuing professional development / briefing records"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-ASIC-REP798-AI-GAP",
+      "instrument": "ASIC REP 798",
+      "provision": "REP 798 Key Findings & Governance Expectations (pp. 4\u201318)",
+      "title": "Close governance lag and prevent consumer harm in rapid AI adoption",
+      "authority": "guidance",
+      "source_url": "https://asic.gov.au/regulatory-resources/find-a-document/reports/rep-798-beware-the-gap-governance-arrangements-in-the-face-of-ai-innovation/",
+      "applicability": {
+        "obligation_id": "AU-ASIC-REP798-AI-GAP",
+        "status": "conditional",
+        "reason": "Entity is an APRA-regulated institution/ADI; confirm AFSL scope and s 912A(1) applicability for this workflow.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "asic_afs_licensee"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "use_case_registered_in_enterprise_ai_inventory",
+        "consumer_harm_and_bias_assessed_pre_deployment",
+        "generative_and_third_party_ai_governance_updated"
+      ],
+      "provisional_missing_facets": [
+        "use_case_registered_in_enterprise_ai_inventory",
+        "consumer_harm_and_bias_assessed_pre_deployment",
+        "generative_and_third_party_ai_governance_updated"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Enterprise AI use-case register entry",
+        "Consumer harm and bias testing report",
+        "Pre-deployment governance approval gate"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-NCCP-S47-CONDUCT",
+      "instrument": "NCCP Act 2009",
+      "provision": "Chapter 2, Part 2-2, Division 5, s 47(1)(a), (d), (g), (h), (l)",
+      "title": "General conduct obligations of Australian credit licensees using AI",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2009A00134/latest",
+      "applicability": {
+        "obligation_id": "AU-NCCP-S47-CONDUCT",
+        "status": "conditional",
+        "reason": "Entity is an ADI/APRA-regulated institution; confirm whether the AI workflow engages in regulated credit activities under s 47 of the NCCP Act.",
+        "authority": "binding",
+        "assessment_scope": "entity",
+        "rule_key": "nccp_credit_activity"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "credit_activity_fairness_and_honesty_verified",
+        "credit_compliance_and_breach_monitoring_active",
+        "credit_technological_resources_and_oversight_adequate"
+      ],
+      "provisional_missing_facets": [
+        "credit_activity_fairness_and_honesty_verified",
+        "credit_compliance_and_breach_monitoring_active",
+        "credit_technological_resources_and_oversight_adequate"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "ACL s 47 compliance attestation",
+        "Credit AI fairness and conduct test report",
+        "Credit system monitoring and breach log"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-NCCP-S128-131-LENDING",
+      "instrument": "NCCP Act 2009",
+      "provision": "Chapter 3, Part 3-2, Division 3, ss 128\u2013131 (Responsible lending unsuitability assessment)",
+      "title": "Responsible lending inquiries, verification and unsuitability assessment for AI credit decisions",
+      "authority": "binding",
+      "source_url": "https://www.legislation.gov.au/C2009A00134/latest",
+      "applicability": {
+        "obligation_id": "AU-NCCP-S128-131-LENDING",
+        "status": "not_applicable",
+        "reason": "Use case does not enter into, increase or assess consumer credit contracts under Chapter 3 of the NCCP Act.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "nccp_responsible_lending"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "consumer_requirements_and_objectives_captured",
+        "financial_situation_verified_from_reliable_evidence",
+        "unsuitability_and_substantial_hardship_screen_enforced",
+        "written_unsuitability_assessment_retrievable"
+      ],
+      "provisional_missing_facets": [
+        "consumer_requirements_and_objectives_captured",
+        "financial_situation_verified_from_reliable_evidence",
+        "unsuitability_and_substantial_hardship_screen_enforced",
+        "written_unsuitability_assessment_retrievable"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Responsible lending model logic specification",
+        "Income and expense verification rules",
+        "Sample unsuitability assessment records (s 132)"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-NAIC-AI6-ACCOUNTABILITY-IMPACT",
+      "instrument": "Australian Guidance for AI Adoption (Oct 2025)",
+      "provision": "Essential Practice 1 (Decide who is accountable) & Essential Practice 2 (Understand impacts and plan accordingly)",
+      "title": "Accountable AI ownership, use-case risk screening and stakeholder impact planning",
+      "authority": "guidance",
+      "source_url": "https://www.industry.gov.au/publications/guidance-for-ai-adoption",
+      "applicability": {
+        "obligation_id": "AU-NAIC-AI6-ACCOUNTABILITY-IMPACT",
+        "status": "undetermined",
+        "reason": "Adoption of the Australian Government Guidance for AI Adoption (Oct 2025) has not been specified.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "au_ai_guidance_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "accountable_ai_owner_designated",
+        "ai_impact_and_stakeholder_assessment_completed",
+        "risk_tier_and_governance_proportionality_screened"
+      ],
+      "provisional_missing_facets": [
+        "accountable_ai_owner_designated",
+        "ai_impact_and_stakeholder_assessment_completed",
+        "risk_tier_and_governance_proportionality_screened"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Accountable AI owner charter",
+        "AI screening and impact assessment record",
+        "AI systems register entry"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-NAIC-AI6-RISK-TRANSPARENCY",
+      "instrument": "Australian Guidance for AI Adoption (Oct 2025)",
+      "provision": "Essential Practice 3 (Measure and manage risks) & Essential Practice 4 (Share essential information)",
+      "title": "AI-specific risk management and user/supply-chain transparency disclosures",
+      "authority": "guidance",
+      "source_url": "https://www.industry.gov.au/publications/guidance-for-ai-adoption",
+      "applicability": {
+        "obligation_id": "AU-NAIC-AI6-RISK-TRANSPARENCY",
+        "status": "undetermined",
+        "reason": "Adoption of the Australian Government Guidance for AI Adoption (Oct 2025) has not been specified.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "au_ai_guidance_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "ai_specific_risks_measured_and_treated",
+        "user_interaction_and_ai_use_disclosed",
+        "supply_chain_and_model_provenance_documented"
+      ],
+      "provisional_missing_facets": [
+        "ai_specific_risks_measured_and_treated",
+        "user_interaction_and_ai_use_disclosed",
+        "supply_chain_and_model_provenance_documented"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "AI risk treatment plan",
+        "Customer-facing AI transparency disclosure",
+        "Model card / supplier provenance documentation"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "AU-NAIC-AI6-TEST-HUMAN",
+      "instrument": "Australian Guidance for AI Adoption (Oct 2025)",
+      "provision": "Essential Practice 5 (Test and monitor) & Essential Practice 6 (Maintain human control)",
+      "title": "Pre-deployment testing, continuous monitoring, human control and contestability",
+      "authority": "guidance",
+      "source_url": "https://www.industry.gov.au/publications/guidance-for-ai-adoption",
+      "applicability": {
+        "obligation_id": "AU-NAIC-AI6-TEST-HUMAN",
+        "status": "undetermined",
+        "reason": "Adoption of the Australian Government Guidance for AI Adoption (Oct 2025) has not been specified.",
+        "authority": "guidance",
+        "assessment_scope": "use_case",
+        "rule_key": "au_ai_guidance_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "pre_deployment_and_ongoing_drift_monitoring",
+        "meaningful_human_oversight_and_kill_switch",
+        "customer_contestability_and_recourse_pathway"
+      ],
+      "provisional_missing_facets": [
+        "pre_deployment_and_ongoing_drift_monitoring",
+        "meaningful_human_oversight_and_kill_switch",
+        "customer_contestability_and_recourse_pathway"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Pre-deployment evaluation and production drift dashboard",
+        "Human-in-the-loop and kill-switch runbook",
+        "Customer contestability workflow"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "EU-AIA-ART2-HIGH-RISK",
+      "instrument": "EU AI Act",
+      "provision": "Articles 2, 3, 6, 9\u201315, Annex III (Territorial scope and high-risk AI system requirements)",
+      "title": "Conditional EU AI Act high-risk governance controls",
+      "authority": "binding",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "applicability": {
+        "obligation_id": "EU-AIA-ART2-HIGH-RISK",
+        "status": "undetermined",
+        "reason": "EU territorial nexus has not been fully assessed.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "eu_ai_act_nexus"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "territorial_nexus_confirmed",
+        "regulated_role_confirmed",
+        "risk_classification_confirmed",
+        "risk_management_and_logging",
+        "human_oversight_and_robustness"
+      ],
+      "provisional_missing_facets": [
+        "territorial_nexus_confirmed",
+        "regulated_role_confirmed",
+        "risk_classification_confirmed",
+        "risk_management_and_logging",
+        "human_oversight_and_robustness"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "EU nexus memorandum",
+        "Role and classification assessment",
+        "Risk file and logs"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "EU-AIA-ART4-5-PROHIBITED-LITERACY",
+      "instrument": "EU AI Act",
+      "provision": "Articles 4, 5 & 113(a) (AI literacy and prohibited AI practices, applicable from 2 February 2025)",
+      "title": "EU AI Act prohibited-practice screening and AI literacy (early commencement phase)",
+      "authority": "binding",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "applicability": {
+        "obligation_id": "EU-AIA-ART4-5-PROHIBITED-LITERACY",
+        "status": "undetermined",
+        "reason": "EU territorial nexus has not been fully assessed.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "eu_ai_act_prohibited_or_literacy"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "article5_prohibited_practices_screened_out",
+        "article4_staff_ai_literacy_evidenced",
+        "phased_commencement_2feb2025_verified"
+      ],
+      "provisional_missing_facets": [
+        "article5_prohibited_practices_screened_out",
+        "article4_staff_ai_literacy_evidenced",
+        "phased_commencement_2feb2025_verified"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Article 5 prohibited-practice negative screening record",
+        "Article 4 AI literacy training syllabus and completion log",
+        "Legal territorial scope sign-off"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "EU-AIA-ART26-27-DEPLOYER-CREDIT",
+      "instrument": "EU AI Act",
+      "provision": "Articles 26, 27, 50 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA)",
+      "title": "EU AI Act deployer obligations for creditworthiness AI, log retention and FRIA",
+      "authority": "binding",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "applicability": {
+        "obligation_id": "EU-AIA-ART26-27-DEPLOYER-CREDIT",
+        "status": "undetermined",
+        "reason": "EU territorial nexus has not been fully assessed.",
+        "authority": "binding",
+        "assessment_scope": "use_case",
+        "rule_key": "eu_ai_act_deployer_high_risk"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "annex3_5b_credit_vs_fraud_exemption_assessed",
+        "deployer_human_oversight_and_6month_log_retention",
+        "article27_fundamental_rights_impact_assessment_completed",
+        "article50_ai_interaction_transparency_provided"
+      ],
+      "provisional_missing_facets": [
+        "annex3_5b_credit_vs_fraud_exemption_assessed",
+        "deployer_human_oversight_and_6month_log_retention",
+        "article27_fundamental_rights_impact_assessment_completed",
+        "article50_ai_interaction_transparency_provided"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "Annex III point 5(b) classification memo",
+        "Article 27 Fundamental Rights Impact Assessment (FRIA)",
+        "6-month+ automated log retention configuration"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "NIST-AI-RMF-GMMM",
+      "instrument": "NIST AI RMF 1.0",
+      "provision": "Core Functions: GOVERN, MAP, MEASURE, MANAGE (NIST AI 100-1)",
+      "title": "Voluntary NIST AI RMF alignment",
+      "authority": "voluntary",
+      "source_url": "https://airc.nist.gov/airmf-resources/playbook/",
+      "applicability": {
+        "obligation_id": "NIST-AI-RMF-GMMM",
+        "status": "undetermined",
+        "reason": "NIST AI RMF adoption status is unknown.",
+        "authority": "voluntary",
+        "assessment_scope": "use_case",
+        "rule_key": "nist_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "governance_defined",
+        "context_mapped",
+        "risk_measured",
+        "risk_managed"
+      ],
+      "provisional_missing_facets": [
+        "governance_defined",
+        "context_mapped",
+        "risk_measured",
+        "risk_managed"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "AI governance record",
+        "Context map",
+        "Risk measurement results",
+        "Risk treatment plan"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "NIST-AI-RMF-GOVERN-MAP",
+      "instrument": "NIST AI RMF Playbook",
+      "provision": "Playbook Categories GOVERN 1\u20136 (G.1.1\u2013G.6.2) & MAP 1\u20135 (MP.1.1\u2013MP.5.2)",
+      "title": "NIST Playbook governance policies, decommissioning criteria and third-party AI supply chain mapping",
+      "authority": "voluntary",
+      "source_url": "https://airc.nist.gov/airmf-resources/playbook/",
+      "applicability": {
+        "obligation_id": "NIST-AI-RMF-GOVERN-MAP",
+        "status": "undetermined",
+        "reason": "NIST AI RMF adoption status is unknown.",
+        "authority": "voluntary",
+        "assessment_scope": "use_case",
+        "rule_key": "nist_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "intended_purpose_and_out_of_scope_boundaries_documented",
+        "ai_supply_chain_and_open_weight_risks_assessed",
+        "safe_decommissioning_and_rollback_criteria_defined"
+      ],
+      "provisional_missing_facets": [
+        "intended_purpose_and_out_of_scope_boundaries_documented",
+        "ai_supply_chain_and_open_weight_risks_assessed",
+        "safe_decommissioning_and_rollback_criteria_defined"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "System boundary and intended-use specification",
+        "AI supply-chain risk assessment (GOVERN 6)",
+        "Decommissioning and model rollback procedure (GOVERN 1.7)"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "NIST-AI-RMF-MEASURE-MANAGE",
+      "instrument": "NIST AI RMF Playbook",
+      "provision": "Playbook Categories MEASURE 1\u20134 (MS.1.1\u2013MS.4.3) & MANAGE 1\u20134 (MG.1.1\u2013MG.4.2)",
+      "title": "NIST Playbook TEVV evaluation metrics, red-teaming and post-deployment risk management",
+      "authority": "voluntary",
+      "source_url": "https://airc.nist.gov/airmf-resources/playbook/",
+      "applicability": {
+        "obligation_id": "NIST-AI-RMF-MEASURE-MANAGE",
+        "status": "undetermined",
+        "reason": "NIST AI RMF adoption status is unknown.",
+        "authority": "voluntary",
+        "assessment_scope": "use_case",
+        "rule_key": "nist_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "tevv_validity_and_reliability_benchmarked",
+        "fairness_and_explainability_metrics_evaluated",
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "provisional_missing_facets": [
+        "tevv_validity_and_reliability_benchmarked",
+        "fairness_and_explainability_metrics_evaluated",
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "TEVV benchmark report (MEASURE 2)",
+        "Fairness and explainability evaluation results",
+        "Residual risk sign-off and production monitoring log (MANAGE 1/4)"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "ISO42001-AIMS-ORG",
+      "instrument": "ISO/IEC 42001:2023",
+      "provision": "Clauses 4\u201310 (Organisation-scope AI management system themes)",
+      "title": "Organisation-level AI management system alignment",
+      "authority": "voluntary",
+      "source_url": "https://www.iso.org/standard/81230.html",
+      "applicability": {
+        "obligation_id": "ISO42001-AIMS-ORG",
+        "status": "undetermined",
+        "reason": "ISO/IEC 42001 adoption status is unknown.",
+        "authority": "voluntary",
+        "assessment_scope": "organisation",
+        "rule_key": "iso42001_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "ai_policy_and_roles",
+        "ai_risk_and_impact_process",
+        "performance_monitoring",
+        "internal_audit",
+        "management_review"
+      ],
+      "provisional_missing_facets": [
+        "ai_policy_and_roles",
+        "ai_risk_and_impact_process",
+        "performance_monitoring",
+        "internal_audit",
+        "management_review"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "AI policy",
+        "AIMS scope",
+        "Internal audit results",
+        "Management review minutes"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "ISO42001-IMPACT-LIFECYCLE",
+      "instrument": "ISO/IEC 42001:2023",
+      "provision": "Clauses 6.1.2\u20136.1.4, 8.2\u20138.4 & Annex A themes (A.5 Impact, A.6 Lifecycle, A.7 Data, A.8 Transparency)",
+      "title": "Use-case AI system impact assessment, Statement of Applicability and lifecycle themes",
+      "authority": "voluntary",
+      "source_url": "https://www.iso.org/standard/81230.html",
+      "applicability": {
+        "obligation_id": "ISO42001-IMPACT-LIFECYCLE",
+        "status": "undetermined",
+        "reason": "ISO/IEC 42001 adoption status is unknown.",
+        "authority": "voluntary",
+        "assessment_scope": "use_case",
+        "rule_key": "iso42001_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "system_impact_on_individuals_and_society_assessed",
+        "statement_of_applicability_controls_mapped",
+        "lifecycle_verification_and_interested_party_documentation"
+      ],
+      "provisional_missing_facets": [
+        "system_impact_on_individuals_and_society_assessed",
+        "statement_of_applicability_controls_mapped",
+        "lifecycle_verification_and_interested_party_documentation"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "AI system impact assessment record",
+        "AIMS Statement of Applicability (SoA)",
+        "System lifecycle verification and external documentation pack"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "ISO23894-AI-RISK-PROCESS",
+      "instrument": "ISO/IEC 23894:2023",
+      "provision": "Clauses 5 & 6 (AI risk management framework integration and risk assessment/treatment process)",
+      "title": "AI-specific risk identification, analysis, evaluation and treatment process",
+      "authority": "voluntary",
+      "source_url": "https://www.iso.org/standard/77304.html",
+      "applicability": {
+        "obligation_id": "ISO23894-AI-RISK-PROCESS",
+        "status": "undetermined",
+        "reason": "ISO/IEC 23894:2023 adoption status is unknown.",
+        "authority": "voluntary",
+        "assessment_scope": "use_case",
+        "rule_key": "iso23894_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "ai_specific_risk_sources_and_consequences_identified",
+        "risk_criteria_and_likelihood_severity_evaluated",
+        "iterative_risk_treatment_and_monitoring_recorded"
+      ],
+      "provisional_missing_facets": [
+        "ai_specific_risk_sources_and_consequences_identified",
+        "risk_criteria_and_likelihood_severity_evaluated",
+        "iterative_risk_treatment_and_monitoring_recorded"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "AI risk register with AI-specific risk sources",
+        "Risk evaluation matrix against approved criteria",
+        "Iterative risk treatment and review log"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "ISO27001-ISMS-CONTROLS",
+      "instrument": "ISO/IEC 27001:2022",
+      "provision": "Clauses 4\u201310 & Annex A themes (Information security management system and control operation)",
+      "title": "Information security management system (ISMS) governance and Annex A control themes for AI",
+      "authority": "voluntary",
+      "source_url": "https://www.iso.org/standard/27001",
+      "applicability": {
+        "obligation_id": "ISO27001-ISMS-CONTROLS",
+        "status": "undetermined",
+        "reason": "ISO/IEC 27001:2022 adoption status is unknown.",
+        "authority": "voluntary",
+        "assessment_scope": "organisation",
+        "rule_key": "iso27001_adopted"
+      },
+      "confirmed_status": "not_assessed",
+      "provisional_status": "not_assessed",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [],
+      "confirmed_missing_facets": [
+        "ai_environment_in_isms_scope_and_risk_assessment",
+        "access_cryptography_and_secure_engineering_applied",
+        "supplier_security_and_isms_internal_audit_verified"
+      ],
+      "provisional_missing_facets": [
+        "ai_environment_in_isms_scope_and_risk_assessment",
+        "access_cryptography_and_secure_engineering_applied",
+        "supplier_security_and_isms_internal_audit_verified"
+      ],
+      "mappings": [],
+      "suggested_questions": [],
+      "evidence_requirements": [
+        "ISMS scope and Statement of Applicability",
+        "Access control, encryption and secure SDLC/MLOps records",
+        "ISMS internal audit and management review report"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    },
+    {
+      "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
+      "instrument": "Enterprise AI & Delegated Authority Standard",
+      "provision": "Clause E-DA-01 (Delegated financial authority, human approval threshold and non-bypass execution)",
+      "title": "Mandatory human approval, pre-execution payment block and audit logging above delegated AUD threshold",
+      "authority": "enterprise",
+      "source_url": "https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/blob/main/APPLICABILITY_RULES.md",
+      "applicability": {
+        "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
+        "status": "applicable",
+        "reason": "Enterprise delegated-authority control applies based on configured approval threshold or enterprise control baseline.",
+        "authority": "enterprise",
+        "assessment_scope": "use_case",
+        "rule_key": "enterprise_delegated_authority"
+      },
+      "confirmed_status": "missing",
+      "provisional_status": "partial",
+      "confirmed_question_ids": [],
+      "candidate_question_ids": [
+        "AIAF-CORE-434F63BEEB08"
+      ],
+      "confirmed_missing_facets": [
+        "human_approval_required",
+        "approval_threshold_defined",
+        "pre_execution_block",
+        "approval_logs_retained"
+      ],
+      "provisional_missing_facets": [
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "mappings": [
+        {
+          "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
+          "facet": "approval_threshold_defined",
+          "question_id": "AIAF-CORE-434F63BEEB08",
+          "review_status": "proposed",
+          "confidence": 0.411,
+          "reason": "matched phrases: AUD; token overlap 14%",
+          "source_reference": "Questions:AIAF-CORE-434F63BEEB08",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        },
+        {
+          "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
+          "facet": "approval_logs_retained",
+          "question_id": "AIAF-CORE-434F63BEEB08",
+          "review_status": "proposed",
+          "confidence": 0.444,
+          "reason": "matched phrases: audit log; token overlap 16%",
+          "source_reference": "Questions:AIAF-CORE-434F63BEEB08",
+          "reviewer": null,
+          "reviewer_role": null,
+          "reviewed_at": null,
+          "questionnaire_id": null,
+          "questionnaire_sha256": null,
+          "regulatory_pack_id": null,
+          "regulatory_pack_version": null,
+          "control_id": null
+        }
+      ],
+      "suggested_questions": [
+        "Does the workflow require human approval from an authorised officer for financial actions above the policy limit?",
+        "Does a deterministic technical guardrail prevent payment execution prior to human approval?"
+      ],
+      "evidence_requirements": [
+        "Approved delegated-authority schedule",
+        "Production workflow pre-execution gate configuration",
+        "Immutable 7-year approval audit log sample"
+      ],
+      "disclaimer": "Coverage assesses whether the questionnaire asks about the requirement; it does not establish implementation, evidence effectiveness or legal compliance."
+    }
+  ],
+  "gaps": [
+    {
+      "gap_id": "GAP-Q-A7A1D152495D5E1D",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Open and accountable management of personal information",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-APP1-GOV",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "privacy_accountability_assigned",
+        "privacy_practices_implemented",
+        "privacy_policy_current"
+      ],
+      "recommendation": "Has an accountable privacy owner been assigned for this AI use case? Has the bank documented and implemented the privacy practices required for this AI use case? Does the current privacy policy accurately describe the bank's handling of personal information relevant to this AI use case?",
+      "evidence_required": [
+        "Privacy governance roles",
+        "Current privacy policy",
+        "Privacy impact assessment"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-6029107A97DC5BA7",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Collection of solicited personal information",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-APP3-COLLECT",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "collection_purpose_defined",
+        "necessity_assessed",
+        "sensitive_information_consent"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: collection_purpose_defined. Has the bank verified that each collected personal-information field is reasonably necessary for that purpose? Where sensitive information is collected, is the required consent or other lawful basis documented?",
+      "evidence_required": [
+        "Data inventory",
+        "Collection purpose record",
+        "Consent record where applicable"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-CF13BFB795945923",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Notification of collection",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-APP5-NOTICE",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "collection_notice_exists",
+        "notice_content_complete",
+        "notice_timing_defined"
+      ],
+      "recommendation": "Is a privacy collection notice presented wherever the AI use case collects personal information? Does the notice include the required purposes, disclosures, access and complaint information? Is the notice provided at or before collection, or as soon as practicable afterward?",
+      "evidence_required": [
+        "Collection notice",
+        "Customer journey screenshot",
+        "Notice approval record"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-36AA4E08339C57BD",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Use or disclosure of personal information",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-APP6-USE",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "primary_purpose_recorded",
+        "secondary_use_basis_checked",
+        "disclosures_logged"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: primary_purpose_recorded, secondary_use_basis_checked, disclosures_logged.",
+      "evidence_required": [
+        "Purpose and use register",
+        "Consent or exception record",
+        "Disclosure log"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-E9D5B150FDD55D61",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Quality of personal information collected, used or disclosed",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-APP10-QUALITY",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "input_personal_data_accuracy_checked",
+        "ai_output_and_inference_relevance_verified",
+        "stale_or_incomplete_records_prevented"
+      ],
+      "recommendation": "What controls verify that customer personal information fed into the AI system is accurate, complete and up-to-date? How does the bank prevent inaccurate or hallucinated AI outputs about a customer from being used or disclosed? Are automated checks in place to reject stale or incomplete customer records before AI inference?",
+      "evidence_required": [
+        "Data quality validation rules",
+        "Hallucination and accuracy evaluation report",
+        "Source-data currency checks"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-3A20943B90845ABD",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Security, retention and destruction of personal information",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-APP11-SECURITY",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "security_controls_defined",
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: security_controls_defined. Is an approved retention period applied to prompts, outputs, logs and source data containing personal information? Is destruction or de-identification verified when personal information is no longer required?",
+      "evidence_required": [
+        "Security control design",
+        "Retention schedule",
+        "Deletion or de-identification record"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-4E9629F63EFF5A10",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Access to and correction of personal information in AI workflows",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-APP12-13-RIGHTS",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "ai_personal_records_retrievable_for_access",
+        "correction_propagated_to_ai_stores",
+        "access_and_correction_timeframes_tracked"
+      ],
+      "recommendation": "Can personal information stored in AI logs, vector databases and generated case notes be located and provided for an APP 12 access request? When a customer record is corrected under APP 13, is the correction propagated to downstream AI caches, vector stores and context windows? Are access and correction requests involving AI-held records completed within the 30-calendar-day statutory benchmark?",
+      "evidence_required": [
+        "APP 12/13 operating procedure",
+        "Data store retrieval and correction mechanism",
+        "Request SLA register"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-D01172D28CD75E3C",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Eligible data breach assessment and notification for AI incidents",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-PRIV-NDB-S26WE",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "ai_data_leakage_detection_enabled",
+        "ndb_30day_assessment_workflow_defined",
+        "oaic_and_individual_notification_prepared"
+      ],
+      "recommendation": "Can the bank detect cross-session or cross-customer personal information leakage in AI prompts, retrieval context and outputs? Are suspected AI personal-data breaches routed to Privacy/Legal for a Part IIIC serious-harm assessment within 30 calendar days? Does the incident playbooks cover OAIC and individual notification under s 26WK/26WL including shared third-party AI breaches under s 26WC?",
+      "evidence_required": [
+        "Data breach response plan",
+        "Prompt/output leakage monitoring logs",
+        "NDB assessment register"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-9DA3547639EA56CE",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Privacy by design and Privacy Impact Assessment (PIA) expectations for AI",
+      "status": "open",
+      "severity": "low",
+      "obligation_id": "AU-OAIC-APPG-CH1-PIA",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "pia_threshold_screen_completed",
+        "pia_recommendations_tracked_to_closure",
+        "privacy_by_design_controls_embedded"
+      ],
+      "recommendation": "Has a Privacy Impact Assessment (PIA) threshold screen been completed for this AI use case before deployment? Where a PIA was required, have all privacy risk treatments been signed off and tracked to closure? How are privacy-by-design controls embedded into the AI system architecture and data pipeline?",
+      "evidence_required": [
+        "PIA threshold screening record",
+        "Completed Privacy Impact Assessment (PIA)",
+        "PIA action tracking register"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-0382F90EC8BD5FBE",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Inferred personal information governance and proportional quality verification",
+      "status": "open",
+      "severity": "low",
+      "obligation_id": "AU-OAIC-APPG-CH6-CH10-INF",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "inferred_attributes_classified_as_collection",
+        "training_data_purpose_compatibility_verified",
+        "proportional_accuracy_checks_before_customer_impact"
+      ],
+      "recommendation": "Are AI-inferred customer attributes or scores inventoried and assessed as newly collected personal information under APP 3? Has the bank documented the APP 6 basis or de-identification standard before using customer records to train or tune AI models? Are higher-rigour accuracy and human-verification checks applied when AI inferences can adversely affect a customer?",
+      "evidence_required": [
+        "AI feature and inference catalog",
+        "APP 3/6 lawful basis assessment for inferred data",
+        "Inference validation test results"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-8D17AEC9D5CA5509",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for AI risk incorporated into the risk management framework",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-APRA-CPS220-RMF",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "ai_risk_identified",
+        "risk_ownership_assigned",
+        "risk_controls_monitored",
+        "board_or_senior_oversight"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: ai_risk_identified. Is an accountable risk owner assigned for each material AI risk? Are the controls for material AI risks subject to defined ongoing monitoring? Is reporting and escalation to the appropriate senior-management or Board forum defined?",
+      "evidence_required": [
+        "Risk register",
+        "Risk appetite linkage",
+        "Committee or Board reporting"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-C29A3A59B599540F",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Independent review and risk management challenge for AI governance",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-APRA-CPS220-REVIEW",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "second_line_risk_challenge_recorded",
+        "independent_framework_review_covers_ai",
+        "material_ai_control_gaps_escalated_for_declaration"
+      ],
+      "recommendation": "Has the independent risk management function (Line 2) reviewed and challenged the risk assessment for this AI use case? Are AI risk governance and model/agent controls included within the scope of independent CPS 220 reviews? Are unresolved material AI control deficiencies escalated into the CPS 220 annual Risk Management Declaration process?",
+      "evidence_required": [
+        "Second-line CRO/Risk challenge opinion",
+        "CPS 220 comprehensive review scope and report",
+        "CPS 220 Risk Management Declaration attestation pack"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-CFA3FDA492F850BB",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Operational risk controls for the AI service",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-APRA-CPS230-OPS",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "operational_risks_assessed",
+        "control_environment_documented",
+        "incidents_and_weaknesses_managed"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: operational_risks_assessed, incidents_and_weaknesses_managed. Are preventive, detective and corrective controls for those operational risks documented with owners?",
+      "evidence_required": [
+        "Operational risk assessment",
+        "Control register",
+        "Incident and remediation register"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-49256E5FCEF4521E",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Information security accountability and AI information asset classification",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-APRA-CPS234-ROLES-ASSETS",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "security_roles_and_asset_owners_assigned",
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "third_party_managed_ai_assets_catalogued"
+      ],
+      "recommendation": "Are information security responsibilities and an accountable asset owner assigned for all AI datasets, models and prompts? Have all AI information assets been formally classified by both criticality and sensitivity in accordance with CPS 234 para 20? Does the asset classification register include AI information assets hosted or processed by third parties and related entities?",
+      "evidence_required": [
+        "AI information asset register",
+        "Criticality and sensitivity classification record",
+        "Information security RACI matrix"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-151365660D0D580A",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Commensurate information security controls",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-APRA-CPS234-CONTROLS",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "information_assets_identified",
+        "threats_and_vulnerabilities_assessed",
+        "controls_commensurate",
+        "third_party_assets_in_scope"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: controls_commensurate. Are all information assets supporting the AI system identified, classified and owned? Has the bank assessed AI-specific threats and vulnerabilities for those assets? Are relevant third-party managed information assets included in the control scope?",
+      "evidence_required": [
+        "Information-asset register",
+        "Threat model",
+        "Security control matrix"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-832729B224B85F84",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Systematic testing of information security controls",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-APRA-CPS234-TEST",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "testing_program_exists",
+        "testing_scope_defined",
+        "testing_frequency_risk_based",
+        "testing_results_reviewed",
+        "deficiencies_remediated"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: testing_program_exists, testing_scope_defined, deficiencies_remediated. Is test frequency based on material changes, threats, vulnerabilities, criticality and prior findings? Are test results independently reviewed and reported to the accountable control owners?",
+      "evidence_required": [
+        "Security test plan",
+        "Test execution record",
+        "Findings register",
+        "Remediation tracking"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-561465236574530F",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Information security incident management and notification",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-APRA-CPS234-INCIDENT",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined",
+        "apra_notification_screened",
+        "material_weaknesses_tracked"
+      ],
+      "recommendation": "Are detection signals and thresholds defined for AI-related information security incidents? Does the incident plan identify containment, escalation, decision and communication responsibilities? Is every relevant incident assessed promptly against APRA notification requirements with the rationale recorded? Are material information-security control weaknesses assessed, notified where required and tracked to closure?",
+      "evidence_required": [
+        "Incident response plan",
+        "Notification decision record",
+        "Control weakness register"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-02DBBE679E4E517B",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Data risk governance, ownership and stewardship for AI",
+      "status": "open",
+      "severity": "low",
+      "obligation_id": "AU-APRA-CPG235-GOV",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "critical_ai_data_elements_owned",
+        "data_risk_appetite_and_tolerances_defined",
+        "metadata_and_data_dictionary_maintained"
+      ],
+      "recommendation": "Are accountable data owners and stewards assigned for all critical data feeds and corpora used by the AI system? Are data quality tolerances (accuracy, completeness, timeliness) defined in alignment with the bank's data risk appetite? Is a current data dictionary and provenance record maintained for all training, RAG and prompt datasets?",
+      "evidence_required": [
+        "Critical data element (CDE) register",
+        "Data owner and steward assignment",
+        "Data dictionary and metadata schema"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-B883551103815172",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for End-to-end data lifecycle, lineage and validation controls",
+      "status": "open",
+      "severity": "low",
+      "obligation_id": "AU-APRA-CPG235-LIFECYCLE",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "end_to_end_data_lineage_documented",
+        "automated_ingestion_and_transformation_validation",
+        "lifecycle_archival_and_disposal_enforced"
+      ],
+      "recommendation": "Is end-to-end data lineage documented from authoritative banking systems through to AI prompts, embeddings and outputs? Do automated validation controls check for corruption, schema drift or poisoning during AI data ingestion and transformation? Are AI training snapshots, embeddings and inference logs archived or disposed of in accordance with CPG 235 lifecycle standards?",
+      "evidence_required": [
+        "Data lineage diagram",
+        "Pipeline validation and reconciliation test logs",
+        "Data retention and disposal schedule"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-8776F6403DFC5488",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Recognise, record and respond to complaints fairly and on time",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-ASIC-RG271-COMPLAINT",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "complaints_broadly_recognised",
+        "complaints_recorded",
+        "response_timeframes_enforced",
+        "response_content_complete",
+        "human_escalation_available"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: complaints_recorded. Can the AI workflow identify a broad expression of dissatisfaction as a complaint even when the customer does not use the word 'complaint'? Are applicable RG 271 response timeframes and delay notifications enforced by workflow controls? Does every required written IDR response contain reasons, rights and AFCA information appropriate to the matter? Can a customer obtain timely human complaint review without the AI treating its own output as final?",
+      "evidence_required": [
+        "Complaint classification rules",
+        "Complaint register",
+        "Response template",
+        "SLA monitoring"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-4AD2817788CC52DE",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Identify and remediate systemic issues from complaints",
+      "status": "open",
+      "severity": "high",
+      "obligation_id": "AU-ASIC-RG271-SYSTEMIC",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "complaint_data_analysed",
+        "systemic_issue_thresholds_defined",
+        "systemic_issues_escalated",
+        "affected_customers_remediated"
+      ],
+      "recommendation": "Are complaints involving the AI service analysed for trends, repeat causes and affected cohorts? Are thresholds and decision rules defined for identifying a systemic issue from AI-related complaints? Are suspected systemic issues escalated to accountable risk and product owners? Does the process identify and remediate other customers affected by the same AI-related issue?",
+      "evidence_required": [
+        "Complaint analytics",
+        "Systemic issue register",
+        "Customer remediation plan"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-Q-48B57A0B7DE55A55",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire coverage is not confirmed for Mandatory human approval, pre-execution payment block and audit logging above delegated AUD threshold",
+      "status": "open",
+      "severity": "medium",
+      "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
+      "policy_clause_id": null,
+      "missing_facets": [
+        "human_approval_required",
+        "approval_threshold_defined",
+        "pre_execution_block",
+        "approval_logs_retained"
+      ],
+      "recommendation": "Review and approve or reject the proposed question mappings for: approval_threshold_defined, approval_logs_retained. Does the workflow require human approval from an authorised officer for financial actions above the policy limit? Does a deterministic technical guardrail prevent payment execution prior to human approval?",
+      "evidence_required": [
+        "Approved delegated-authority schedule",
+        "Production workflow pre-execution gate configuration",
+        "Immutable 7-year approval audit log sample"
+      ],
+      "owner": "Questionnaire Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "regulatory",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-E-8E0F69CE8BA9582B",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire does not test approved enterprise requirement (POL-83B9049F7343)",
+      "status": "open",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-83B9049F7343",
+      "missing_facets": [
+        "pre_execution_block"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-83B9049F7343' (Enterprise AI Governance & Oversight Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-E-3FF98ACDBD2F5999",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Pending review: questionnaire does not test candidate enterprise requirement (POL-49E7F73807BE)",
+      "status": "in_review",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-49E7F73807BE",
+      "missing_facets": [
+        "POL-49E7F73807BE"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-49E7F73807BE' (Enterprise AI Governance & Oversight Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-E-A03C0864743D52C7",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire does not test approved enterprise requirement (POL-E6B3018EE121)",
+      "status": "open",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-E6B3018EE121",
+      "missing_facets": [
+        "POL-E6B3018EE121"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-E6B3018EE121' (Enterprise Information Security & Privacy Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-E-7A2B1278B44F5270",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Pending review: questionnaire does not test candidate enterprise requirement (POL-2E7601EEE7ED)",
+      "status": "in_review",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-2E7601EEE7ED",
+      "missing_facets": [
+        "data_sovereignty"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-2E7601EEE7ED' (Enterprise Information Security & Privacy Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-C-F10040DD54665B2C",
+      "revision": 1,
+      "gap_type": "control_conflict",
+      "title": "Configured approval threshold (AUD 1000) exceeds approved policy threshold (AUD 500)",
+      "status": "open",
+      "severity": "critical",
+      "obligation_id": null,
+      "policy_clause_id": "POL-83B9049F7343",
+      "missing_facets": [
+        "approval_threshold_aligned"
+      ],
+      "recommendation": "Align system threshold > AUD 1000 to policy requirement > AUD 500 (exposure interval: 500 to 1000), or obtain an authorised policy exception.",
+      "evidence_required": [
+        "Delegated-authority policy",
+        "Production configuration",
+        "Exception approval"
+      ],
+      "owner": "Use Case Controls Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": 500.0,
+      "use_case_threshold": 1000.0,
+      "threshold_operator": ">",
+      "use_case_operator": ">",
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": true
+    }
+  ],
+  "enterprise_baseline_id": "dc39850a-7380-464d-b69f-d83b80bcc0c6",
+  "enterprise_baseline_version": "2026.Q1",
+  "enterprise_baseline_revision": 1,
+  "enterprise_gaps": [
+    {
+      "gap_id": "GAP-E-8E0F69CE8BA9582B",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire does not test approved enterprise requirement (POL-83B9049F7343)",
+      "status": "open",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-83B9049F7343",
+      "missing_facets": [
+        "pre_execution_block"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-83B9049F7343' (Enterprise AI Governance & Oversight Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-E-3FF98ACDBD2F5999",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Pending review: questionnaire does not test candidate enterprise requirement (POL-49E7F73807BE)",
+      "status": "in_review",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-49E7F73807BE",
+      "missing_facets": [
+        "POL-49E7F73807BE"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-49E7F73807BE' (Enterprise AI Governance & Oversight Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-E-A03C0864743D52C7",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Questionnaire does not test approved enterprise requirement (POL-E6B3018EE121)",
+      "status": "open",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-E6B3018EE121",
+      "missing_facets": [
+        "POL-E6B3018EE121"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-E6B3018EE121' (Enterprise Information Security & Privacy Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-E-7A2B1278B44F5270",
+      "revision": 1,
+      "gap_type": "questionnaire_gap",
+      "title": "Pending review: questionnaire does not test candidate enterprise requirement (POL-2E7601EEE7ED)",
+      "status": "in_review",
+      "severity": "medium",
+      "obligation_id": null,
+      "policy_clause_id": "POL-2E7601EEE7ED",
+      "missing_facets": [
+        "data_sovereignty"
+      ],
+      "recommendation": "Add a question testing enterprise policy requirement 'POL-2E7601EEE7ED' (Enterprise Information Security & Privacy Policy).",
+      "evidence_required": [
+        "Approved policy clause",
+        "Question-to-policy mapping review"
+      ],
+      "owner": "Enterprise Policy Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": null,
+      "use_case_threshold": null,
+      "threshold_operator": null,
+      "use_case_operator": null,
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": null
+    },
+    {
+      "gap_id": "GAP-C-F10040DD54665B2C",
+      "revision": 1,
+      "gap_type": "control_conflict",
+      "title": "Configured approval threshold (AUD 1000) exceeds approved policy threshold (AUD 500)",
+      "status": "open",
+      "severity": "critical",
+      "obligation_id": null,
+      "policy_clause_id": "POL-83B9049F7343",
+      "missing_facets": [
+        "approval_threshold_aligned"
+      ],
+      "recommendation": "Align system threshold > AUD 1000 to policy requirement > AUD 500 (exposure interval: 500 to 1000), or obtain an authorised policy exception.",
+      "evidence_required": [
+        "Delegated-authority policy",
+        "Production configuration",
+        "Exception approval"
+      ],
+      "owner": "Use Case Controls Owner",
+      "review_comment": null,
+      "reviewed_by": null,
+      "reviewer_role": null,
+      "reviewed_at": null,
+      "closure_validated": false,
+      "closure_scope_rechecked": false,
+      "closure_approved": false,
+      "closure_evidence_artifact_ids": [],
+      "source_type": "enterprise_policy",
+      "closure_retest_record_id": null,
+      "required_threshold": 500.0,
+      "use_case_threshold": 1000.0,
+      "threshold_operator": ">",
+      "use_case_operator": ">",
+      "timing_required": null,
+      "use_case_timing": null,
+      "role_required": null,
+      "use_case_role": null,
+      "evidence_missing": true
+    }
+  ],
+  "applicable_obligation_ids": [
+    "AU-PRIV-APP1-GOV",
+    "AU-PRIV-APP3-COLLECT",
+    "AU-PRIV-APP5-NOTICE",
+    "AU-PRIV-APP6-USE",
+    "AU-PRIV-APP10-QUALITY",
+    "AU-PRIV-APP11-SECURITY",
+    "AU-PRIV-APP12-13-RIGHTS",
+    "AU-PRIV-NDB-S26WE",
+    "AU-OAIC-APPG-CH1-PIA",
+    "AU-OAIC-APPG-CH6-CH10-INF",
+    "AU-APRA-CPS220-RMF",
+    "AU-APRA-CPS220-REVIEW",
+    "AU-APRA-CPS230-OPS",
+    "AU-APRA-CPS234-ROLES-ASSETS",
+    "AU-APRA-CPS234-CONTROLS",
+    "AU-APRA-CPS234-TEST",
+    "AU-APRA-CPS234-INCIDENT",
+    "AU-APRA-CPG235-GOV",
+    "AU-APRA-CPG235-LIFECYCLE",
+    "AU-ASIC-RG271-COMPLAINT",
+    "AU-ASIC-RG271-SYSTEMIC",
+    "ENT-AI-DELEGATED-APPROVAL"
+  ],
+  "applicable_enterprise_requirement_ids": [
+    "POL-83B9049F7343",
+    "POL-E6B3018EE121"
+  ],
+  "question_scope": "core_only",
+  "selected_question_count": 16,
+  "selection_warning": "No routed focus-question snapshot was supplied; provisional coverage uses core and overlay questions only.",
+  "methodology": "Deterministic applicability plus facet-level semantic candidates. Only approved mappings count as confirmed coverage.",
+  "legal_disclaimer": "Assessment gaps do not constitute judicial or regulatory findings of legal non-compliance.",
+  "provenance": {
+    "assessment_mode": "enterprise_enhanced",
+    "assessment_target_type": "questionnaire",
+    "tenant_id": "tenant-ent-enhanced-2a6ae7f8-c405-4d3b-bc07-fa0641d65c06",
+    "regulatory_pack_id": "AU-BANKING-REG-PACK-0.1",
+    "regulatory_pack_version": "0.1.0",
+    "unified_control_library_version": "2026.1",
+    "enterprise_baseline_id": "dc39850a-7380-464d-b69f-d83b80bcc0c6",
+    "enterprise_baseline_version": "2026.Q1",
+    "enterprise_baseline_revision": 1,
+    "baseline_sha256": "5475aa2a348f1f6e925f51d28e2895ffb161933422db27293be7acb6018c459b",
+    "applicable_obligation_count": 22,
+    "applicable_enterprise_requirement_count": 2,
+    "timestamp": "2026-11-03T21:23:45.946231+00:00"
+  }
+}
