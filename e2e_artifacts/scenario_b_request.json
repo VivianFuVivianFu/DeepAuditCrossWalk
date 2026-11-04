@@ -1,0 +1,16 @@
+{
+  "assessment_mode": "enterprise_enhanced",
+  "enterprise_baseline_id": "dc39850a-7380-464d-b69f-d83b80bcc0c6",
+  "enterprise_baseline_version": "2026.Q1",
+  "questionnaire_id": "AIAF-88497954b0ba",
+  "use_case": {
+    "name": "Dispute and Refund AI Agent",
+    "apra_regulated": true,
+    "handles_personal_information": true,
+    "idr_obligations": true,
+    "assists_consumer_credit_decision": false,
+    "approval_threshold_aud": 1000.0,
+    "approval_threshold_operator": ">"
+  },
+  "persist": false
+}
