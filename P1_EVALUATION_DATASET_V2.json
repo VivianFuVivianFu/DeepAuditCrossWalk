@@ -1,0 +1,4364 @@
+{
+  "dataset_id": "P1_EVALUATION_DATASET_V2",
+  "version": "2.0.0",
+  "description": "DeepAudit Crosswalk Phase P1 Multi-Layer Semantic Mapping & Coverage Evaluation Benchmark",
+  "jurisdiction": "AU",
+  "authoritative_regulatory_sources": [
+    "APRA CPS 230 (Operational Resilience)",
+    "APRA CPS 234 (Information Security)",
+    "APRA CPS 220 (Risk Management)",
+    "APRA CPG 235 (Managing Data Risk)",
+    "Privacy Act 1988 / Australian Privacy Principles 1-13 & NDB",
+    "ASIC RG 271 (Internal Dispute Resolution)",
+    "ASIC RG 104 / RG 105 (AFSL Licensing Competence)",
+    "National Consumer Credit Protection Act 2009 (NCCP Act)",
+    "EU AI Act (Extraterritorial Scope)",
+    "ISO/IEC 42001:2023 & ISO/IEC 27001:2022",
+    "NIST AI RMF 1.0"
+  ],
+  "provenance_summary": {
+    "total_cases": 156,
+    "development_split_count": 105,
+    "holdout_split_count": 51,
+    "human_verified_count": 0,
+    "synthetic_reference_count": 151,
+    "ambiguous_legal_count": 5,
+    "independent_external_panel_reviews_completed": 0,
+    "disclaimer": "All 156 cases are synthetic benchmark references constructed for reproducible algorithmic evaluation. 0 cases have received external independent human GRC panel sign-off. Ambiguous cases are flagged for legal review."
+  },
+  "cases": [
+    {
+      "case_id": "P1-001",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "A formal Privacy Impact Assessment (PIA) must be completed and approved by the Chief Privacy Officer prior to onboarding any AI model ingesting customer personal information.",
+      "expected_atomic_requirements": [
+        "Complete PIA prior to onboarding AI handling personal information",
+        "Obtain Chief Privacy Officer approval"
+      ],
+      "expected_facets": [
+        "pia_threshold_screen_completed",
+        "privacy_accountability_assigned"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Core APP 1.2 privacy by design gateway."
+    },
+    {
+      "case_id": "P1-002",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The enterprise public privacy policy must be reviewed annually and updated whenever new generative AI consumer features are deployed.",
+      "expected_atomic_requirements": [
+        "Annual review of privacy policy",
+        "Update privacy policy upon generative AI deployment"
+      ],
+      "expected_facets": [
+        "privacy_policy_current"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 1.3 - 1.5 privacy policy maintenance."
+    },
+    {
+      "case_id": "P1-003",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "AI systems must collect only personal information that is strictly necessary for credit assessment or fraud prevention functions.",
+      "expected_atomic_requirements": [
+        "Collect only strictly necessary personal information for credit or fraud functions"
+      ],
+      "expected_facets": [
+        "collection_purpose_defined",
+        "necessity_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 3.1 & 3.2 necessity test."
+    },
+    {
+      "case_id": "P1-004",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Biometric voice verification models must obtain explicit customer consent prior to biometric template enrollment.",
+      "expected_atomic_requirements": [
+        "Obtain explicit consent for biometric enrollment"
+      ],
+      "expected_facets": [
+        "sensitive_information_consent"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 3.3 sensitive information consent rule."
+    },
+    {
+      "case_id": "P1-005",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "At or before collecting personal data for automated underwriting, the bank must present an APP 5 collection notice specifying the AI assessment purpose.",
+      "expected_atomic_requirements": [
+        "Present APP 5 notice at or before collection",
+        "Specify automated underwriting AI purpose"
+      ],
+      "expected_facets": [
+        "collection_notice_exists",
+        "notice_content_complete",
+        "notice_timing_defined"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-NOTICE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 5 notice content and timing."
+    },
+    {
+      "case_id": "P1-006",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Customer transactional telemetry collected for credit card fraud monitoring must not be used to train marketing recommendation engines without affirmative opt-in consent.",
+      "expected_atomic_requirements": [
+        "Prohibit secondary marketing use of fraud telemetry without opt-in consent"
+      ],
+      "expected_facets": [
+        "primary_purpose_recorded",
+        "secondary_use_basis_checked"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-USE-DISCLOSURE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 6 purpose limitation barrier."
+    },
+    {
+      "case_id": "P1-007",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Customer personal data must not be transferred to offshore cloud AI providers unless enforceable contractual safeguards ensure overseas compliance with the APPs.",
+      "expected_atomic_requirements": [
+        "Ensure enforceable contractual safeguards before offshore personal data transfer"
+      ],
+      "expected_facets": [
+        "overseas_recipients_and_regions_mapped",
+        "app8_reasonable_steps_and_contracts_in_place"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 8.1 reasonable steps and cloud contracts."
+    },
+    {
+      "case_id": "P1-008",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "The bank retains vicarious regulatory accountability under Section 16C for any privacy breaches committed by offshore sub-processors hosting foundational AI weights.",
+      "expected_atomic_requirements": [
+        "Acknowledge s 16C vicarious liability for offshore AI sub-processors"
+      ],
+      "expected_facets": [
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Privacy Act Section 16C accountability."
+    },
+    {
+      "case_id": "P1-009",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Customer training datasets must be secured using AES-256 encryption at rest and isolated within private tenant VPCs.",
+      "expected_atomic_requirements": [
+        "Encrypt training datasets with AES-256",
+        "Isolate within private tenant VPCs"
+      ],
+      "expected_facets": [
+        "security_controls_defined"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 11.1 security protection."
+    },
+    {
+      "case_id": "P1-010",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Customer biometric session telemetry and prompt tokens must be permanently destroyed or de-identified within 30 days of transaction settlement.",
+      "expected_atomic_requirements": [
+        "Destroy or de-identify biometric telemetry within 30 days"
+      ],
+      "expected_facets": [
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 30,
+        "unit": "days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 11.2 statutory destruction obligation."
+    },
+    {
+      "case_id": "P1-011",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All customer profiles and synthetic inference scores generated by AI must be retrievable in human-readable format upon an APP 12 access request within 30 days.",
+      "expected_atomic_requirements": [
+        "Retrieve AI inference scores in human-readable format for APP 12 access requests",
+        "Complete within 30 days"
+      ],
+      "expected_facets": [
+        "ai_personal_records_retrievable_for_access",
+        "access_and_correction_timeframes_tracked"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-ACCESS-CORRECTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 30,
+        "unit": "days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 12 individual access right."
+    },
+    {
+      "case_id": "P1-012",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "When a customer rectifies inaccurate income data, corrected records must propagate to all credit scorecard feature stores and vector databases within 5 business days.",
+      "expected_atomic_requirements": [
+        "Propagate corrected customer data to AI feature stores within 5 business days"
+      ],
+      "expected_facets": [
+        "correction_propagated_to_ai_stores",
+        "access_and_correction_timeframes_tracked"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-ACCESS-CORRECTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 5,
+        "unit": "business_days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 13 data correction propagation."
+    },
+    {
+      "case_id": "P1-013",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Automated data loss prevention (DLP) tools must monitor generative AI egress channels to detect unauthorized exposure of customer personal information.",
+      "expected_atomic_requirements": [
+        "Deploy DLP tools on AI egress channels to detect personal data leakage"
+      ],
+      "expected_facets": [
+        "ai_data_leakage_detection_enabled"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-NDB-RESPONSE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Part IIIC NDB data leakage monitoring."
+    },
+    {
+      "case_id": "P1-014",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Suspected unauthorized disclosures of customer records via LLM prompt injection must undergo a formal eligibility assessment within 30 calendar days.",
+      "expected_atomic_requirements": [
+        "Complete eligible data breach assessment within 30 calendar days"
+      ],
+      "expected_facets": [
+        "ndb_30day_assessment_workflow_defined"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-NDB-RESPONSE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 30,
+        "unit": "days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Privacy Act s 26WH 30-day assessment deadline."
+    },
+    {
+      "case_id": "P1-015",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "If an eligible data breach involving AI occurs, the Incident Commander must prepare formal notification statements for the OAIC and affected individuals without undue delay.",
+      "expected_atomic_requirements": [
+        "Prepare OAIC and customer notification for eligible data breaches"
+      ],
+      "expected_facets": [
+        "oaic_and_individual_notification_prepared"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-NDB-RESPONSE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Privacy Act s 26WK notification mandate."
+    },
+    {
+      "case_id": "P1-016",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The bank's privacy policy must transparently disclose the kinds of personal information used in automated credit decision systems and the operation of the decision logic.",
+      "expected_atomic_requirements": [
+        "Disclose personal information kinds used in automated credit decisions",
+        "Explain decision logic"
+      ],
+      "expected_facets": [
+        "significant_decision_screened",
+        "personal_information_kinds_disclosed",
+        "decision_kinds_disclosed"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-AUTOMATED-DISCLOSURE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Privacy Act statutory amendment for ADM transparency."
+    },
+    {
+      "case_id": "P1-017",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Input datasets used to calibrate automated lending models must be verified for accuracy, completeness, and recency prior to pipeline ingestion.",
+      "expected_atomic_requirements": [
+        "Verify accuracy, completeness and recency of lending model input data"
+      ],
+      "expected_facets": [
+        "input_personal_data_accuracy_checked",
+        "stale_or_incomplete_records_prevented"
+      ],
+      "expected_controls": [
+        "CTRL-DATA-QUALITY-GOV"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APP 10.1 & 10.2 data quality standard."
+    },
+    {
+      "case_id": "P1-018",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Behavioral credit risk classifications and spending propensity inferences generated by machine learning models constitute personal data and must adhere to all APP controls.",
+      "expected_atomic_requirements": [
+        "Classify machine-generated behavioral inferences as personal data subject to APPs"
+      ],
+      "expected_facets": [
+        "inferred_attributes_classified_as_collection",
+        "ai_output_and_inference_relevance_verified"
+      ],
+      "expected_controls": [
+        "CTRL-DATA-QUALITY-GOV"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "OAIC Guidelines Ch 6: Inferred personal information."
+    },
+    {
+      "case_id": "P1-019",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Every critical AI data element used in statutory capital calculations must have a designated Data Steward responsible for data dictionary definitions and quality thresholds.",
+      "expected_atomic_requirements": [
+        "Assign Data Steward to critical AI data elements",
+        "Define quality thresholds and dictionary"
+      ],
+      "expected_facets": [
+        "critical_ai_data_elements_owned",
+        "metadata_and_data_dictionary_maintained"
+      ],
+      "expected_controls": [
+        "CTRL-DATA-QUALITY-GOV"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPG 235 data governance."
+    },
+    {
+      "case_id": "P1-020",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Automated data ingestion pipelines must record end-to-end cryptographic lineage from raw transactional source tables to final AI inference feature vectors.",
+      "expected_atomic_requirements": [
+        "Record end-to-end cryptographic data lineage from raw tables to feature vectors"
+      ],
+      "expected_facets": [
+        "end_to_end_data_lineage_documented",
+        "automated_ingestion_and_transformation_validation"
+      ],
+      "expected_controls": [
+        "CTRL-DATA-LIFECYCLE-LINEAGE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPG 235 data lineage controls."
+    },
+    {
+      "case_id": "P1-021",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All risk mitigation recommendations identified during an AI Privacy Impact Assessment must be tracked in the enterprise risk register until verified closed by Line 2 Risk.",
+      "expected_atomic_requirements": [
+        "Track PIA risk mitigation recommendations in enterprise risk register to verified closure"
+      ],
+      "expected_facets": [
+        "pia_recommendations_tracked_to_closure"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for PIA action tracking."
+    },
+    {
+      "case_id": "P1-022",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Before querying customer banking history for wealth advisory AI cross-selling, systems must verify that the secondary purpose is directly related to account management and reasonably expected.",
+      "expected_atomic_requirements": [
+        "Verify secondary AI use is directly related and reasonably expected before querying records"
+      ],
+      "expected_facets": [
+        "secondary_use_basis_checked"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-USE-DISCLOSURE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for APP 6 reasonable expectation test."
+    },
+    {
+      "case_id": "P1-023",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "conditional_requirement",
+      "input_text": "Offshore replication of Australian personal credit records is prohibited unless an explicit statutory exemption under Section 16C(b) is certified by General Counsel.",
+      "expected_atomic_requirements": [
+        "Prohibit offshore replication of personal credit records unless certified under s 16C(b)"
+      ],
+      "expected_facets": [
+        "overseas_recipients_and_regions_mapped",
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for conditional statutory exception."
+    },
+    {
+      "case_id": "P1-024",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Following the 7-year statutory retention horizon under APP 11.2, archived mortgage loan application files must be irreversibly sanitized with cryptographic proof of disposal.",
+      "expected_atomic_requirements": [
+        "Irreversibly sanitize archived loan files after 7 years with cryptographic proof of disposal"
+      ],
+      "expected_facets": [
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 7,
+        "unit": "years",
+        "operator": "gte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for APP 11 cryptographic sanitization."
+    },
+    {
+      "case_id": "P1-025",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Does your system make decisions that have a significant effect on an individual (such as granting or refusing credit), and if so, does the privacy notice explain how automated processing is applied?",
+      "expected_atomic_requirements": [
+        "Inquire whether system makes significant automated decisions and provides explanatory notice"
+      ],
+      "expected_facets": [
+        "significant_decision_screened",
+        "decision_kinds_disclosed"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-AUTOMATED-DISCLOSURE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for questionnaire facet coverage."
+    },
+    {
+      "case_id": "P1-026",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Can you demonstrate complete, traceable data lineage showing all transformations applied to training datasets from original bank ingestion to model input tensors?",
+      "expected_atomic_requirements": [
+        "Demonstrate traceable data lineage from raw ingestion to model input tensors"
+      ],
+      "expected_facets": [
+        "end_to_end_data_lineage_documented"
+      ],
+      "expected_controls": [
+        "CTRL-DATA-LIFECYCLE-LINEAGE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for lineage inquiry completeness."
+    },
+    {
+      "case_id": "P1-027",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "Consumer credit evaluation algorithms are strictly prohibited from collecting or processing sensitive data regarding religious affiliations, political opinions, or trade union memberships.",
+      "expected_atomic_requirements": [
+        "Prohibit collection or processing of political, religious or union sensitive data in credit models"
+      ],
+      "expected_facets": [
+        "sensitive_information_consent"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test: Negated policy clause prohibiting sensitive data collection."
+    },
+    {
+      "case_id": "P1-028",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "All outward transmissions of retail banking customer records to third-party LLM inference APIs must be logged in the centralized privacy disclosure ledger.",
+      "expected_atomic_requirements": [
+        "Log all third-party LLM customer data transmissions in centralized disclosure ledger"
+      ],
+      "expected_facets": [
+        "disclosures_logged"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-USE-DISCLOSURE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for disclosure ledger logging."
+    },
+    {
+      "case_id": "P1-029",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "ambiguous_legal",
+      "input_text": "Indigenous customer data and First Nations community telemetry must not be hosted outside Australian territorial boundaries, notwithstanding commercial cloud availability zones.",
+      "expected_atomic_requirements": [
+        "Restrict First Nations data to domestic Australian hosting"
+      ],
+      "expected_facets": [
+        "overseas_recipients_and_regions_mapped"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "ambiguous_legal",
+      "reviewer_status": "pending_panel",
+      "label_confidence": "medium",
+      "unresolved_ambiguity": "Interaction between Privacy Act cross-border rules and Indigenous Cultural and Intellectual Property protocols.",
+      "notes": "Holdout test for legal edge case."
+    },
+    {
+      "case_id": "P1-030",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "multi_facet",
+      "input_text": "System architects must embed privacy-by-design controls into the microservice pipeline and configure automated TTL expiry tags ensuring customer search queries are wiped after 48 hours.",
+      "expected_atomic_requirements": [
+        "Embed privacy by design into microservices",
+        "Configure automated TTL expiry wiping search queries after 48 hours"
+      ],
+      "expected_facets": [
+        "privacy_by_design_controls_embedded",
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE",
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 48,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout test for multi-facet and multi-control extraction."
+    },
+    {
+      "case_id": "P1-031",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All AI model artifacts and inference weights must be assigned an Information Asset Owner and classified by criticality and sensitivity under APRA CPS 234.",
+      "expected_atomic_requirements": [
+        "Assign Information Asset Owner to AI model artifacts",
+        "Classify AI assets by criticality and sensitivity"
+      ],
+      "expected_facets": [
+        "security_roles_and_asset_owners_assigned",
+        "ai_assets_classified_by_criticality_and_sensitivity"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 234 para 16 asset ownership and classification."
+    },
+    {
+      "case_id": "P1-032",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The bank's information security testing program must systematically test internet-facing AI inference APIs at least annually.",
+      "expected_atomic_requirements": [
+        "Systematically test internet-facing AI APIs at least annually"
+      ],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_frequency_risk_based"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "years",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 234 para 30 testing frequency."
+    },
+    {
+      "case_id": "P1-033",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Independent red team penetration testing of LLM prompt injection defences must be conducted prior to major production releases.",
+      "expected_atomic_requirements": [
+        "Conduct independent red team testing prior to major LLM production releases"
+      ],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_scope_defined"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 234 independent security testing."
+    },
+    {
+      "case_id": "P1-034",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Information security testing results and identified vulnerability deficiencies must be formally reviewed by the Chief Information Security Officer (CISO).",
+      "expected_atomic_requirements": [
+        "CISO review of security testing results and deficiencies"
+      ],
+      "expected_facets": [
+        "testing_results_reviewed",
+        "deficiencies_remediated"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 234 para 32 review of testing results."
+    },
+    {
+      "case_id": "P1-035",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Information security incident detection mechanisms must be maintained to identify adversarial model extraction or data poisoning attempts within 1 hour.",
+      "expected_atomic_requirements": [
+        "Maintain detection mechanisms for model extraction or poisoning within 1 hour"
+      ],
+      "expected_facets": [
+        "incident_detection_defined"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 234 para 33 incident detection."
+    },
+    {
+      "case_id": "P1-036",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Material information security incidents impacting core banking AI models must be notified to APRA as soon as possible and no later than 72 hours post detection.",
+      "expected_atomic_requirements": [
+        "Notify APRA of material security incidents within 72 hours"
+      ],
+      "expected_facets": [
+        "response_and_escalation_defined",
+        "apra_notification_screened"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 72,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 234 para 35 statutory notification window."
+    },
+    {
+      "case_id": "P1-037",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Cryptographic keys used to sign AI model weights must reside exclusively in FIPS 140-3 Level 3 hardware security modules with dual authorization.",
+      "expected_atomic_requirements": [
+        "Enforce FIPS 140-3 Level 3 HSM with dual authorization for model signing keys"
+      ],
+      "expected_facets": [
+        "controls_commensurate",
+        "access_cryptography_and_secure_engineering_applied"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE",
+        "CTRL-ISMS-CONTROLS"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Technical domain standard for cryptographic key protection."
+    },
+    {
+      "case_id": "P1-038",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "AI environments and cloud containers must be included within the scope of the enterprise ISO/IEC 27001 Information Security Management System (ISMS).",
+      "expected_atomic_requirements": [
+        "Include AI environments in ISO 27001 ISMS scope"
+      ],
+      "expected_facets": [
+        "ai_environment_in_isms_scope_and_risk_assessment"
+      ],
+      "expected_controls": [
+        "CTRL-ISMS-CONTROLS"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ISO 27001 AI boundary definition."
+    },
+    {
+      "case_id": "P1-039",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Access to production model deployment pipelines must require multi-factor authentication (MFA) and role-based access control (RBAC).",
+      "expected_atomic_requirements": [
+        "Require MFA and RBAC for production model deployment pipelines"
+      ],
+      "expected_facets": [
+        "controls_commensurate"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 234 para 23 access control."
+    },
+    {
+      "case_id": "P1-040",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Security controls applied to AI systems must be commensurate with the size and extent of the threat to the bank's information assets.",
+      "expected_atomic_requirements": [
+        "Implement controls commensurate with size and extent of threat"
+      ],
+      "expected_facets": [
+        "controls_commensurate",
+        "threats_and_vulnerabilities_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 234 para 23 commensuration requirement."
+    },
+    {
+      "case_id": "P1-041",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Third-party managed AI assets and SaaS inference endpoints must be catalogued in the central information asset inventory.",
+      "expected_atomic_requirements": [
+        "Catalogue third-party AI assets in central inventory"
+      ],
+      "expected_facets": [
+        "third_party_managed_ai_assets_catalogued",
+        "third_party_assets_in_scope"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 234 para 17 third-party asset catalogue."
+    },
+    {
+      "case_id": "P1-042",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Material security weaknesses identified in AI pipelines that cannot be remediated within 30 days must be escalated to the Board Risk Committee.",
+      "expected_atomic_requirements": [
+        "Escalate material AI security weaknesses unremediated in 30 days to Board Risk Committee"
+      ],
+      "expected_facets": [
+        "material_weaknesses_tracked"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 30,
+        "unit": "days",
+        "operator": "gte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 234 para 36 escalation of material weaknesses."
+    },
+    {
+      "case_id": "P1-043",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Supplier security capabilities must be reviewed annually against ISO/IEC 27001 controls for all cloud AI hosting providers.",
+      "expected_atomic_requirements": [
+        "Annual review of supplier ISO 27001 security capabilities"
+      ],
+      "expected_facets": [
+        "supplier_security_and_isms_internal_audit_verified"
+      ],
+      "expected_controls": [
+        "CTRL-ISMS-CONTROLS"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "years",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ISO 27001 supplier security review."
+    },
+    {
+      "case_id": "P1-044",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Deficiencies identified during cyber security testing of AI models must be tracked in a corrective action plan with strict remediation milestones.",
+      "expected_atomic_requirements": [
+        "Track AI cyber deficiencies in corrective action plan with strict milestones"
+      ],
+      "expected_facets": [
+        "deficiencies_remediated"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 234 para 32 deficiency remediation."
+    },
+    {
+      "case_id": "P1-045",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "conditional_requirement",
+      "input_text": "Biometric authentication algorithms are exempt from automated quarterly penetration testing provided continuous behavioral anomaly detection is active.",
+      "expected_atomic_requirements": [
+        "Exempt biometric algorithms from quarterly testing if continuous anomaly detection is active"
+      ],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_frequency_risk_based"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Conditional security testing exemption."
+    },
+    {
+      "case_id": "P1-046",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Information security testing of critical credit rating algorithms must occur at least semi-annually (every 6 months).",
+      "expected_atomic_requirements": [
+        "Test critical credit rating algorithms at least semi-annually"
+      ],
+      "expected_facets": [
+        "testing_frequency_risk_based"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 6,
+        "unit": "months",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 234 risk-based frequency."
+    },
+    {
+      "case_id": "P1-047",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All security roles and operational asset responsibilities for AI systems must be defined in writing and approved by the CISO.",
+      "expected_atomic_requirements": [
+        "Document AI security roles and responsibilities with CISO approval"
+      ],
+      "expected_facets": [
+        "security_roles_and_asset_owners_assigned"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: CPS 234 para 14 security roles."
+    },
+    {
+      "case_id": "P1-048",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "The scope of cybersecurity testing must encompass model inversion attacks, adversarial evasion perturbations, and data poisoning vectors.",
+      "expected_atomic_requirements": [
+        "Encompass inversion, evasion and poisoning attacks in cybersecurity testing scope"
+      ],
+      "expected_facets": [
+        "testing_scope_defined"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: AI-specific penetration testing scope."
+    },
+    {
+      "case_id": "P1-049",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "AI developers shall not disable automated runtime dependency scanning or bypass static analysis security testing (SAST) in CI/CD pipelines.",
+      "expected_atomic_requirements": [
+        "Prohibit disabling runtime dependency scanning or bypassing SAST"
+      ],
+      "expected_facets": [
+        "controls_commensurate"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Negated security control on CI/CD bypass."
+    },
+    {
+      "case_id": "P1-050",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Has your model been evaluated by an independent security testing team for vulnerabilities to prompt injection and unauthorized model extraction?",
+      "expected_atomic_requirements": [
+        "Inquire whether model was independently evaluated for prompt injection and extraction"
+      ],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_scope_defined"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: AIAF questionnaire security testing check."
+    },
+    {
+      "case_id": "P1-051",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Does the incident response protocol include a formal mechanism to notify APRA within 72 hours if a model vulnerability is actively exploited?",
+      "expected_atomic_requirements": [
+        "Inquire whether incident protocol includes 72-hour APRA notification mechanism"
+      ],
+      "expected_facets": [
+        "response_and_escalation_defined",
+        "apra_notification_screened"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: AIAF questionnaire 72-hour APRA escalation."
+    },
+    {
+      "case_id": "P1-052",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "multi_facet",
+      "input_text": "The bank must identify all threats and vulnerabilities to AI infrastructure and enforce cryptographic key isolation under ISO/IEC 27001.",
+      "expected_atomic_requirements": [
+        "Identify AI threats and vulnerabilities",
+        "Enforce cryptographic key isolation under ISO 27001"
+      ],
+      "expected_facets": [
+        "threats_and_vulnerabilities_assessed",
+        "access_cryptography_and_secure_engineering_applied"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE",
+        "CTRL-ISMS-CONTROLS"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Multi-facet security control."
+    },
+    {
+      "case_id": "P1-053",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Incident severity assessments for AI system outages must be completed within 2 hours of telemetry anomaly detection.",
+      "expected_atomic_requirements": [
+        "Complete AI outage severity assessment within 2 hours"
+      ],
+      "expected_facets": [
+        "incident_detection_defined"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 2,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Rapid incident detection timeline."
+    },
+    {
+      "case_id": "P1-054",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "ambiguous_legal",
+      "input_text": "Sovereign cloud AI containers deployed under ASD Certified Cloud Services Lists are exempt from independent penetration testing by foreign-headquartered audit firms.",
+      "expected_atomic_requirements": [
+        "Exempt ASD certified cloud containers from foreign audit firm penetration testing"
+      ],
+      "expected_facets": [
+        "testing_program_exists"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "ambiguous_legal",
+      "reviewer_status": "pending_panel",
+      "label_confidence": "medium",
+      "unresolved_ambiguity": "Interaction between APRA CPS 234 independent testing rules and Australian Government Information Security Manual (ISM) sovereignty guidelines.",
+      "notes": "Holdout: Ambiguous sovereign audit exemption."
+    },
+    {
+      "case_id": "P1-055",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All AI systems supporting critical operations must be mapped in the operational architecture showing service dependencies and data flows.",
+      "expected_atomic_requirements": [
+        "Map AI systems supporting critical operations with dependencies and data flows"
+      ],
+      "expected_facets": [
+        "critical_operation_dependency_mapped"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 23 mapping of critical operations."
+    },
+    {
+      "case_id": "P1-056",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The operational risk management framework must assess the operational risks associated with AI model failure, corruption, or data drift.",
+      "expected_atomic_requirements": [
+        "Assess operational risks from AI failure, corruption or data drift"
+      ],
+      "expected_facets": [
+        "operational_risks_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 24 operational risk assessment."
+    },
+    {
+      "case_id": "P1-057",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The control environment for automated credit decisioning must maintain documented procedural controls to prevent systemic misclassification.",
+      "expected_atomic_requirements": [
+        "Maintain documented procedural controls in AI credit decisioning"
+      ],
+      "expected_facets": [
+        "control_environment_documented"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 27 control environment."
+    },
+    {
+      "case_id": "P1-058",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Operational risk incidents and control weaknesses arising from algorithmic errors must be recorded in the enterprise incident log within 24 hours.",
+      "expected_atomic_requirements": [
+        "Record algorithmic operational incidents in enterprise log within 24 hours"
+      ],
+      "expected_facets": [
+        "incidents_and_weaknesses_managed"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 24,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 30 incident management."
+    },
+    {
+      "case_id": "P1-059",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Tolerance levels for operational disruption of AI customer identity verification systems must not exceed a maximum allowable downtime of 2 hours.",
+      "expected_atomic_requirements": [
+        "Define AI identity verification disruption tolerance at maximum 2 hours downtime"
+      ],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 2,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 32 tolerance levels."
+    },
+    {
+      "case_id": "P1-060",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Business continuity plans must maintain automated deterministic fallback procedures allowing manual credit underwriting during AI outages.",
+      "expected_atomic_requirements": [
+        "Maintain automated deterministic fallback procedures for credit underwriting during AI outages"
+      ],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 33 fallback procedures."
+    },
+    {
+      "case_id": "P1-061",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Business continuity plans for critical AI systems must be tested systematically at least annually under simulated failure conditions.",
+      "expected_atomic_requirements": [
+        "Systematically test AI business continuity plans annually under simulated failure"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "years",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 36 annual BCP testing."
+    },
+    {
+      "case_id": "P1-062",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Disaster recovery simulation drills must demonstrate end-to-end failover to offline rule-based scoring without exceeding maximum data loss tolerances.",
+      "expected_atomic_requirements": [
+        "Demonstrate failover to offline rule-based scoring within data loss tolerances during drills"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested",
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 operational simulation drills."
+    },
+    {
+      "case_id": "P1-063",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Line 1 business units must manage operational risks emerging from generative AI tools across the entire AI asset lifecycle.",
+      "expected_atomic_requirements": [
+        "Manage generative AI operational risks across lifecycle in Line 1"
+      ],
+      "expected_facets": [
+        "operational_risks_assessed",
+        "control_environment_documented"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 operational risk lifecycle management."
+    },
+    {
+      "case_id": "P1-064",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Data recovery point objectives (RPO) for transactional fraud detection models must not exceed 15 minutes of customer activity data.",
+      "expected_atomic_requirements": [
+        "Enforce RPO of maximum 15 minutes for fraud detection model data"
+      ],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 15,
+        "unit": "minutes",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 quantitative tolerance metric."
+    },
+    {
+      "case_id": "P1-065",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "conditional_requirement",
+      "input_text": "De minimis non-customer facing AI tools are exempt from formal BCP testing provided their failure cannot impact critical bank operations.",
+      "expected_atomic_requirements": [
+        "Exempt non-customer AI tools from BCP testing if no impact on critical operations"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 de minimis BCP exemption."
+    },
+    {
+      "case_id": "P1-066",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All critical operational dependencies on cloud AI infrastructure providers must be reviewed by the Operational Resilience Committee.",
+      "expected_atomic_requirements": [
+        "Operational Resilience Committee review of critical cloud AI dependencies"
+      ],
+      "expected_facets": [
+        "critical_operation_dependency_mapped"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 critical dependency review."
+    },
+    {
+      "case_id": "P1-067",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Root-cause analysis must be initiated within 48 hours for any algorithmic failure that degrades customer service availability.",
+      "expected_atomic_requirements": [
+        "Initiate root-cause analysis within 48 hours of algorithmic service degradation"
+      ],
+      "expected_facets": [
+        "incidents_and_weaknesses_managed"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 48,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 operational incident resolution."
+    },
+    {
+      "case_id": "P1-068",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The operational control environment must enforce automated rate limiting to prevent denial-of-service degradation of public AI endpoints.",
+      "expected_atomic_requirements": [
+        "Enforce automated rate limiting on public AI endpoints"
+      ],
+      "expected_facets": [
+        "control_environment_documented"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 control environment safeguard."
+    },
+    {
+      "case_id": "P1-069",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Tolerance levels for payment authorization AI systems must define both maximum allowable outage duration and maximum financial loss limits.",
+      "expected_atomic_requirements": [
+        "Define outage duration and financial loss tolerances for payment authorization AI"
+      ],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: CPS 230 multi-dimensional tolerance limits."
+    },
+    {
+      "case_id": "P1-070",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "In the event of foundational model provider outages, credit card fraud evaluation must instantaneously fall back to heuristic rule tables.",
+      "expected_atomic_requirements": [
+        "Instantaneous fallback to heuristic rule tables during foundational model outage"
+      ],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Real-time fallback procedure."
+    },
+    {
+      "case_id": "P1-071",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Has your team mapped all critical operational dependencies and verified that a business continuity plan with manual fallback exists?",
+      "expected_atomic_requirements": [
+        "Inquire whether critical dependencies are mapped and manual fallback exists in BCP"
+      ],
+      "expected_facets": [
+        "critical_operation_dependency_mapped",
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: AIAF questionnaire operational resilience inquiry."
+    },
+    {
+      "case_id": "P1-072",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "The bank shall not deploy automated loan approval models into critical operations without an approved and tested business continuity plan.",
+      "expected_atomic_requirements": [
+        "Prohibit deployment of loan models into critical operations without tested BCP"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Negated pre-deployment BCP rule."
+    },
+    {
+      "case_id": "P1-073",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "multi_facet",
+      "input_text": "The operational risk assessment must identify single points of failure in AI hardware clusters and verify automated incident escalation within 4 hours.",
+      "expected_atomic_requirements": [
+        "Identify single points of failure in AI clusters",
+        "Enforce 4-hour automated incident escalation"
+      ],
+      "expected_facets": [
+        "operational_risks_assessed",
+        "incidents_and_weaknesses_managed"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 4,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Multi-facet operational risk case."
+    },
+    {
+      "case_id": "P1-074",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "ambiguous_legal",
+      "input_text": "During catastrophic grid failure, AI fallback tolerances may be extended beyond 4 hours provided customer deposit operations remain solvent.",
+      "expected_atomic_requirements": [
+        "Permit extending AI fallback tolerances beyond 4 hours during catastrophic grid failure"
+      ],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "ambiguous_legal",
+      "reviewer_status": "pending_panel",
+      "label_confidence": "medium",
+      "unresolved_ambiguity": "Prudential boundaries of APRA CPS 230 para 32 disruption tolerances during declared national infrastructure emergencies.",
+      "notes": "Holdout: Ambiguous emergency tolerance extension."
+    },
+    {
+      "case_id": "P1-075",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Before entering into an agreement with an external AI service provider, the bank must conduct comprehensive due diligence on the provider's financial and technical viability.",
+      "expected_atomic_requirements": [
+        "Conduct comprehensive due diligence on AI provider viability prior to agreement"
+      ],
+      "expected_facets": [
+        "due_diligence_completed"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 40 vendor due diligence."
+    },
+    {
+      "case_id": "P1-076",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Procurement teams must assess whether an external AI vendor constitutes a Material Service Provider (MSP) whose failure would impact critical operations.",
+      "expected_atomic_requirements": [
+        "Assess whether external AI vendor constitutes a Material Service Provider (MSP)"
+      ],
+      "expected_facets": [
+        "provider_materiality_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 39 materiality assessment."
+    },
+    {
+      "case_id": "P1-077",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Contracts with third-party AI vendors must specify business continuity, audit rights, and operational substitution exit strategies.",
+      "expected_atomic_requirements": [
+        "Specify continuity, audit rights and operational substitution exit strategies in AI contracts"
+      ],
+      "expected_facets": [
+        "contract_controls_defined",
+        "performance_and_exit_monitored"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 41 mandatory contractual terms."
+    },
+    {
+      "case_id": "P1-078",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All Material Service Providers hosting or serving AI models must be catalogued in the bank's register of material service providers.",
+      "expected_atomic_requirements": [
+        "Catalogue all AI Material Service Providers in central register"
+      ],
+      "expected_facets": [
+        "msp_register_updated_for_ai_vendors"
+      ],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 47 MSP register."
+    },
+    {
+      "case_id": "P1-079",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Entering into an agreement with an MSP for material cloud AI services must be notified to APRA within 20 business days of contract execution.",
+      "expected_atomic_requirements": [
+        "Notify APRA of MSP agreement within 20 business days of execution"
+      ],
+      "expected_facets": [
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 20,
+        "unit": "business_days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 50 agreement notification timeframe."
+    },
+    {
+      "case_id": "P1-080",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The bank must consult with APRA prior to entering into any arrangement to offshore material AI systems to foreign cloud hosting zones.",
+      "expected_atomic_requirements": [
+        "Consult with APRA prior to offshoring material AI systems"
+      ],
+      "expected_facets": [
+        "prior_apra_consultation_for_material_offshoring"
+      ],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 51 material offshoring consultation."
+    },
+    {
+      "case_id": "P1-081",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Any material disruption to AI services provided by a third-party vendor must be notified to APRA within 72 hours of identification.",
+      "expected_atomic_requirements": [
+        "Notify APRA of third-party AI service disruption within 72 hours"
+      ],
+      "expected_facets": [
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 72,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 50 incident notification window."
+    },
+    {
+      "case_id": "P1-082",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Counterparty insolvency contingencies and operational substitution protocols must be documented for cloud AI infrastructure.",
+      "expected_atomic_requirements": [
+        "Document counterparty insolvency contingencies and operational substitution protocols"
+      ],
+      "expected_facets": [
+        "performance_and_exit_monitored"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 230 para 38 operational substitution (BASE-10)."
+    },
+    {
+      "case_id": "P1-083",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Fourth-party supply chain concentration risks arising from common upstream foundational model weights must be assessed annually.",
+      "expected_atomic_requirements": [
+        "Annual assessment of fourth-party supply chain concentration in foundation models"
+      ],
+      "expected_facets": [
+        "provider_materiality_assessed",
+        "performance_and_exit_monitored"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "years",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 fourth-party concentration risk."
+    },
+    {
+      "case_id": "P1-084",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Third-party AI service level agreements (SLAs) must mandate minimum model inference availability of 99.95% during standard banking hours.",
+      "expected_atomic_requirements": [
+        "Mandate minimum 99.95% model availability in third-party SLAs"
+      ],
+      "expected_facets": [
+        "contract_controls_defined"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 99.95,
+        "unit": "percent",
+        "operator": "gte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 contractual service levels."
+    },
+    {
+      "case_id": "P1-085",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The bank must verify that AI vendors maintain insurance coverage commensurate with their operational liabilities under APRA CPS 230.",
+      "expected_atomic_requirements": [
+        "Verify AI vendors maintain liability insurance commensurate with operations"
+      ],
+      "expected_facets": [
+        "due_diligence_completed"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 230 vendor insurance due diligence."
+    },
+    {
+      "case_id": "P1-086",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "conditional_requirement",
+      "input_text": "External AI software-as-a-service providers with annual contracts under AUD 100,000 are exempt from formal APRA MSP registration provided no customer PII is shared.",
+      "expected_atomic_requirements": [
+        "Exempt AI SaaS under AUD 100,000 without PII from APRA MSP registration"
+      ],
+      "expected_facets": [
+        "msp_register_updated_for_ai_vendors"
+      ],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 100000,
+        "currency": "AUD",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Conditional de minimis MSP contract threshold."
+    },
+    {
+      "case_id": "P1-087",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Vendor performance metrics and SLA compliance for third-party AI models must be reviewed quarterly by the Sourcing Risk Committee.",
+      "expected_atomic_requirements": [
+        "Quarterly review of third-party AI vendor SLAs by Sourcing Risk Committee"
+      ],
+      "expected_facets": [
+        "performance_and_exit_monitored"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 3,
+        "unit": "months",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: CPS 230 ongoing monitoring cadence."
+    },
+    {
+      "case_id": "P1-088",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "The bank's material service provider ledger must include all cloud hyper-scalers hosting proprietary AI microservices.",
+      "expected_atomic_requirements": [
+        "Include cloud hyper-scalers hosting AI microservices in MSP ledger"
+      ],
+      "expected_facets": [
+        "msp_register_updated_for_ai_vendors"
+      ],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Hyper-scaler cloud registration."
+    },
+    {
+      "case_id": "P1-089",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Does the contract with the third-party AI provider explicitly provide the bank and APRA with full audit rights to inspect training data and security logs?",
+      "expected_atomic_requirements": [
+        "Inquire whether third-party contract provides bank and APRA with full audit rights"
+      ],
+      "expected_facets": [
+        "contract_controls_defined"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: AIAF questionnaire vendor audit rights inquiry."
+    },
+    {
+      "case_id": "P1-090",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "The bank shall not execute agreements with third-party AI providers that exclude liability for gross negligence or regulatory non-compliance.",
+      "expected_atomic_requirements": [
+        "Prohibit agreements with AI providers that exclude liability for negligence or non-compliance"
+      ],
+      "expected_facets": [
+        "contract_controls_defined"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Negated contract liability clause."
+    },
+    {
+      "case_id": "P1-091",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "multi_facet",
+      "input_text": "Vendor risk assessments must verify that offshore foundational AI providers maintain ISO 27001 certifications and commit to 72-hour breach notifications.",
+      "expected_atomic_requirements": [
+        "Verify offshore AI provider ISO 27001 certification and 72-hour breach notification"
+      ],
+      "expected_facets": [
+        "due_diligence_completed",
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI",
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 72,
+        "unit": "hours",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Multi-facet vendor diligence and notification."
+    },
+    {
+      "case_id": "P1-092",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "ambiguous_legal",
+      "input_text": "Open-source foundational model weights downloaded directly from public repositories are not classified as third-party service providers under CPS 230.",
+      "expected_atomic_requirements": [
+        "Exclude downloaded open-source model weights from CPS 230 provider classification"
+      ],
+      "expected_facets": [
+        "provider_materiality_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "ambiguous_legal",
+      "reviewer_status": "pending_panel",
+      "label_confidence": "medium",
+      "unresolved_ambiguity": "Prudential status of open-weight open-source AI artifacts under APRA CPS 230 service provider definitions.",
+      "notes": "Holdout: Ambiguous open-source provider status."
+    },
+    {
+      "case_id": "P1-093",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All automated business credit recommendations exceeding AUD 500 must receive affirmative human approval from a Level 2 Lending Officer prior to release.",
+      "expected_atomic_requirements": [
+        "Require affirmative human approval for credit recommendations exceeding AUD 500",
+        "Execute before loan release"
+      ],
+      "expected_facets": [
+        "human_approval_required",
+        "approval_threshold_defined",
+        "pre_execution_block"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 500,
+        "currency": "AUD",
+        "operator": "gt"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Canonical P0 delegated authority threshold requirement."
+    },
+    {
+      "case_id": "P1-094",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Automated credit decisions must enforce a pre-execution block preventing core banking loan origination until dual-custody authorization is recorded.",
+      "expected_atomic_requirements": [
+        "Enforce pre-execution block in loan origination until dual authorization recorded"
+      ],
+      "expected_facets": [
+        "pre_execution_block",
+        "human_approval_required"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Pre-execution gating control."
+    },
+    {
+      "case_id": "P1-095",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Every human approval or manual override of an automated credit decision must be logged to write-once immutable storage with cryptographic timestamping.",
+      "expected_atomic_requirements": [
+        "Log human approvals and overrides to write-once immutable storage with timestamps"
+      ],
+      "expected_facets": [
+        "approval_logs_retained"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Audit log retention for approval actions."
+    },
+    {
+      "case_id": "P1-096",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Credit lending officers exercising oversight over algorithmic models must complete mandatory AI competence and bias awareness training annually.",
+      "expected_atomic_requirements": [
+        "Complete annual AI competence and bias awareness training for lending officers"
+      ],
+      "expected_facets": [
+        "operator_ai_competence_and_training_completed"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "years",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 104 operator competence requirement."
+    },
+    {
+      "case_id": "P1-097",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Line 2 Credit Risk must conduct monthly supervisory quality assurance reviews on a statistically representative sample of AI-assisted lending decisions.",
+      "expected_atomic_requirements": [
+        "Monthly supervisory QA review on sample of AI-assisted lending decisions"
+      ],
+      "expected_facets": [
+        "supervisory_quality_assurance_on_ai_assisted_staff"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "months",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Supervisory quality assurance under RG 104."
+    },
+    {
+      "case_id": "P1-098",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The operational control interface must provide human operators with clear escalation pathways and unambiguous manual override authority.",
+      "expected_atomic_requirements": [
+        "Provide clear escalation pathways and unambiguous manual override authority"
+      ],
+      "expected_facets": [
+        "clear_escalation_and_override_authority"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Human oversight override mechanisms."
+    },
+    {
+      "case_id": "P1-099",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "System architects must maintain an automated kill-switch enabling immediate suspension of automated trading algorithms during market stress.",
+      "expected_atomic_requirements": [
+        "Maintain automated kill-switch enabling immediate suspension of trading algorithms"
+      ],
+      "expected_facets": [
+        "meaningful_human_oversight_and_kill_switch"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Emergency kill-switch control."
+    },
+    {
+      "case_id": "P1-100",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Customers impacted by adverse automated credit decisions must be provided an accessible contestability pathway for independent human review.",
+      "expected_atomic_requirements": [
+        "Provide accessible customer contestability pathway for independent human review"
+      ],
+      "expected_facets": [
+        "customer_contestability_and_recourse_pathway"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Customer contestability under RG 104 & Ethics Framework."
+    },
+    {
+      "case_id": "P1-101",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Corporate lending credit limits exceeding AUD 1,000,000 generated by machine learning models require joint approval by the Chief Credit Officer and Head of Risk.",
+      "expected_atomic_requirements": [
+        "Require joint CCO and Head of Risk approval for corporate credit over AUD 1,000,000"
+      ],
+      "expected_facets": [
+        "human_approval_required",
+        "approval_threshold_defined"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1000000,
+        "currency": "AUD",
+        "operator": "gt"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Tiered high-value corporate delegated authority."
+    },
+    {
+      "case_id": "P1-102",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "Micro-business overdraft extensions up to AUD 10,000 may be processed autonomously provided applicant credit scores exceed 750.",
+      "expected_atomic_requirements": [
+        "Autonomous processing for micro-business overdrafts up to AUD 10,000 with score over 750"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 10000,
+        "currency": "AUD",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Autonomous credit limit threshold."
+    },
+    {
+      "case_id": "P1-103",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Four-eyes authorization is strictly required before any automated transaction anomaly flag on a commercial account can be dismissed.",
+      "expected_atomic_requirements": [
+        "Enforce four-eyes authorization prior to dismissing commercial transaction anomaly flags"
+      ],
+      "expected_facets": [
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Banking synonym: Four-eyes authorization."
+    },
+    {
+      "case_id": "P1-104",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Human review records and officer signature hashes must be preserved for at least 7 years under APRA prudential record-keeping standards.",
+      "expected_atomic_requirements": [
+        "Preserve human review records and signature hashes for at least 7 years"
+      ],
+      "expected_facets": [
+        "approval_logs_retained"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 7,
+        "unit": "years",
+        "operator": "gte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Prudential retention of human sign-off evidence."
+    },
+    {
+      "case_id": "P1-105",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "conditional_requirement",
+      "input_text": "Emergency medical payments processed via automated welfare assistance AI are exempt from pre-execution approval up to AUD 250.",
+      "expected_atomic_requirements": [
+        "Exempt emergency welfare payments up to AUD 250 from pre-execution approval"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "pre_execution_block"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 250,
+        "currency": "AUD",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Conditional delegated authority waiver."
+    },
+    {
+      "case_id": "P1-106",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Model drift monitoring must compare human rejection rates against automated recommendations on a weekly basis to detect decision divergence.",
+      "expected_atomic_requirements": [
+        "Weekly comparison of human rejection rates against automated recommendations to detect drift"
+      ],
+      "expected_facets": [
+        "pre_deployment_and_ongoing_drift_monitoring"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "weeks",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Behavioral drift monitoring."
+    },
+    {
+      "case_id": "P1-107",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All retail personal loan approvals exceeding AUD 5,000 must be reviewed and signed off by an authorized branch credit manager prior to disbursement.",
+      "expected_atomic_requirements": [
+        "Branch credit manager sign-off required for retail loans exceeding AUD 5,000 before disbursement"
+      ],
+      "expected_facets": [
+        "human_approval_required",
+        "approval_threshold_defined",
+        "pre_execution_block"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 5000,
+        "currency": "AUD",
+        "operator": "gt"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Retail loan approval threshold."
+    },
+    {
+      "case_id": "P1-108",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "Junior credit analysts shall not override machine learning credit risk assessments for applications exceeding AUD 25,000 without written concurrence from Senior Risk.",
+      "expected_atomic_requirements": [
+        "Prohibit junior analyst overrides over AUD 25,000 without Senior Risk concurrence"
+      ],
+      "expected_facets": [
+        "clear_escalation_and_override_authority",
+        "approval_threshold_defined"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 25000,
+        "currency": "AUD",
+        "operator": "gt"
+      },
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Negated override authority threshold."
+    },
+    {
+      "case_id": "P1-109",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Is there a mandatory pre-execution technical control that blocks automated decisions from executing until human sign-off is logged?",
+      "expected_atomic_requirements": [
+        "Inquire whether technical pre-execution block prevents execution prior to human sign-off"
+      ],
+      "expected_facets": [
+        "pre_execution_block",
+        "human_approval_required"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Questionnaire pre-execution inquiry."
+    },
+    {
+      "case_id": "P1-110",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Can operational users immediately halt or override the AI system if anomalous or harmful outputs are observed in production?",
+      "expected_atomic_requirements": [
+        "Inquire whether operational users have kill-switch and immediate override capability"
+      ],
+      "expected_facets": [
+        "meaningful_human_oversight_and_kill_switch",
+        "clear_escalation_and_override_authority"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Questionnaire kill-switch inquiry."
+    },
+    {
+      "case_id": "P1-111",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "multi_facet",
+      "input_text": "The automated payment engine must enforce a $1,000 human sign-off limit and store all dual-custody authorization tokens in cryptographic tamper-evident logs.",
+      "expected_atomic_requirements": [
+        "Enforce $1,000 human sign-off limit",
+        "Store dual-custody tokens in tamper-evident logs"
+      ],
+      "expected_facets": [
+        "human_approval_required",
+        "approval_threshold_defined",
+        "approval_logs_retained"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1000,
+        "currency": "AUD",
+        "operator": "gt"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Multi-facet delegated threshold and logging."
+    },
+    {
+      "case_id": "P1-112",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "ambiguous_legal",
+      "input_text": "Where automated AI decisions are confirmed by a human officer who merely clicks 'accept' without review within 5 seconds, meaningful human oversight is legally deemed satisfied.",
+      "expected_atomic_requirements": [
+        "Deem human oversight legally satisfied by 5-second accept click"
+      ],
+      "expected_facets": [
+        "meaningful_human_oversight_and_kill_switch"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "ambiguous_legal",
+      "reviewer_status": "pending_panel",
+      "label_confidence": "low",
+      "unresolved_ambiguity": "Regulatory debate under ASIC RG 104 regarding whether superficial 'rubber stamping' satisfies meaningful human oversight.",
+      "notes": "Holdout: Ambiguous rubber-stamping oversight clause."
+    },
+    {
+      "case_id": "P1-113",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Every AI model deployed within the bank must have a formally appointed Accountable AI Owner registered in the enterprise model inventory.",
+      "expected_atomic_requirements": [
+        "Appoint Accountable AI Owner for all deployed models in enterprise inventory"
+      ],
+      "expected_facets": [
+        "accountable_ai_owner_designated",
+        "use_case_registered_in_enterprise_ai_inventory"
+      ],
+      "expected_controls": [
+        "CTRL-AI-IMPACT-ASSESSMENT",
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "AI owner accountability."
+    },
+    {
+      "case_id": "P1-114",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "An ethical AI impact assessment evaluating risks to consumers, fundamental rights, and vulnerable customer cohorts must be completed prior to model development.",
+      "expected_atomic_requirements": [
+        "Complete ethical AI impact assessment on consumer risks prior to development"
+      ],
+      "expected_facets": [
+        "ai_impact_and_stakeholder_assessment_completed",
+        "consumer_harm_and_bias_assessed_pre_deployment"
+      ],
+      "expected_controls": [
+        "CTRL-AI-IMPACT-ASSESSMENT",
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Pre-development ethical impact assessment."
+    },
+    {
+      "case_id": "P1-115",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The enterprise risk management framework (RMF) must explicitly identify and document AI-specific operational, strategic, and model risks under APRA CPS 220.",
+      "expected_atomic_requirements": [
+        "Document AI risks in enterprise RMF under APRA CPS 220"
+      ],
+      "expected_facets": [
+        "ai_risk_identified",
+        "ai_specific_risk_sources_and_consequences_identified"
+      ],
+      "expected_controls": [
+        "CTRL-RISK-FRAMEWORK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "APRA CPS 220 para 22 AI risk framework."
+    },
+    {
+      "case_id": "P1-116",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Second-line Risk Management must independently review and challenge AI model development assumptions, training data provenance, and hyper-parameters.",
+      "expected_atomic_requirements": [
+        "Second-line independent challenge of AI assumptions, data and parameters"
+      ],
+      "expected_facets": [
+        "second_line_risk_challenge_recorded"
+      ],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 220 three lines of defense."
+    },
+    {
+      "case_id": "P1-117",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Internal Audit must conduct an independent triennial framework review verifying that model governance and validation policies cover all production AI algorithms.",
+      "expected_atomic_requirements": [
+        "Triennial Internal Audit review of AI model governance policies"
+      ],
+      "expected_facets": [
+        "independent_framework_review_covers_ai"
+      ],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 3,
+        "unit": "years",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 220 triennial framework review."
+    },
+    {
+      "case_id": "P1-118",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Continuous drift monitoring must evaluate test, evaluation, verification, and validation (TEVV) validity metrics against baseline calibration datasets.",
+      "expected_atomic_requirements": [
+        "Evaluate TEVV validity metrics against calibration baselines in continuous drift monitoring"
+      ],
+      "expected_facets": [
+        "tevv_validity_and_reliability_benchmarked"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "NIST AI RMF Measure 1.1 TEVV benchmark."
+    },
+    {
+      "case_id": "P1-119",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Statistical parity across demographic sub-populations must be evaluated during credit scorecard calibration.",
+      "expected_atomic_requirements": [
+        "Evaluate statistical parity across demographic sub-populations in credit calibration"
+      ],
+      "expected_facets": [
+        "fairness_and_explainability_metrics_evaluated"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Benchmark BASE-07 fairness synonym."
+    },
+    {
+      "case_id": "P1-120",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Material AI control gaps that cannot be remediated within risk appetite must be formally escalated for board declaration under CPS 220.",
+      "expected_atomic_requirements": [
+        "Escalate unremediated material AI control gaps for board declaration under CPS 220"
+      ],
+      "expected_facets": [
+        "material_ai_control_gaps_escalated_for_declaration"
+      ],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "CPS 220 board declaration escalation."
+    },
+    {
+      "case_id": "P1-121",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The bank's AI Management System must align with ISO/IEC 42001, defining explicit AI policies, role charters, and executive governance committees.",
+      "expected_atomic_requirements": [
+        "Align AI Management System with ISO 42001 defining policies, roles and committees"
+      ],
+      "expected_facets": [
+        "ai_policy_and_roles"
+      ],
+      "expected_controls": [
+        "CTRL-ISO-AIMS"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ISO/IEC 42001 clause 5 governance."
+    },
+    {
+      "case_id": "P1-122",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Public users interacting with bank customer service conversational agents must be clearly informed that they are communicating with an artificial intelligence system.",
+      "expected_atomic_requirements": [
+        "Disclose AI nature to users interacting with conversational agents"
+      ],
+      "expected_facets": [
+        "user_interaction_and_ai_use_disclosed"
+      ],
+      "expected_controls": [
+        "CTRL-AI-IMPACT-ASSESSMENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "National AI Ethics Principle 5 transparency."
+    },
+    {
+      "case_id": "P1-123",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Model risk tiering must classify all production AI systems into Low, Medium, High, or Critical risk tiers based on customer financial impact.",
+      "expected_atomic_requirements": [
+        "Classify production AI systems into risk tiers based on customer impact"
+      ],
+      "expected_facets": [
+        "risk_tier_and_governance_proportionality_screened"
+      ],
+      "expected_controls": [
+        "CTRL-AI-IMPACT-ASSESSMENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Proportional risk tiering."
+    },
+    {
+      "case_id": "P1-124",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Management review of the enterprise AI management system must be conducted at least annually by the Executive Risk Committee under ISO/IEC 42001.",
+      "expected_atomic_requirements": [
+        "Annual management review of AI management system by Executive Risk Committee"
+      ],
+      "expected_facets": [
+        "management_review"
+      ],
+      "expected_controls": [
+        "CTRL-ISO-AIMS"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "years",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: ISO 42001 management review."
+    },
+    {
+      "case_id": "P1-125",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Whenever model performance drift crosses the 5% degradation threshold, automated retraining pipelines must suspend autonomous deployment.",
+      "expected_atomic_requirements": [
+        "Suspend autonomous deployment when performance drift crosses 5% threshold"
+      ],
+      "expected_facets": [
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 5,
+        "unit": "percent",
+        "operator": "gte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Quantitative drift response threshold."
+    },
+    {
+      "case_id": "P1-126",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Has the AI model undergone an independent review and technical challenge by Line 2 Risk prior to production deployment?",
+      "expected_atomic_requirements": [
+        "Inquire whether model underwent independent Line 2 challenge prior to production"
+      ],
+      "expected_facets": [
+        "second_line_risk_challenge_recorded"
+      ],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: AIAF questionnaire independent validation inquiry."
+    },
+    {
+      "case_id": "P1-127",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "Consumer credit scoring models shall not implement automated bias testing using synthetic demographic proxies.",
+      "expected_atomic_requirements": [
+        "Prohibit automated bias testing using synthetic demographic proxies in credit models"
+      ],
+      "expected_facets": [
+        "fairness_and_explainability_metrics_evaluated"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Benchmark BASE-12 negated bias testing rule."
+    },
+    {
+      "case_id": "P1-128",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "multi_facet",
+      "input_text": "Model developers must document all intended use boundaries and establish safe decommissioning and rollback criteria under NIST AI RMF.",
+      "expected_atomic_requirements": [
+        "Document intended use boundaries",
+        "Establish safe decommissioning and rollback criteria under NIST"
+      ],
+      "expected_facets": [
+        "intended_purpose_and_out_of_scope_boundaries_documented",
+        "safe_decommissioning_and_rollback_criteria_defined"
+      ],
+      "expected_controls": [
+        "CTRL-NIST-AI-RMF"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Multi-facet NIST lifecycle controls."
+    },
+    {
+      "case_id": "P1-129",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Customer expressions of dissatisfaction involving AI chatbots or automated credit scoring must be broadly recognized as complaints under ASIC RG 271.",
+      "expected_atomic_requirements": [
+        "Broadly recognize customer dissatisfaction with AI as complaints under ASIC RG 271"
+      ],
+      "expected_facets": [
+        "complaints_broadly_recognised"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 definition of complaint."
+    },
+    {
+      "case_id": "P1-130",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All customer complaints regarding AI decisions must be recorded in the centralized dispute register within 1 business day.",
+      "expected_atomic_requirements": [
+        "Record AI complaints in centralized register within 1 business day"
+      ],
+      "expected_facets": [
+        "complaints_recorded"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "business_days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 dispute registration."
+    },
+    {
+      "case_id": "P1-131",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "The bank must provide a comprehensive written IDR response to consumer credit complaints involving automated models within a maximum of 30 calendar days.",
+      "expected_atomic_requirements": [
+        "Provide written IDR response to credit complaints within 30 calendar days"
+      ],
+      "expected_facets": [
+        "response_timeframes_enforced"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 30,
+        "unit": "days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 para 56 30-day statutory response horizon."
+    },
+    {
+      "case_id": "P1-132",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Written IDR responses must inform complainants of their right to escalate unresolved AI disputes to the Australian Financial Complaints Authority (AFCA).",
+      "expected_atomic_requirements": [
+        "Inform complainants in IDR responses of right to escalate to AFCA"
+      ],
+      "expected_facets": [
+        "response_content_complete"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 AFCA referral notice."
+    },
+    {
+      "case_id": "P1-133",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Customer dispute management systems must provide an immediate option to transfer from automated chatbot handling to a human dispute resolution specialist.",
+      "expected_atomic_requirements": [
+        "Provide immediate option to transfer from chatbot to human dispute specialist"
+      ],
+      "expected_facets": [
+        "human_escalation_available"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 human escalation option."
+    },
+    {
+      "case_id": "P1-134",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Complaint data from automated decision systems must be analyzed monthly to identify recurring systemic issues and model logic defects.",
+      "expected_atomic_requirements": [
+        "Monthly analysis of complaint data to identify systemic issues and model defects"
+      ],
+      "expected_facets": [
+        "complaint_data_analysed"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 1,
+        "unit": "months",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 systemic issue monitoring."
+    },
+    {
+      "case_id": "P1-135",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "numeric_threshold",
+      "input_text": "A systemic issue threshold is triggered when more than 5 customer complaints identify the identical algorithmic credit refusal rationale in a calendar month.",
+      "expected_atomic_requirements": [
+        "Trigger systemic issue when more than 5 complaints identify identical refusal rationale"
+      ],
+      "expected_facets": [
+        "systemic_issue_thresholds_defined"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 5,
+        "unit": "complaints",
+        "operator": "gt"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 systemic threshold trigger."
+    },
+    {
+      "case_id": "P1-136",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "When a systemic algorithmic error is confirmed, the bank must proactively identify, communicate with, and remediate all affected customers.",
+      "expected_atomic_requirements": [
+        "Proactively identify and remediate all affected customers for confirmed systemic errors"
+      ],
+      "expected_facets": [
+        "affected_customers_remediated",
+        "systemic_issues_escalated"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "ASIC RG 271 systemic customer remediation."
+    },
+    {
+      "case_id": "P1-137",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Systemic AI dispute root causes must be formally reported to the Board Audit & Risk Committee on a quarterly basis under ASIC RG 271.",
+      "expected_atomic_requirements": [
+        "Quarterly reporting of systemic AI dispute root causes to Board Audit & Risk Committee"
+      ],
+      "expected_facets": [
+        "systemic_issues_escalated"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 3,
+        "unit": "months",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Board escalation of systemic complaints."
+    },
+    {
+      "case_id": "P1-138",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Does the customer intake flow provide a clear, free-of-charge mechanism for individuals to dispute an adverse AI outcome with a human operator?",
+      "expected_atomic_requirements": [
+        "Inquire whether intake flow provides clear, free mechanism to dispute AI outcome with human"
+      ],
+      "expected_facets": [
+        "human_escalation_available"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Questionnaire dispute mechanism inquiry."
+    },
+    {
+      "case_id": "P1-139",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "Customer service staff shall not refuse to register an oral expression of dissatisfaction simply because the customer cannot identify the specific AI algorithm involved.",
+      "expected_atomic_requirements": [
+        "Prohibit refusing oral complaints because customer cannot identify specific algorithm"
+      ],
+      "expected_facets": [
+        "complaints_broadly_recognised",
+        "complaints_recorded"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Negated complaint barrier rule."
+    },
+    {
+      "case_id": "P1-140",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "paraphrased_match",
+      "input_text": "Remediation payments for algorithmic overcharging errors must be calculated and disbursed to impacted cardholders within 60 days of systemic confirmation.",
+      "expected_atomic_requirements": [
+        "Disburse remediation payments for algorithmic overcharging within 60 days of confirmation"
+      ],
+      "expected_facets": [
+        "affected_customers_remediated"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 60,
+        "unit": "days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Quantitative customer remediation horizon."
+    },
+    {
+      "case_id": "P1-141",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Automated lending platforms must capture the consumer's specific requirements and loan objectives prior to issuing an automated preliminary credit assessment.",
+      "expected_atomic_requirements": [
+        "Capture consumer requirements and objectives prior to preliminary credit assessment"
+      ],
+      "expected_facets": [
+        "consumer_requirements_and_objectives_captured"
+      ],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "NCCP Act s 128 inquiry requirement."
+    },
+    {
+      "case_id": "P1-142",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Consumer financial situations, income, and non-discretionary expenses must be verified from reliable third-party evidence (such as bank transaction feeds) rather than self-declared claims.",
+      "expected_atomic_requirements": [
+        "Verify consumer financial situation and expenses from reliable third-party feeds"
+      ],
+      "expected_facets": [
+        "financial_situation_verified_from_reliable_evidence"
+      ],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "NCCP Act s 130 verification standard."
+    },
+    {
+      "case_id": "P1-143",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "The automated decision engine must enforce an unsuitability filter that rejects loan contracts if the consumer will be unable to meet financial obligations without substantial hardship.",
+      "expected_atomic_requirements": [
+        "Enforce unsuitability filter rejecting loans causing substantial financial hardship"
+      ],
+      "expected_facets": [
+        "unsuitability_and_substantial_hardship_screen_enforced"
+      ],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "NCCP Act s 131 unsuitability test."
+    },
+    {
+      "case_id": "P1-144",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "A written copy of the credit unsuitability assessment must be generated and stored, retrievable for consumer provision within 7 business days of request.",
+      "expected_atomic_requirements": [
+        "Generate and store written credit unsuitability assessment retrievable within 7 business days"
+      ],
+      "expected_facets": [
+        "written_unsuitability_assessment_retrievable"
+      ],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 7,
+        "unit": "business_days",
+        "operator": "lte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "NCCP Act s 132 written assessment retrieval."
+    },
+    {
+      "case_id": "P1-145",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Australian Credit Licence (ACL) holders deploying automated credit tools must ensure services are provided efficiently, honestly, and fairly under Section 47.",
+      "expected_atomic_requirements": [
+        "Ensure automated credit tools operate efficiently, honestly and fairly under s 47"
+      ],
+      "expected_facets": [
+        "credit_activity_fairness_and_honesty_verified"
+      ],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "NCCP Act s 47 general licensee conduct."
+    },
+    {
+      "case_id": "P1-146",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Credit compliance teams must monitor automated loan approvals continuously to identify statutory breaches of responsible lending provisions.",
+      "expected_atomic_requirements": [
+        "Continuously monitor automated loan approvals for responsible lending breaches"
+      ],
+      "expected_facets": [
+        "credit_compliance_and_breach_monitoring_active"
+      ],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: NCCP Act breach monitoring."
+    },
+    {
+      "case_id": "P1-147",
+      "split": "holdout",
+      "source_type": "questionnaire_question",
+      "category": "questionnaire_facet",
+      "input_text": "Does the automated credit scoring pipeline capture and independently verify customer expenses against primary banking statements before issuing loan approval?",
+      "expected_atomic_requirements": [
+        "Inquire whether automated pipeline captures and verifies expenses against bank statements"
+      ],
+      "expected_facets": [
+        "financial_situation_verified_from_reliable_evidence"
+      ],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Responsible lending verification questionnaire check."
+    },
+    {
+      "case_id": "P1-148",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "Credit decisioning models shall not approve personal loans where applicant living expenses are estimated solely using benchmark poverty indexes without actual verification.",
+      "expected_atomic_requirements": [
+        "Prohibit loan approvals where living expenses are estimated solely from poverty benchmarks"
+      ],
+      "expected_facets": [
+        "financial_situation_verified_from_reliable_evidence",
+        "unsuitability_and_substantial_hardship_screen_enforced"
+      ],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Responsible lending benchmark prohibition (HEM benchmark case)."
+    },
+    {
+      "case_id": "P1-149",
+      "split": "development",
+      "source_type": "regulatory_obligation",
+      "category": "exact_match",
+      "input_text": "The bank must confirm whether the AI system is placed on the market or used in the European Union, establishing territorial nexus under Article 2 of the EU AI Act.",
+      "expected_atomic_requirements": [
+        "Confirm whether AI system establishes EU territorial nexus under Article 2"
+      ],
+      "expected_facets": [
+        "territorial_nexus_confirmed",
+        "regulated_role_confirmed"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "EU AI Act Article 2 territorial scope."
+    },
+    {
+      "case_id": "P1-150",
+      "split": "development",
+      "source_type": "regulatory_obligation",
+      "category": "exact_match",
+      "input_text": "AI systems utilized to evaluate the creditworthiness of natural persons or establish their credit score are classified as High-Risk AI Systems under Annex III(5)(b).",
+      "expected_atomic_requirements": [
+        "Classify creditworthiness evaluation AI as High-Risk under Annex III(5)(b)"
+      ],
+      "expected_facets": [
+        "risk_classification_confirmed",
+        "annex3_5b_credit_vs_fraud_exemption_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "EU AI Act High-Risk classification."
+    },
+    {
+      "case_id": "P1-151",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Deployers of High-Risk credit evaluation AI systems must retain system logs generated by the AI system for at least 6 months under Article 26.",
+      "expected_atomic_requirements": [
+        "Retain system logs for High-Risk credit AI for at least 6 months under Article 26"
+      ],
+      "expected_facets": [
+        "deployer_human_oversight_and_6month_log_retention"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 6,
+        "unit": "months",
+        "operator": "gte"
+      },
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "EU AI Act Article 26 deployer log retention."
+    },
+    {
+      "case_id": "P1-152",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "AI systems used strictly for the purpose of detecting financial fraud are exempt from High-Risk classification under Annex III(5)(b).",
+      "expected_atomic_requirements": [
+        "Exempt dedicated financial fraud detection systems from High-Risk classification"
+      ],
+      "expected_facets": [
+        "annex3_5b_credit_vs_fraud_exemption_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "EU AI Act fraud detection exception."
+    },
+    {
+      "case_id": "P1-153",
+      "split": "development",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "Prior to deploying high-risk credit scoring AI in the EU, the deployer must complete a Fundamental Rights Impact Assessment (FRIA) under Article 27.",
+      "expected_atomic_requirements": [
+        "Complete Fundamental Rights Impact Assessment (FRIA) under Article 27 prior to deployment"
+      ],
+      "expected_facets": [
+        "article27_fundamental_rights_impact_assessment_completed"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "EU AI Act Article 27 FRIA requirement."
+    },
+    {
+      "case_id": "P1-154",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "negated_control",
+      "input_text": "AI systems that deploy subliminal techniques or exploit vulnerabilities of specific demographic groups to materially distort behavior are strictly prohibited under Article 5.",
+      "expected_atomic_requirements": [
+        "Prohibit AI systems deploying subliminal techniques or exploiting vulnerabilities under Article 5"
+      ],
+      "expected_facets": [
+        "article5_prohibited_practices_screened_out"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: EU AI Act Article 5 prohibited practice."
+    },
+    {
+      "case_id": "P1-155",
+      "split": "holdout",
+      "source_type": "regulatory_obligation",
+      "category": "non_applicable_obligation",
+      "input_text": "A domestic Australian credit union offering home loans strictly to residents of New South Wales without any EU operations or marketing has zero EU AI Act compliance obligations.",
+      "expected_atomic_requirements": [
+        "Confirm domestic Australian credit union without EU operations is exempt from EU AI Act"
+      ],
+      "expected_facets": [
+        "territorial_nexus_confirmed"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: Statutory non-applicability rule verification."
+    },
+    {
+      "case_id": "P1-156",
+      "split": "holdout",
+      "source_type": "enterprise_policy",
+      "category": "exact_match",
+      "input_text": "All staff operating high-risk banking AI tools must have documented evidence of AI literacy training under Article 4 of the EU AI Act.",
+      "expected_atomic_requirements": [
+        "Document evidence of AI literacy training for staff operating high-risk AI tools"
+      ],
+      "expected_facets": [
+        "article4_staff_ai_literacy_evidenced"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "ground_truth_provenance": "synthetic_reference",
+      "reviewer_status": "unverified",
+      "label_confidence": "high",
+      "unresolved_ambiguity": null,
+      "notes": "Holdout: EU AI Act Article 4 staff literacy."
+    }
+  ]
+}
