@@ -1,0 +1,137 @@
+{
+  "git_commit": "65b9a08a2e31ed56cc6b7292bd463842f22ff7e4",
+  "timestamp": "2026-11-05T04:28:32Z",
+  "dataset_hashes": {
+    "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
+    "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
+    "ucl_hash": "d961ce0a0e6691fd433804164421558c9369e56732906ce9bbb308dc085226d0"
+  },
+  "summary_table": {
+    "dev": {
+      "split_name": "V2 Development",
+      "total_cases": 105,
+      "A0": {
+        "atomic_f1": 0.7945,
+        "facet_f1_micro": 0.0637,
+        "facet_coverage": 0.0323,
+        "top1_recall": 0.0381,
+        "top3_recall": 0.0381,
+        "mrr": 0.0381,
+        "ctrl_f1_micro": 0.084,
+        "suppression_accuracy": 1.0,
+        "false_trigger_rate": 0.0,
+        "threshold_accuracy": 0.0,
+        "latency_mean_ms": 0.1
+      },
+      "A1": {
+        "atomic_f1": 0.7945,
+        "facet_f1_micro": 0.2277,
+        "facet_coverage": 0.1742,
+        "top1_recall": 0.2095,
+        "top3_recall": 0.2476,
+        "mrr": 0.2286,
+        "ctrl_f1_micro": 0.3313,
+        "suppression_accuracy": 1.0,
+        "false_trigger_rate": 0.0,
+        "threshold_accuracy": 0.0,
+        "latency_mean_ms": 0.14
+      },
+      "delta_A1_minus_A0": {
+        "atomic_f1": 0.0,
+        "facet_f1_micro": 0.164,
+        "facet_coverage": 0.1419,
+        "top1_recall": 0.1714,
+        "top3_recall": 0.2095,
+        "mrr": 0.1905,
+        "ctrl_f1_micro": 0.2473,
+        "suppression_accuracy": 0.0,
+        "false_trigger_rate": 0.0,
+        "threshold_accuracy": 0.0
+      }
+    },
+    "supp": {
+      "split_name": "Supplemental Adversarial",
+      "total_cases": 36,
+      "A0": {
+        "atomic_f1": 1.0,
+        "facet_f1_micro": 0.3,
+        "facet_coverage": 0.0516,
+        "top1_recall": 0.1111,
+        "top3_recall": 0.1111,
+        "mrr": 0.1111,
+        "ctrl_f1_micro": 0.1667,
+        "suppression_accuracy": 0.8333,
+        "false_trigger_rate": 0.1667,
+        "threshold_accuracy": 1.0,
+        "latency_mean_ms": 0.09
+      },
+      "A1": {
+        "atomic_f1": 1.0,
+        "facet_f1_micro": 0.8727,
+        "facet_coverage": 0.1613,
+        "top1_recall": 0.8889,
+        "top3_recall": 0.9444,
+        "mrr": 0.9167,
+        "ctrl_f1_micro": 0.85,
+        "suppression_accuracy": 1.0,
+        "false_trigger_rate": 0.0,
+        "threshold_accuracy": 1.0,
+        "latency_mean_ms": 0.07
+      },
+      "delta_A1_minus_A0": {
+        "atomic_f1": 0.0,
+        "facet_f1_micro": 0.5727,
+        "facet_coverage": 0.1097,
+        "top1_recall": 0.7778,
+        "top3_recall": 0.8333,
+        "mrr": 0.8056,
+        "ctrl_f1_micro": 0.6833,
+        "suppression_accuracy": 0.1667,
+        "false_trigger_rate": -0.1667,
+        "threshold_accuracy": 0.0
+      }
+    },
+    "holdout": {
+      "split_name": "V2 Holdout",
+      "total_cases": 51,
+      "A0": {
+        "atomic_f1": 0.6916,
+        "facet_f1_micro": 0.1481,
+        "facet_coverage": 0.0323,
+        "top1_recall": 0.0816,
+        "top3_recall": 0.0816,
+        "mrr": 0.0816,
+        "ctrl_f1_micro": 0.1311,
+        "suppression_accuracy": 0.5,
+        "false_trigger_rate": 0.5,
+        "threshold_accuracy": 0.0,
+        "latency_mean_ms": 0.09
+      },
+      "A1": {
+        "atomic_f1": 0.6916,
+        "facet_f1_micro": 0.2889,
+        "facet_coverage": 0.0839,
+        "top1_recall": 0.3061,
+        "top3_recall": 0.3265,
+        "mrr": 0.3163,
+        "ctrl_f1_micro": 0.4444,
+        "suppression_accuracy": 0.5,
+        "false_trigger_rate": 0.5,
+        "threshold_accuracy": 0.0,
+        "latency_mean_ms": 0.15
+      },
+      "delta_A1_minus_A0": {
+        "atomic_f1": 0.0,
+        "facet_f1_micro": 0.1408,
+        "facet_coverage": 0.0516,
+        "top1_recall": 0.2245,
+        "top3_recall": 0.2449,
+        "mrr": 0.2347,
+        "ctrl_f1_micro": 0.3133,
+        "suppression_accuracy": 0.0,
+        "false_trigger_rate": 0.0,
+        "threshold_accuracy": 0.0
+      }
+    }
+  }
+}

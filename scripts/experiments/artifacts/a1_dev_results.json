@@ -1,0 +1,4008 @@
+{
+  "engine": "A1",
+  "engine_name": "Enhanced Rules (A1)",
+  "split": "dev",
+  "split_name": "V2 Development",
+  "total_cases": 105,
+  "git_commit": "65b9a08a2e31ed56cc6b7292bd463842f22ff7e4",
+  "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
+  "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
+  "timestamp": "2026-11-05T04:28:32Z",
+  "metrics": {
+    "total_cases": 105,
+    "layer_a_atomic": {
+      "tp": 87,
+      "fp": 18,
+      "fn": 27,
+      "precision": 0.8286,
+      "recall": 0.7632,
+      "f1": 0.7945
+    },
+    "layer_b_facets": {
+      "tp": 23,
+      "fp": 34,
+      "fn": 122,
+      "precision_micro": 0.4035,
+      "recall_micro": 0.1586,
+      "f1_micro": 0.2277,
+      "unique_facets_predicted": 27,
+      "canonical_facet_coverage_rate": 0.1742
+    },
+    "layer_c_controls": {
+      "cases_with_targets": 105,
+      "top1_recall": 0.2095,
+      "top3_recall": 0.2476,
+      "top5_recall": 0.2476,
+      "mrr": 0.2286,
+      "micro_precision": 0.5192,
+      "micro_recall": 0.2432,
+      "micro_f1": 0.3313
+    },
+    "layer_c_normative_safety": {
+      "suppression_target_cases": 0,
+      "correct_suppressions": 0,
+      "suppression_accuracy": 1.0,
+      "false_triggers_on_suppressed": 0,
+      "false_trigger_rate": 0.0,
+      "total_false_triggers": 0
+    },
+    "layer_f_thresholds": {
+      "total_threshold_cases": 35,
+      "correct_thresholds": 0,
+      "threshold_accuracy": 0.0
+    },
+    "performance_latency_ms": {
+      "mean": 0.14,
+      "p50": 0.14,
+      "p95": 0.18
+    }
+  },
+  "by_normative_class": {
+    "conditional_exemption": {
+      "total_cases": 5,
+      "layer_a_atomic": {
+        "tp": 5,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 7,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 5,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 2,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.03,
+        "p50": 0.02,
+        "p95": 0.05
+      }
+    },
+    "mandatory_requirement": {
+      "total_cases": 100,
+      "layer_a_atomic": {
+        "tp": 82,
+        "fp": 18,
+        "fn": 27,
+        "precision": 0.82,
+        "recall": 0.7523,
+        "f1": 0.7847
+      },
+      "layer_b_facets": {
+        "tp": 23,
+        "fp": 34,
+        "fn": 115,
+        "precision_micro": 0.4035,
+        "recall_micro": 0.1667,
+        "f1_micro": 0.2359,
+        "unique_facets_predicted": 27,
+        "canonical_facet_coverage_rate": 0.1742
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 100,
+        "top1_recall": 0.22,
+        "top3_recall": 0.26,
+        "top5_recall": 0.26,
+        "mrr": 0.24,
+        "micro_precision": 0.5192,
+        "micro_recall": 0.2547,
+        "micro_f1": 0.3418
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 33,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.15,
+        "p50": 0.14,
+        "p95": 0.18
+      }
+    }
+  },
+  "by_category": {
+    "conditional_requirement": {
+      "total_cases": 4,
+      "layer_a_atomic": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 6,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 4,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 2,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.03,
+        "p50": 0.02,
+        "p95": 0.05
+      }
+    },
+    "exact_match": {
+      "total_cases": 82,
+      "layer_a_atomic": {
+        "tp": 68,
+        "fp": 14,
+        "fn": 23,
+        "precision": 0.8293,
+        "recall": 0.7473,
+        "f1": 0.7861
+      },
+      "layer_b_facets": {
+        "tp": 20,
+        "fp": 28,
+        "fn": 94,
+        "precision_micro": 0.4167,
+        "recall_micro": 0.1754,
+        "f1_micro": 0.2469,
+        "unique_facets_predicted": 26,
+        "canonical_facet_coverage_rate": 0.1677
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 82,
+        "top1_recall": 0.2317,
+        "top3_recall": 0.2683,
+        "top5_recall": 0.2683,
+        "mrr": 0.25,
+        "micro_precision": 0.5349,
+        "micro_recall": 0.2706,
+        "micro_f1": 0.3594
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 21,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.15,
+        "p50": 0.14,
+        "p95": 0.18
+      }
+    },
+    "numeric_threshold": {
+      "total_cases": 10,
+      "layer_a_atomic": {
+        "tp": 8,
+        "fp": 2,
+        "fn": 2,
+        "precision": 0.8,
+        "recall": 0.8,
+        "f1": 0.8
+      },
+      "layer_b_facets": {
+        "tp": 2,
+        "fp": 5,
+        "fn": 10,
+        "precision_micro": 0.2857,
+        "recall_micro": 0.1667,
+        "f1_micro": 0.2105,
+        "unique_facets_predicted": 5,
+        "canonical_facet_coverage_rate": 0.0323
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 10,
+        "top1_recall": 0.2,
+        "top3_recall": 0.3,
+        "top5_recall": 0.3,
+        "mrr": 0.25,
+        "micro_precision": 0.4286,
+        "micro_recall": 0.2727,
+        "micro_f1": 0.3333
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 10,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.15,
+        "p50": 0.15,
+        "p95": 0.18
+      }
+    },
+    "paraphrased_match": {
+      "total_cases": 9,
+      "layer_a_atomic": {
+        "tp": 7,
+        "fp": 2,
+        "fn": 2,
+        "precision": 0.7778,
+        "recall": 0.7778,
+        "f1": 0.7778
+      },
+      "layer_b_facets": {
+        "tp": 1,
+        "fp": 1,
+        "fn": 12,
+        "precision_micro": 0.5,
+        "recall_micro": 0.0769,
+        "f1_micro": 0.1333,
+        "unique_facets_predicted": 2,
+        "canonical_facet_coverage_rate": 0.0129
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 9,
+        "top1_recall": 0.1111,
+        "top3_recall": 0.1111,
+        "top5_recall": 0.1111,
+        "mrr": 0.1111,
+        "micro_precision": 0.5,
+        "micro_recall": 0.0909,
+        "micro_f1": 0.1538
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 2,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.13,
+        "p50": 0.13,
+        "p95": 0.16
+      }
+    }
+  },
+  "by_length_tier": {
+    "medium": {
+      "total_cases": 105,
+      "layer_a_atomic": {
+        "tp": 87,
+        "fp": 18,
+        "fn": 27,
+        "precision": 0.8286,
+        "recall": 0.7632,
+        "f1": 0.7945
+      },
+      "layer_b_facets": {
+        "tp": 23,
+        "fp": 34,
+        "fn": 122,
+        "precision_micro": 0.4035,
+        "recall_micro": 0.1586,
+        "f1_micro": 0.2277,
+        "unique_facets_predicted": 27,
+        "canonical_facet_coverage_rate": 0.1742
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 105,
+        "top1_recall": 0.2095,
+        "top3_recall": 0.2476,
+        "top5_recall": 0.2476,
+        "mrr": 0.2286,
+        "micro_precision": 0.5192,
+        "micro_recall": 0.2432,
+        "micro_f1": 0.3313
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 35,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.14,
+        "p50": 0.14,
+        "p95": 0.18
+      }
+    }
+  },
+  "individual_case_results": [
+    {
+      "case_id": "P1-001",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 174,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 2,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "pia_threshold_screen_completed",
+        "privacy_accountability_assigned"
+      ],
+      "expected_facets": [
+        "pia_threshold_screen_completed",
+        "privacy_accountability_assigned"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.22600000011152588
+    },
+    {
+      "case_id": "P1-002",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 133,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 2,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "privacy_practices_implemented"
+      ],
+      "expected_facets": [
+        "privacy_policy_current"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15110000094864517
+    },
+    {
+      "case_id": "P1-003",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 129,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "collection_purpose_defined",
+        "necessity_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13269999908516183
+    },
+    {
+      "case_id": "P1-004",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 113,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "sensitive_information_consent"
+      ],
+      "expected_facets": [
+        "sensitive_information_consent"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.10970000221277587
+    },
+    {
+      "case_id": "P1-005",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 152,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 3,
+      "predicted_facets": [],
+      "expected_facets": [
+        "collection_notice_exists",
+        "notice_content_complete",
+        "notice_timing_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-NOTICE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.16490000052726828
+    },
+    {
+      "case_id": "P1-006",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 170,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "primary_purpose_recorded",
+        "secondary_use_basis_checked"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-USE-DISCLOSURE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.16109999705804512
+    },
+    {
+      "case_id": "P1-007",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 161,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "app8_reasonable_steps_and_contracts_in_place",
+        "overseas_recipients_and_regions_mapped"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15029999849502929
+    },
+    {
+      "case_id": "P1-008",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 165,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1506000007793773
+    },
+    {
+      "case_id": "P1-009",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 116,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 2,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "controls_commensurate",
+        "security_controls_defined"
+      ],
+      "expected_facets": [
+        "security_controls_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13050000052317046
+    },
+    {
+      "case_id": "P1-010",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 143,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 2,
+      "predicted_facets": [
+        "response_timeframes_enforced"
+      ],
+      "expected_facets": [
+        "destruction_or_deidentification_verified",
+        "retention_schedule_applied"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14849999934085645
+    },
+    {
+      "case_id": "P1-011",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 159,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "access_and_correction_timeframes_tracked",
+        "response_timeframes_enforced"
+      ],
+      "expected_facets": [
+        "access_and_correction_timeframes_tracked",
+        "ai_personal_records_retrievable_for_access"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-ACCESS-CORRECTION",
+        "CTRL-IDR-HANDLING"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-ACCESS-CORRECTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.16930000128922984
+    },
+    {
+      "case_id": "P1-012",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 166,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "access_and_correction_timeframes_tracked",
+        "correction_propagated_to_ai_stores"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-ACCESS-CORRECTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17049999951268546
+    },
+    {
+      "case_id": "P1-013",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 151,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "ai_data_leakage_detection_enabled"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-NDB-RESPONSE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1480999999330379
+    },
+    {
+      "case_id": "P1-014",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 149,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "ndb_30day_assessment_workflow_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-NDB-RESPONSE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13729999773204327
+    },
+    {
+      "case_id": "P1-015",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 173,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "oaic_and_individual_notification_prepared"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-NDB-RESPONSE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.16840000171214342
+    },
+    {
+      "case_id": "P1-016",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 170,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 3,
+      "predicted_facets": [
+        "privacy_practices_implemented"
+      ],
+      "expected_facets": [
+        "decision_kinds_disclosed",
+        "personal_information_kinds_disclosed",
+        "significant_decision_screened"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-AUTOMATED-DISCLOSURE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1747999995131977
+    },
+    {
+      "case_id": "P1-017",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 143,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "input_personal_data_accuracy_checked",
+        "stale_or_incomplete_records_prevented"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-DATA-QUALITY-GOV"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14200000077835284
+    },
+    {
+      "case_id": "P1-018",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 172,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "ai_output_and_inference_relevance_verified",
+        "inferred_attributes_classified_as_collection"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-DATA-QUALITY-GOV"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15630000052624382
+    },
+    {
+      "case_id": "P1-019",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 173,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 2,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "critical_ai_data_elements_owned",
+        "metadata_and_data_dictionary_maintained"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-DATA-QUALITY-GOV"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17600000137463212
+    },
+    {
+      "case_id": "P1-020",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 155,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "automated_ingestion_and_transformation_validation",
+        "end_to_end_data_lineage_documented"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-DATA-LIFECYCLE-LINEAGE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15160000111791305
+    },
+    {
+      "case_id": "P1-031",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 154,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "security_roles_and_asset_owners_assigned"
+      ],
+      "expected_facets": [
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "security_roles_and_asset_owners_assigned"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15039999925647862
+    },
+    {
+      "case_id": "P1-032",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 125,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "security_controls_defined",
+        "testing_program_exists"
+      ],
+      "expected_facets": [
+        "testing_frequency_risk_based",
+        "testing_program_exists"
+      ],
+      "top1_match": false,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 0.5,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE",
+        "CTRL-SEC-TESTING"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1325999983237125
+    },
+    {
+      "case_id": "P1-033",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 127,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "testing_program_exists"
+      ],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_scope_defined"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12760000026901253
+    },
+    {
+      "case_id": "P1-034",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 154,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 2,
+      "facet_fn": 2,
+      "predicted_facets": [
+        "security_controls_defined",
+        "security_roles_and_asset_owners_assigned"
+      ],
+      "expected_facets": [
+        "deficiencies_remediated",
+        "testing_results_reviewed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13659999967785552
+    },
+    {
+      "case_id": "P1-035",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 152,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "incident_detection_defined",
+        "security_controls_defined"
+      ],
+      "expected_facets": [
+        "incident_detection_defined"
+      ],
+      "top1_match": false,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 0.5,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE",
+        "CTRL-SEC-INCIDENT"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1328999969700817
+    },
+    {
+      "case_id": "P1-036",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 160,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 2,
+      "predicted_facets": [
+        "security_controls_defined"
+      ],
+      "expected_facets": [
+        "apra_notification_screened",
+        "response_and_escalation_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17110000044340268
+    },
+    {
+      "case_id": "P1-037",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 145,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "access_cryptography_and_secure_engineering_applied",
+        "controls_commensurate"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-ISMS-CONTROLS",
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1570999993418809
+    },
+    {
+      "case_id": "P1-038",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 149,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "security_controls_defined"
+      ],
+      "expected_facets": [
+        "ai_environment_in_isms_scope_and_risk_assessment"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-ISMS-CONTROLS"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14350000128615648
+    },
+    {
+      "case_id": "P1-039",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 132,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "controls_commensurate"
+      ],
+      "expected_facets": [
+        "controls_commensurate"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1368000012007542
+    },
+    {
+      "case_id": "P1-040",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 133,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "controls_commensurate",
+        "security_controls_defined"
+      ],
+      "expected_facets": [
+        "controls_commensurate",
+        "threats_and_vulnerabilities_assessed"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14800000280956738
+    },
+    {
+      "case_id": "P1-041",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 121,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "third_party_assets_in_scope",
+        "third_party_managed_ai_assets_catalogued"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.121900000522146
+    },
+    {
+      "case_id": "P1-042",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 143,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 2,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "board_or_senior_oversight",
+        "response_timeframes_enforced"
+      ],
+      "expected_facets": [
+        "material_weaknesses_tracked"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-RISK-FRAMEWORK",
+        "CTRL-IDR-HANDLING"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1480999999330379
+    },
+    {
+      "case_id": "P1-043",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 123,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "supplier_security_and_isms_internal_audit_verified"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-ISMS-CONTROLS"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13000000035390258
+    },
+    {
+      "case_id": "P1-044",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 146,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "security_controls_defined"
+      ],
+      "expected_facets": [
+        "deficiencies_remediated"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14800000280956738
+    },
+    {
+      "case_id": "P1-045",
+      "split": "development",
+      "category": "conditional_requirement",
+      "normative_type": "conditional_exemption",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 151,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "testing_frequency_risk_based",
+        "testing_program_exists"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.020899999071843922
+    },
+    {
+      "case_id": "P1-046",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 117,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "security_controls_defined"
+      ],
+      "expected_facets": [
+        "testing_frequency_risk_based"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.11160000212839805
+    },
+    {
+      "case_id": "P1-055",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "critical_operation_dependency_mapped"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13469999976223335
+    },
+    {
+      "case_id": "P1-056",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 136,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 2,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "incidents_and_weaknesses_managed",
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "expected_facets": [
+        "operational_risks_assessed"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-OPS-RISK",
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13390000094659626
+    },
+    {
+      "case_id": "P1-057",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 140,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "control_environment_documented"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12409999908413738
+    },
+    {
+      "case_id": "P1-058",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 146,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "complaints_recorded",
+        "incidents_and_weaknesses_managed"
+      ],
+      "expected_facets": [
+        "incidents_and_weaknesses_managed"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-OPS-RISK",
+        "CTRL-IDR-HANDLING"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13310000213095918
+    },
+    {
+      "case_id": "P1-059",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 145,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1430000011168886
+    },
+    {
+      "case_id": "P1-060",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 138,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12070000229869038
+    },
+    {
+      "case_id": "P1-061",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 133,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13300000136950985
+    },
+    {
+      "case_id": "P1-062",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 150,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested",
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13480000052368268
+    },
+    {
+      "case_id": "P1-063",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 123,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "control_environment_documented",
+        "operational_risks_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1354000014543999
+    },
+    {
+      "case_id": "P1-064",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 131,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13549999857787043
+    },
+    {
+      "case_id": "P1-065",
+      "split": "development",
+      "category": "conditional_requirement",
+      "normative_type": "conditional_exemption",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.020899999071843922
+    },
+    {
+      "case_id": "P1-066",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 132,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "critical_operation_dependency_mapped"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12280000009923242
+    },
+    {
+      "case_id": "P1-067",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 126,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "incidents_and_weaknesses_managed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1202000021294225
+    },
+    {
+      "case_id": "P1-068",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "control_environment_documented"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13729999773204327
+    },
+    {
+      "case_id": "P1-075",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 174,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "due_diligence_completed"
+      ],
+      "expected_facets": [
+        "due_diligence_completed"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.18030000137514435
+    },
+    {
+      "case_id": "P1-076",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 153,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "provider_materiality_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14290000035543926
+    },
+    {
+      "case_id": "P1-077",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 131,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 2,
+      "predicted_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_facets": [
+        "contract_controls_defined",
+        "performance_and_exit_monitored"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12900000001536682
+    },
+    {
+      "case_id": "P1-078",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 132,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "msp_register_updated_for_ai_vendors"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14480000027106144
+    },
+    {
+      "case_id": "P1-079",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 141,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "provider_materiality_assessed"
+      ],
+      "expected_facets": [
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15559999883407727
+    },
+    {
+      "case_id": "P1-080",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 134,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "prior_apra_consultation_for_material_offshoring"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13330000001587905
+    },
+    {
+      "case_id": "P1-081",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 131,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14699999883305281
+    },
+    {
+      "case_id": "P1-082",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 124,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "performance_and_exit_monitored"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.109200002043508
+    },
+    {
+      "case_id": "P1-083",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 128,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "performance_and_exit_monitored",
+        "provider_materiality_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.11860000086016953
+    },
+    {
+      "case_id": "P1-084",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "contract_controls_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1373999984934926
+    },
+    {
+      "case_id": "P1-085",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 132,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 2,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "controls_commensurate",
+        "provider_materiality_assessed"
+      ],
+      "expected_facets": [
+        "due_diligence_completed"
+      ],
+      "top1_match": false,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 0.5,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE",
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13420000323094428
+    },
+    {
+      "case_id": "P1-086",
+      "split": "development",
+      "category": "conditional_requirement",
+      "normative_type": "conditional_exemption",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 164,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "msp_register_updated_for_ai_vendors"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.04819999958272092
+    },
+    {
+      "case_id": "P1-093",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 152,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "approval_threshold_defined",
+        "human_approval_required"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.16649999815854244
+    },
+    {
+      "case_id": "P1-094",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 148,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "pre_execution_block"
+      ],
+      "expected_facets": [
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13559999933931977
+    },
+    {
+      "case_id": "P1-095",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 151,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "human_approval_required"
+      ],
+      "expected_facets": [
+        "approval_logs_retained"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15269999857991934
+    },
+    {
+      "case_id": "P1-096",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 144,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "operator_ai_competence_and_training_completed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13380000018514693
+    },
+    {
+      "case_id": "P1-097",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 152,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "supervisory_quality_assurance_on_ai_assisted_staff"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14620000001741573
+    },
+    {
+      "case_id": "P1-098",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 136,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 2,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "human_approval_required",
+        "response_and_escalation_defined"
+      ],
+      "expected_facets": [
+        "clear_escalation_and_override_authority"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-HUMAN-OVERSIGHT",
+        "CTRL-SEC-INCIDENT"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.11900000026798807
+    },
+    {
+      "case_id": "P1-099",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 140,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "meaningful_human_oversight_and_kill_switch"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13240000043879263
+    },
+    {
+      "case_id": "P1-100",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 140,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "customer_contestability_and_recourse_pathway"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13469999976223335
+    },
+    {
+      "case_id": "P1-101",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 161,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "human_approval_required"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17329999900539406
+    },
+    {
+      "case_id": "P1-102",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 127,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15379999967990443
+    },
+    {
+      "case_id": "P1-103",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 132,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13179999950807542
+    },
+    {
+      "case_id": "P1-104",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 136,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "retention_schedule_applied"
+      ],
+      "expected_facets": [
+        "approval_logs_retained"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14259999807109125
+    },
+    {
+      "case_id": "P1-105",
+      "split": "development",
+      "category": "conditional_requirement",
+      "normative_type": "conditional_exemption",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 126,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "pre_execution_block"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.028300000849412754
+    },
+    {
+      "case_id": "P1-106",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 140,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "expected_facets": [
+        "pre_deployment_and_ongoing_drift_monitoring"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.130899999930989
+    },
+    {
+      "case_id": "P1-113",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "use_case_registered_in_enterprise_ai_inventory"
+      ],
+      "expected_facets": [
+        "accountable_ai_owner_designated",
+        "use_case_registered_in_enterprise_ai_inventory"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY",
+        "CTRL-AI-IMPACT-ASSESSMENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14119999832473695
+    },
+    {
+      "case_id": "P1-114",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 160,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "ai_impact_and_stakeholder_assessment_completed",
+        "consumer_harm_and_bias_assessed_pre_deployment"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY",
+        "CTRL-AI-IMPACT-ASSESSMENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15390000044135377
+    },
+    {
+      "case_id": "P1-115",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 156,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "ai_risk_identified",
+        "ai_specific_risk_sources_and_consequences_identified"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-RISK-FRAMEWORK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14100000043981709
+    },
+    {
+      "case_id": "P1-116",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 149,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "second_line_risk_challenge_recorded"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1297999988310039
+    },
+    {
+      "case_id": "P1-117",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 161,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "independent_framework_review_covers_ai"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13670000043930486
+    },
+    {
+      "case_id": "P1-118",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 151,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "expected_facets": [
+        "tevv_validity_and_reliability_benchmarked"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1233000002685003
+    },
+    {
+      "case_id": "P1-119",
+      "split": "development",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 108,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "fairness_and_explainability_metrics_evaluated"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09190000128000975
+    },
+    {
+      "case_id": "P1-120",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 135,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "material_ai_control_gaps_escalated_for_declaration"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12799999967683107
+    },
+    {
+      "case_id": "P1-121",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 145,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "ai_policy_and_roles"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-ISO-AIMS"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14089999967836775
+    },
+    {
+      "case_id": "P1-122",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 166,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "user_interaction_and_ai_use_disclosed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-AI-IMPACT-ASSESSMENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1491999973950442
+    },
+    {
+      "case_id": "P1-123",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 141,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "risk_tier_and_governance_proportionality_screened"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-AI-IMPACT-ASSESSMENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14070000179344788
+    },
+    {
+      "case_id": "P1-129",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 149,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "complaints_broadly_recognised",
+        "systemic_issues_escalated"
+      ],
+      "expected_facets": [
+        "complaints_broadly_recognised"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-IDR-HANDLING",
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.13839999883202836
+    },
+    {
+      "case_id": "P1-130",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 122,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "complaints_recorded"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.11829999857582152
+    },
+    {
+      "case_id": "P1-131",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 153,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "response_timeframes_enforced"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1601999974809587
+    },
+    {
+      "case_id": "P1-132",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 153,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "response_content_complete"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.4098999997950159
+    },
+    {
+      "case_id": "P1-133",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 154,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "human_escalation_available"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15609999900334515
+    },
+    {
+      "case_id": "P1-134",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 134,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "complaint_data_analysed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.2733000001171604
+    },
+    {
+      "case_id": "P1-135",
+      "split": "development",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 157,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 2,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "approval_threshold_defined",
+        "systemic_issues_escalated"
+      ],
+      "expected_facets": [
+        "systemic_issue_thresholds_defined"
+      ],
+      "top1_match": false,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 0.5,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17980000120587647
+    },
+    {
+      "case_id": "P1-136",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 139,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "affected_customers_remediated",
+        "systemic_issues_escalated"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1452999968023505
+    },
+    {
+      "case_id": "P1-141",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 158,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "consumer_requirements_and_objectives_captured"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.15300000086426735
+    },
+    {
+      "case_id": "P1-142",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 188,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "financial_situation_verified_from_reliable_evidence"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.18350000027567148
+    },
+    {
+      "case_id": "P1-143",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 185,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "unsuitability_and_substantial_hardship_screen_enforced"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17639999714447185
+    },
+    {
+      "case_id": "P1-144",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 153,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "written_unsuitability_assessment_retrievable"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1570999993418809
+    },
+    {
+      "case_id": "P1-145",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 158,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "credit_activity_fairness_and_honesty_verified"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14689999807160348
+    },
+    {
+      "case_id": "P1-149",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 163,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "regulated_role_confirmed",
+        "territorial_nexus_confirmed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17160000061267056
+    },
+    {
+      "case_id": "P1-150",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 165,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 2,
+      "predicted_facets": [
+        "ai_assets_classified_by_criticality_and_sensitivity"
+      ],
+      "expected_facets": [
+        "annex3_5b_credit_vs_fraud_exemption_assessed",
+        "risk_classification_confirmed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.16479999976581894
+    },
+    {
+      "case_id": "P1-151",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 142,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "deployer_human_oversight_and_6month_log_retention"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.1545999984955415
+    },
+    {
+      "case_id": "P1-152",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "conditional_exemption",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 133,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "annex3_5b_credit_vs_fraud_exemption_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.020899999071843922
+    },
+    {
+      "case_id": "P1-153",
+      "split": "development",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 148,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "article27_fundamental_rights_impact_assessment_completed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.14910000027157366
+    }
+  ]
+}

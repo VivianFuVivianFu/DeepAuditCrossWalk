@@ -1,0 +1,2534 @@
+{
+  "engine": "A0",
+  "engine_name": "Production Baseline (A0)",
+  "split": "holdout",
+  "split_name": "V2 Holdout",
+  "total_cases": 51,
+  "git_commit": "65b9a08a2e31ed56cc6b7292bd463842f22ff7e4",
+  "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
+  "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
+  "timestamp": "2026-11-05T04:28:32Z",
+  "metrics": {
+    "total_cases": 51,
+    "layer_a_atomic": {
+      "tp": 37,
+      "fp": 14,
+      "fn": 19,
+      "precision": 0.7255,
+      "recall": 0.6607,
+      "f1": 0.6916
+    },
+    "layer_b_facets": {
+      "tp": 6,
+      "fp": 5,
+      "fn": 64,
+      "precision_micro": 0.5455,
+      "recall_micro": 0.0857,
+      "f1_micro": 0.1481,
+      "unique_facets_predicted": 5,
+      "canonical_facet_coverage_rate": 0.0323
+    },
+    "layer_c_controls": {
+      "cases_with_targets": 49,
+      "top1_recall": 0.0816,
+      "top3_recall": 0.0816,
+      "top5_recall": 0.0816,
+      "mrr": 0.0816,
+      "micro_precision": 0.5,
+      "micro_recall": 0.0755,
+      "micro_f1": 0.1311
+    },
+    "layer_c_normative_safety": {
+      "suppression_target_cases": 2,
+      "correct_suppressions": 1,
+      "suppression_accuracy": 0.5,
+      "false_triggers_on_suppressed": 1,
+      "false_trigger_rate": 0.5,
+      "total_false_triggers": 1
+    },
+    "layer_f_thresholds": {
+      "total_threshold_cases": 13,
+      "correct_thresholds": 0,
+      "threshold_accuracy": 0.0
+    },
+    "performance_latency_ms": {
+      "mean": 0.09,
+      "p50": 0.09,
+      "p95": 0.13
+    }
+  },
+  "by_normative_class": {
+    "applicability_boundary": {
+      "total_cases": 1,
+      "layer_a_atomic": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 1,
+        "correct_suppressions": 1,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.11,
+        "p50": 0.11,
+        "p95": 0.11
+      }
+    },
+    "conditional_exemption": {
+      "total_cases": 1,
+      "layer_a_atomic": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 1,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.11,
+        "p50": 0.11,
+        "p95": 0.11
+      }
+    },
+    "harmful_practice_prohibition": {
+      "total_cases": 1,
+      "layer_a_atomic": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 1,
+        "canonical_facet_coverage_rate": 0.0065
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 1,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 0.0,
+        "false_triggers_on_suppressed": 1,
+        "false_trigger_rate": 1.0,
+        "total_false_triggers": 1
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.08,
+        "p50": 0.08,
+        "p95": 0.08
+      }
+    },
+    "mandatory_prohibition": {
+      "total_cases": 8,
+      "layer_a_atomic": {
+        "tp": 7,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.875,
+        "recall": 0.875,
+        "f1": 0.875
+      },
+      "layer_b_facets": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 10,
+        "precision_micro": 1.0,
+        "recall_micro": 0.0909,
+        "f1_micro": 0.1667,
+        "unique_facets_predicted": 1,
+        "canonical_facet_coverage_rate": 0.0065
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 8,
+        "top1_recall": 0.125,
+        "top3_recall": 0.125,
+        "top5_recall": 0.125,
+        "mrr": 0.125,
+        "micro_precision": 1.0,
+        "micro_recall": 0.1111,
+        "micro_f1": 0.2
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 1,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.1
+      }
+    },
+    "mandatory_requirement": {
+      "total_cases": 35,
+      "layer_a_atomic": {
+        "tp": 24,
+        "fp": 11,
+        "fn": 16,
+        "precision": 0.6857,
+        "recall": 0.6,
+        "f1": 0.64
+      },
+      "layer_b_facets": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 47,
+        "precision_micro": 0.7143,
+        "recall_micro": 0.0962,
+        "f1_micro": 0.1695,
+        "unique_facets_predicted": 4,
+        "canonical_facet_coverage_rate": 0.0258
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 35,
+        "top1_recall": 0.0857,
+        "top3_recall": 0.0857,
+        "top5_recall": 0.0857,
+        "mrr": 0.0857,
+        "micro_precision": 0.5,
+        "micro_recall": 0.0789,
+        "micro_f1": 0.1364
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 12,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.14
+      }
+    },
+    "uncertain_prohibition": {
+      "total_cases": 5,
+      "layer_a_atomic": {
+        "tp": 3,
+        "fp": 2,
+        "fn": 2,
+        "precision": 0.6,
+        "recall": 0.6,
+        "f1": 0.6
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 5,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 2,
+        "canonical_facet_coverage_rate": 0.0129
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 5,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.12
+      }
+    }
+  },
+  "by_category": {
+    "ambiguous_legal": {
+      "total_cases": 5,
+      "layer_a_atomic": {
+        "tp": 3,
+        "fp": 2,
+        "fn": 2,
+        "precision": 0.6,
+        "recall": 0.6,
+        "f1": 0.6
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 5,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 2,
+        "canonical_facet_coverage_rate": 0.0129
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 5,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.12
+      }
+    },
+    "conditional_requirement": {
+      "total_cases": 1,
+      "layer_a_atomic": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 1,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.11,
+        "p50": 0.11,
+        "p95": 0.11
+      }
+    },
+    "exact_match": {
+      "total_cases": 10,
+      "layer_a_atomic": {
+        "tp": 7,
+        "fp": 3,
+        "fn": 3,
+        "precision": 0.7,
+        "recall": 0.7,
+        "f1": 0.7
+      },
+      "layer_b_facets": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 11,
+        "precision_micro": 1.0,
+        "recall_micro": 0.0833,
+        "f1_micro": 0.1538,
+        "unique_facets_predicted": 1,
+        "canonical_facet_coverage_rate": 0.0065
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 10,
+        "top1_recall": 0.1,
+        "top3_recall": 0.1,
+        "top5_recall": 0.1,
+        "mrr": 0.1,
+        "micro_precision": 1.0,
+        "micro_recall": 0.1,
+        "micro_f1": 0.1818
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 4,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.1,
+        "p50": 0.08,
+        "p95": 0.18
+      }
+    },
+    "multi_facet": {
+      "total_cases": 6,
+      "layer_a_atomic": {
+        "tp": 5,
+        "fp": 1,
+        "fn": 6,
+        "precision": 0.8333,
+        "recall": 0.4545,
+        "f1": 0.5882
+      },
+      "layer_b_facets": {
+        "tp": 2,
+        "fp": 0,
+        "fn": 12,
+        "precision_micro": 1.0,
+        "recall_micro": 0.1429,
+        "f1_micro": 0.25,
+        "unique_facets_predicted": 2,
+        "canonical_facet_coverage_rate": 0.0129
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 6,
+        "top1_recall": 0.1667,
+        "top3_recall": 0.1667,
+        "top5_recall": 0.1667,
+        "mrr": 0.1667,
+        "micro_precision": 0.5,
+        "micro_recall": 0.1111,
+        "micro_f1": 0.1818
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 4,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.12
+      }
+    },
+    "negated_control": {
+      "total_cases": 9,
+      "layer_a_atomic": {
+        "tp": 8,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.8889,
+        "recall": 0.8889,
+        "f1": 0.8889
+      },
+      "layer_b_facets": {
+        "tp": 1,
+        "fp": 1,
+        "fn": 10,
+        "precision_micro": 0.5,
+        "recall_micro": 0.0909,
+        "f1_micro": 0.1538,
+        "unique_facets_predicted": 2,
+        "canonical_facet_coverage_rate": 0.0129
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 8,
+        "top1_recall": 0.125,
+        "top3_recall": 0.125,
+        "top5_recall": 0.125,
+        "mrr": 0.125,
+        "micro_precision": 0.5,
+        "micro_recall": 0.1111,
+        "micro_f1": 0.1818
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 1,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 0.0,
+        "false_triggers_on_suppressed": 1,
+        "false_trigger_rate": 1.0,
+        "total_false_triggers": 1
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 1,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.1
+      }
+    },
+    "non_applicable_obligation": {
+      "total_cases": 1,
+      "layer_a_atomic": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 1,
+        "correct_suppressions": 1,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.11,
+        "p50": 0.11,
+        "p95": 0.11
+      }
+    },
+    "numeric_threshold": {
+      "total_cases": 1,
+      "layer_a_atomic": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 1,
+        "fp": 1,
+        "fn": 0,
+        "precision_micro": 0.5,
+        "recall_micro": 1.0,
+        "f1_micro": 0.6667,
+        "unique_facets_predicted": 2,
+        "canonical_facet_coverage_rate": 0.0129
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 1,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 1,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.09
+      }
+    },
+    "paraphrased_match": {
+      "total_cases": 7,
+      "layer_a_atomic": {
+        "tp": 6,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.8571,
+        "recall": 0.8571,
+        "f1": 0.8571
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 8,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 1,
+        "canonical_facet_coverage_rate": 0.0065
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 7,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 3,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.12
+      }
+    },
+    "questionnaire_facet": {
+      "total_cases": 11,
+      "layer_a_atomic": {
+        "tp": 5,
+        "fp": 6,
+        "fn": 6,
+        "precision": 0.4545,
+        "recall": 0.4545,
+        "f1": 0.4545
+      },
+      "layer_b_facets": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 16,
+        "precision_micro": 1.0,
+        "recall_micro": 0.0588,
+        "f1_micro": 0.1111,
+        "unique_facets_predicted": 1,
+        "canonical_facet_coverage_rate": 0.0065
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 11,
+        "top1_recall": 0.0909,
+        "top3_recall": 0.0909,
+        "top5_recall": 0.0909,
+        "mrr": 0.0909,
+        "micro_precision": 0.5,
+        "micro_recall": 0.0909,
+        "micro_f1": 0.1538
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.12
+      }
+    }
+  },
+  "by_length_tier": {
+    "medium": {
+      "total_cases": 51,
+      "layer_a_atomic": {
+        "tp": 37,
+        "fp": 14,
+        "fn": 19,
+        "precision": 0.7255,
+        "recall": 0.6607,
+        "f1": 0.6916
+      },
+      "layer_b_facets": {
+        "tp": 6,
+        "fp": 5,
+        "fn": 64,
+        "precision_micro": 0.5455,
+        "recall_micro": 0.0857,
+        "f1_micro": 0.1481,
+        "unique_facets_predicted": 5,
+        "canonical_facet_coverage_rate": 0.0323
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 49,
+        "top1_recall": 0.0816,
+        "top3_recall": 0.0816,
+        "top5_recall": 0.0816,
+        "mrr": 0.0816,
+        "micro_precision": 0.5,
+        "micro_recall": 0.0755,
+        "micro_f1": 0.1311
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 2,
+        "correct_suppressions": 1,
+        "suppression_accuracy": 0.5,
+        "false_triggers_on_suppressed": 1,
+        "false_trigger_rate": 0.5,
+        "total_false_triggers": 1
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 13,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 0.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.09,
+        "p50": 0.09,
+        "p95": 0.13
+      }
+    }
+  },
+  "individual_case_results": [
+    {
+      "case_id": "P1-021",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 171,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "pia_recommendations_tracked_to_closure"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.17659999866737053
+    },
+    {
+      "case_id": "P1-022",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 192,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "secondary_use_basis_checked"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-USE-DISCLOSURE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12599999899975955
+    },
+    {
+      "case_id": "P1-023",
+      "split": "holdout",
+      "category": "conditional_requirement",
+      "normative_type": "conditional_exemption",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 165,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "overseas_recipients_and_regions_mapped",
+        "s16c_accountability_and_exception_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.10960000145132653
+    },
+    {
+      "case_id": "P1-024",
+      "split": "holdout",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 174,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "destruction_or_deidentification_verified",
+        "retention_schedule_applied"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.11530000119819306
+    },
+    {
+      "case_id": "P1-025",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 198,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "decision_kinds_disclosed",
+        "significant_decision_screened"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-AUTOMATED-DISCLOSURE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12440000136848539
+    },
+    {
+      "case_id": "P1-026",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 162,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "end_to_end_data_lineage_documented"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-DATA-LIFECYCLE-LINEAGE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0962999984039925
+    },
+    {
+      "case_id": "P1-027",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 188,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "sensitive_information_consent"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.10450000263517722
+    },
+    {
+      "case_id": "P1-028",
+      "split": "holdout",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 155,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "disclosures_logged"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-USE-DISCLOSURE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09390000195708126
+    },
+    {
+      "case_id": "P1-029",
+      "split": "holdout",
+      "category": "ambiguous_legal",
+      "normative_type": "uncertain_prohibition",
+      "expected_candidate_behavior": "undetermined_ambiguity",
+      "input_length_chars": 177,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 2,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "approval_logs_retained",
+        "incident_detection_defined"
+      ],
+      "expected_facets": [
+        "overseas_recipients_and_regions_mapped"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12119999882997945
+    },
+    {
+      "case_id": "P1-030",
+      "split": "holdout",
+      "category": "multi_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 185,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 3,
+      "predicted_facets": [],
+      "expected_facets": [
+        "destruction_or_deidentification_verified",
+        "privacy_by_design_controls_embedded",
+        "retention_schedule_applied"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE",
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.10099999781232327
+    },
+    {
+      "case_id": "P1-047",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 125,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "security_roles_and_asset_owners_assigned"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08049999814829789
+    },
+    {
+      "case_id": "P1-048",
+      "split": "holdout",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "testing_scope_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08689999958733097
+    },
+    {
+      "case_id": "P1-049",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 139,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "controls_commensurate"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08199999865610152
+    },
+    {
+      "case_id": "P1-050",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 144,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_scope_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08829999933368526
+    },
+    {
+      "case_id": "P1-051",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 141,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "apra_notification_screened",
+        "response_and_escalation_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09339999814983457
+    },
+    {
+      "case_id": "P1-052",
+      "split": "holdout",
+      "category": "multi_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 136,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "access_cryptography_and_secure_engineering_applied",
+        "threats_and_vulnerabilities_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-ISMS-CONTROLS",
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07730000288574956
+    },
+    {
+      "case_id": "P1-053",
+      "split": "holdout",
+      "category": "numeric_threshold",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 116,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "approval_logs_retained",
+        "incident_detection_defined"
+      ],
+      "expected_facets": [
+        "incident_detection_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08689999958733097
+    },
+    {
+      "case_id": "P1-054",
+      "split": "holdout",
+      "category": "ambiguous_legal",
+      "normative_type": "uncertain_prohibition",
+      "expected_candidate_behavior": "undetermined_ambiguity",
+      "input_length_chars": 165,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "testing_program_exists"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.03949999882024713
+    },
+    {
+      "case_id": "P1-069",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 139,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07700000060140155
+    },
+    {
+      "case_id": "P1-070",
+      "split": "holdout",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 138,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08370000068680383
+    },
+    {
+      "case_id": "P1-071",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 132,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "critical_operation_dependency_mapped",
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08259999958681874
+    },
+    {
+      "case_id": "P1-072",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 138,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08059999890974723
+    },
+    {
+      "case_id": "P1-073",
+      "split": "holdout",
+      "category": "multi_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 151,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "incidents_and_weaknesses_managed",
+        "operational_risks_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08849999721860513
+    },
+    {
+      "case_id": "P1-074",
+      "split": "holdout",
+      "category": "ambiguous_legal",
+      "normative_type": "uncertain_prohibition",
+      "expected_candidate_behavior": "undetermined_ambiguity",
+      "input_length_chars": 140,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "tolerance_and_fallback_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08679999882588163
+    },
+    {
+      "case_id": "P1-087",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 130,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "performance_and_exit_monitored"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08069999967119657
+    },
+    {
+      "case_id": "P1-088",
+      "split": "holdout",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 118,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "msp_register_updated_for_ai_vendors"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07270000060088933
+    },
+    {
+      "case_id": "P1-089",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 154,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "contract_controls_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0962999984039925
+    },
+    {
+      "case_id": "P1-090",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 141,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "contract_controls_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07730000288574956
+    },
+    {
+      "case_id": "P1-091",
+      "split": "holdout",
+      "category": "multi_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 153,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "due_diligence_completed",
+        "incident_72h_and_agreement_20bd_notifications_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-MSP-NOTIFICATION",
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0943000013648998
+    },
+    {
+      "case_id": "P1-092",
+      "split": "holdout",
+      "category": "ambiguous_legal",
+      "normative_type": "uncertain_prohibition",
+      "expected_candidate_behavior": "undetermined_ambiguity",
+      "input_length_chars": 150,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "provider_materiality_assessed"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09100000170292333
+    },
+    {
+      "case_id": "P1-107",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 148,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0987999992503319
+    },
+    {
+      "case_id": "P1-108",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 166,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "clear_escalation_and_override_authority"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09689999933470972
+    },
+    {
+      "case_id": "P1-109",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 131,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "human_approval_required"
+      ],
+      "expected_facets": [
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.10230000043520704
+    },
+    {
+      "case_id": "P1-110",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 124,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "clear_escalation_and_override_authority",
+        "meaningful_human_oversight_and_kill_switch"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08460000026389025
+    },
+    {
+      "case_id": "P1-111",
+      "split": "holdout",
+      "category": "multi_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 157,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 2,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "approval_threshold_defined",
+        "human_approval_required"
+      ],
+      "expected_facets": [
+        "approval_logs_retained",
+        "approval_threshold_defined",
+        "human_approval_required"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.12149999747634865
+    },
+    {
+      "case_id": "P1-112",
+      "split": "holdout",
+      "category": "ambiguous_legal",
+      "normative_type": "uncertain_prohibition",
+      "expected_candidate_behavior": "undetermined_ambiguity",
+      "input_length_chars": 177,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "meaningful_human_oversight_and_kill_switch"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.11190000077476725
+    },
+    {
+      "case_id": "P1-124",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 145,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "management_review"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-ISO-AIMS"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08140000136336312
+    },
+    {
+      "case_id": "P1-125",
+      "split": "holdout",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 1,
+      "predicted_facets": [
+        "approval_threshold_defined"
+      ],
+      "expected_facets": [
+        "residual_risk_acceptance_and_drift_response_logged"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09210000280290842
+    },
+    {
+      "case_id": "P1-126",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 119,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "second_line_risk_challenge_recorded"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08150000212481245
+    },
+    {
+      "case_id": "P1-127",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "harmful_practice_prohibition",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 110,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "fairness_and_explainability_metrics_evaluated"
+      ],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "expected_controls": [],
+      "false_control_trigger": true,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07830000322428532
+    },
+    {
+      "case_id": "P1-128",
+      "split": "holdout",
+      "category": "multi_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 134,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "intended_purpose_and_out_of_scope_boundaries_documented",
+        "safe_decommissioning_and_rollback_criteria_defined"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-NIST-AI-RMF"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0810999990790151
+    },
+    {
+      "case_id": "P1-137",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 133,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "systemic_issues_escalated"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08130000060191378
+    },
+    {
+      "case_id": "P1-138",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 143,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "human_escalation_available"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0928999979805667
+    },
+    {
+      "case_id": "P1-139",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 169,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "complaints_broadly_recognised",
+        "complaints_recorded"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08940000043367036
+    },
+    {
+      "case_id": "P1-140",
+      "split": "holdout",
+      "category": "paraphrased_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 154,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "affected_customers_remediated"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-IDR-SYSTEMIC"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08449999950244091
+    },
+    {
+      "case_id": "P1-146",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 140,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "credit_compliance_and_breach_monitoring_active"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0746000005165115
+    },
+    {
+      "case_id": "P1-147",
+      "split": "holdout",
+      "category": "questionnaire_facet",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 158,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 1,
+      "atomic_fn": 1,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "financial_situation_verified_from_reliable_evidence"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09230000068782829
+    },
+    {
+      "case_id": "P1-148",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 172,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 2,
+      "predicted_facets": [],
+      "expected_facets": [
+        "financial_situation_verified_from_reliable_evidence",
+        "unsuitability_and_substantial_hardship_screen_enforced"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-CREDIT-UNSUITABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0903999971342273
+    },
+    {
+      "case_id": "P1-154",
+      "split": "holdout",
+      "category": "negated_control",
+      "normative_type": "mandatory_prohibition",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 174,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "article5_prohibited_practices_screened_out"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.09900000077323057
+    },
+    {
+      "case_id": "P1-155",
+      "split": "holdout",
+      "category": "non_applicable_obligation",
+      "normative_type": "applicability_boundary",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 177,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.10750000001280569
+    },
+    {
+      "case_id": "P1-156",
+      "split": "holdout",
+      "category": "exact_match",
+      "normative_type": "mandatory_requirement",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 134,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "article4_staff_ai_literacy_evidenced"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.08349999916390516
+    }
+  ]
+}
