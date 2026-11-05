@@ -26,6 +26,8 @@ def c(
     threshold: dict | None = None,
     is_negated: bool = False,
     has_exception: bool = False,
+    normative_type: str | None = None,
+    expected_candidate_behavior: str | None = None,
     review_status: str = "proposed",
     provenance: str = "synthetic_reference",
     reviewer_status: str = "unverified",
@@ -40,6 +42,31 @@ def c(
         if facet not in VALID_FACETS:
             raise ValueError(f"Invalid facet '{facet}' in {case_id}")
     
+    if normative_type is None:
+        if category == "negated_control":
+            if case_id == "P1-127":
+                normative_type = "harmful_practice_prohibition"
+            else:
+                normative_type = "mandatory_prohibition"
+        elif category == "non_applicable_obligation":
+            normative_type = "applicability_boundary"
+        elif category == "conditional_requirement" or has_exception:
+            normative_type = "conditional_exemption"
+        elif category == "ambiguous_legal":
+            normative_type = "uncertain_prohibition"
+        elif category == "unmapped_enterprise":
+            normative_type = "unmapped_preference"
+        else:
+            normative_type = "mandatory_requirement"
+
+    if expected_candidate_behavior is None:
+        if normative_type in {"harmful_practice_prohibition", "applicability_boundary", "unmapped_preference"}:
+            expected_candidate_behavior = "must_not_generate_candidates"
+        elif normative_type == "uncertain_prohibition":
+            expected_candidate_behavior = "undetermined_ambiguity"
+        else:
+            expected_candidate_behavior = "should_generate_candidates"
+
     cases.append({
         "case_id": case_id,
         "split": split,
@@ -52,6 +79,9 @@ def c(
         "applicability_conditions": applicability_conditions or [],
         "threshold_constraint": threshold,
         "is_negated": is_negated,
+        "original_is_negated": is_negated,
+        "normative_type": normative_type,
+        "expected_candidate_behavior": expected_candidate_behavior,
         "has_exception": has_exception,
         "expected_review_status": review_status,
         "ground_truth_provenance": provenance,
@@ -945,8 +975,12 @@ c("P1-126", "holdout", "questionnaire_question", "questionnaire_facet",
 c("P1-127", "holdout", "enterprise_policy", "negated_control",
   "Consumer credit scoring models shall not implement automated bias testing using synthetic demographic proxies.",
   ["Prohibit automated bias testing using synthetic demographic proxies in credit models"],
-  ["fairness_and_explainability_metrics_evaluated"],
-  ["CTRL-AI-DRIFT-MONITORING"], is_negated=True, notes="Holdout: Benchmark BASE-12 negated bias testing rule.")
+  [],
+  [],
+  is_negated=True,
+  normative_type="harmful_practice_prohibition",
+  expected_candidate_behavior="must_not_generate_candidates",
+  notes="Holdout test: Benchmark BASE-12. Explicitly forbids bias testing; generating candidate bias controls is a false-control trigger.")
 
 c("P1-128", "holdout", "enterprise_policy", "multi_facet",
   "Model developers must document all intended use boundaries and establish safe decommissioning and rollback criteria under NIST AI RMF.",
@@ -1143,8 +1177,12 @@ c("P1-154", "holdout", "enterprise_policy", "negated_control",
 c("P1-155", "holdout", "regulatory_obligation", "non_applicable_obligation",
   "A domestic Australian credit union offering home loans strictly to residents of New South Wales without any EU operations or marketing has zero EU AI Act compliance obligations.",
   ["Confirm domestic Australian credit union without EU operations is exempt from EU AI Act"],
-  ["territorial_nexus_confirmed"],
-  ["CTRL-EU-HIGH-RISK"], is_negated=True, notes="Holdout: Statutory non-applicability rule verification.")
+  [],
+  [],
+  is_negated=True,
+  normative_type="applicability_boundary",
+  expected_candidate_behavior="must_not_generate_candidates",
+  notes="Holdout test: Statutory non-applicability rule verification. Zero active EU high-risk compliance obligations.")
 
 c("P1-156", "holdout", "enterprise_policy", "exact_match",
   "All staff operating high-risk banking AI tools must have documented evidence of AI literacy training under Article 4 of the EU AI Act.",
