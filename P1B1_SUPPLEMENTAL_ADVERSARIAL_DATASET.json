@@ -1,0 +1,860 @@
+{
+  "dataset_id": "P1B1-SUPPLEMENTAL-ADVERSARIAL-V1",
+  "version": "1.0.0",
+  "description": "Synthetic development-only adversarial benchmark containing 36 cases arranged in 18 minimal contrastive pairs across all 6 normative classes.",
+  "target_split": "development_supplemental",
+  "total_cases": 36,
+  "normative_classes_covered": [
+    "affirmative_obligation",
+    "prohibition_absolute",
+    "prohibition_conditional",
+    "scope_exemption",
+    "permissive_guidance",
+    "aspirational_statement"
+  ],
+  "cases": [
+    {
+      "case_id": "SUPP-001",
+      "pair_id": "PAIR-01",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Enterprise network administrators must enforce TLS 1.3 encryption on all external API telemetry pipelines carrying customer information.",
+      "expected_atomic_requirements": [
+        "Enforce TLS 1.3 encryption on external API telemetry pipelines carrying customer info"
+      ],
+      "expected_facets": [
+        "controls_commensurate"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 1 Affirmative: Encryption mandate."
+    },
+    {
+      "case_id": "SUPP-002",
+      "pair_id": "PAIR-01",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_prohibition",
+      "input_text": "Personnel are strictly prohibited from transmitting unencrypted customer information over public networks under any circumstances.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "original_is_negated": true,
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 1 Prohibition: Absolute transmission prohibition."
+    },
+    {
+      "case_id": "SUPP-003",
+      "pair_id": "PAIR-02",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Automated payment routing decisions exceeding AUD $250,000 must obtain dual-delegation approval from an Authorised Officer before payment release.",
+      "expected_atomic_requirements": [
+        "Obtain dual-delegation approval for automated payments exceeding AUD $250,000 prior to release"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 250000.0,
+        "operator": ">",
+        "currency": "AUD"
+      },
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 2 Affirmative: Financial threshold dual approval."
+    },
+    {
+      "case_id": "SUPP-004",
+      "pair_id": "PAIR-02",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_prohibition",
+      "input_text": "Automated payment disbursements exceeding AUD $250,000 shall not proceed without explicit dual-delegation sign-off.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": {
+        "amount": 250000.0,
+        "operator": ">",
+        "currency": "AUD"
+      },
+      "is_negated": true,
+      "original_is_negated": true,
+      "normative_type": "prohibition_conditional",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 2 Prohibition: Conditional disbursement block."
+    },
+    {
+      "case_id": "SUPP-005",
+      "pair_id": "PAIR-03",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "All generative AI algorithms deployed in production must be registered in the central Enterprise AI Model Registry within 5 business days.",
+      "expected_atomic_requirements": [
+        "Register production generative AI algorithms in central model registry within 5 business days"
+      ],
+      "expected_facets": [
+        "use_case_registered_in_enterprise_ai_inventory"
+      ],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 3 Affirmative: Model registry registration."
+    },
+    {
+      "case_id": "SUPP-006",
+      "pair_id": "PAIR-03",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_exemption",
+      "input_text": "Generative AI prototypes running in segregated non-production sandboxes are exempt from enterprise model registry registration.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 3 Exemption: Sandbox exemption."
+    },
+    {
+      "case_id": "SUPP-007",
+      "pair_id": "PAIR-04",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "The system architecture must record immutable audit logs of all automated credit assessment inferences for a minimum period of 7 years.",
+      "expected_atomic_requirements": [
+        "Record immutable audit logs of automated credit inferences for at least 7 years"
+      ],
+      "expected_facets": [
+        "approval_logs_retained",
+        "retention_schedule_applied"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 4 Affirmative: Audit logging and retention mandate."
+    },
+    {
+      "case_id": "SUPP-008",
+      "pair_id": "PAIR-04",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_aspirational",
+      "input_text": "The engineering group strives to design elegant audit logging architectures across future digital banking microservices.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 4 Aspirational: Non-normative engineering design ambition."
+    },
+    {
+      "case_id": "SUPP-009",
+      "pair_id": "PAIR-05",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Sourcing managers must execute comprehensive information security and operational resilience due diligence prior to executing material cloud AI contracts.",
+      "expected_atomic_requirements": [
+        "Execute due diligence prior to material cloud AI contract execution"
+      ],
+      "expected_facets": [
+        "due_diligence_completed",
+        "provider_materiality_assessed"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 5 Affirmative: Material third-party due diligence."
+    },
+    {
+      "case_id": "SUPP-010",
+      "pair_id": "PAIR-05",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_permissive",
+      "input_text": "Sourcing managers may optionally request third-party ESG sustainability scorecards during vendor negotiations if commercially convenient.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "permissive_guidance",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 5 Permissive: Optional non-binding vendor inquiry."
+    },
+    {
+      "case_id": "SUPP-011",
+      "pair_id": "PAIR-06",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "The business unit must conduct a comprehensive Privacy Impact Assessment prior to deploying AI solutions processing sensitive biometric information.",
+      "expected_atomic_requirements": [
+        "Conduct PIA prior to deploying AI solutions processing biometric info"
+      ],
+      "expected_facets": [
+        "pia_threshold_screen_completed"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 6 Affirmative: Mandatory PIA for biometrics."
+    },
+    {
+      "case_id": "SUPP-012",
+      "pair_id": "PAIR-06",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_prohibition",
+      "input_text": "Staff must not collect or process customer biometric facial vectors without formal statutory consent under any conditions.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "original_is_negated": true,
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 6 Prohibition: Biometric collection prohibition."
+    },
+    {
+      "case_id": "SUPP-013",
+      "pair_id": "PAIR-07",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Risk analytics teams must conduct quarterly algorithmic bias and statistical fairness testing across protected demographic attributes.",
+      "expected_atomic_requirements": [
+        "Conduct quarterly bias and statistical fairness testing on protected attributes"
+      ],
+      "expected_facets": [
+        "fairness_and_explainability_metrics_evaluated"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 7 Affirmative: Quarterly fairness and bias testing."
+    },
+    {
+      "case_id": "SUPP-014",
+      "pair_id": "PAIR-07",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_aspirational",
+      "input_text": "The institution aspires to cultivate fairness, diversity, and ethical excellence throughout all aspects of machine learning development.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 7 Aspirational: High-level corporate ethical aspirations."
+    },
+    {
+      "case_id": "SUPP-015",
+      "pair_id": "PAIR-08",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Customer service operations must record all automated decision complaints in the central dispute register within 24 hours of receipt.",
+      "expected_atomic_requirements": [
+        "Record all automated decision complaints in dispute register within 24 hours"
+      ],
+      "expected_facets": [
+        "complaints_recorded"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 8 Affirmative: IDR complaint logging within 24h."
+    },
+    {
+      "case_id": "SUPP-016",
+      "pair_id": "PAIR-08",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_exemption",
+      "input_text": "Informal verbal enquiries that do not express dissatisfaction are excluded from the scope of formal internal dispute resolution procedures.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 8 Exemption: Verbal enquiries scope exemption."
+    },
+    {
+      "case_id": "SUPP-017",
+      "pair_id": "PAIR-09",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "An independent validation unit separate from the model development team must rigorously evaluate all Tier 1 credit scoring models.",
+      "expected_atomic_requirements": [
+        "Independent validation unit must evaluate all Tier 1 credit scoring models"
+      ],
+      "expected_facets": [
+        "independent_framework_review_covers_ai"
+      ],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 9 Affirmative: Independent model validation review."
+    },
+    {
+      "case_id": "SUPP-018",
+      "pair_id": "PAIR-09",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_permissive",
+      "input_text": "Line 1 model builders may seek informal peer feedback from engineering colleagues prior to formal governance submissions.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "permissive_guidance",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 9 Permissive: Discretionary peer consultation."
+    },
+    {
+      "case_id": "SUPP-019",
+      "pair_id": "PAIR-10",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "The security operations center must notify the Chief Information Security Officer within 2 hours of confirming a material cyber incident.",
+      "expected_atomic_requirements": [
+        "Notify CISO within 2 hours of confirming material cyber incident"
+      ],
+      "expected_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 10 Affirmative: Incident notification escalation."
+    },
+    {
+      "case_id": "SUPP-020",
+      "pair_id": "PAIR-10",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_prohibition",
+      "input_text": "Personnel are strictly forbidden from publicly disclosing security incidents or APRA notifications without board approval.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "original_is_negated": true,
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 10 Prohibition: Absolute disclosure prohibition."
+    },
+    {
+      "case_id": "SUPP-021",
+      "pair_id": "PAIR-11",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Cloud platform architects must map and document all overseas storage locations and transmission paths for customer personal records.",
+      "expected_atomic_requirements": [
+        "Map and document all overseas storage locations and transmission paths"
+      ],
+      "expected_facets": [
+        "overseas_recipients_and_regions_mapped"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 11 Affirmative: Cross-border destination mapping."
+    },
+    {
+      "case_id": "SUPP-022",
+      "pair_id": "PAIR-11",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_exemption",
+      "input_text": "Publicly available market indices and anonymised macroeconomic benchmark feeds are exempt from cross-border data transfer controls.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 11 Exemption: Public financial feeds exemption."
+    },
+    {
+      "case_id": "SUPP-023",
+      "pair_id": "PAIR-12",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Operational resilience teams must conduct annual simulated failover testing for all critical payment processing systems.",
+      "expected_atomic_requirements": [
+        "Conduct annual simulated failover testing for critical payment systems"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 12 Affirmative: BCP failover testing."
+    },
+    {
+      "case_id": "SUPP-024",
+      "pair_id": "PAIR-12",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_aspirational",
+      "input_text": "Our overarching ambition is to deliver continuous, frictionless banking uptime across our multi-region cloud estate.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 12 Aspirational: Non-operative uptime ambition."
+    },
+    {
+      "case_id": "SUPP-025",
+      "pair_id": "PAIR-13",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Database custodians must permanently purge or de-identify customer credit application logs upon the expiry of the 7-year statutory retention schedule.",
+      "expected_atomic_requirements": [
+        "Permanently purge or de-identify credit logs after 7-year retention schedule"
+      ],
+      "expected_facets": [
+        "retention_schedule_applied",
+        "destruction_or_deidentification_verified"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 13 Affirmative: Disposal upon retention schedule expiry."
+    },
+    {
+      "case_id": "SUPP-026",
+      "pair_id": "PAIR-13",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_prohibition",
+      "input_text": "Under no circumstances shall employees retain customer identification documents on local workstation drives.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "original_is_negated": true,
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 13 Prohibition: Local file retention prohibition."
+    },
+    {
+      "case_id": "SUPP-027",
+      "pair_id": "PAIR-14",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "The Board Risk Committee must formally review and re-ratify the enterprise artificial intelligence risk appetite metrics at least annually.",
+      "expected_atomic_requirements": [
+        "Board Risk Committee must review and re-ratify AI risk appetite metrics annually"
+      ],
+      "expected_facets": [
+        "board_or_senior_oversight"
+      ],
+      "expected_controls": [
+        "CTRL-RISK-FRAMEWORK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 14 Affirmative: Board risk appetite review."
+    },
+    {
+      "case_id": "SUPP-028",
+      "pair_id": "PAIR-14",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_permissive",
+      "input_text": "Business units may establish internal informal working groups to brainstorm emerging AI opportunities at their convenience.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "permissive_guidance",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 14 Permissive: Discretionary working groups."
+    },
+    {
+      "case_id": "SUPP-029",
+      "pair_id": "PAIR-15",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Frontline underwriters must retain manual override authority over all automated loan pre-qualification recommendations.",
+      "expected_atomic_requirements": [
+        "Retain manual override authority over automated loan recommendations"
+      ],
+      "expected_facets": [
+        "human_approval_required"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 15 Affirmative: Frontline underwriter override authority."
+    },
+    {
+      "case_id": "SUPP-030",
+      "pair_id": "PAIR-15",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_prohibition",
+      "input_text": "Automated underwriting engines must not disburse loan capital without documented human underwriter concurrence.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "original_is_negated": true,
+      "normative_type": "prohibition_conditional",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 15 Prohibition: Conditional disbursement block."
+    },
+    {
+      "case_id": "SUPP-031",
+      "pair_id": "PAIR-16",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "The operational risk team must record and investigate all operational incidents and control weaknesses identified across line-of-business systems.",
+      "expected_atomic_requirements": [
+        "Record and investigate all operational incidents and control weaknesses"
+      ],
+      "expected_facets": [
+        "incidents_and_weaknesses_managed"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 16 Affirmative: Incident and weakness tracking."
+    },
+    {
+      "case_id": "SUPP-032",
+      "pair_id": "PAIR-16",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_prohibition",
+      "input_text": "Management is strictly prohibited from taking adverse or retaliatory employment action against staff reporting governance concerns.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": true,
+      "original_is_negated": true,
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 16 Prohibition: Whistleblower retaliation prohibition."
+    },
+    {
+      "case_id": "SUPP-033",
+      "pair_id": "PAIR-17",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Customer-facing conversational bots must clearly inform users that they are communicating with an artificial intelligence system.",
+      "expected_atomic_requirements": [
+        "Inform users that they are communicating with an AI system"
+      ],
+      "expected_facets": [
+        "article50_ai_interaction_transparency_provided"
+      ],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 17 Affirmative: AI interaction transparency."
+    },
+    {
+      "case_id": "SUPP-034",
+      "pair_id": "PAIR-17",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_exemption",
+      "input_text": "Internal administrative chatbots restricted exclusively to staff IT helpdesk queries are exempt from external consumer transparency disclosures.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": true,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 17 Exemption: Internal IT bot disclosure exemption."
+    },
+    {
+      "case_id": "SUPP-035",
+      "pair_id": "PAIR-18",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_obligation",
+      "input_text": "Information security teams must execute independent penetration testing against customer-facing web applications prior to major release deployments.",
+      "expected_atomic_requirements": [
+        "Execute independent penetration testing prior to major releases"
+      ],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_scope_defined"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 18 Affirmative: Security penetration testing program."
+    },
+    {
+      "case_id": "SUPP-036",
+      "pair_id": "PAIR-18",
+      "split": "development_supplemental",
+      "source_type": "enterprise_policy",
+      "category": "contrastive_aspirational",
+      "input_text": "The digital engineering department aims to champion proactive cybersecurity mindfulness across our product communities.",
+      "expected_atomic_requirements": [],
+      "expected_facets": [],
+      "expected_controls": [],
+      "applicability_conditions": [],
+      "threshold_constraint": null,
+      "is_negated": false,
+      "original_is_negated": false,
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "has_exception": false,
+      "expected_review_status": "proposed",
+      "notes": "Contrastive Pair 18 Aspirational: Cultural mindfulness statement."
+    }
+  ]
+}
