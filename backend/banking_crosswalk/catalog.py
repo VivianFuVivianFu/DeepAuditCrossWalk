@@ -33,14 +33,15 @@ UNIFIED_CONTROL_LIBRARY_PATH = (
 OBLIGATION_CONTROL_MAPPINGS_PATH = (
     PACKAGE_DIR / "data" / "obligation_control_mappings.json"
 )
-AIAF_CATALOG_PATH = PACKAGE_DIR / "data" / "demo_questionnaire.json"
+DEMO_CATALOG_PATH = PACKAGE_DIR / "data" / "demo_questionnaire.json"
+AIAF_CATALOG_PATH = DEMO_CATALOG_PATH
 PRIVATE_REGULATORY_OVERLAY_ENV = "BANKING_CROSSWALK_PRIVATE_OVERLAY_PATH"
 
 
 def _stable_core_id(text: str) -> str:
     normalised = " ".join(text.lower().split())
     digest = hashlib.sha256(normalised.encode("utf-8")).hexdigest()[:12].upper()
-    return f"AIAF-CORE-{digest}"
+    return f"DEMO-{digest}"
 
 
 def _unique(values: Iterable[str]) -> List[str]:
@@ -158,29 +159,29 @@ def load_obligation_control_mappings(
     return ObligationControlMappingCatalogue.model_validate_json(raw)
 
 
-def load_aiaf_question_bank(path: Path | str = AIAF_CATALOG_PATH) -> QuestionBank:
-    """Adapt a catalogue; the bundled default contains original synthetic questions.
+def load_demo_questionnaire(path: Path | str = DEMO_CATALOG_PATH) -> QuestionBank:
+    """Load the bundled demonstration questionnaire containing synthetic governance questions.
 
-    The adapter name is retained from the extracted engine. An authorised AIAF
-    workbook is imported separately through ``import_aiaf_workbook``. No NSW
-    workbook or questionnaire text is bundled in this repository.
+    This neutral catalogue demonstrates governance crosswalk checks without NSW AIAF dependencies.
+    Organisations evaluate their own assurance questionnaires by importing an XLSX workbook.
     """
 
     catalog_path = Path(path)
     raw_bytes = catalog_path.read_bytes()
     catalog = json.loads(raw_bytes.decode("utf-8"))
-    version = str(catalog.get("version") or "AIAF-Questionnaire-v1")
+    version = str(catalog.get("version") or "SYNTHETIC-DEMO-1.0")
     questions: List[QuestionRecord] = []
 
     for index, item in enumerate(catalog.get("core_questions", [])):
         text = str(item.get("question") or "").strip()
         if not text:
             continue
+        qid = str(item.get("id") or f"DEMO-Q{index + 1:02d}").strip()
         options = item.get("options") or []
         tags = _unique(option.get("tag", "") for option in options)
         questions.append(
             QuestionRecord(
-                question_id=_stable_core_id(text),
+                question_id=qid,
                 question_text=text,
                 response_tags=tags,
                 answer_options=_unique(
@@ -231,7 +232,7 @@ def load_aiaf_question_bank(path: Path | str = AIAF_CATALOG_PATH) -> QuestionBan
         )
 
     metadata = QuestionnaireMetadata(
-        questionnaire_id=f"AIAF-{hashlib.sha256(raw_bytes).hexdigest()[:12]}",
+        questionnaire_id=f"DEMO-{hashlib.sha256(raw_bytes).hexdigest()[:12]}",
         source_filename=catalog_path.name,
         source_sha256=hashlib.sha256(raw_bytes).hexdigest(),
         source_version=version,
@@ -244,7 +245,7 @@ def load_aiaf_question_bank(path: Path | str = AIAF_CATALOG_PATH) -> QuestionBan
         ),
         risk_count=int(catalog.get("total_risks") or len(catalog.get("risks", {}))),
         warnings=[
-            "Bundled synthetic demonstration questions, not the NSW AIAF question bank. Import an authorised workbook for a real assessment."
+            "Bundled synthetic demonstration questions. Upload an enterprise questionnaire (.xlsx) for an organisation-specific assessment."
         ],
     )
     return QuestionBank(
@@ -254,8 +255,25 @@ def load_aiaf_question_bank(path: Path | str = AIAF_CATALOG_PATH) -> QuestionBan
         routing_metadata={
             "focus_selection": "all response_tags AND any phase_tags",
             "source": catalog_path.name,
+            "selection_mode": "full_questionnaire",
         },
     )
+
+
+def load_aiaf_question_bank(path: Path | str = DEMO_CATALOG_PATH) -> QuestionBank:
+    """Deprecated alias for load_demo_questionnaire.
+
+    Retained for backward compatibility. Emits a DeprecationWarning.
+    """
+    import warnings
+
+    warnings.warn(
+        "load_aiaf_question_bank is deprecated and will be removed in a future release. "
+        "Use load_demo_questionnaire instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return load_demo_questionnaire(path)
 
 
 def validate_regulatory_pack(pack: RegulatoryPack) -> dict:

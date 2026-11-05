@@ -11,7 +11,7 @@ import threading
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Sequence
 
-from .catalog import load_aiaf_question_bank
+from .catalog import load_demo_questionnaire
 from .models import (
     ClauseControlMapping,
     ClauseReviewStatus,
@@ -69,7 +69,7 @@ class TenantStore:
         self._gap_assessments: Dict[str, Dict[str, str]] = {}
         self._mappings: Dict[str, Dict[tuple[str, ...], MappingDecision]] = {}
         self._audit_events: Dict[str, List[Dict[str, Any]]] = {}
-        self._default_questionnaire = load_aiaf_question_bank()
+        self._default_questionnaire = load_demo_questionnaire()
 
     def _bucket(
         self, registry: Dict[str, Dict[str, Any]], tenant_id: str

@@ -17,7 +17,7 @@ from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from . import schema
-from .catalog import load_aiaf_question_bank
+from .catalog import load_demo_questionnaire
 from .database import check_schema, create_database_engine
 from .models import (
     ClauseControlMapping,
@@ -47,7 +47,7 @@ class SQLTenantStore:
         self.engine = create_database_engine(url)
         self.is_durable = self.engine.dialect.name == "postgresql"
         self.production = production
-        self._default_questionnaire = load_aiaf_question_bank()
+        self._default_questionnaire = load_demo_questionnaire()
         try:
             if production and not self.is_durable:
                 raise StorageUnavailable("Production storage requires PostgreSQL")

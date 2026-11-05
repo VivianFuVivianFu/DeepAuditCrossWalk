@@ -1,0 +1,902 @@
+{
+  "ASSESSMENT_COVERAGE_ACCURACY.md": [
+    [
+      75,
+      "An **AI Assessment Questionnaire** (e.g. Australian AI Assurance Framework - AIAF, or internal intake questionnaire) evaluates whether proposed AI systems comply with policy prior to deployment."
+    ]
+  ],
+  "CHANGELOG.md": [
+    [
+      16,
+      "- Bundle original synthetic questions instead of distributing the source AIAF catalogue."
+    ]
+  ],
+  "CONTRIBUTING.md": [
+    [
+      15,
+      "Use original synthetic fixtures; the source AIAF workbook is intentionally absent."
+    ]
+  ],
+  "DUAL_MODE_END_TO_END_VALIDATION.md": [
+    [
+      53,
+      "- **Questionnaire:** AIAF Australian AI Ethics & Governance Questionnaire (19 questions)"
+    ],
+    [
+      61,
+      "\"questionnaire_id\": \"AIAF-88497954b0ba\","
+    ],
+    [
+      129,
+      "- **Questionnaire:** Identical AIAF questionnaire (19 questions)"
+    ],
+    [
+      139,
+      "\"questionnaire_id\": \"AIAF-88497954b0ba\","
+    ],
+    [
+      208,
+      "| **Questionnaire Target** | `AIAF-88497954b0ba` | `AIAF-88497954b0ba` | Identical assessment target evaluated. |"
+    ]
+  ],
+  "END_TO_END_VALIDATION_REPORT.md": [
+    [
+      137,
+      "* **Objective**: Ingest an AI assessment questionnaire (e.g. Australian AI Assurance Framework - AIAF)."
+    ],
+    [
+      139,
+      "* **Blocked in UI**: Web UI uses a static hardcoded pack of 19 synthetic questions (`DEMO_BANKING_V1`). The UI notes: *\"Import an authorised AIAF workbook through the API for its full question bank\"*."
+    ],
+    [
+      179,
+      "* **1 Questionnaire Gap**: High severity \u2014 The AIAF questionnaire does not verify the mandatory enterprise condition requiring dual human sign-off for refunds > AUD 500 prior to payment execution."
+    ]
+  ],
+  "ENTERPRISE_BETA_READINESS.md": [
+    [
+      137,
+      "* Deployed as a private instance in an enterprise environment (or VPC) where DeepAudit integration engineers configure the tenant, upload authorized AIAF workbooks via API, and connect corporate policies."
+    ]
+  ],
+  "NOTICE": [
+    [
+      9,
+      "NSW AIAF is referenced for import interoperability. The NSW Government owns"
+    ],
+    [
+      11,
+      "the original AIAF workbook or its full question text. Obtain an authorised"
+    ]
+  ],
+  "P0_IMPLEMENTATION_VERIFICATION.md": [
+    [
+      38,
+      "\u251c\u2500\u2500 catalog.py        # Shared Regulatory Library & AIAF questionnaire loader"
+    ],
+    [
+      40,
+      "\u251c\u2500\u2500 importer.py       # AIAF Excel questionnaire workbook parser"
+    ]
+  ],
+  "P1B0_REVISED_EVALUATION_CONTRACT.md": [
+    [
+      168,
+      "| **AIAF Assessment Questionnaire** | Production Pipeline Active ([`coverage.py`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/backend/banking_crosswalk/coverage.py)) | Scored end-to-end on Layer D (Coverage Classification). |"
+    ]
+  ],
+  "P1_EVALUATION_DATASET_V2.json": [
+    [
+      1567,
+      "\"notes\": \"Holdout: AIAF questionnaire security testing check.\""
+    ],
+    [
+      1597,
+      "\"notes\": \"Holdout: AIAF questionnaire 72-hour APRA escalation.\""
+    ],
+    [
+      2207,
+      "\"notes\": \"Holdout: AIAF questionnaire operational resilience inquiry.\""
+    ],
+    [
+      2761,
+      "\"notes\": \"Holdout: AIAF questionnaire vendor audit rights inquiry.\""
+    ],
+    [
+      3920,
+      "\"notes\": \"Holdout: AIAF questionnaire independent validation inquiry.\""
+    ]
+  ],
+  "PRIORITISED_ACCURACY_ROADMAP.md": [
+    [
+      82,
+      "- `voluntary_frameworks`: Industry standards (AIAF, ISO 42001)."
+    ]
+  ],
+  "PRIORITISED_PRODUCT_ROADMAP.md": [
+    [
+      27,
+      "\u2502 2. AIAF & Custom Questionnaire Upload UI                               \u2502"
+    ],
+    [
+      133,
+      "### P1-2: AIAF & Custom Questionnaire Upload UI"
+    ],
+    [
+      137,
+      "* Allow users to upload official Australian AI Assurance Framework (AIAF) `.xlsx` workbooks."
+    ],
+    [
+      140,
+      "* **Acceptance Criteria**: Uploading a valid AIAF workbook activates all 184 full-scope assessment questions for that tenant."
+    ]
+  ],
+  "PRODUCT_CAPABILITY_AUDIT.md": [
+    [
+      13,
+      "The core engine and backend API provide a comprehensive, mathematically sound, deterministic governance crosswalk across 46 Australian statutory obligations, 33 Unified Controls, AIAF questionnaires, and multi-tier enterprise policies. However, there is a stark dichotomy between the **Backend/API capabilities** (which are mature, tenant-isolated, and rigorously tested) and the **Frontend Web UI** (which currently functions as an ephemeral single-policy demo)."
+    ],
+    [
+      39,
+      "| **5. Questionnaires** | Pre-bundled AIAF Question Bank (19 synthetic questions) | **Fully implemented and usable through the UI** | [`backend/banking_crosswalk/catalog.py`](file:///C:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/backend/banking_crosswalk/catalog.py) | `load_aiaf_question_bank()` | `test_coverage_uses_routed_snapshot_and_materialises_questionnaire_gaps` | Default question bank used by web application for coverage analysis. |"
+    ],
+    [
+      40,
+      "| | Full Authorised AIAF Workbook Import (.xlsx) | **Implemented in the backend/API only** | [`backend/banking_crosswalk/api.py`](file:///C:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/backend/banking_crosswalk/api.py#L387)<br>[`backend/banking_crosswalk/questionnaires.py`](file:///C:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/backend/banking_crosswalk/questionnaires.py) | `POST /v1/questionnaires/import` | `test_questionnaire_import_api_accepts_base64_xlsx`<br>`test_workbook_import_rejects_excessive_cell_graph_before_openpyxl` | Ingests real multi-tab AIAF Excel files with decompression ratio protection and cell limits. UI contains no upload mechanism. |"
+    ],
+    [
+      93,
+      "\u251c\u2500\u2500 B. AI Governance or Risk Assessment Questionnaire (e.g. AIAF)"
+    ]
+  ],
+  "PRODUCT_EVALUATION_DATASET.json": [
+    [
+      60,
+      "\"questionnaire_id\": \"AIAF-989c2955d573\","
+    ]
+  ],
+  "README.md": [
+    [
+      19,
+      "- Imports an authorised AIAF Excel workbook, including hidden sheets, source"
+    ],
+    [
+      75,
+      "## Demo data and AIAF"
+    ],
+    [
+      85,
+      "NSW AIAF is not itself an Australian commercial-banking legal standard."
+    ]
+  ],
+  "backend/NOTICE": [
+    [
+      9,
+      "NSW AIAF is referenced for import interoperability. The NSW Government owns"
+    ],
+    [
+      11,
+      "the original AIAF workbook or its full question text. Obtain an authorised"
+    ]
+  ],
+  "backend/README.md": [
+    [
+      12,
+      "The embedded questionnaire is synthetic. Import an authorised AIAF workbook"
+    ]
+  ],
+  "backend/banking_crosswalk/api.py": [
+    [
+      163,
+      "default=\"aiaf.excel.xlsx\","
+    ]
+  ],
+  "backend/banking_crosswalk/catalog.py": [
+    [
+      1,
+      "\"\"\"Load the banking pack and adapt the existing AIAF catalogue.\"\"\""
+    ],
+    [
+      43,
+      "return f\"AIAF-CORE-{digest}\""
+    ],
+    [
+      164,
+      "The adapter name is retained from the extracted engine. An authorised AIAF"
+    ],
+    [
+      172,
+      "version = str(catalog.get(\"version\") or \"AIAF-Questionnaire-v1\")"
+    ],
+    [
+      234,
+      "questionnaire_id=f\"AIAF-{hashlib.sha256(raw_bytes).hexdigest()[:12]}\","
+    ],
+    [
+      247,
+      "\"Bundled synthetic demonstration questions, not the NSW AIAF question bank. Import an authorised workbook for a real assessment.\""
+    ]
+  ],
+  "backend/banking_crosswalk/importer.py": [
+    [
+      1,
+      "\"\"\"Read-only AIAF workbook importer."
+    ],
+    [
+      179,
+      "f\"aiaf-questionnaire-v1|{question_type}|{_normalise_text(text).lower()}\""
+    ],
+    [
+      182,
+      "return f\"AIAF-{prefix}-{hashlib.sha256(normalised.encode('utf-8')).hexdigest()[:12].upper()}\""
+    ],
+    [
+      409,
+      "def import_aiaf_workbook(raw: bytes, filename: str = \"aiaf.xlsx\") -> QuestionBank:"
+    ],
+    [
+      432,
+      "raise ValueError(f\"Workbook is missing required AIAF source sheets: {missing}\")"
+    ],
+    [
+      591,
+      "\"rule_id\": f\"AIAF-TRIGGER-{row - 2:03d}\","
+    ],
+    [
+      646,
+      "questionnaire_id=f\"AIAF-{digest[:12]}\","
+    ]
+  ],
+  "backend/banking_crosswalk/__init__.py": [
+    [
+      3,
+      "The package is intentionally independent from the NSW AIAF readiness engine."
+    ]
+  ],
+  "backend/banking_crosswalk/data/demo_questionnaire.json": [
+    [
+      3,
+      "\"provenance\": \"Original synthetic questions authored for DeepAuditCrossWalk. No NSW AIAF text is reproduced.\","
+    ]
+  ],
+  "backend/deepaudit_crosswalk.egg-info/PKG-INFO": [
+    [
+      38,
+      "The embedded questionnaire is synthetic. Import an authorised AIAF workbook"
+    ]
+  ],
+  "backend/tests/test_banking_crosswalk.py": [
+    [
+      266,
+      "workbook_path = Path(__file__).resolve().parents[2] / \"aiaf.excel.xlsx\""
+    ],
+    [
+      268,
+      "pytest.skip(\"Local AIAF acceptance workbook is not present\")"
+    ]
+  ],
+  "docs/VERIFICATION.md": [
+    [
+      60,
+      "The optional real AIAF workbook acceptance test skips when the operator's own"
+    ]
+  ],
+  "e2e_artifacts/scenario_a_request.json": [
+    [
+      3,
+      "\"questionnaire_id\": \"AIAF-88497954b0ba\","
+    ]
+  ],
+  "e2e_artifacts/scenario_a_response.json": [
+    [
+      7,
+      "\"questionnaire_id\": \"AIAF-88497954b0ba\","
+    ],
+    [
+      14,
+      "\"AIAF-CORE-5890D38ACFFA\","
+    ],
+    [
+      15,
+      "\"AIAF-CORE-967560190BE0\","
+    ],
+    [
+      16,
+      "\"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      17,
+      "\"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      18,
+      "\"AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      19,
+      "\"AIAF-CORE-2847B45E1DC4\","
+    ],
+    [
+      20,
+      "\"AIAF-CORE-9A4A95DEAF2E\","
+    ],
+    [
+      21,
+      "\"AIAF-CORE-0BFAE5AD1D2F\","
+    ],
+    [
+      22,
+      "\"AIAF-CORE-E74885E248D6\","
+    ],
+    [
+      23,
+      "\"AIAF-CORE-96D30946775B\","
+    ],
+    [
+      24,
+      "\"AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      25,
+      "\"AIAF-CORE-562DF161D890\","
+    ],
+    [
+      26,
+      "\"AIAF-CORE-963ADC7045D3\","
+    ],
+    [
+      27,
+      "\"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      28,
+      "\"AIAF-CORE-6B6C011F46BA\","
+    ],
+    [
+      29,
+      "\"AIAF-CORE-ED34BB664944\""
+    ],
+    [
+      201,
+      "\"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      202,
+      "\"AIAF-CORE-E81C5D8D3ED9\""
+    ],
+    [
+      217,
+      "\"question_id\": \"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      221,
+      "\"source_reference\": \"Questions:AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      234,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      238,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      321,
+      "\"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      322,
+      "\"AIAF-CORE-E81C5D8D3ED9\""
+    ],
+    [
+      334,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      338,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      351,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      355,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      368,
+      "\"question_id\": \"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      372,
+      "\"source_reference\": \"Questions:AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      385,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      389,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      507,
+      "\"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      508,
+      "\"AIAF-CORE-45EC82D001D0\""
+    ],
+    [
+      523,
+      "\"question_id\": \"AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      527,
+      "\"source_reference\": \"Questions:AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      540,
+      "\"question_id\": \"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      544,
+      "\"source_reference\": \"Questions:AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      791,
+      "\"AIAF-CORE-5890D38ACFFA\""
+    ],
+    [
+      808,
+      "\"question_id\": \"AIAF-CORE-5890D38ACFFA\","
+    ],
+    [
+      812,
+      "\"source_reference\": \"Questions:AIAF-CORE-5890D38ACFFA\","
+    ],
+    [
+      896,
+      "\"AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      897,
+      "\"AIAF-CORE-ED34BB664944\""
+    ],
+    [
+      911,
+      "\"question_id\": \"AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      915,
+      "\"source_reference\": \"Questions:AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      928,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      932,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1131,
+      "\"AIAF-CORE-45EC82D001D0\""
+    ],
+    [
+      1148,
+      "\"question_id\": \"AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      1152,
+      "\"source_reference\": \"Questions:AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      1194,
+      "\"AIAF-CORE-ED34BB664944\""
+    ],
+    [
+      1211,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1215,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1228,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1232,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1245,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1249,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1420,
+      "\"AIAF-CORE-0BFAE5AD1D2F\""
+    ],
+    [
+      1439,
+      "\"question_id\": \"AIAF-CORE-0BFAE5AD1D2F\","
+    ],
+    [
+      1443,
+      "\"source_reference\": \"Questions:AIAF-CORE-0BFAE5AD1D2F\","
+    ],
+    [
+      2270,
+      "\"AIAF-CORE-434F63BEEB08\""
+    ],
+    [
+      2286,
+      "\"question_id\": \"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      2290,
+      "\"source_reference\": \"Questions:AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      2303,
+      "\"question_id\": \"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      2307,
+      "\"source_reference\": \"Questions:AIAF-CORE-434F63BEEB08\","
+    ]
+  ],
+  "e2e_artifacts/scenario_b_request.json": [
+    [
+      5,
+      "\"questionnaire_id\": \"AIAF-88497954b0ba\","
+    ]
+  ],
+  "e2e_artifacts/scenario_b_response.json": [
+    [
+      7,
+      "\"questionnaire_id\": \"AIAF-88497954b0ba\","
+    ],
+    [
+      14,
+      "\"AIAF-CORE-5890D38ACFFA\","
+    ],
+    [
+      15,
+      "\"AIAF-CORE-967560190BE0\","
+    ],
+    [
+      16,
+      "\"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      17,
+      "\"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      18,
+      "\"AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      19,
+      "\"AIAF-CORE-2847B45E1DC4\","
+    ],
+    [
+      20,
+      "\"AIAF-CORE-9A4A95DEAF2E\","
+    ],
+    [
+      21,
+      "\"AIAF-CORE-0BFAE5AD1D2F\","
+    ],
+    [
+      22,
+      "\"AIAF-CORE-E74885E248D6\","
+    ],
+    [
+      23,
+      "\"AIAF-CORE-96D30946775B\","
+    ],
+    [
+      24,
+      "\"AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      25,
+      "\"AIAF-CORE-562DF161D890\","
+    ],
+    [
+      26,
+      "\"AIAF-CORE-963ADC7045D3\","
+    ],
+    [
+      27,
+      "\"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      28,
+      "\"AIAF-CORE-6B6C011F46BA\","
+    ],
+    [
+      29,
+      "\"AIAF-CORE-ED34BB664944\""
+    ],
+    [
+      201,
+      "\"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      202,
+      "\"AIAF-CORE-E81C5D8D3ED9\""
+    ],
+    [
+      217,
+      "\"question_id\": \"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      221,
+      "\"source_reference\": \"Questions:AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      234,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      238,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      321,
+      "\"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      322,
+      "\"AIAF-CORE-E81C5D8D3ED9\""
+    ],
+    [
+      334,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      338,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      351,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      355,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      368,
+      "\"question_id\": \"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      372,
+      "\"source_reference\": \"Questions:AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      385,
+      "\"question_id\": \"AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      389,
+      "\"source_reference\": \"Questions:AIAF-CORE-E81C5D8D3ED9\","
+    ],
+    [
+      507,
+      "\"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      508,
+      "\"AIAF-CORE-45EC82D001D0\""
+    ],
+    [
+      523,
+      "\"question_id\": \"AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      527,
+      "\"source_reference\": \"Questions:AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      540,
+      "\"question_id\": \"AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      544,
+      "\"source_reference\": \"Questions:AIAF-CORE-334EA271EDB3\","
+    ],
+    [
+      791,
+      "\"AIAF-CORE-5890D38ACFFA\""
+    ],
+    [
+      808,
+      "\"question_id\": \"AIAF-CORE-5890D38ACFFA\","
+    ],
+    [
+      812,
+      "\"source_reference\": \"Questions:AIAF-CORE-5890D38ACFFA\","
+    ],
+    [
+      896,
+      "\"AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      897,
+      "\"AIAF-CORE-ED34BB664944\""
+    ],
+    [
+      911,
+      "\"question_id\": \"AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      915,
+      "\"source_reference\": \"Questions:AIAF-CORE-00D33C597D96\","
+    ],
+    [
+      928,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      932,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1131,
+      "\"AIAF-CORE-45EC82D001D0\""
+    ],
+    [
+      1148,
+      "\"question_id\": \"AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      1152,
+      "\"source_reference\": \"Questions:AIAF-CORE-45EC82D001D0\","
+    ],
+    [
+      1194,
+      "\"AIAF-CORE-ED34BB664944\""
+    ],
+    [
+      1211,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1215,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1228,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1232,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1245,
+      "\"question_id\": \"AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1249,
+      "\"source_reference\": \"Questions:AIAF-CORE-ED34BB664944\","
+    ],
+    [
+      1420,
+      "\"AIAF-CORE-0BFAE5AD1D2F\""
+    ],
+    [
+      1439,
+      "\"question_id\": \"AIAF-CORE-0BFAE5AD1D2F\","
+    ],
+    [
+      1443,
+      "\"source_reference\": \"Questions:AIAF-CORE-0BFAE5AD1D2F\","
+    ],
+    [
+      2270,
+      "\"AIAF-CORE-434F63BEEB08\""
+    ],
+    [
+      2286,
+      "\"question_id\": \"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      2290,
+      "\"source_reference\": \"Questions:AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      2303,
+      "\"question_id\": \"AIAF-CORE-434F63BEEB08\","
+    ],
+    [
+      2307,
+      "\"source_reference\": \"Questions:AIAF-CORE-434F63BEEB08\","
+    ]
+  ],
+  "scripts/audit_aiaf_dependencies.py": [
+    [
+      1,
+      "\"\"\"Script to audit all AIAF references across the repository.\"\"\""
+    ],
+    [
+      53,
+      "print(f\"Total files with AIAF: {len(inventory)}\")"
+    ]
+  ],
+  "scripts/build_p1_dataset.py": [
+    [
+      429,
+      "[\"CTRL-SEC-TESTING\"], notes=\"Holdout: AIAF questionnaire security testing check.\")"
+    ],
+    [
+      435,
+      "[\"CTRL-SEC-INCIDENT\"], notes=\"Holdout: AIAF questionnaire 72-hour APRA escalation.\")"
+    ],
+    [
+      575,
+      "[\"CTRL-BCP-AI\"], notes=\"Holdout: AIAF questionnaire operational resilience inquiry.\")"
+    ],
+    [
+      705,
+      "[\"CTRL-THIRD-PARTY-AI\"], notes=\"Holdout: AIAF questionnaire vendor audit rights inquiry.\")"
+    ],
+    [
+      973,
+      "[\"CTRL-INDEPENDENT-AUDIT-ASSURANCE\"], notes=\"Holdout: AIAF questionnaire independent validation inquiry.\")"
+    ]
+  ],
+  "scripts/evaluate_product_dataset.py": [
+    [
+      1253,
+      "# 1. XLSX AIAF Workbook Import"
+    ]
+  ],
+  "web/.next/server/app/index.html": [
+    [
+      1,
+      "<!DOCTYPE html><!--hbRri4ORMN4Kk9XLStKMU--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/61466ba02ce440ba.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-b66970e70f418ad7.js\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js\" async=\"\"></script><script src=\"/_next/static/chunks/255-b1e2483a7e02feee.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-3bdace47c088dc70.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/page-4c4a3f9c3454e736.js\" async=\"\"></script><title>DeepAuditCrossWalk \u00b7 AI governance coverage</title><meta name=\"description\" content=\"Traceable questionnaire coverage and enterprise policy gap analysis for Australian banking AI use cases.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><main><nav><a class=\"brand\" href=\"/\">DeepAudit<span>CrossWalk</span></a><a href=\"https://github.com/VivianFuVivianFu/DeepAuditCrossWalk\" target=\"_blank\" rel=\"noreferrer\">GitHub \u2197</a></nav><header><p class=\"eyebrow\">AUSTRALIAN BANKING \u00b7 OPEN SOURCE MVP</p><h1>Find the requirements<br/>your assessment misses.</h1><p class=\"lead\">Connect applicable obligations, enterprise policies, assessment questions and evidence. Make every gap reviewable.</p></header><aside class=\"notice\"><strong>Demonstration workspace.</strong> This release uses 19 original synthetic questions and proposed regulatory interpretations. Import an authorised AIAF workbook through the API for its full question bank. Assessment coverage and legal compliance are separate conclusions.</aside><section class=\"workspace\"><div class=\"panel\"><div class=\"section-title\"><div><p class=\"eyebrow\">01 / CONTEXT</p><h2>Your AI use case</h2></div><button class=\"quiet\">Load example</button></div><fieldset><label>Use case name<input maxLength=\"200\" value=\"Dispute and Refund Agent\"/></label><div class=\"facts\"><label>APRA-regulated entity<select aria-label=\"APRA-regulated entity\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Processes personal information<select aria-label=\"Processes personal information\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Makes or assists significant decisions<select aria-label=\"Makes or assists significant decisions\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Handles regulated complaints<select aria-label=\"Handles regulated complaints\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Entity-specific IDR duty confirmed<select aria-label=\"Entity-specific IDR duty confirmed\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Uses third-party AI services<select aria-label=\"Uses third-party AI services\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>CPS 230 service materiality confirmed<select aria-label=\"CPS 230 service materiality confirmed\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Supports a critical operation<select aria-label=\"Supports a critical operation\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>EU establishment or market nexus<select aria-label=\"EU establishment or market nexus\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>AI outputs used in the EU<select aria-label=\"AI outputs used in the EU\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Relevant EU provider/deployer role<select aria-label=\"Relevant EU provider/deployer role\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Organisation has adopted NIST AI RMF<select aria-label=\"Organisation has adopted NIST AI RMF\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Organisation has adopted ISO 42001<select aria-label=\"Organisation has adopted ISO 42001\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label></div><label>Human approval threshold (AUD)<input type=\"number\" min=\"0\" step=\"0.01\" placeholder=\"Unknown\" value=\"\"/></label></fieldset><p class=\"muted\">Unknown facts remain undetermined. The presence of a supplier does not establish its materiality or an IDR duty.</p></div><div class=\"panel\"><p class=\"eyebrow\">02 / ASSESSMENT</p><h2>Choose an analysis</h2><div class=\"tabs\" role=\"group\" aria-label=\"Assessment type\"><button class=\"active\">Questionnaire coverage</button><button class=\"\">Enterprise policy gaps</button></div><p>Evaluate the selected facts against the shared obligation library. Candidate mappings remain provisional until an authorised reviewer approves them.</p><button class=\"primary\">Run assessment \u2192</button><div class=\"chain\">Obligation \u2192 Control \u2192 Question \u2192 Evidence \u2192 Review</div></div></section><footer><span>DeepAuditCrossWalk \u00b7 Independent project \u00b7 Apache-2.0</span><a href=\"http://localhost:8000/docs\">Local API documentation \u2197</a></footer></main><!--$--><!--/$--><script src=\"/_next/static/chunks/webpack-b66970e70f418ad7.js\" id=\"_R_\" async=\"\"></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,\"1:\\\"$Sreact.fragment\\\"\\n2:I[9766,[],\\\"\\\"]\\n3:I[8924,[],\\\"\\\"]\\n4:I[1959,[],\\\"ClientPageRoot\\\"]\\n5:I[2415,[\\\"974\\\",\\\"static/chunks/app/page-4c4a3f9c3454e736.js\\\"],\\\"default\\\"]\\n8:I[4431,[],\\\"OutletBoundary\\\"]\\na:I[5278,[],\\\"AsyncMetadataOutlet\\\"]\\nc:I[4431,[],\\\"ViewportBoundary\\\"]\\ne:I[4431,[],\\\"MetadataBoundary\\\"]\\nf:\\\"$Sreact.suspense\\\"\\n11:I[7150,[],\\\"\\\"]\\n:HL[\\\"/_next/static/css/61466ba02ce440ba.css\\\",\\\"style\\\"]\\n\"])</script><script>self.__next_f.push([1,\"0:{\\\"P\\\":null,\\\"b\\\":\\\"hbRri4ORMN4Kk9XLStKMU\\\",\\\"p\\\":\\\"\\\",\\\"c\\\":[\\\"\\\",\\\"\\\"],\\\"i\\\":false,\\\"f\\\":[[[\\\"\\\",{\\\"children\\\":[\\\"__PAGE__\\\",{}]},\\\"$undefined\\\",\\\"$undefined\\\",true],[\\\"\\\",[\\\"$\\\",\\\"$1\\\",\\\"c\\\",{\\\"children\\\":[[[\\\"$\\\",\\\"link\\\",\\\"0\\\",{\\\"rel\\\":\\\"stylesheet\\\",\\\"href\\\":\\\"/_next/static/css/61466ba02ce440ba.css\\\",\\\"precedence\\\":\\\"next\\\",\\\"crossOrigin\\\":\\\"$undefined\\\",\\\"nonce\\\":\\\"$undefined\\\"}]],[\\\"$\\\",\\\"html\\\",null,{\\\"lang\\\":\\\"en\\\",\\\"children\\\":[\\\"$\\\",\\\"body\\\",null,{\\\"children\\\":[\\\"$\\\",\\\"$L2\\\",null,{\\\"parallelRouterKey\\\":\\\"children\\\",\\\"error\\\":\\\"$undefined\\\",\\\"errorStyles\\\":\\\"$undefined\\\",\\\"errorScripts\\\":\\\"$undefined\\\",\\\"template\\\":[\\\"$\\\",\\\"$L3\\\",null,{}],\\\"templateStyles\\\":\\\"$undefined\\\",\\\"templateScripts\\\":\\\"$undefined\\\",\\\"notFound\\\":[[[\\\"$\\\",\\\"title\\\",null,{\\\"children\\\":\\\"404: This page could not be found.\\\"}],[\\\"$\\\",\\\"div\\\",null,{\\\"style\\\":{\\\"fontFamily\\\":\\\"system-ui,\\\\\\\"Segoe UI\\\\\\\",Roboto,Helvetica,Arial,sans-serif,\\\\\\\"Apple Color Emoji\\\\\\\",\\\\\\\"Segoe UI Emoji\\\\\\\"\\\",\\\"height\\\":\\\"100vh\\\",\\\"textAlign\\\":\\\"center\\\",\\\"display\\\":\\\"flex\\\",\\\"flexDirection\\\":\\\"column\\\",\\\"alignItems\\\":\\\"center\\\",\\\"justifyContent\\\":\\\"center\\\"},\\\"children\\\":[\\\"$\\\",\\\"div\\\",null,{\\\"children\\\":[[\\\"$\\\",\\\"style\\\",null,{\\\"dangerouslySetInnerHTML\\\":{\\\"__html\\\":\\\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\\\"}}],[\\\"$\\\",\\\"h1\\\",null,{\\\"className\\\":\\\"next-error-h1\\\",\\\"style\\\":{\\\"display\\\":\\\"inline-block\\\",\\\"margin\\\":\\\"0 20px 0 0\\\",\\\"padding\\\":\\\"0 23px 0 0\\\",\\\"fontSize\\\":24,\\\"fontWeight\\\":500,\\\"verticalAlign\\\":\\\"top\\\",\\\"lineHeight\\\":\\\"49px\\\"},\\\"children\\\":404}],[\\\"$\\\",\\\"div\\\",null,{\\\"style\\\":{\\\"display\\\":\\\"inline-block\\\"},\\\"children\\\":[\\\"$\\\",\\\"h2\\\",null,{\\\"style\\\":{\\\"fontSize\\\":14,\\\"fontWeight\\\":400,\\\"lineHeight\\\":\\\"49px\\\",\\\"margin\\\":0},\\\"children\\\":\\\"This page could not be found.\\\"}]}]]}]}]],[]],\\\"forbidden\\\":\\\"$undefined\\\",\\\"unauthorized\\\":\\\"$undefined\\\"}]}]}]]}],{\\\"children\\\":[\\\"__PAGE__\\\",[\\\"$\\\",\\\"$1\\\",\\\"c\\\",{\\\"children\\\":[[\\\"$\\\",\\\"$L4\\\",null,{\\\"Component\\\":\\\"$5\\\",\\\"searchParams\\\":{},\\\"params\\\":{},\\\"promises\\\":[\\\"$@6\\\",\\\"$@7\\\"]}],null,[\\\"$\\\",\\\"$L8\\\",null,{\\\"children\\\":[\\\"$L9\\\",[\\\"$\\\",\\\"$La\\\",null,{\\\"promise\\\":\\\"$@b\\\"}]]}]]}],{},null,false]},null,false],[\\\"$\\\",\\\"$1\\\",\\\"h\\\",{\\\"children\\\":[null,[[\\\"$\\\",\\\"$Lc\\\",null,{\\\"children\\\":\\\"$Ld\\\"}],null],[\\\"$\\\",\\\"$Le\\\",null,{\\\"children\\\":[\\\"$\\\",\\\"div\\\",null,{\\\"hidden\\\":true,\\\"children\\\":[\\\"$\\\",\\\"$f\\\",null,{\\\"fallback\\\":null,\\\"children\\\":\\\"$L10\\\"}]}]}]]}],false]],\\\"m\\\":\\\"$undefined\\\",\\\"G\\\":[\\\"$11\\\",[]],\\\"s\\\":false,\\\"S\\\":true}\\n\"])</script><script>self.__next_f.push([1,\"6:{}\\n7:\\\"$0:f:0:1:2:children:1:props:children:0:props:params\\\"\\n\"])</script><script>self.__next_f.push([1,\"d:[[\\\"$\\\",\\\"meta\\\",\\\"0\\\",{\\\"charSet\\\":\\\"utf-8\\\"}],[\\\"$\\\",\\\"meta\\\",\\\"1\\\",{\\\"name\\\":\\\"viewport\\\",\\\"content\\\":\\\"width=device-width, initial-scale=1\\\"}]]\\n9:null\\n\"])</script><script>self.__next_f.push([1,\"b:{\\\"metadata\\\":[[\\\"$\\\",\\\"title\\\",\\\"0\\\",{\\\"children\\\":\\\"DeepAuditCrossWalk \u00b7 AI governance coverage\\\"}],[\\\"$\\\",\\\"meta\\\",\\\"1\\\",{\\\"name\\\":\\\"description\\\",\\\"content\\\":\\\"Traceable questionnaire coverage and enterprise policy gap analysis for Australian banking AI use cases.\\\"}]],\\\"error\\\":null,\\\"digest\\\":\\\"$undefined\\\"}\\n\"])</script><script>self.__next_f.push([1,\"10:\\\"$b:metadata\\\"\\n\"])</script></body></html>"
+    ]
+  ],
+  "web/.next/server/app/page.js": [
+    [
+      1,
+      "(()=>{var a={};a.id=974,a.ids=[974],a.modules={261:a=>{\"use strict\";a.exports=require(\"next/dist/shared/lib/router/utils/app-paths\")},846:a=>{\"use strict\";a.exports=require(\"next/dist/compiled/next-server/app-page.runtime.prod.js\")},1025:a=>{\"use strict\";a.exports=require(\"next/dist/server/app-render/dynamic-access-async-storage.external.js\")},1083:(a,b,c)=>{Promise.resolve().then(c.t.bind(c,4160,23)),Promise.resolve().then(c.t.bind(c,1603,23)),Promise.resolve().then(c.t.bind(c,8495,23)),Promise.resolve().then(c.t.bind(c,5170,23)),Promise.resolve().then(c.t.bind(c,7526,23)),Promise.resolve().then(c.t.bind(c,8922,23)),Promise.resolve().then(c.t.bind(c,9234,23)),Promise.resolve().then(c.t.bind(c,2263,23)),Promise.resolve().then(c.bind(c,2146))},2115:(a,b,c)=>{\"use strict\";c.r(b),c.d(b,{default:()=>h});var d=c(1124),e=c(8301);let f={apra_regulated:\"APRA-regulated entity\",handles_personal_information:\"Processes personal information\",makes_or_assists_significant_decisions:\"Makes or assists significant decisions\",handles_regulated_complaints:\"Handles regulated complaints\",idr_obligations:\"Entity-specific IDR duty confirmed\",third_party_ai_service:\"Uses third-party AI services\",material_service_provider:\"CPS 230 service materiality confirmed\",supports_critical_operation:\"Supports a critical operation\",eu_establishment_or_market:\"EU establishment or market nexus\",eu_output_used:\"AI outputs used in the EU\",eu_deployer_or_provider_role:\"Relevant EU provider/deployer role\",nist_ai_rmf_adopted:\"Organisation has adopted NIST AI RMF\",iso_42001_adopted:\"Organisation has adopted ISO 42001\"},g=Object.fromEntries(Object.keys(f).map(a=>[a,null]));function h(){let[a,b]=(0,e.useState)(\"Dispute and Refund Agent\"),[c,h]=(0,e.useState)({...g}),[i,j]=(0,e.useState)(\"\"),[k,l]=(0,e.useState)(\"coverage\"),[m,n]=(0,e.useState)(\"All refunds above AUD 500 require human approval before payment execution. Approval logs must be retained.\"),[o,p]=(0,e.useState)(null),[q,r]=(0,e.useState)(\"\"),[s,t]=(0,e.useState)(!1);async function u(){t(!0),r(\"\"),p(null);try{let b=function(a,b,c){let d=\"\"===c.trim()?null:Number(c);if(null!==d&&(!Number.isFinite(d)||d<0))throw Error(\"Approval threshold must be a non-negative AUD amount or left unknown.\");return{use_case:{name:a.trim()||\"Untitled AI use case\",...b,approval_threshold_aud:d},questionnaire_pack:\"DEMO_BANKING_V1\",persist:!1}}(a,c,i),d=await fetch(\"/api/analysis\",{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({...b,kind:k,...\"policy-gaps\"===k?{policy_text:m}:{}})}),e=await d.json();if(!d.ok)throw Error(e.error||\"Analysis failed\");p(e)}catch(a){r(a instanceof Error?a.message:\"Analysis failed\")}finally{t(!1)}}let v=o?o.gaps??[...o.policy_gaps??[],...o.questionnaire_gaps??[],...o.control_conflicts??[],...o.implementation_evidence_gaps??[],...o.enterprise_gaps??[]]:[];return(0,d.jsxs)(\"main\",{children:[(0,d.jsxs)(\"nav\",{children:[(0,d.jsxs)(\"a\",{className:\"brand\",href:\"/\",children:[\"DeepAudit\",(0,d.jsx)(\"span\",{children:\"CrossWalk\"})]}),(0,d.jsx)(\"a\",{href:\"https://github.com/VivianFuVivianFu/DeepAuditCrossWalk\",target:\"_blank\",rel:\"noreferrer\",children:\"GitHub \u2197\"})]}),(0,d.jsxs)(\"header\",{children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"AUSTRALIAN BANKING \\xb7 OPEN SOURCE MVP\"}),(0,d.jsxs)(\"h1\",{children:[\"Find the requirements\",(0,d.jsx)(\"br\",{}),\"your assessment misses.\"]}),(0,d.jsx)(\"p\",{className:\"lead\",children:\"Connect applicable obligations, enterprise policies, assessment questions and evidence. Make every gap reviewable.\"})]}),(0,d.jsxs)(\"aside\",{className:\"notice\",children:[(0,d.jsx)(\"strong\",{children:\"Demonstration workspace.\"}),\" This release uses 19 original synthetic questions and proposed regulatory interpretations. Import an authorised AIAF workbook through the API for its full question bank. Assessment coverage and legal compliance are separate conclusions.\"]}),(0,d.jsxs)(\"section\",{className:\"workspace\",children:[(0,d.jsxs)(\"div\",{className:\"panel\",children:[(0,d.jsxs)(\"div\",{className:\"section-title\",children:[(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"01 / CONTEXT\"}),(0,d.jsx)(\"h2\",{children:\"Your AI use case\"})]}),(0,d.jsx)(\"button\",{className:\"quiet\",onClick:function(){h({...g,apra_regulated:!0,handles_personal_information:!0,handles_regulated_complaints:!0,makes_or_assists_significant_decisions:!0,third_party_ai_service:!0,nist_ai_rmf_adopted:!0}),b(\"Example Australian bank refund agent\"),j(\"500\"),p(null)},disabled:s,children:\"Load example\"})]}),(0,d.jsxs)(\"fieldset\",{disabled:s,children:[(0,d.jsxs)(\"label\",{children:[\"Use case name\",(0,d.jsx)(\"input\",{maxLength:200,value:a,onChange:a=>{b(a.target.value),p(null)}})]}),(0,d.jsx)(\"div\",{className:\"facts\",children:Object.entries(f).map(([a,b])=>(0,d.jsxs)(\"label\",{children:[b,(0,d.jsxs)(\"select\",{\"aria-label\":b,value:null===c[a]?\"unknown\":String(c[a]),onChange:b=>{var c,d;return d=\"true\"===(c=b.target.value)||\"false\"!==c&&null,void(h(b=>({...b,[a]:d})),p(null))},children:[(0,d.jsx)(\"option\",{value:\"unknown\",children:\"Undetermined\"}),(0,d.jsx)(\"option\",{value:\"true\",children:\"Yes \u2014 confirmed\"}),(0,d.jsx)(\"option\",{value:\"false\",children:\"No \u2014 confirmed\"})]})]},a))}),(0,d.jsxs)(\"label\",{children:[\"Human approval threshold (AUD)\",(0,d.jsx)(\"input\",{type:\"number\",min:\"0\",step:\"0.01\",placeholder:\"Unknown\",value:i,onChange:a=>{j(a.target.value),p(null)}})]})]}),(0,d.jsx)(\"p\",{className:\"muted\",children:\"Unknown facts remain undetermined. The presence of a supplier does not establish its materiality or an IDR duty.\"})]}),(0,d.jsxs)(\"div\",{className:\"panel\",children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"02 / ASSESSMENT\"}),(0,d.jsx)(\"h2\",{children:\"Choose an analysis\"}),(0,d.jsxs)(\"div\",{className:\"tabs\",role:\"group\",\"aria-label\":\"Assessment type\",children:[(0,d.jsx)(\"button\",{disabled:s,className:\"coverage\"===k?\"active\":\"\",onClick:()=>{l(\"coverage\"),p(null)},children:\"Questionnaire coverage\"}),(0,d.jsx)(\"button\",{disabled:s,className:\"policy-gaps\"===k?\"active\":\"\",onClick:()=>{l(\"policy-gaps\"),p(null)},children:\"Enterprise policy gaps\"})]}),\"coverage\"===k?(0,d.jsx)(\"p\",{children:\"Evaluate the selected facts against the shared obligation library. Candidate mappings remain provisional until an authorised reviewer approves them.\"}):(0,d.jsxs)(\"label\",{children:[\"Policy excerpt\",(0,d.jsx)(\"textarea\",{disabled:s,rows:9,maxLength:25e4,value:m,onChange:a=>{n(a.target.value),p(null)}}),(0,d.jsx)(\"small\",{children:\"Use synthetic or authorised excerpts. This web demo does not persist assessments; the configured server still processes submitted text.\"})]}),(0,d.jsx)(\"button\",{className:\"primary\",disabled:s||\"policy-gaps\"===k&&!m.trim(),onClick:u,children:s?\"Assessing\u2026\":\"Run assessment \u2192\"}),q&&(0,d.jsx)(\"p\",{className:\"error\",role:\"alert\",children:q}),(0,d.jsx)(\"div\",{className:\"chain\",children:\"Obligation \u2192 Control \u2192 Question \u2192 Evidence \u2192 Review\"})]})]}),o&&(0,d.jsxs)(\"section\",{className:\"results\",\"aria-live\":\"polite\",children:[(0,d.jsxs)(\"div\",{className:\"section-title\",children:[(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"03 / FINDINGS\"}),(0,d.jsx)(\"h2\",{children:\"Traceable assessment results\"})]}),(0,d.jsx)(\"button\",{onClick:function(){if(!o)return;let a=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:\"application/json\"})),b=document.createElement(\"a\");b.href=a,b.download=`crosswalk-${o.assessment_id}.json`,b.click(),URL.revokeObjectURL(a)},children:\"Export JSON \u2193\"})]}),(0,d.jsxs)(\"p\",{className:\"muted\",children:[\"Assessment \",o.assessment_id,\" \\xb7 Regulatory pack\",\" \",o.regulatory_pack_version,\" \\xb7\",\" \",new Date(o.created_at).toLocaleString()]}),o.selection_warning&&(0,d.jsx)(\"p\",{className:\"notice\",children:o.selection_warning}),o.warnings?.map((a,b)=>(0,d.jsx)(\"p\",{className:\"notice\",children:a},b)),o.metrics&&(0,d.jsx)(\"div\",{className:\"metrics\",children:[[\"Confirmed coverage\",`${o.metrics.confirmed_coverage_rate}%`],[\"Confirmed missing\",o.metrics.confirmed_missing],[\"Conditional applicability\",o.metrics.applicability_conditional],[\"Undetermined applicability\",o.metrics.applicability_undetermined]].map(([a,b])=>(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"span\",{children:a}),(0,d.jsx)(\"strong\",{children:b})]},a))}),o.results&&[\"binding\",\"enforceable_guidance\",\"guidance\",\"voluntary\"].map(a=>{let b=o.results.filter(b=>b.authority===a);return b.length?(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"h3\",{children:\"voluntary\"===a?\"Voluntary standards alignment\":a.replaceAll(\"_\",\" \")}),b.map(a=>(0,d.jsxs)(\"details\",{children:[(0,d.jsxs)(\"summary\",{children:[(0,d.jsxs)(\"span\",{children:[(0,d.jsx)(\"strong\",{children:a.title}),(0,d.jsxs)(\"small\",{children:[a.instrument,\" \\xb7 \",a.provision]})]}),(0,d.jsx)(\"span\",{className:`badge ${a.applicability.status}`,children:a.applicability.status.replaceAll(\"_\",\" \")}),(0,d.jsx)(\"span\",{className:\"badge\",children:a.confirmed_status.replaceAll(\"_\",\" \")})]}),(0,d.jsxs)(\"div\",{className:\"detail\",children:[(0,d.jsx)(\"p\",{children:a.applicability.reason}),(0,d.jsxs)(\"p\",{children:[\"Candidate status: \",a.provisional_status,\". Approved mappings:\",\" \",a.confirmed_question_ids.join(\", \")||\"none\",\". Proposed questions:\",\" \",a.candidate_question_ids.join(\", \")||\"none\",\".\"]}),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Unconfirmed facets:\"}),\" \",a.confirmed_missing_facets.join(\", \")||\"none\"]}),a.suggested_questions.map((a,b)=>(0,d.jsxs)(\"p\",{children:[\"Suggested: \",a]},b)),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Evidence:\"}),\" \",a.evidence_requirements.join(\" \\xb7 \")]}),(0,d.jsx)(\"a\",{href:a.source_url,rel:\"noreferrer\",target:\"_blank\",children:\"Regulatory source \u2197\"})]})]},a.obligation_id))]},a):null}),(0,d.jsxs)(\"h3\",{children:[\"Gaps and remediation (\",v.length,\")\"]}),v.map(a=>(0,d.jsxs)(\"details\",{children:[(0,d.jsxs)(\"summary\",{children:[(0,d.jsxs)(\"span\",{children:[(0,d.jsx)(\"strong\",{children:a.title}),(0,d.jsx)(\"small\",{children:a.gap_type.replaceAll(\"_\",\" \")})]}),(0,d.jsx)(\"span\",{className:`badge ${a.severity}`,children:a.severity})]}),(0,d.jsxs)(\"div\",{className:\"detail\",children:[(0,d.jsx)(\"p\",{children:a.recommendation}),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Missing facets:\"}),\" \",a.missing_facets.join(\", \")||\"See recommendation\"]}),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Evidence:\"}),\" \",a.evidence_required.join(\" \\xb7 \")||\"Reviewer to determine\"]})]})]},a.gap_id))]}),(0,d.jsxs)(\"footer\",{children:[(0,d.jsx)(\"span\",{children:\"DeepAuditCrossWalk \\xb7 Independent project \\xb7 Apache-2.0\"}),(0,d.jsx)(\"a\",{href:\"http://localhost:8000/docs\",children:\"Local API documentation \u2197\"})]})]})}},2628:(a,b,c)=>{Promise.resolve().then(c.bind(c,7742))},3033:a=>{\"use strict\";a.exports=require(\"next/dist/server/app-render/work-unit-async-storage.external.js\")},3295:a=>{\"use strict\";a.exports=require(\"next/dist/server/app-render/after-task-async-storage.external.js\")},3873:a=>{\"use strict\";a.exports=require(\"path\")},4131:(a,b,c)=>{Promise.resolve().then(c.t.bind(c,1170,23)),Promise.resolve().then(c.t.bind(c,3597,23)),Promise.resolve().then(c.t.bind(c,6893,23)),Promise.resolve().then(c.t.bind(c,9748,23)),Promise.resolve().then(c.t.bind(c,6060,23)),Promise.resolve().then(c.t.bind(c,7184,23)),Promise.resolve().then(c.t.bind(c,9576,23)),Promise.resolve().then(c.t.bind(c,3041,23)),Promise.resolve().then(c.t.bind(c,1384,23))},4836:(a,b,c)=>{Promise.resolve().then(c.bind(c,2115))},5511:a=>{\"use strict\";a.exports=require(\"crypto\")},5856:()=>{},6128:()=>{},6439:a=>{\"use strict\";a.exports=require(\"next/dist/shared/lib/no-fallback-error.external\")},6713:a=>{\"use strict\";a.exports=require(\"next/dist/shared/lib/router/utils/is-bot\")},6803:()=>{},6953:(a,b,c)=>{\"use strict\";c.r(b),c.d(b,{default:()=>f,metadata:()=>e});var d=c(5338);c(6803);let e={title:\"DeepAuditCrossWalk \\xb7 AI governance coverage\",description:\"Traceable questionnaire coverage and enterprise policy gap analysis for Australian banking AI use cases.\"};function f({children:a}){return(0,d.jsx)(\"html\",{lang:\"en\",children:(0,d.jsx)(\"body\",{children:a})})}},7055:(a,b,c)=>{\"use strict\";c.r(b),c.d(b,{GlobalError:()=>F.a,__next_app__:()=>L,handler:()=>N,pages:()=>K,routeModule:()=>M,tree:()=>J});var d=c(4679),e=c(9754),f=c(9117),g=c(6595),h=c(2324),i=c(9326),j=c(8928),k=c(175),l=c(12),m=c(4290),n=c(2696),o=c(2574),p=c(2802),q=c(7533),r=c(5229),s=c(2822),t=c(261),u=c(6453),v=c(2474),w=c(6713),x=c(1356),y=c(2685),z=c(6225),A=c(3446),B=c(2762),C=c(5742),D=c(6439),E=c(1170),F=c.n(E),G=c(2506),H=c(1203),I={};for(let a in G)0>[\"default\",\"tree\",\"pages\",\"GlobalError\",\"__next_app__\",\"routeModule\",\"handler\"].indexOf(a)&&(I[a]=()=>G[a]);c.d(b,I);let J=[\"\",{children:[\"__PAGE__\",{},{page:[()=>Promise.resolve().then(c.bind(c,7742)),\"C:\\\\Users\\\\vivia\\\\OneDrive\\\\Desktop\\\\DeepAuditCrossWalk\\\\web\\\\app\\\\page.tsx\"]}]},{layout:[()=>Promise.resolve().then(c.bind(c,6953)),\"C:\\\\Users\\\\vivia\\\\OneDrive\\\\Desktop\\\\DeepAuditCrossWalk\\\\web\\\\app\\\\layout.tsx\"],\"global-error\":[()=>Promise.resolve().then(c.t.bind(c,1170,23)),\"next/dist/client/components/builtin/global-error.js\"],\"not-found\":[()=>Promise.resolve().then(c.t.bind(c,7028,23)),\"next/dist/client/components/builtin/not-found.js\"],forbidden:[()=>Promise.resolve().then(c.t.bind(c,461,23)),\"next/dist/client/components/builtin/forbidden.js\"],unauthorized:[()=>Promise.resolve().then(c.t.bind(c,2768,23)),\"next/dist/client/components/builtin/unauthorized.js\"]}],K=[\"C:\\\\Users\\\\vivia\\\\OneDrive\\\\Desktop\\\\DeepAuditCrossWalk\\\\web\\\\app\\\\page.tsx\"],L={require:c,loadChunk:()=>Promise.resolve()},M=new e.AppPageRouteModule({definition:{kind:f.RouteKind.APP_PAGE,page:\"/page\",pathname:\"/\",bundlePath:\"\",filename:\"\",appPaths:[]},userland:{loaderTree:J},distDir:\".next\",relativeProjectDir:\"\"});async function N(a,b,e){var E;let I=\"/page\";\"/index\"===I&&(I=\"/\");let O=(0,i.getRequestMeta)(a,\"postponed\"),P=(0,i.getRequestMeta)(a,\"minimalMode\"),Q=await M.prepare(a,b,{srcPage:I,multiZoneDraftMode:!1});if(!Q)return b.statusCode=400,b.end(\"Bad Request\"),null==e.waitUntil||e.waitUntil.call(e,Promise.resolve()),null;let{buildId:R,query:S,params:T,parsedUrl:U,pageIsDynamic:V,buildManifest:W,nextFontManifest:X,reactLoadableManifest:Y,serverActionsManifest:Z,clientReferenceManifest:$,subresourceIntegrityManifest:_,prerenderManifest:aa,isDraftMode:ab,resolvedPathname:ac,revalidateOnlyGenerated:ad,routerServerContext:ae,nextConfig:af,interceptionRoutePatterns:ag}=Q,ah=U.pathname||\"/\",ai=(0,t.normalizeAppPath)(I),{isOnDemandRevalidate:aj}=Q,ak=M.match(ah,aa),al=!!aa.routes[ac]&&(M.isDev||(0,d.isRouteCacheOwner)(ac,M.cacheOwner,aa.routes[ac])),am=!!(ak||al||aa.routes[ai]),an=a.headers[\"user-agent\"]||\"\",ao=(0,w.getBotType)(an),ap=(0,r.isHtmlBotRequest)(a),aq=(0,i.getRequestMeta)(a,\"isPrefetchRSCRequest\")??\"1\"===a.headers[v.NEXT_ROUTER_PREFETCH_HEADER],ar=(0,i.getRequestMeta)(a,\"isRSCRequest\")??(0,o.f)(a.headers[v.RSC_HEADER]),as=(0,u.getIsPossibleServerAction)(a),at=(0,n.checkIsAppPPREnabled)(af.experimental.ppr)&&(null==(E=aa.routes[ai]??aa.dynamicRoutes[ai])?void 0:E.renderingMode)===\"PARTIALLY_STATIC\",au=!1,av=!1,aw=at?O:void 0,ax=at&&ar&&!aq,ay=(0,i.getRequestMeta)(a,\"segmentPrefetchRSCRequest\"),az=!an||(0,r.shouldServeStreamingMetadata)(an,af.htmlLimitedBots);ap&&at&&(am=!1,az=!1);let aA=!0===M.isDev||!am||\"string\"==typeof O||ax,aB=ap&&at,aC=null;ab||!am||aA||as||aw||ax||(aC=ac);let aD=aC;!aD&&M.isDev&&(aD=ac),M.isDev||ab||!am||!ar||ax||(0,l.d)(a.headers);let aE={...G,tree:J,pages:K,GlobalError:F(),handler:N,routeModule:M,__next_app__:L};Z&&$&&(0,q.setReferenceManifestsSingleton)({page:I,clientReferenceManifest:$,serverActionsManifest:Z,serverModuleMap:(0,s.createServerModuleMap)({serverActionsManifest:Z})});let aF=a.method||\"GET\",aG=(0,h.getTracer)(),aH=aG.getActiveScopeSpan();try{let d=M.getVaryHeader(ac,ag);b.setHeader(\"Vary\",d);let g=async(c,d)=>{let e=new m.NodeNextRequest(a),f=new m.NodeNextResponse(b);return M.render(e,f,d).finally(()=>{if(!c)return;c.setAttributes({\"http.status_code\":b.statusCode,\"next.rsc\":!1});let d=aG.getRootSpanAttributes();if(!d)return;if(d.get(\"next.span_type\")!==j.BaseServerSpan.handleRequest)return void console.warn(`Unexpected root span type '${d.get(\"next.span_type\")}'. Please report this Next.js issue https://github.com/vercel/next.js`);let e=d.get(\"next.route\");if(e){let a=`${aF} ${e}`;c.setAttributes({\"next.route\":e,\"http.route\":e,\"next.span_name\":a}),c.updateName(a)}else c.updateName(`${aF} ${a.url}`)})},l=async({span:d,postponed:f,fallbackRouteParams:h})=>{let j={query:S,params:T,page:ai,sharedContext:{buildId:R},serverComponentsHmrCache:(0,i.getRequestMeta)(a,\"serverComponentsHmrCache\"),fallbackRouteParams:h,renderOpts:{App:()=>null,Document:()=>null,pageConfig:{},ComponentMod:aE,Component:(0,k.T)(aE),params:T,routeModule:M,page:I,postponed:f,shouldWaitOnAllReady:aB,serveStreamingMetadata:az,supportsDynamicResponse:\"string\"==typeof f||aA,buildManifest:W,nextFontManifest:X,reactLoadableManifest:Y,subresourceIntegrityManifest:_,serverActionsManifest:Z,clientReferenceManifest:$,setIsrStatus:null==ae?void 0:ae.setIsrStatus,dir:c(3873).join(process.cwd(),M.relativeProjectDir),isDraftMode:ab,isRevalidate:am&&!f&&!ax,botType:ao,isOnDemandRevalidate:aj,isPossibleServerAction:as,assetPrefix:af.assetPrefix,nextConfigOutput:af.output,crossOrigin:af.crossOrigin,trailingSlash:af.trailingSlash,previewProps:aa.preview,deploymentId:af.deploymentId,enableTainting:af.experimental.taint,htmlLimitedBots:af.htmlLimitedBots,devtoolSegmentExplorer:af.experimental.devtoolSegmentExplorer,reactMaxHeadersLength:af.reactMaxHeadersLength,multiZoneDraftMode:!1,incrementalCache:(0,i.getRequestMeta)(a,\"incrementalCache\"),cacheLifeProfiles:af.experimental.cacheLife,basePath:af.basePath,serverActions:af.experimental.serverActions,...au?{nextExport:!0,supportsDynamicResponse:!1,isStaticGeneration:!0,isRevalidate:!0,isDebugDynamicAccesses:au}:{},experimental:{isRoutePPREnabled:at,expireTime:af.expireTime,staleTimes:af.experimental.staleTimes,cacheComponents:!!af.experimental.cacheComponents,clientSegmentCache:!!af.experimental.clientSegmentCache,clientParamParsing:!!af.experimental.clientParamParsing,dynamicOnHover:!!af.experimental.dynamicOnHover,inlineCss:!!af.experimental.inlineCss,authInterrupts:!!af.experimental.authInterrupts,clientTraceMetadata:af.experimental.clientTraceMetadata||[]},waitUntil:e.waitUntil,onClose:a=>{b.on(\"close\",a)},onAfterTaskError:()=>{},onInstrumentationRequestError:(b,c,d)=>M.onRequestError(a,b,d,ae),err:(0,i.getRequestMeta)(a,\"invokeError\"),dev:M.isDev}},l=await g(d,j),{metadata:m}=l,{cacheControl:n,headers:o={},fetchTags:p}=m;if(p&&(o[A.NEXT_CACHE_TAGS_HEADER]=p),a.fetchMetrics=m.fetchMetrics,am&&(null==n?void 0:n.revalidate)===0&&!M.isDev&&!at){let a=m.staticBailoutInfo,b=Object.defineProperty(Error(`Page changed from static to dynamic at runtime ${ac}${(null==a?void 0:a.description)?`, reason: ${a.description}`:\"\"}"
+    ]
+  ],
+  "web/.next/standalone/.next/server/app/index.html": [
+    [
+      1,
+      "<!DOCTYPE html><!--hbRri4ORMN4Kk9XLStKMU--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/61466ba02ce440ba.css\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-b66970e70f418ad7.js\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js\" async=\"\"></script><script src=\"/_next/static/chunks/255-b1e2483a7e02feee.js\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-3bdace47c088dc70.js\" async=\"\"></script><script src=\"/_next/static/chunks/app/page-4c4a3f9c3454e736.js\" async=\"\"></script><title>DeepAuditCrossWalk \u00b7 AI governance coverage</title><meta name=\"description\" content=\"Traceable questionnaire coverage and enterprise policy gap analysis for Australian banking AI use cases.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><main><nav><a class=\"brand\" href=\"/\">DeepAudit<span>CrossWalk</span></a><a href=\"https://github.com/VivianFuVivianFu/DeepAuditCrossWalk\" target=\"_blank\" rel=\"noreferrer\">GitHub \u2197</a></nav><header><p class=\"eyebrow\">AUSTRALIAN BANKING \u00b7 OPEN SOURCE MVP</p><h1>Find the requirements<br/>your assessment misses.</h1><p class=\"lead\">Connect applicable obligations, enterprise policies, assessment questions and evidence. Make every gap reviewable.</p></header><aside class=\"notice\"><strong>Demonstration workspace.</strong> This release uses 19 original synthetic questions and proposed regulatory interpretations. Import an authorised AIAF workbook through the API for its full question bank. Assessment coverage and legal compliance are separate conclusions.</aside><section class=\"workspace\"><div class=\"panel\"><div class=\"section-title\"><div><p class=\"eyebrow\">01 / CONTEXT</p><h2>Your AI use case</h2></div><button class=\"quiet\">Load example</button></div><fieldset><label>Use case name<input maxLength=\"200\" value=\"Dispute and Refund Agent\"/></label><div class=\"facts\"><label>APRA-regulated entity<select aria-label=\"APRA-regulated entity\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Processes personal information<select aria-label=\"Processes personal information\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Makes or assists significant decisions<select aria-label=\"Makes or assists significant decisions\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Handles regulated complaints<select aria-label=\"Handles regulated complaints\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Entity-specific IDR duty confirmed<select aria-label=\"Entity-specific IDR duty confirmed\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Uses third-party AI services<select aria-label=\"Uses third-party AI services\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>CPS 230 service materiality confirmed<select aria-label=\"CPS 230 service materiality confirmed\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Supports a critical operation<select aria-label=\"Supports a critical operation\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>EU establishment or market nexus<select aria-label=\"EU establishment or market nexus\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>AI outputs used in the EU<select aria-label=\"AI outputs used in the EU\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Relevant EU provider/deployer role<select aria-label=\"Relevant EU provider/deployer role\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Organisation has adopted NIST AI RMF<select aria-label=\"Organisation has adopted NIST AI RMF\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label><label>Organisation has adopted ISO 42001<select aria-label=\"Organisation has adopted ISO 42001\"><option value=\"unknown\" selected=\"\">Undetermined</option><option value=\"true\">Yes \u2014 confirmed</option><option value=\"false\">No \u2014 confirmed</option></select></label></div><label>Human approval threshold (AUD)<input type=\"number\" min=\"0\" step=\"0.01\" placeholder=\"Unknown\" value=\"\"/></label></fieldset><p class=\"muted\">Unknown facts remain undetermined. The presence of a supplier does not establish its materiality or an IDR duty.</p></div><div class=\"panel\"><p class=\"eyebrow\">02 / ASSESSMENT</p><h2>Choose an analysis</h2><div class=\"tabs\" role=\"group\" aria-label=\"Assessment type\"><button class=\"active\">Questionnaire coverage</button><button class=\"\">Enterprise policy gaps</button></div><p>Evaluate the selected facts against the shared obligation library. Candidate mappings remain provisional until an authorised reviewer approves them.</p><button class=\"primary\">Run assessment \u2192</button><div class=\"chain\">Obligation \u2192 Control \u2192 Question \u2192 Evidence \u2192 Review</div></div></section><footer><span>DeepAuditCrossWalk \u00b7 Independent project \u00b7 Apache-2.0</span><a href=\"http://localhost:8000/docs\">Local API documentation \u2197</a></footer></main><!--$--><!--/$--><script src=\"/_next/static/chunks/webpack-b66970e70f418ad7.js\" id=\"_R_\" async=\"\"></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,\"1:\\\"$Sreact.fragment\\\"\\n2:I[9766,[],\\\"\\\"]\\n3:I[8924,[],\\\"\\\"]\\n4:I[1959,[],\\\"ClientPageRoot\\\"]\\n5:I[2415,[\\\"974\\\",\\\"static/chunks/app/page-4c4a3f9c3454e736.js\\\"],\\\"default\\\"]\\n8:I[4431,[],\\\"OutletBoundary\\\"]\\na:I[5278,[],\\\"AsyncMetadataOutlet\\\"]\\nc:I[4431,[],\\\"ViewportBoundary\\\"]\\ne:I[4431,[],\\\"MetadataBoundary\\\"]\\nf:\\\"$Sreact.suspense\\\"\\n11:I[7150,[],\\\"\\\"]\\n:HL[\\\"/_next/static/css/61466ba02ce440ba.css\\\",\\\"style\\\"]\\n\"])</script><script>self.__next_f.push([1,\"0:{\\\"P\\\":null,\\\"b\\\":\\\"hbRri4ORMN4Kk9XLStKMU\\\",\\\"p\\\":\\\"\\\",\\\"c\\\":[\\\"\\\",\\\"\\\"],\\\"i\\\":false,\\\"f\\\":[[[\\\"\\\",{\\\"children\\\":[\\\"__PAGE__\\\",{}]},\\\"$undefined\\\",\\\"$undefined\\\",true],[\\\"\\\",[\\\"$\\\",\\\"$1\\\",\\\"c\\\",{\\\"children\\\":[[[\\\"$\\\",\\\"link\\\",\\\"0\\\",{\\\"rel\\\":\\\"stylesheet\\\",\\\"href\\\":\\\"/_next/static/css/61466ba02ce440ba.css\\\",\\\"precedence\\\":\\\"next\\\",\\\"crossOrigin\\\":\\\"$undefined\\\",\\\"nonce\\\":\\\"$undefined\\\"}]],[\\\"$\\\",\\\"html\\\",null,{\\\"lang\\\":\\\"en\\\",\\\"children\\\":[\\\"$\\\",\\\"body\\\",null,{\\\"children\\\":[\\\"$\\\",\\\"$L2\\\",null,{\\\"parallelRouterKey\\\":\\\"children\\\",\\\"error\\\":\\\"$undefined\\\",\\\"errorStyles\\\":\\\"$undefined\\\",\\\"errorScripts\\\":\\\"$undefined\\\",\\\"template\\\":[\\\"$\\\",\\\"$L3\\\",null,{}],\\\"templateStyles\\\":\\\"$undefined\\\",\\\"templateScripts\\\":\\\"$undefined\\\",\\\"notFound\\\":[[[\\\"$\\\",\\\"title\\\",null,{\\\"children\\\":\\\"404: This page could not be found.\\\"}],[\\\"$\\\",\\\"div\\\",null,{\\\"style\\\":{\\\"fontFamily\\\":\\\"system-ui,\\\\\\\"Segoe UI\\\\\\\",Roboto,Helvetica,Arial,sans-serif,\\\\\\\"Apple Color Emoji\\\\\\\",\\\\\\\"Segoe UI Emoji\\\\\\\"\\\",\\\"height\\\":\\\"100vh\\\",\\\"textAlign\\\":\\\"center\\\",\\\"display\\\":\\\"flex\\\",\\\"flexDirection\\\":\\\"column\\\",\\\"alignItems\\\":\\\"center\\\",\\\"justifyContent\\\":\\\"center\\\"},\\\"children\\\":[\\\"$\\\",\\\"div\\\",null,{\\\"children\\\":[[\\\"$\\\",\\\"style\\\",null,{\\\"dangerouslySetInnerHTML\\\":{\\\"__html\\\":\\\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\\\"}}],[\\\"$\\\",\\\"h1\\\",null,{\\\"className\\\":\\\"next-error-h1\\\",\\\"style\\\":{\\\"display\\\":\\\"inline-block\\\",\\\"margin\\\":\\\"0 20px 0 0\\\",\\\"padding\\\":\\\"0 23px 0 0\\\",\\\"fontSize\\\":24,\\\"fontWeight\\\":500,\\\"verticalAlign\\\":\\\"top\\\",\\\"lineHeight\\\":\\\"49px\\\"},\\\"children\\\":404}],[\\\"$\\\",\\\"div\\\",null,{\\\"style\\\":{\\\"display\\\":\\\"inline-block\\\"},\\\"children\\\":[\\\"$\\\",\\\"h2\\\",null,{\\\"style\\\":{\\\"fontSize\\\":14,\\\"fontWeight\\\":400,\\\"lineHeight\\\":\\\"49px\\\",\\\"margin\\\":0},\\\"children\\\":\\\"This page could not be found.\\\"}]}]]}]}]],[]],\\\"forbidden\\\":\\\"$undefined\\\",\\\"unauthorized\\\":\\\"$undefined\\\"}]}]}]]}],{\\\"children\\\":[\\\"__PAGE__\\\",[\\\"$\\\",\\\"$1\\\",\\\"c\\\",{\\\"children\\\":[[\\\"$\\\",\\\"$L4\\\",null,{\\\"Component\\\":\\\"$5\\\",\\\"searchParams\\\":{},\\\"params\\\":{},\\\"promises\\\":[\\\"$@6\\\",\\\"$@7\\\"]}],null,[\\\"$\\\",\\\"$L8\\\",null,{\\\"children\\\":[\\\"$L9\\\",[\\\"$\\\",\\\"$La\\\",null,{\\\"promise\\\":\\\"$@b\\\"}]]}]]}],{},null,false]},null,false],[\\\"$\\\",\\\"$1\\\",\\\"h\\\",{\\\"children\\\":[null,[[\\\"$\\\",\\\"$Lc\\\",null,{\\\"children\\\":\\\"$Ld\\\"}],null],[\\\"$\\\",\\\"$Le\\\",null,{\\\"children\\\":[\\\"$\\\",\\\"div\\\",null,{\\\"hidden\\\":true,\\\"children\\\":[\\\"$\\\",\\\"$f\\\",null,{\\\"fallback\\\":null,\\\"children\\\":\\\"$L10\\\"}]}]}]]}],false]],\\\"m\\\":\\\"$undefined\\\",\\\"G\\\":[\\\"$11\\\",[]],\\\"s\\\":false,\\\"S\\\":true}\\n\"])</script><script>self.__next_f.push([1,\"6:{}\\n7:\\\"$0:f:0:1:2:children:1:props:children:0:props:params\\\"\\n\"])</script><script>self.__next_f.push([1,\"d:[[\\\"$\\\",\\\"meta\\\",\\\"0\\\",{\\\"charSet\\\":\\\"utf-8\\\"}],[\\\"$\\\",\\\"meta\\\",\\\"1\\\",{\\\"name\\\":\\\"viewport\\\",\\\"content\\\":\\\"width=device-width, initial-scale=1\\\"}]]\\n9:null\\n\"])</script><script>self.__next_f.push([1,\"b:{\\\"metadata\\\":[[\\\"$\\\",\\\"title\\\",\\\"0\\\",{\\\"children\\\":\\\"DeepAuditCrossWalk \u00b7 AI governance coverage\\\"}],[\\\"$\\\",\\\"meta\\\",\\\"1\\\",{\\\"name\\\":\\\"description\\\",\\\"content\\\":\\\"Traceable questionnaire coverage and enterprise policy gap analysis for Australian banking AI use cases.\\\"}]],\\\"error\\\":null,\\\"digest\\\":\\\"$undefined\\\"}\\n\"])</script><script>self.__next_f.push([1,\"10:\\\"$b:metadata\\\"\\n\"])</script></body></html>"
+    ]
+  ],
+  "web/.next/standalone/.next/server/app/page.js": [
+    [
+      1,
+      "(()=>{var a={};a.id=974,a.ids=[974],a.modules={261:a=>{\"use strict\";a.exports=require(\"next/dist/shared/lib/router/utils/app-paths\")},846:a=>{\"use strict\";a.exports=require(\"next/dist/compiled/next-server/app-page.runtime.prod.js\")},1025:a=>{\"use strict\";a.exports=require(\"next/dist/server/app-render/dynamic-access-async-storage.external.js\")},1083:(a,b,c)=>{Promise.resolve().then(c.t.bind(c,4160,23)),Promise.resolve().then(c.t.bind(c,1603,23)),Promise.resolve().then(c.t.bind(c,8495,23)),Promise.resolve().then(c.t.bind(c,5170,23)),Promise.resolve().then(c.t.bind(c,7526,23)),Promise.resolve().then(c.t.bind(c,8922,23)),Promise.resolve().then(c.t.bind(c,9234,23)),Promise.resolve().then(c.t.bind(c,2263,23)),Promise.resolve().then(c.bind(c,2146))},2115:(a,b,c)=>{\"use strict\";c.r(b),c.d(b,{default:()=>h});var d=c(1124),e=c(8301);let f={apra_regulated:\"APRA-regulated entity\",handles_personal_information:\"Processes personal information\",makes_or_assists_significant_decisions:\"Makes or assists significant decisions\",handles_regulated_complaints:\"Handles regulated complaints\",idr_obligations:\"Entity-specific IDR duty confirmed\",third_party_ai_service:\"Uses third-party AI services\",material_service_provider:\"CPS 230 service materiality confirmed\",supports_critical_operation:\"Supports a critical operation\",eu_establishment_or_market:\"EU establishment or market nexus\",eu_output_used:\"AI outputs used in the EU\",eu_deployer_or_provider_role:\"Relevant EU provider/deployer role\",nist_ai_rmf_adopted:\"Organisation has adopted NIST AI RMF\",iso_42001_adopted:\"Organisation has adopted ISO 42001\"},g=Object.fromEntries(Object.keys(f).map(a=>[a,null]));function h(){let[a,b]=(0,e.useState)(\"Dispute and Refund Agent\"),[c,h]=(0,e.useState)({...g}),[i,j]=(0,e.useState)(\"\"),[k,l]=(0,e.useState)(\"coverage\"),[m,n]=(0,e.useState)(\"All refunds above AUD 500 require human approval before payment execution. Approval logs must be retained.\"),[o,p]=(0,e.useState)(null),[q,r]=(0,e.useState)(\"\"),[s,t]=(0,e.useState)(!1);async function u(){t(!0),r(\"\"),p(null);try{let b=function(a,b,c){let d=\"\"===c.trim()?null:Number(c);if(null!==d&&(!Number.isFinite(d)||d<0))throw Error(\"Approval threshold must be a non-negative AUD amount or left unknown.\");return{use_case:{name:a.trim()||\"Untitled AI use case\",...b,approval_threshold_aud:d},questionnaire_pack:\"DEMO_BANKING_V1\",persist:!1}}(a,c,i),d=await fetch(\"/api/analysis\",{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({...b,kind:k,...\"policy-gaps\"===k?{policy_text:m}:{}})}),e=await d.json();if(!d.ok)throw Error(e.error||\"Analysis failed\");p(e)}catch(a){r(a instanceof Error?a.message:\"Analysis failed\")}finally{t(!1)}}let v=o?o.gaps??[...o.policy_gaps??[],...o.questionnaire_gaps??[],...o.control_conflicts??[],...o.implementation_evidence_gaps??[],...o.enterprise_gaps??[]]:[];return(0,d.jsxs)(\"main\",{children:[(0,d.jsxs)(\"nav\",{children:[(0,d.jsxs)(\"a\",{className:\"brand\",href:\"/\",children:[\"DeepAudit\",(0,d.jsx)(\"span\",{children:\"CrossWalk\"})]}),(0,d.jsx)(\"a\",{href:\"https://github.com/VivianFuVivianFu/DeepAuditCrossWalk\",target:\"_blank\",rel:\"noreferrer\",children:\"GitHub \u2197\"})]}),(0,d.jsxs)(\"header\",{children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"AUSTRALIAN BANKING \\xb7 OPEN SOURCE MVP\"}),(0,d.jsxs)(\"h1\",{children:[\"Find the requirements\",(0,d.jsx)(\"br\",{}),\"your assessment misses.\"]}),(0,d.jsx)(\"p\",{className:\"lead\",children:\"Connect applicable obligations, enterprise policies, assessment questions and evidence. Make every gap reviewable.\"})]}),(0,d.jsxs)(\"aside\",{className:\"notice\",children:[(0,d.jsx)(\"strong\",{children:\"Demonstration workspace.\"}),\" This release uses 19 original synthetic questions and proposed regulatory interpretations. Import an authorised AIAF workbook through the API for its full question bank. Assessment coverage and legal compliance are separate conclusions.\"]}),(0,d.jsxs)(\"section\",{className:\"workspace\",children:[(0,d.jsxs)(\"div\",{className:\"panel\",children:[(0,d.jsxs)(\"div\",{className:\"section-title\",children:[(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"01 / CONTEXT\"}),(0,d.jsx)(\"h2\",{children:\"Your AI use case\"})]}),(0,d.jsx)(\"button\",{className:\"quiet\",onClick:function(){h({...g,apra_regulated:!0,handles_personal_information:!0,handles_regulated_complaints:!0,makes_or_assists_significant_decisions:!0,third_party_ai_service:!0,nist_ai_rmf_adopted:!0}),b(\"Example Australian bank refund agent\"),j(\"500\"),p(null)},disabled:s,children:\"Load example\"})]}),(0,d.jsxs)(\"fieldset\",{disabled:s,children:[(0,d.jsxs)(\"label\",{children:[\"Use case name\",(0,d.jsx)(\"input\",{maxLength:200,value:a,onChange:a=>{b(a.target.value),p(null)}})]}),(0,d.jsx)(\"div\",{className:\"facts\",children:Object.entries(f).map(([a,b])=>(0,d.jsxs)(\"label\",{children:[b,(0,d.jsxs)(\"select\",{\"aria-label\":b,value:null===c[a]?\"unknown\":String(c[a]),onChange:b=>{var c,d;return d=\"true\"===(c=b.target.value)||\"false\"!==c&&null,void(h(b=>({...b,[a]:d})),p(null))},children:[(0,d.jsx)(\"option\",{value:\"unknown\",children:\"Undetermined\"}),(0,d.jsx)(\"option\",{value:\"true\",children:\"Yes \u2014 confirmed\"}),(0,d.jsx)(\"option\",{value:\"false\",children:\"No \u2014 confirmed\"})]})]},a))}),(0,d.jsxs)(\"label\",{children:[\"Human approval threshold (AUD)\",(0,d.jsx)(\"input\",{type:\"number\",min:\"0\",step:\"0.01\",placeholder:\"Unknown\",value:i,onChange:a=>{j(a.target.value),p(null)}})]})]}),(0,d.jsx)(\"p\",{className:\"muted\",children:\"Unknown facts remain undetermined. The presence of a supplier does not establish its materiality or an IDR duty.\"})]}),(0,d.jsxs)(\"div\",{className:\"panel\",children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"02 / ASSESSMENT\"}),(0,d.jsx)(\"h2\",{children:\"Choose an analysis\"}),(0,d.jsxs)(\"div\",{className:\"tabs\",role:\"group\",\"aria-label\":\"Assessment type\",children:[(0,d.jsx)(\"button\",{disabled:s,className:\"coverage\"===k?\"active\":\"\",onClick:()=>{l(\"coverage\"),p(null)},children:\"Questionnaire coverage\"}),(0,d.jsx)(\"button\",{disabled:s,className:\"policy-gaps\"===k?\"active\":\"\",onClick:()=>{l(\"policy-gaps\"),p(null)},children:\"Enterprise policy gaps\"})]}),\"coverage\"===k?(0,d.jsx)(\"p\",{children:\"Evaluate the selected facts against the shared obligation library. Candidate mappings remain provisional until an authorised reviewer approves them.\"}):(0,d.jsxs)(\"label\",{children:[\"Policy excerpt\",(0,d.jsx)(\"textarea\",{disabled:s,rows:9,maxLength:25e4,value:m,onChange:a=>{n(a.target.value),p(null)}}),(0,d.jsx)(\"small\",{children:\"Use synthetic or authorised excerpts. This web demo does not persist assessments; the configured server still processes submitted text.\"})]}),(0,d.jsx)(\"button\",{className:\"primary\",disabled:s||\"policy-gaps\"===k&&!m.trim(),onClick:u,children:s?\"Assessing\u2026\":\"Run assessment \u2192\"}),q&&(0,d.jsx)(\"p\",{className:\"error\",role:\"alert\",children:q}),(0,d.jsx)(\"div\",{className:\"chain\",children:\"Obligation \u2192 Control \u2192 Question \u2192 Evidence \u2192 Review\"})]})]}),o&&(0,d.jsxs)(\"section\",{className:\"results\",\"aria-live\":\"polite\",children:[(0,d.jsxs)(\"div\",{className:\"section-title\",children:[(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"p\",{className:\"eyebrow\",children:\"03 / FINDINGS\"}),(0,d.jsx)(\"h2\",{children:\"Traceable assessment results\"})]}),(0,d.jsx)(\"button\",{onClick:function(){if(!o)return;let a=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:\"application/json\"})),b=document.createElement(\"a\");b.href=a,b.download=`crosswalk-${o.assessment_id}.json`,b.click(),URL.revokeObjectURL(a)},children:\"Export JSON \u2193\"})]}),(0,d.jsxs)(\"p\",{className:\"muted\",children:[\"Assessment \",o.assessment_id,\" \\xb7 Regulatory pack\",\" \",o.regulatory_pack_version,\" \\xb7\",\" \",new Date(o.created_at).toLocaleString()]}),o.selection_warning&&(0,d.jsx)(\"p\",{className:\"notice\",children:o.selection_warning}),o.warnings?.map((a,b)=>(0,d.jsx)(\"p\",{className:\"notice\",children:a},b)),o.metrics&&(0,d.jsx)(\"div\",{className:\"metrics\",children:[[\"Confirmed coverage\",`${o.metrics.confirmed_coverage_rate}%`],[\"Confirmed missing\",o.metrics.confirmed_missing],[\"Conditional applicability\",o.metrics.applicability_conditional],[\"Undetermined applicability\",o.metrics.applicability_undetermined]].map(([a,b])=>(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"span\",{children:a}),(0,d.jsx)(\"strong\",{children:b})]},a))}),o.results&&[\"binding\",\"enforceable_guidance\",\"guidance\",\"voluntary\"].map(a=>{let b=o.results.filter(b=>b.authority===a);return b.length?(0,d.jsxs)(\"div\",{children:[(0,d.jsx)(\"h3\",{children:\"voluntary\"===a?\"Voluntary standards alignment\":a.replaceAll(\"_\",\" \")}),b.map(a=>(0,d.jsxs)(\"details\",{children:[(0,d.jsxs)(\"summary\",{children:[(0,d.jsxs)(\"span\",{children:[(0,d.jsx)(\"strong\",{children:a.title}),(0,d.jsxs)(\"small\",{children:[a.instrument,\" \\xb7 \",a.provision]})]}),(0,d.jsx)(\"span\",{className:`badge ${a.applicability.status}`,children:a.applicability.status.replaceAll(\"_\",\" \")}),(0,d.jsx)(\"span\",{className:\"badge\",children:a.confirmed_status.replaceAll(\"_\",\" \")})]}),(0,d.jsxs)(\"div\",{className:\"detail\",children:[(0,d.jsx)(\"p\",{children:a.applicability.reason}),(0,d.jsxs)(\"p\",{children:[\"Candidate status: \",a.provisional_status,\". Approved mappings:\",\" \",a.confirmed_question_ids.join(\", \")||\"none\",\". Proposed questions:\",\" \",a.candidate_question_ids.join(\", \")||\"none\",\".\"]}),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Unconfirmed facets:\"}),\" \",a.confirmed_missing_facets.join(\", \")||\"none\"]}),a.suggested_questions.map((a,b)=>(0,d.jsxs)(\"p\",{children:[\"Suggested: \",a]},b)),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Evidence:\"}),\" \",a.evidence_requirements.join(\" \\xb7 \")]}),(0,d.jsx)(\"a\",{href:a.source_url,rel:\"noreferrer\",target:\"_blank\",children:\"Regulatory source \u2197\"})]})]},a.obligation_id))]},a):null}),(0,d.jsxs)(\"h3\",{children:[\"Gaps and remediation (\",v.length,\")\"]}),v.map(a=>(0,d.jsxs)(\"details\",{children:[(0,d.jsxs)(\"summary\",{children:[(0,d.jsxs)(\"span\",{children:[(0,d.jsx)(\"strong\",{children:a.title}),(0,d.jsx)(\"small\",{children:a.gap_type.replaceAll(\"_\",\" \")})]}),(0,d.jsx)(\"span\",{className:`badge ${a.severity}`,children:a.severity})]}),(0,d.jsxs)(\"div\",{className:\"detail\",children:[(0,d.jsx)(\"p\",{children:a.recommendation}),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Missing facets:\"}),\" \",a.missing_facets.join(\", \")||\"See recommendation\"]}),(0,d.jsxs)(\"p\",{children:[(0,d.jsx)(\"strong\",{children:\"Evidence:\"}),\" \",a.evidence_required.join(\" \\xb7 \")||\"Reviewer to determine\"]})]})]},a.gap_id))]}),(0,d.jsxs)(\"footer\",{children:[(0,d.jsx)(\"span\",{children:\"DeepAuditCrossWalk \\xb7 Independent project \\xb7 Apache-2.0\"}),(0,d.jsx)(\"a\",{href:\"http://localhost:8000/docs\",children:\"Local API documentation \u2197\"})]})]})}},2628:(a,b,c)=>{Promise.resolve().then(c.bind(c,7742))},3033:a=>{\"use strict\";a.exports=require(\"next/dist/server/app-render/work-unit-async-storage.external.js\")},3295:a=>{\"use strict\";a.exports=require(\"next/dist/server/app-render/after-task-async-storage.external.js\")},3873:a=>{\"use strict\";a.exports=require(\"path\")},4131:(a,b,c)=>{Promise.resolve().then(c.t.bind(c,1170,23)),Promise.resolve().then(c.t.bind(c,3597,23)),Promise.resolve().then(c.t.bind(c,6893,23)),Promise.resolve().then(c.t.bind(c,9748,23)),Promise.resolve().then(c.t.bind(c,6060,23)),Promise.resolve().then(c.t.bind(c,7184,23)),Promise.resolve().then(c.t.bind(c,9576,23)),Promise.resolve().then(c.t.bind(c,3041,23)),Promise.resolve().then(c.t.bind(c,1384,23))},4836:(a,b,c)=>{Promise.resolve().then(c.bind(c,2115))},5511:a=>{\"use strict\";a.exports=require(\"crypto\")},5856:()=>{},6128:()=>{},6439:a=>{\"use strict\";a.exports=require(\"next/dist/shared/lib/no-fallback-error.external\")},6713:a=>{\"use strict\";a.exports=require(\"next/dist/shared/lib/router/utils/is-bot\")},6803:()=>{},6953:(a,b,c)=>{\"use strict\";c.r(b),c.d(b,{default:()=>f,metadata:()=>e});var d=c(5338);c(6803);let e={title:\"DeepAuditCrossWalk \\xb7 AI governance coverage\",description:\"Traceable questionnaire coverage and enterprise policy gap analysis for Australian banking AI use cases.\"};function f({children:a}){return(0,d.jsx)(\"html\",{lang:\"en\",children:(0,d.jsx)(\"body\",{children:a})})}},7055:(a,b,c)=>{\"use strict\";c.r(b),c.d(b,{GlobalError:()=>F.a,__next_app__:()=>L,handler:()=>N,pages:()=>K,routeModule:()=>M,tree:()=>J});var d=c(4679),e=c(9754),f=c(9117),g=c(6595),h=c(2324),i=c(9326),j=c(8928),k=c(175),l=c(12),m=c(4290),n=c(2696),o=c(2574),p=c(2802),q=c(7533),r=c(5229),s=c(2822),t=c(261),u=c(6453),v=c(2474),w=c(6713),x=c(1356),y=c(2685),z=c(6225),A=c(3446),B=c(2762),C=c(5742),D=c(6439),E=c(1170),F=c.n(E),G=c(2506),H=c(1203),I={};for(let a in G)0>[\"default\",\"tree\",\"pages\",\"GlobalError\",\"__next_app__\",\"routeModule\",\"handler\"].indexOf(a)&&(I[a]=()=>G[a]);c.d(b,I);let J=[\"\",{children:[\"__PAGE__\",{},{page:[()=>Promise.resolve().then(c.bind(c,7742)),\"C:\\\\Users\\\\vivia\\\\OneDrive\\\\Desktop\\\\DeepAuditCrossWalk\\\\web\\\\app\\\\page.tsx\"]}]},{layout:[()=>Promise.resolve().then(c.bind(c,6953)),\"C:\\\\Users\\\\vivia\\\\OneDrive\\\\Desktop\\\\DeepAuditCrossWalk\\\\web\\\\app\\\\layout.tsx\"],\"global-error\":[()=>Promise.resolve().then(c.t.bind(c,1170,23)),\"next/dist/client/components/builtin/global-error.js\"],\"not-found\":[()=>Promise.resolve().then(c.t.bind(c,7028,23)),\"next/dist/client/components/builtin/not-found.js\"],forbidden:[()=>Promise.resolve().then(c.t.bind(c,461,23)),\"next/dist/client/components/builtin/forbidden.js\"],unauthorized:[()=>Promise.resolve().then(c.t.bind(c,2768,23)),\"next/dist/client/components/builtin/unauthorized.js\"]}],K=[\"C:\\\\Users\\\\vivia\\\\OneDrive\\\\Desktop\\\\DeepAuditCrossWalk\\\\web\\\\app\\\\page.tsx\"],L={require:c,loadChunk:()=>Promise.resolve()},M=new e.AppPageRouteModule({definition:{kind:f.RouteKind.APP_PAGE,page:\"/page\",pathname:\"/\",bundlePath:\"\",filename:\"\",appPaths:[]},userland:{loaderTree:J},distDir:\".next\",relativeProjectDir:\"\"});async function N(a,b,e){var E;let I=\"/page\";\"/index\"===I&&(I=\"/\");let O=(0,i.getRequestMeta)(a,\"postponed\"),P=(0,i.getRequestMeta)(a,\"minimalMode\"),Q=await M.prepare(a,b,{srcPage:I,multiZoneDraftMode:!1});if(!Q)return b.statusCode=400,b.end(\"Bad Request\"),null==e.waitUntil||e.waitUntil.call(e,Promise.resolve()),null;let{buildId:R,query:S,params:T,parsedUrl:U,pageIsDynamic:V,buildManifest:W,nextFontManifest:X,reactLoadableManifest:Y,serverActionsManifest:Z,clientReferenceManifest:$,subresourceIntegrityManifest:_,prerenderManifest:aa,isDraftMode:ab,resolvedPathname:ac,revalidateOnlyGenerated:ad,routerServerContext:ae,nextConfig:af,interceptionRoutePatterns:ag}=Q,ah=U.pathname||\"/\",ai=(0,t.normalizeAppPath)(I),{isOnDemandRevalidate:aj}=Q,ak=M.match(ah,aa),al=!!aa.routes[ac]&&(M.isDev||(0,d.isRouteCacheOwner)(ac,M.cacheOwner,aa.routes[ac])),am=!!(ak||al||aa.routes[ai]),an=a.headers[\"user-agent\"]||\"\",ao=(0,w.getBotType)(an),ap=(0,r.isHtmlBotRequest)(a),aq=(0,i.getRequestMeta)(a,\"isPrefetchRSCRequest\")??\"1\"===a.headers[v.NEXT_ROUTER_PREFETCH_HEADER],ar=(0,i.getRequestMeta)(a,\"isRSCRequest\")??(0,o.f)(a.headers[v.RSC_HEADER]),as=(0,u.getIsPossibleServerAction)(a),at=(0,n.checkIsAppPPREnabled)(af.experimental.ppr)&&(null==(E=aa.routes[ai]??aa.dynamicRoutes[ai])?void 0:E.renderingMode)===\"PARTIALLY_STATIC\",au=!1,av=!1,aw=at?O:void 0,ax=at&&ar&&!aq,ay=(0,i.getRequestMeta)(a,\"segmentPrefetchRSCRequest\"),az=!an||(0,r.shouldServeStreamingMetadata)(an,af.htmlLimitedBots);ap&&at&&(am=!1,az=!1);let aA=!0===M.isDev||!am||\"string\"==typeof O||ax,aB=ap&&at,aC=null;ab||!am||aA||as||aw||ax||(aC=ac);let aD=aC;!aD&&M.isDev&&(aD=ac),M.isDev||ab||!am||!ar||ax||(0,l.d)(a.headers);let aE={...G,tree:J,pages:K,GlobalError:F(),handler:N,routeModule:M,__next_app__:L};Z&&$&&(0,q.setReferenceManifestsSingleton)({page:I,clientReferenceManifest:$,serverActionsManifest:Z,serverModuleMap:(0,s.createServerModuleMap)({serverActionsManifest:Z})});let aF=a.method||\"GET\",aG=(0,h.getTracer)(),aH=aG.getActiveScopeSpan();try{let d=M.getVaryHeader(ac,ag);b.setHeader(\"Vary\",d);let g=async(c,d)=>{let e=new m.NodeNextRequest(a),f=new m.NodeNextResponse(b);return M.render(e,f,d).finally(()=>{if(!c)return;c.setAttributes({\"http.status_code\":b.statusCode,\"next.rsc\":!1});let d=aG.getRootSpanAttributes();if(!d)return;if(d.get(\"next.span_type\")!==j.BaseServerSpan.handleRequest)return void console.warn(`Unexpected root span type '${d.get(\"next.span_type\")}'. Please report this Next.js issue https://github.com/vercel/next.js`);let e=d.get(\"next.route\");if(e){let a=`${aF} ${e}`;c.setAttributes({\"next.route\":e,\"http.route\":e,\"next.span_name\":a}),c.updateName(a)}else c.updateName(`${aF} ${a.url}`)})},l=async({span:d,postponed:f,fallbackRouteParams:h})=>{let j={query:S,params:T,page:ai,sharedContext:{buildId:R},serverComponentsHmrCache:(0,i.getRequestMeta)(a,\"serverComponentsHmrCache\"),fallbackRouteParams:h,renderOpts:{App:()=>null,Document:()=>null,pageConfig:{},ComponentMod:aE,Component:(0,k.T)(aE),params:T,routeModule:M,page:I,postponed:f,shouldWaitOnAllReady:aB,serveStreamingMetadata:az,supportsDynamicResponse:\"string\"==typeof f||aA,buildManifest:W,nextFontManifest:X,reactLoadableManifest:Y,subresourceIntegrityManifest:_,serverActionsManifest:Z,clientReferenceManifest:$,setIsrStatus:null==ae?void 0:ae.setIsrStatus,dir:c(3873).join(process.cwd(),M.relativeProjectDir),isDraftMode:ab,isRevalidate:am&&!f&&!ax,botType:ao,isOnDemandRevalidate:aj,isPossibleServerAction:as,assetPrefix:af.assetPrefix,nextConfigOutput:af.output,crossOrigin:af.crossOrigin,trailingSlash:af.trailingSlash,previewProps:aa.preview,deploymentId:af.deploymentId,enableTainting:af.experimental.taint,htmlLimitedBots:af.htmlLimitedBots,devtoolSegmentExplorer:af.experimental.devtoolSegmentExplorer,reactMaxHeadersLength:af.reactMaxHeadersLength,multiZoneDraftMode:!1,incrementalCache:(0,i.getRequestMeta)(a,\"incrementalCache\"),cacheLifeProfiles:af.experimental.cacheLife,basePath:af.basePath,serverActions:af.experimental.serverActions,...au?{nextExport:!0,supportsDynamicResponse:!1,isStaticGeneration:!0,isRevalidate:!0,isDebugDynamicAccesses:au}:{},experimental:{isRoutePPREnabled:at,expireTime:af.expireTime,staleTimes:af.experimental.staleTimes,cacheComponents:!!af.experimental.cacheComponents,clientSegmentCache:!!af.experimental.clientSegmentCache,clientParamParsing:!!af.experimental.clientParamParsing,dynamicOnHover:!!af.experimental.dynamicOnHover,inlineCss:!!af.experimental.inlineCss,authInterrupts:!!af.experimental.authInterrupts,clientTraceMetadata:af.experimental.clientTraceMetadata||[]},waitUntil:e.waitUntil,onClose:a=>{b.on(\"close\",a)},onAfterTaskError:()=>{},onInstrumentationRequestError:(b,c,d)=>M.onRequestError(a,b,d,ae),err:(0,i.getRequestMeta)(a,\"invokeError\"),dev:M.isDev}},l=await g(d,j),{metadata:m}=l,{cacheControl:n,headers:o={},fetchTags:p}=m;if(p&&(o[A.NEXT_CACHE_TAGS_HEADER]=p),a.fetchMetrics=m.fetchMetrics,am&&(null==n?void 0:n.revalidate)===0&&!M.isDev&&!at){let a=m.staticBailoutInfo,b=Object.defineProperty(Error(`Page changed from static to dynamic at runtime ${ac}${(null==a?void 0:a.description)?`, reason: ${a.description}`:\"\"}"
+    ]
+  ],
+  "web/.next/static/chunks/app/page-4c4a3f9c3454e736.js": [
+    [
+      1,
+      "(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[974],{2415:(e,s,n)=>{\"use strict\";n.r(s),n.d(s,{default:()=>l});var i=n(5155),a=n(2115);let r={apra_regulated:\"APRA-regulated entity\",handles_personal_information:\"Processes personal information\",makes_or_assists_significant_decisions:\"Makes or assists significant decisions\",handles_regulated_complaints:\"Handles regulated complaints\",idr_obligations:\"Entity-specific IDR duty confirmed\",third_party_ai_service:\"Uses third-party AI services\",material_service_provider:\"CPS 230 service materiality confirmed\",supports_critical_operation:\"Supports a critical operation\",eu_establishment_or_market:\"EU establishment or market nexus\",eu_output_used:\"AI outputs used in the EU\",eu_deployer_or_provider_role:\"Relevant EU provider/deployer role\",nist_ai_rmf_adopted:\"Organisation has adopted NIST AI RMF\",iso_42001_adopted:\"Organisation has adopted ISO 42001\"},t=Object.fromEntries(Object.keys(r).map(e=>[e,null]));function l(){var e,s,n,l,o,c,d;let[p,u]=(0,a.useState)(\"Dispute and Refund Agent\"),[h,m]=(0,a.useState)({...t}),[j,x]=(0,a.useState)(\"\"),[g,_]=(0,a.useState)(\"coverage\"),[v,b]=(0,a.useState)(\"All refunds above AUD 500 require human approval before payment execution. Approval logs must be retained.\"),[f,y]=(0,a.useState)(null),[N,A]=(0,a.useState)(\"\"),[k,w]=(0,a.useState)(!1);async function S(){w(!0),A(\"\"),y(null);try{let e=function(e,s,n){let i=\"\"===n.trim()?null:Number(n);if(null!==i&&(!Number.isFinite(i)||i<0))throw Error(\"Approval threshold must be a non-negative AUD amount or left unknown.\");return{use_case:{name:e.trim()||\"Untitled AI use case\",...s,approval_threshold_aud:i},questionnaire_pack:\"DEMO_BANKING_V1\",persist:!1}}(p,h,j),s=await fetch(\"/api/analysis\",{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({...e,kind:g,...\"policy-gaps\"===g?{policy_text:v}:{}})}),n=await s.json();if(!s.ok)throw Error(n.error||\"Analysis failed\");y(n)}catch(e){A(e instanceof Error?e.message:\"Analysis failed\")}finally{w(!1)}}let C=f?null!=(d=f.gaps)?d:[...null!=(s=f.policy_gaps)?s:[],...null!=(n=f.questionnaire_gaps)?n:[],...null!=(l=f.control_conflicts)?l:[],...null!=(o=f.implementation_evidence_gaps)?o:[],...null!=(c=f.enterprise_gaps)?c:[]]:[];return(0,i.jsxs)(\"main\",{children:[(0,i.jsxs)(\"nav\",{children:[(0,i.jsxs)(\"a\",{className:\"brand\",href:\"/\",children:[\"DeepAudit\",(0,i.jsx)(\"span\",{children:\"CrossWalk\"})]}),(0,i.jsx)(\"a\",{href:\"https://github.com/VivianFuVivianFu/DeepAuditCrossWalk\",target:\"_blank\",rel:\"noreferrer\",children:\"GitHub \u2197\"})]}),(0,i.jsxs)(\"header\",{children:[(0,i.jsx)(\"p\",{className:\"eyebrow\",children:\"AUSTRALIAN BANKING \\xb7 OPEN SOURCE MVP\"}),(0,i.jsxs)(\"h1\",{children:[\"Find the requirements\",(0,i.jsx)(\"br\",{}),\"your assessment misses.\"]}),(0,i.jsx)(\"p\",{className:\"lead\",children:\"Connect applicable obligations, enterprise policies, assessment questions and evidence. Make every gap reviewable.\"})]}),(0,i.jsxs)(\"aside\",{className:\"notice\",children:[(0,i.jsx)(\"strong\",{children:\"Demonstration workspace.\"}),\" This release uses 19 original synthetic questions and proposed regulatory interpretations. Import an authorised AIAF workbook through the API for its full question bank. Assessment coverage and legal compliance are separate conclusions.\"]}),(0,i.jsxs)(\"section\",{className:\"workspace\",children:[(0,i.jsxs)(\"div\",{className:\"panel\",children:[(0,i.jsxs)(\"div\",{className:\"section-title\",children:[(0,i.jsxs)(\"div\",{children:[(0,i.jsx)(\"p\",{className:\"eyebrow\",children:\"01 / CONTEXT\"}),(0,i.jsx)(\"h2\",{children:\"Your AI use case\"})]}),(0,i.jsx)(\"button\",{className:\"quiet\",onClick:function(){m({...t,apra_regulated:!0,handles_personal_information:!0,handles_regulated_complaints:!0,makes_or_assists_significant_decisions:!0,third_party_ai_service:!0,nist_ai_rmf_adopted:!0}),u(\"Example Australian bank refund agent\"),x(\"500\"),y(null)},disabled:k,children:\"Load example\"})]}),(0,i.jsxs)(\"fieldset\",{disabled:k,children:[(0,i.jsxs)(\"label\",{children:[\"Use case name\",(0,i.jsx)(\"input\",{maxLength:200,value:p,onChange:e=>{u(e.target.value),y(null)}})]}),(0,i.jsx)(\"div\",{className:\"facts\",children:Object.entries(r).map(e=>{let[s,n]=e;return(0,i.jsxs)(\"label\",{children:[n,(0,i.jsxs)(\"select\",{\"aria-label\":n,value:null===h[s]?\"unknown\":String(h[s]),onChange:e=>{var n,i;return i=\"true\"===(n=e.target.value)||\"false\"!==n&&null,void(m(e=>({...e,[s]:i})),y(null))},children:[(0,i.jsx)(\"option\",{value:\"unknown\",children:\"Undetermined\"}),(0,i.jsx)(\"option\",{value:\"true\",children:\"Yes \u2014 confirmed\"}),(0,i.jsx)(\"option\",{value:\"false\",children:\"No \u2014 confirmed\"})]})]},s)})}),(0,i.jsxs)(\"label\",{children:[\"Human approval threshold (AUD)\",(0,i.jsx)(\"input\",{type:\"number\",min:\"0\",step:\"0.01\",placeholder:\"Unknown\",value:j,onChange:e=>{x(e.target.value),y(null)}})]})]}),(0,i.jsx)(\"p\",{className:\"muted\",children:\"Unknown facts remain undetermined. The presence of a supplier does not establish its materiality or an IDR duty.\"})]}),(0,i.jsxs)(\"div\",{className:\"panel\",children:[(0,i.jsx)(\"p\",{className:\"eyebrow\",children:\"02 / ASSESSMENT\"}),(0,i.jsx)(\"h2\",{children:\"Choose an analysis\"}),(0,i.jsxs)(\"div\",{className:\"tabs\",role:\"group\",\"aria-label\":\"Assessment type\",children:[(0,i.jsx)(\"button\",{disabled:k,className:\"coverage\"===g?\"active\":\"\",onClick:()=>{_(\"coverage\"),y(null)},children:\"Questionnaire coverage\"}),(0,i.jsx)(\"button\",{disabled:k,className:\"policy-gaps\"===g?\"active\":\"\",onClick:()=>{_(\"policy-gaps\"),y(null)},children:\"Enterprise policy gaps\"})]}),\"coverage\"===g?(0,i.jsx)(\"p\",{children:\"Evaluate the selected facts against the shared obligation library. Candidate mappings remain provisional until an authorised reviewer approves them.\"}):(0,i.jsxs)(\"label\",{children:[\"Policy excerpt\",(0,i.jsx)(\"textarea\",{disabled:k,rows:9,maxLength:25e4,value:v,onChange:e=>{b(e.target.value),y(null)}}),(0,i.jsx)(\"small\",{children:\"Use synthetic or authorised excerpts. This web demo does not persist assessments; the configured server still processes submitted text.\"})]}),(0,i.jsx)(\"button\",{className:\"primary\",disabled:k||\"policy-gaps\"===g&&!v.trim(),onClick:S,children:k?\"Assessing\u2026\":\"Run assessment \u2192\"}),N&&(0,i.jsx)(\"p\",{className:\"error\",role:\"alert\",children:N}),(0,i.jsx)(\"div\",{className:\"chain\",children:\"Obligation \u2192 Control \u2192 Question \u2192 Evidence \u2192 Review\"})]})]}),f&&(0,i.jsxs)(\"section\",{className:\"results\",\"aria-live\":\"polite\",children:[(0,i.jsxs)(\"div\",{className:\"section-title\",children:[(0,i.jsxs)(\"div\",{children:[(0,i.jsx)(\"p\",{className:\"eyebrow\",children:\"03 / FINDINGS\"}),(0,i.jsx)(\"h2\",{children:\"Traceable assessment results\"})]}),(0,i.jsx)(\"button\",{onClick:function(){if(!f)return;let e=URL.createObjectURL(new Blob([JSON.stringify(f,null,2)],{type:\"application/json\"})),s=document.createElement(\"a\");s.href=e,s.download=\"crosswalk-\".concat(f.assessment_id,\".json\"),s.click(),URL.revokeObjectURL(e)},children:\"Export JSON \u2193\"})]}),(0,i.jsxs)(\"p\",{className:\"muted\",children:[\"Assessment \",f.assessment_id,\" \\xb7 Regulatory pack\",\" \",f.regulatory_pack_version,\" \\xb7\",\" \",new Date(f.created_at).toLocaleString()]}),f.selection_warning&&(0,i.jsx)(\"p\",{className:\"notice\",children:f.selection_warning}),null==(e=f.warnings)?void 0:e.map((e,s)=>(0,i.jsx)(\"p\",{className:\"notice\",children:e},s)),f.metrics&&(0,i.jsx)(\"div\",{className:\"metrics\",children:[[\"Confirmed coverage\",\"\".concat(f.metrics.confirmed_coverage_rate,\"%\")],[\"Confirmed missing\",f.metrics.confirmed_missing],[\"Conditional applicability\",f.metrics.applicability_conditional],[\"Undetermined applicability\",f.metrics.applicability_undetermined]].map(e=>{let[s,n]=e;return(0,i.jsxs)(\"div\",{children:[(0,i.jsx)(\"span\",{children:s}),(0,i.jsx)(\"strong\",{children:n})]},s)})}),f.results&&[\"binding\",\"enforceable_guidance\",\"guidance\",\"voluntary\"].map(e=>{let s=f.results.filter(s=>s.authority===e);return s.length?(0,i.jsxs)(\"div\",{children:[(0,i.jsx)(\"h3\",{children:\"voluntary\"===e?\"Voluntary standards alignment\":e.replaceAll(\"_\",\" \")}),s.map(e=>(0,i.jsxs)(\"details\",{children:[(0,i.jsxs)(\"summary\",{children:[(0,i.jsxs)(\"span\",{children:[(0,i.jsx)(\"strong\",{children:e.title}),(0,i.jsxs)(\"small\",{children:[e.instrument,\" \\xb7 \",e.provision]})]}),(0,i.jsx)(\"span\",{className:\"badge \".concat(e.applicability.status),children:e.applicability.status.replaceAll(\"_\",\" \")}),(0,i.jsx)(\"span\",{className:\"badge\",children:e.confirmed_status.replaceAll(\"_\",\" \")})]}),(0,i.jsxs)(\"div\",{className:\"detail\",children:[(0,i.jsx)(\"p\",{children:e.applicability.reason}),(0,i.jsxs)(\"p\",{children:[\"Candidate status: \",e.provisional_status,\". Approved mappings:\",\" \",e.confirmed_question_ids.join(\", \")||\"none\",\". Proposed questions:\",\" \",e.candidate_question_ids.join(\", \")||\"none\",\".\"]}),(0,i.jsxs)(\"p\",{children:[(0,i.jsx)(\"strong\",{children:\"Unconfirmed facets:\"}),\" \",e.confirmed_missing_facets.join(\", \")||\"none\"]}),e.suggested_questions.map((e,s)=>(0,i.jsxs)(\"p\",{children:[\"Suggested: \",e]},s)),(0,i.jsxs)(\"p\",{children:[(0,i.jsx)(\"strong\",{children:\"Evidence:\"}),\" \",e.evidence_requirements.join(\" \\xb7 \")]}),(0,i.jsx)(\"a\",{href:e.source_url,rel:\"noreferrer\",target:\"_blank\",children:\"Regulatory source \u2197\"})]})]},e.obligation_id))]},e):null}),(0,i.jsxs)(\"h3\",{children:[\"Gaps and remediation (\",C.length,\")\"]}),C.map(e=>(0,i.jsxs)(\"details\",{children:[(0,i.jsxs)(\"summary\",{children:[(0,i.jsxs)(\"span\",{children:[(0,i.jsx)(\"strong\",{children:e.title}),(0,i.jsx)(\"small\",{children:e.gap_type.replaceAll(\"_\",\" \")})]}),(0,i.jsx)(\"span\",{className:\"badge \".concat(e.severity),children:e.severity})]}),(0,i.jsxs)(\"div\",{className:\"detail\",children:[(0,i.jsx)(\"p\",{children:e.recommendation}),(0,i.jsxs)(\"p\",{children:[(0,i.jsx)(\"strong\",{children:\"Missing facets:\"}),\" \",e.missing_facets.join(\", \")||\"See recommendation\"]}),(0,i.jsxs)(\"p\",{children:[(0,i.jsx)(\"strong\",{children:\"Evidence:\"}),\" \",e.evidence_required.join(\" \\xb7 \")||\"Reviewer to determine\"]})]})]},e.gap_id))]}),(0,i.jsxs)(\"footer\",{children:[(0,i.jsx)(\"span\",{children:\"DeepAuditCrossWalk \\xb7 Independent project \\xb7 Apache-2.0\"}),(0,i.jsx)(\"a\",{href:\"http://localhost:8000/docs\",children:\"Local API documentation \u2197\"})]})]})}},4892:(e,s,n)=>{Promise.resolve().then(n.bind(n,2415))}},e=>{e.O(0,[441,255,358],()=>e(e.s=4892)),_N_E=e.O()}]);"
+    ]
+  ],
+  "web/app/page.tsx": [
+    [
+      111,
+      "authorised AIAF workbook through the API for its full question bank."
+    ]
+  ]
+}

@@ -11,7 +11,7 @@ from starlette.responses import JSONResponse
 
 from .api import router
 from .catalog import (
-    load_aiaf_question_bank,
+    load_demo_questionnaire,
     load_regulatory_pack,
     validate_regulatory_pack,
 )
@@ -146,7 +146,7 @@ async def storage_conflict(_request, exc):
 
 @app.get("/v1/demo")
 def demo_metadata():
-    bank = load_aiaf_question_bank()
+    bank = load_demo_questionnaire()
     return {
         "questionnaire": bank.metadata.model_dump(mode="json"),
         "regulatory_pack": validate_regulatory_pack(load_regulatory_pack()),

@@ -10,6 +10,7 @@ from typing import Dict, List, Optional, Sequence, Set, Tuple
 from .applicability import decide_applicability
 import uuid
 from .models import (
+    ApplicabilityDecision,
     ClauseReviewStatus,
     EnterpriseBaseline,
     EnterpriseClause,
@@ -261,6 +262,7 @@ def evaluate_questionnaire_coverage(
     assessment_mode: Optional[str] = None,
     assessment_target_type: str = "questionnaire",
 ) -> CoverageAssessment:
+    use_case_was_omitted = use_case is None
     if use_case is None:
         use_case = BankingUseCase.enterprise_baseline()
     results: List[ObligationCoverage] = []
@@ -268,6 +270,8 @@ def evaluate_questionnaire_coverage(
     if assessment_mode is not None:
         effective_mode = assessment_mode
     elif enterprise_baseline is not None or bool(enterprise_clauses):
+        effective_mode = "enterprise_enhanced"
+    elif use_case_was_omitted:
         effective_mode = "enterprise_enhanced"
     else:
         effective_mode = "regulatory_only"
@@ -278,7 +282,80 @@ def evaluate_questionnaire_coverage(
         enterprise_clauses = ()
 
     for obligation in regulatory_pack.obligations:
-        applicability = decide_applicability(obligation, use_case)
+        if not is_enterprise and (
+            obligation.obligation_id == "ENT-AI-DELEGATED-APPROVAL"
+            or getattr(obligation, "layer", None) == "enterprise_control_baseline"
+            or str(getattr(obligation, "authority", "")).lower() in {"enterprise", "authority.enterprise"}
+            or getattr(obligation, "source_id", "") == "ENTERPRISE-AI-STD"
+        ):
+            applicability = ApplicabilityDecision(
+                obligation_id=obligation.obligation_id,
+                status=ApplicabilityStatus.NOT_APPLICABLE,
+                reason="Enterprise internal baseline requirement excluded from Regulatory-Only assessment",
+                authority=obligation.authority,
+                assessment_scope=obligation.assessment_scope,
+                rule_key=obligation.applicability_key,
+            )
+        elif is_enterprise and (
+            obligation.obligation_id == "ENT-AI-DELEGATED-APPROVAL"
+            or getattr(obligation, "layer", None) == "enterprise_control_baseline"
+            or str(getattr(obligation, "authority", "")).lower() in {"enterprise", "authority.enterprise"}
+            or getattr(obligation, "source_id", "") == "ENTERPRISE-AI-STD"
+        ):
+            source_clauses = (
+                enterprise_baseline.clause_snapshots
+                if enterprise_baseline and enterprise_baseline.clause_snapshots
+                else enterprise_clauses or ()
+            )
+            if source_clauses:
+                has_approved_baseline_clause = False
+                for c in source_clauses:
+                    if getattr(c, "status", None) in {"superseded", "retired"}:
+                        continue
+                    if getattr(c, "review_status", None) not in {
+                        ClauseReviewStatus.APPROVED,
+                        ClauseReviewStatus.CONFIRMED,
+                    }:
+                        continue
+                    clause_control_ids = {
+                        m.control_id for m in getattr(c, "control_mappings", [])
+                    }
+                    if getattr(c, "control_id", None):
+                        clause_control_ids.add(c.control_id)
+                    if (
+                        c.clause_id == obligation.obligation_id
+                        or obligation.control_id in clause_control_ids
+                        or "CTRL-DELEGATED-AUTHORITY-THRESHOLD" in clause_control_ids
+                        or getattr(c, "source_id", "") == "ENTERPRISE-AI-STD"
+                    ):
+                        has_approved_baseline_clause = True
+                        break
+
+                if has_approved_baseline_clause:
+                    applicability = decide_applicability(obligation, use_case)
+                else:
+                    applicability = ApplicabilityDecision(
+                        obligation_id=obligation.obligation_id,
+                        status=ApplicabilityStatus.NOT_APPLICABLE,
+                        reason="Enterprise internal baseline requirement not present in tenant's approved baseline",
+                        authority=obligation.authority,
+                        assessment_scope=obligation.assessment_scope,
+                        rule_key=obligation.applicability_key,
+                    )
+            elif enterprise_baseline is None and not enterprise_clauses:
+                # Mode B without custom tenant baseline (e.g. synthetic catalog validation)
+                applicability = decide_applicability(obligation, use_case)
+            else:
+                applicability = ApplicabilityDecision(
+                    obligation_id=obligation.obligation_id,
+                    status=ApplicabilityStatus.NOT_APPLICABLE,
+                    reason="Enterprise internal baseline requirement not present in tenant's approved baseline",
+                    authority=obligation.authority,
+                    assessment_scope=obligation.assessment_scope,
+                    rule_key=obligation.applicability_key,
+                )
+        else:
+            applicability = decide_applicability(obligation, use_case)
         if applicability.status is not ApplicabilityStatus.APPLICABLE:
             results.append(
                 ObligationCoverage(
@@ -478,7 +555,9 @@ def evaluate_questionnaire_coverage(
         if item.applicability.status is ApplicabilityStatus.APPLICABLE
     ]
 
-    selection_mode = question_bank.routing_metadata.get("selection_mode", "core_only")
+    selection_mode = question_bank.routing_metadata.get(
+        "selection_mode", "full_questionnaire"
+    )
     selection_warning = question_bank.routing_metadata.get("selection_warning")
 
     enterprise_gaps: List[GapRecord] = []
@@ -868,7 +947,9 @@ def evaluate_questionnaire_coverage(
         gaps=gaps,
         question_scope="routed_snapshot"
         if selection_mode == "routed_snapshot"
-        else "core_only",
+        else "core_only"
+        if selection_mode == "core_only"
+        else "full_questionnaire",
         selected_question_count=len(question_bank.questions),
         selection_warning=selection_warning,
         enterprise_baseline_id=enterprise_baseline.baseline_id if (is_enterprise and enterprise_baseline) else None,
