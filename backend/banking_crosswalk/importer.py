@@ -14,7 +14,7 @@ import re
 import warnings
 import zipfile
 from pathlib import PurePosixPath
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from defusedxml import ElementTree as ET
 from openpyxl import load_workbook
@@ -139,6 +139,105 @@ def _validate_workbook_archive(raw: bytes) -> None:
             _validate_worksheet_archives(archive)
     except (zipfile.BadZipFile, KeyError, ET.ParseError) as exc:
         raise ValueError("Workbook is not a valid XLSX archive") from exc
+
+
+QUESTION_TEXT_HEADER_NAMES = {
+    "question",
+    "question text",
+    "question_text",
+    "question description",
+    "questions",
+    "requirement",
+    "requirement text",
+    "requirement description",
+    "requirements",
+    "control description",
+    "control requirement",
+    "assurance question",
+    "assessment question",
+    "prompt",
+    "item description",
+    "audit question",
+    "evaluation question",
+    "clause text",
+    "description",
+    "governance question",
+    "control objective",
+}
+
+QUESTION_ID_HEADER_NAMES = {
+    "id",
+    "question id",
+    "question_id",
+    "qid",
+    "q id",
+    "item id",
+    "item",
+    "item no",
+    "item number",
+    "ref",
+    "reference",
+    "ref no",
+    "ref id",
+    "reference id",
+    "code",
+    "control id",
+    "clause id",
+    "no",
+    "number",
+}
+
+DOMAIN_HEADER_NAMES = {
+    "domain",
+    "risk domain",
+    "category",
+    "topic",
+    "section",
+    "risk area",
+    "theme",
+    "pillar",
+    "area",
+    "stream",
+}
+
+ANSWER_HEADER_NAMES = {
+    "answer",
+    "response",
+    "options",
+    "answer options",
+    "response options",
+    "guidance",
+    "notes",
+    "evidence guidance",
+    "acceptable responses",
+}
+
+
+def _validate_cell_security(val: Any) -> None:
+    """Validate cell contents for formula injection, prohibited HTML markup, and encoding issues."""
+    if val is None:
+        return
+    text = str(val)
+    if "\x00" in text or any(0xD800 <= ord(c) <= 0xDFFF for c in text):
+        raise ValueError("Cell contains prohibited null byte or invalid character encoding")
+    stripped = text.strip()
+    if not stripped:
+        return
+    # Formula injection rejection: (=, +, -, @)
+    if stripped.startswith(("=", "@")):
+        raise ValueError(f"Cell contains prohibited formula expression: {stripped[:30]!r}")
+    if stripped.startswith(("+", "-")):
+        rest = stripped[1:].strip()
+        try:
+            float(stripped)
+            is_number = True
+        except ValueError:
+            is_number = False
+        if not is_number or any(c in rest for c in "()|'\"="):
+            raise ValueError(f"Cell contains prohibited formula injection: {stripped[:30]!r}")
+    # Prohibited HTML markup rejection
+    if re.search(r"<\s*/*\s*[a-zA-Z][^>]*>", text):
+        raise ValueError(f"Cell contains prohibited HTML markup: {text[:30]!r}")
 
 
 def _validate_worksheet_dimensions(workbook) -> None:
@@ -406,18 +505,10 @@ def _question_groups(questions_ws, cached_questions_ws) -> List[Dict[str, Any]]:
     return groups
 
 
-def import_aiaf_workbook(raw: bytes, filename: str = "aiaf.xlsx") -> QuestionBank:
-    _validate_workbook_archive(raw)
+def _import_legacy_aiaf_internal(
+    formula_wb, cached_wb, raw: bytes, filename: str, caught: list
+) -> QuestionBank:
     digest = hashlib.sha256(raw).hexdigest()
-    with warnings.catch_warnings(record=True) as caught:
-        warnings.simplefilter("always")
-        formula_wb = load_workbook(
-            io.BytesIO(raw), data_only=False, read_only=False, keep_links=False
-        )
-        cached_wb = load_workbook(
-            io.BytesIO(raw), data_only=True, read_only=False, keep_links=False
-        )
-
     try:
         _validate_worksheet_dimensions(formula_wb)
     except ValueError:
@@ -462,6 +553,7 @@ def import_aiaf_workbook(raw: bytes, filename: str = "aiaf.xlsx") -> QuestionBan
     seen_question_ids: set[str] = set()
     for group in grouped:
         text = group["text"]
+        _validate_cell_security(text)
         group_rows = set(range(group["first_row"], group["last_row"] + 1))
         matching_validations = [
             item
@@ -533,6 +625,8 @@ def import_aiaf_workbook(raw: bytes, filename: str = "aiaf.xlsx") -> QuestionBan
         text = _normalise_text(focus_ws.cell(row, 4).value)
         if not question_id or not text:
             continue
+        _validate_cell_security(question_id)
+        _validate_cell_security(text)
         if question_id in seen_focus_ids:
             formula_wb.close()
             cached_wb.close()
@@ -586,6 +680,8 @@ def import_aiaf_workbook(raw: bytes, filename: str = "aiaf.xlsx") -> QuestionBan
         risk = _normalise_text(trigger_ws.cell(row, 5).value)
         if not requirement and not risk:
             continue
+        _validate_cell_security(requirement)
+        _validate_cell_security(risk)
         triggers.append(
             {
                 "rule_id": f"AIAF-TRIGGER-{row - 2:03d}",
@@ -671,3 +767,285 @@ def import_aiaf_workbook(raw: bytes, filename: str = "aiaf.xlsx") -> QuestionBan
             "source_workbook_never_saved": True,
         },
     )
+
+
+def import_questionnaire_workbook(
+    raw: bytes,
+    filename: str = "questionnaire.xlsx",
+    sheet_names: Optional[List[str]] = None,
+    column_mapping: Optional[Dict[str, str]] = None,
+) -> QuestionBank:
+    """Import an arbitrary enterprise AI governance questionnaire from an XLSX workbook.
+
+    Dynamically detects Question Text, Question ID, and Category columns across all
+    sheets (or user-specified sheets). Enforces strict archive safety limits, streaming XML
+    validation, formula injection rejection, and HTML stripping.
+    """
+    _validate_workbook_archive(raw)
+    digest = hashlib.sha256(raw).hexdigest()
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        formula_wb = load_workbook(
+            io.BytesIO(raw), data_only=False, read_only=False, keep_links=False
+        )
+        cached_wb = load_workbook(
+            io.BytesIO(raw), data_only=True, read_only=False, keep_links=False
+        )
+
+    # Legacy AIAF layout dispatch if caller did not request specific sheets or column mapping
+    if (
+        EXPECTED_SHEETS.issubset(formula_wb.sheetnames)
+        and not sheet_names
+        and not column_mapping
+    ):
+        return _import_legacy_aiaf_internal(
+            formula_wb, cached_wb, raw, filename, caught
+        )
+
+    try:
+        # Validate dimensions across all worksheets
+        for ws in formula_wb.worksheets:
+            if (
+                ws.max_row > MAX_WORKSHEET_ROWS
+                or ws.max_column > MAX_WORKSHEET_COLUMNS
+            ):
+                raise ValueError(
+                    f"Worksheet {ws.title!r} exceeds the supported dimensions"
+                )
+
+        # Determine target sheets
+        if sheet_names:
+            missing_sheets = [
+                s for s in sheet_names if s not in formula_wb.sheetnames
+            ]
+            if missing_sheets:
+                raise ValueError(
+                    f"Specified sheet(s) not found in workbook: {missing_sheets}"
+                )
+            target_sheets = [formula_wb[name] for name in sheet_names]
+        else:
+            target_sheets = list(formula_wb.worksheets)
+
+        question_records: List[QuestionRecord] = []
+        seen_question_ids: set[str] = set()
+        import_warnings: List[str] = [str(item.message) for item in caught]
+
+        for ws in target_sheets:
+            if ws.max_row < 2:
+                if sheet_names and ws.title in sheet_names:
+                    raise ValueError(f"Worksheet {ws.title!r} contains no data rows")
+                continue
+
+            # Header row analysis (check row 1, then row 2)
+            header_row = 1
+            col_q_idx: Optional[int] = None
+            col_id_idx: Optional[int] = None
+            col_domain_idx: Optional[int] = None
+            col_answer_idx: Optional[int] = None
+
+            # Check caller-provided column mapping first
+            if column_mapping:
+                for col in range(1, ws.max_column + 1):
+                    val = _normalise_text(ws.cell(header_row, col).value).lower()
+                    if column_mapping.get("question_text", "").lower() in (
+                        val,
+                        str(col),
+                    ):
+                        col_q_idx = col
+                    if column_mapping.get("question_id", "").lower() in (
+                        val,
+                        str(col),
+                    ):
+                        col_id_idx = col
+                    if column_mapping.get("domain", "").lower() in (val, str(col)):
+                        col_domain_idx = col
+
+            # Automatic header discovery if not resolved by mapping
+            if col_q_idx is None:
+                for candidate_row in (1, 2):
+                    if candidate_row > ws.max_row:
+                        break
+                    for col in range(1, ws.max_column + 1):
+                        cell_val = _normalise_text(
+                            ws.cell(candidate_row, col).value
+                        ).lower()
+                        if not cell_val:
+                            continue
+                        clean_hdr = re.sub(r"[^a-z0-9]+", " ", cell_val).strip()
+                        if col_id_idx is None and (
+                            clean_hdr in QUESTION_ID_HEADER_NAMES
+                            or clean_hdr.endswith(" id")
+                            or clean_hdr.startswith("id ")
+                            or clean_hdr.endswith(" no")
+                            or clean_hdr == "ref"
+                        ):
+                            col_id_idx = col
+                        elif col_q_idx is None and (
+                            clean_hdr in QUESTION_TEXT_HEADER_NAMES
+                            or "question" in clean_hdr
+                            or "requirement" in clean_hdr
+                        ):
+                            col_q_idx = col
+                            header_row = candidate_row
+                        elif (
+                            col_domain_idx is None
+                            and clean_hdr in DOMAIN_HEADER_NAMES
+                        ):
+                            col_domain_idx = col
+                        elif (
+                            col_answer_idx is None
+                            and clean_hdr in ANSWER_HEADER_NAMES
+                        ):
+                            col_answer_idx = col
+                    if col_q_idx is not None:
+                        break
+
+            # Fallback to text-dense column if no header matched
+            if col_q_idx is None:
+                best_col = None
+                best_score = 0
+                sample_end = min(ws.max_row, header_row + 20)
+                for col in range(1, ws.max_column + 1):
+                    str_lengths = []
+                    for r in range(header_row + 1, sample_end + 1):
+                        v = ws.cell(r, col).value
+                        if isinstance(v, str) and len(v.strip()) > 0:
+                            str_lengths.append(len(v.strip()))
+                    if str_lengths:
+                        avg_len = sum(str_lengths) / len(str_lengths)
+                        if avg_len >= 12 and len(str_lengths) > best_score:
+                            best_score = len(str_lengths)
+                            best_col = col
+                if best_col is not None:
+                    col_q_idx = best_col
+                    import_warnings.append(
+                        f"Worksheet {ws.title!r}: dynamically fell back to text-dense Column {col_q_idx} for question text."
+                    )
+
+            if col_q_idx is None:
+                if sheet_names and ws.title in sheet_names:
+                    raise ValueError(
+                        f"Worksheet {ws.title!r} contains no identifiable question text column"
+                    )
+                continue
+
+            # Ingest rows
+            sheet_slug = (
+                re.sub(r"[^A-Za-z0-9]+", "-", ws.title).strip("-").upper()
+                or "SHEET"
+            )
+            for row in range(header_row + 1, ws.max_row + 1):
+                raw_cell = ws.cell(row, col_q_idx).value
+                _validate_cell_security(raw_cell)
+                q_text = _normalise_text(raw_cell)
+                if not q_text:
+                    continue
+
+                if col_id_idx is not None:
+                    raw_id_cell = ws.cell(row, col_id_idx).value
+                    _validate_cell_security(raw_id_cell)
+                    qid = _normalise_text(raw_id_cell)
+                else:
+                    qid = ""
+
+                if not qid:
+                    # Content-addressable stable question ID
+                    content_hash = hashlib.sha256(
+                        f"{ws.title}|{row}|{q_text}".encode("utf-8")
+                    ).hexdigest()[:8].upper()
+                    qid = f"{sheet_slug}-Q{row:03d}-{content_hash}"
+
+                # Disambiguate duplicate IDs
+                if qid in seen_question_ids:
+                    extra_hash = hashlib.sha256(
+                        f"{row}|{q_text}".encode("utf-8")
+                    ).hexdigest()[:4].upper()
+                    qid = f"{qid}-{extra_hash}"
+                seen_question_ids.add(qid)
+
+                domain = None
+                if col_domain_idx is not None:
+                    raw_domain = ws.cell(row, col_domain_idx).value
+                    _validate_cell_security(raw_domain)
+                    domain = _normalise_text(raw_domain) or None
+
+                answers = []
+                if col_answer_idx is not None:
+                    raw_answer = ws.cell(row, col_answer_idx).value
+                    _validate_cell_security(raw_answer)
+                    ans = _normalise_text(raw_answer)
+                    if ans:
+                        answers.append(ans)
+
+                question_records.append(
+                    QuestionRecord(
+                        question_id=qid,
+                        question_text=q_text,
+                        risk_domain=domain,
+                        answer_options=answers,
+                        source_version="1.0.0",
+                        source_sheet=ws.title,
+                        question_type="question",
+                        source_location=f"{ws.title}!R{row}C{col_q_idx}",
+                        routing_logic={},
+                        provenance={
+                            "source_namespace": "GENERAL_QUESTIONNAIRE_V1",
+                            "sheet_title": ws.title,
+                            "row_index": row,
+                        },
+                    )
+                )
+
+        if not question_records:
+            raise ValueError(
+                "Workbook contains no identifiable question columns or question rows"
+            )
+
+        source_version = "1.0.0"
+        fingerprint_content = f"{filename}|{len(question_records)}|{digest}"
+        metadata = QuestionnaireMetadata(
+            questionnaire_id=f"QBANK-{digest[:12]}",
+            source_filename=filename,
+            source_sha256=digest,
+            source_version=source_version,
+            header_fingerprint=hashlib.sha256(
+                fingerprint_content.encode("utf-8")
+            ).hexdigest(),
+            sheets={ws.title: ws.sheet_state for ws in formula_wb.worksheets},
+            core_question_count=len(question_records),
+            benefit_question_count=0,
+            focus_question_count=0,
+            trigger_count=0,
+            treatment_count=0,
+            risk_count=0,
+            warnings=list(dict.fromkeys(import_warnings)),
+        )
+
+        return QuestionBank(
+            metadata=metadata,
+            questions=question_records,
+            triggers=[],
+            routing_metadata={
+                "selection_mode": "full_questionnaire",
+                "source_workbook_never_saved": True,
+                "question_count": len(question_records),
+            },
+        )
+    finally:
+        formula_wb.close()
+        cached_wb.close()
+
+
+def import_aiaf_workbook(raw: bytes, filename: str = "aiaf.xlsx") -> QuestionBank:
+    """Deprecated alias for importing questionnaires.
+
+    Retained for backward compatibility. Emits a DeprecationWarning.
+    """
+    warnings.warn(
+        "import_aiaf_workbook is deprecated and will be removed in a future release. "
+        "Use import_questionnaire_workbook instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return import_questionnaire_workbook(raw, filename=filename)

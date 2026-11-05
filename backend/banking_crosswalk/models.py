@@ -255,7 +255,7 @@ class QuestionRecord(BaseModel):
     answer_options: List[str] = Field(default_factory=list)
     source_version: str
     source_sheet: str
-    question_type: Literal["core", "benefit", "focus", "overlay"] = "focus"
+    question_type: Literal["core", "benefit", "focus", "overlay", "question", "general"] = "question"
     source_location: Optional[str] = None
     routing_logic: Dict[str, Any] = Field(default_factory=dict)
     provenance: Dict[str, Any] = Field(default_factory=dict)
@@ -540,7 +540,7 @@ class CoverageAssessment(BaseModel):
     enterprise_gaps: List["GapRecord"] = Field(default_factory=list)
     applicable_obligation_ids: List[str] = Field(default_factory=list)
     applicable_enterprise_requirement_ids: List[str] = Field(default_factory=list)
-    question_scope: Literal["core_only", "routed_snapshot"] = "core_only"
+    question_scope: Literal["core_only", "routed_snapshot", "full_questionnaire"] = "full_questionnaire"
     selected_question_count: int = 0
     selection_warning: Optional[str] = None
     methodology: str = (

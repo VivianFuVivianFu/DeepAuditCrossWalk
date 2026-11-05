@@ -107,9 +107,10 @@ export default function Home() {
       </header>
       <aside className="notice">
         <strong>Demonstration workspace.</strong> This release uses 19 original
-        synthetic questions and proposed regulatory interpretations. Import an
-        authorised AIAF workbook through the API for its full question bank.
-        Assessment coverage and legal compliance are separate conclusions.
+        synthetic questions and proposed regulatory interpretations. Upload an
+        enterprise AI governance questionnaire (.xlsx) through the API for
+        organisation-specific assessment. Assessment coverage and legal compliance
+        are separate conclusions.
       </aside>
       <section className="workspace">
         <div className="panel">

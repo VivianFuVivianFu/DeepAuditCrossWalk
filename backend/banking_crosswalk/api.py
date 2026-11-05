@@ -8,14 +8,14 @@ import os
 import secrets
 import uuid
 from datetime import datetime, timezone
-from typing import Annotated, List, Literal, Optional
+from typing import Annotated, Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from .catalog import load_regulatory_pack, validate_regulatory_pack
+from .catalog import load_demo_questionnaire, load_regulatory_pack, validate_regulatory_pack
 from .coverage import evaluate_questionnaire_coverage
-from .importer import MAX_WORKBOOK_BYTES, import_aiaf_workbook
+from .importer import MAX_WORKBOOK_BYTES, import_aiaf_workbook, import_questionnaire_workbook
 from .models import (
     ClauseControlMapping,
     ClauseReviewStatus,
@@ -160,7 +160,7 @@ class QuestionnaireImportRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     filename: str = Field(
-        default="aiaf.excel.xlsx",
+        default="questionnaire.xlsx",
         min_length=1,
         max_length=255,
         pattern=r"^[^/\\\x00]+\.xlsx$",
@@ -169,6 +169,8 @@ class QuestionnaireImportRequest(BaseModel):
         max_length=4 * ((MAX_WORKBOOK_BYTES + 2) // 3),
         description="Base64-encoded XLSX bytes; the workbook is parsed read-only and not retained",
     )
+    sheet_names: Optional[List[str]] = Field(default=None, max_length=50)
+    column_mapping: Optional[Dict[str, str]] = Field(default=None)
 
 
 class QuestionnaireRouteRequest(BaseModel):
@@ -203,6 +205,9 @@ class CoverageAssessmentRequest(BaseModel):
         Literal["questionnaire", "strategy", "use_case"]
     ] = "questionnaire"
     routing_snapshot_id: Optional[str] = None
+    selection_mode: Optional[
+        Literal["full_questionnaire", "core_only", "routed_snapshot"]
+    ] = None
     enterprise_baseline_id: Optional[str] = None
     enterprise_baseline_version: Optional[str] = None
     persist: bool = True
@@ -296,12 +301,14 @@ def _not_found(exc: NotFoundError) -> HTTPException:
 
 
 def _assessment_question_snapshot(
-    question_bank: QuestionBank, routing_snapshot: Optional[QuestionRoutingSnapshot]
+    question_bank: QuestionBank,
+    routing_snapshot: Optional[QuestionRoutingSnapshot],
+    selection_mode: Optional[str] = None,
 ) -> QuestionBank:
-    """Use routed focus questions only; never infer coverage from the entire bank.
+    """Resolve the assessment question snapshot.
 
-    Core and approved overlay questions are always in scope. Focus questions
-    come only from a server-generated, tenant-scoped routing snapshot.
+    For general imported questionnaires, the default evaluates the full questionnaire.
+    For routed questionnaires with a snapshot, only the baseline and routed focus questions apply.
     """
 
     available = {item.question_id: item for item in question_bank.questions}
@@ -312,18 +319,38 @@ def _assessment_question_snapshot(
             status_code=422,
             detail=f"selected_question_ids contains unknown IDs: {unknown[:10]}",
         )
-    baseline = {
-        item.question_id
-        for item in question_bank.questions
-        if item.question_type in {"core", "overlay"}
-    }
-    included_ids = baseline | selected
-    mode = "routed_snapshot" if routing_snapshot else "core_only"
-    warning = (
-        None
-        if routing_snapshot
-        else "No routed focus-question snapshot was supplied; provisional coverage uses core and overlay questions only."
-    )
+
+    if routing_snapshot:
+        baseline = {
+            item.question_id
+            for item in question_bank.questions
+            if item.question_type in {"core", "overlay"}
+        }
+        included_ids = baseline | selected
+        mode = "routed_snapshot"
+        warning = None
+    elif selection_mode == "core_only" or (
+        selection_mode != "full_questionnaire"
+        and any(q.question_type == "focus" for q in question_bank.questions)
+        and any(q.question_type == "core" for q in question_bank.questions)
+        and not any(q.question_type in {"general", "question"} for q in question_bank.questions)
+    ):
+        baseline = {
+            item.question_id
+            for item in question_bank.questions
+            if item.question_type in {"core", "overlay"}
+        }
+        included_ids = baseline
+        mode = "core_only"
+        warning = (
+            "No routed focus-question snapshot was supplied; provisional coverage uses core and overlay questions only."
+        )
+    else:
+        # Full questionnaire mode (default for imported general questionnaires)
+        included_ids = set(available)
+        mode = "full_questionnaire"
+        warning = None
+
     metadata = question_bank.metadata.model_copy(
         update={
             "warnings": list(
@@ -409,7 +436,12 @@ def import_questionnaire(
             status_code=400, detail="workbook_base64 is not valid base64"
         ) from exc
     try:
-        bank = import_aiaf_workbook(raw, req.filename)
+        bank = import_questionnaire_workbook(
+            raw,
+            filename=req.filename,
+            sheet_names=req.sheet_names,
+            column_mapping=req.column_mapping,
+        )
     except (ValueError, OSError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return store.save_questionnaire(x_tenant_id, bank)
@@ -495,7 +527,9 @@ def create_coverage_assessment(
         x_tenant_id, req.routing_snapshot_id, source_question_bank
     )
     question_bank = _assessment_question_snapshot(
-        source_question_bank, routing_snapshot
+        source_question_bank,
+        routing_snapshot,
+        selection_mode=getattr(req, "selection_mode", None),
     )
     mappings = (
         store.mappings(
@@ -714,7 +748,9 @@ def create_policy_gap_assessment(
         x_tenant_id, req.routing_snapshot_id, source_question_bank
     )
     question_bank = _assessment_question_snapshot(
-        source_question_bank, routing_snapshot
+        source_question_bank,
+        routing_snapshot,
+        selection_mode=getattr(req, "selection_mode", None),
     )
     if req.enterprise_baseline_id or req.enterprise_policy_ids:
         policies_to_assess = []

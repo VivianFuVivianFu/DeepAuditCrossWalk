@@ -16,8 +16,7 @@ across questionnaire coverage validation and enterprise policy gap detection.
 
 ## What it does
 
-- Imports an authorised AIAF Excel workbook, including hidden sheets, source
-  hashes, question IDs, tags, formula text, cached values, risks and treatments.
+- Imports enterprise AI governance questionnaires (.xlsx) dynamically across any sheet layout, with content-addressable SHA-256 question hashing, auto-detected columns, and strict security limits (zip bomb protection, streaming XML validation, formula rejection, HTML stripping).
 - Keeps the original question bank separate from banking overlay questions.
 - Selects obligations using explicit applicability rules: applicable, conditional,
   not applicable, or undetermined. Unknown facts remain unknown.
@@ -72,24 +71,23 @@ Alternatively:
 docker compose up --build
 ```
 
-## Demo data and AIAF
+## Demonstration Data & Questionnaire Importing
 
 The bundled questionnaire contains **16 original synthetic core questions and 3
 synthetic focus questions**. It is explicitly labelled as demonstration data.
-The original NSW workbook and its full extracted text are not redistributed.
+The NSW AIAF questionnaire is not a regulatory library, an authoritative banking standard, or a required product dependency.
 
-Import your own authorised workbook with `POST /v1/questionnaires/import` and
-create a routing snapshot with `POST /v1/questionnaires/route`. Supply the returned
-questionnaire and snapshot IDs to assess the imported questions. Counts and
-versions are derived from the workbook; they are not fixed at 436 or 446.
-NSW AIAF is not itself an Australian commercial-banking legal standard.
+Import your organisation's enterprise questionnaire with `POST /v1/questionnaires/import`.
+The importer dynamically identifies question text, question IDs, and categories across any sheet layout,
+defaulting to full questionnaire evaluation (`full_questionnaire`).
 
-The initial regulatory pack contains engineering interpretations referencing the
-Privacy Act/APPs, APRA CPS 220/230/234, ASIC RG 271, EU AI Act scope, NIST AI RMF
-and selected ISO 42001 concepts. All proposed mappings require expert review.
-Source versions are snapshots, not a continuously updated legal service. NIST
-and ISO alignment is reported separately from binding obligations. Licensed ISO
-standard text is not distributed.
+The Shared Regulatory Library covers six authoritative source categories:
+- **Category A: Australian Legislation & Statutory Guidance** (Privacy Act 1988, Competition and Consumer Act 2010 / ACL, NCCP Act 2009, OAIC APP Guidelines).
+- **Category B: APRA Prudential Framework** (CPS 220 Risk Management, CPS 230 Operational Resilience, CPS 234 Information Security, CPG 235 Managing Data Risk).
+- **Category C: ASIC Financial Conduct & Regulatory Guidance** (RG 271 Internal Dispute Resolution, RG 104 Licensing Obligations, RG 105 Organisational Competence, REP 798 AI Governance Review).
+- **Category D: Enterprise Internal Baseline** (Tenant-specific policies uploaded and approved through the Enterprise Baseline engine in Mode B).
+- **Category E: EU AI Act** (Regulation (EU) 2024/1689 extraterritorial high-risk AI requirements under Article 2).
+- **Category F: NIST AI RMF & ISO/IEC Standards** (NIST AI RMF 1.0, ISO/IEC 42001:2023, ISO/IEC 23894:2023, ISO/IEC 27001:2022).
 
 ## API workflow
 
