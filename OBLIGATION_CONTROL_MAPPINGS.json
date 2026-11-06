@@ -5,7 +5,7 @@
   "verified_as_of": "2026-11-02",
   "disclaimer": "Similar wording across standards or jurisdictions never automatically establishes legal equivalence. Every mapping is classified as full, partial, related, or non_equivalent and remains in 'proposed' status until validated by a qualified human reviewer.",
   "equivalence_policy": "Similar wording across standards or jurisdictions never automatically establishes legal equivalence. Every mapping is classified as full, partial, related, or non_equivalent and remains in 'proposed' status until validated by a qualified human reviewer.",
-  "total_mappings": 57,
+  "total_mappings": 55,
   "mappings": [
     {
       "mapping_id": "MAP-PRIMARY-001",
@@ -1390,38 +1390,6 @@
       "reviewer_status": "proposed"
     },
     {
-      "mapping_id": "MAP-PRIMARY-046",
-      "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
-      "source_id": "ENTERPRISE-AI-STD",
-      "provision": "Clause E-DA-01 (Delegated financial authority, human approval threshold and non-bypass execution)",
-      "authority": "enterprise",
-      "control_id": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
-      "control_domain": "Human oversight and approval",
-      "mapping_relationship": "full",
-      "relationship": "full",
-      "mapped_facets": [
-        "human_approval_required",
-        "approval_threshold_defined",
-        "pre_execution_block",
-        "approval_logs_retained"
-      ],
-      "covered_facets": [
-        "human_approval_required",
-        "approval_threshold_defined",
-        "pre_execution_block",
-        "approval_logs_retained"
-      ],
-      "unmapped_obligation_facets": [],
-      "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-DELEGATED-AUTHORITY-THRESHOLD directly operationalises all extracted control facets and evidence requirements of ENT-AI-DELEGATED-APPROVAL (Enterprise AI & Delegated Authority Standard Clause E-DA-01 (Delegated financial authority, human approval threshold and non-bypass execution)).",
-      "rationale": "Unified control CTRL-DELEGATED-AUTHORITY-THRESHOLD directly operationalises all extracted control facets and evidence requirements of ENT-AI-DELEGATED-APPROVAL (Enterprise AI & Delegated Authority Standard Clause E-DA-01 (Delegated financial authority, human approval threshold and non-bypass execution)).",
-      "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
-      "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
-      "requires_human_validation": true,
-      "review_status": "proposed",
-      "reviewer_status": "proposed"
-    },
-    {
       "mapping_id": "MAP-CROSS-001",
       "obligation_id": "AU-PRIV-APP11-SECURITY",
       "source_id": "AU-PRIVACY-ACT",
@@ -1750,40 +1718,6 @@
       ],
       "equivalence_rationale": "Australian Guidance for AI Adoption (Oct 2025) Practice 5 (test and monitor) maps directly to CTRL-AI-DRIFT-MONITORING.",
       "mapping_uncertainty": "Voluntary Australian government guidance cross-mapping."
-    },
-    {
-      "mapping_id": "MAP-CROSS-011",
-      "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
-      "source_id": "ENTERPRISE-AI-STD",
-      "control_id": "CTRL-HUMAN-OVERSIGHT",
-      "relationship": "partial",
-      "covered_facets": [
-        "human_approval_required",
-        "pre_execution_block"
-      ],
-      "unmapped_facets": [
-        "approval_threshold_defined",
-        "approval_logs_retained"
-      ],
-      "rationale": "Enterprise delegated authority gates (ENT-AI-DELEGATED-APPROVAL) instantiate human-in-the-loop approval (CTRL-HUMAN-OVERSIGHT) specifically for financial transactions above an AUD threshold.",
-      "equivalence_caution": "General human oversight does not automatically enforce exact AUD delegated-authority thresholds or 7-year financial audit log retention.",
-      "requires_human_validation": true,
-      "review_status": "proposed",
-      "reviewer_status": "proposed",
-      "provision": "Clause E-DA-01 (Delegated financial authority, human approval threshold and non-bypass execution)",
-      "authority": "enterprise",
-      "control_domain": "Human oversight and approval",
-      "mapping_relationship": "partial",
-      "mapped_facets": [
-        "human_approval_required",
-        "pre_execution_block"
-      ],
-      "unmapped_obligation_facets": [
-        "approval_threshold_defined",
-        "approval_logs_retained"
-      ],
-      "equivalence_rationale": "Enterprise delegated authority gates (ENT-AI-DELEGATED-APPROVAL) instantiate human-in-the-loop approval (CTRL-HUMAN-OVERSIGHT) specifically for financial transactions above an AUD threshold.",
-      "mapping_uncertainty": "General human oversight does not automatically enforce exact AUD delegated-authority thresholds or 7-year financial audit log retention."
     }
   ]
 }

@@ -1046,6 +1046,7 @@ def compile_enterprise_baseline(
     baseline_id: Optional[str] = None,
     revision: int = 1,
     created_by: Optional[str] = None,
+    status: str = "active",
 ) -> EnterpriseBaseline:
     """Compile uploaded and reviewed enterprise policies into a versioned, immutable baseline.
 
@@ -1057,6 +1058,24 @@ def compile_enterprise_baseline(
     all_clauses = [c for p in policies for c in p.clauses]
     warnings: List[str] = []
     source_policy_versions = {p.policy_id: p.version for p in policies}
+
+    # Baseline Eligibility Hardening (Step 6)
+    if not policies or not all_clauses:
+        if status == "active":
+            raise ValueError("Cannot compile an active baseline from empty policy input")
+        status = "draft"
+
+    has_approved = any(
+        c.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+        for c in all_clauses
+    )
+    if not has_approved:
+        if status == "active":
+            status = "draft"
+            warnings.append(
+                "Baseline compiled with 'draft' status: policies contain wholly pending or rejected content "
+                "with no approved or confirmed clauses. Draft baselines are not eligible for confirmed assessment."
+            )
 
     # 1. Deduplication: detect duplicate requirements across policies
     seen_norm_texts: Dict[str, str] = {}
@@ -1158,7 +1177,7 @@ def compile_enterprise_baseline(
         conflicts=conflicts,
         warnings=warnings,
         baseline_sha256=baseline_sha256,
-        status="active",
+        status=status,
         created_at=utc_now(),
         created_by=created_by,
     )

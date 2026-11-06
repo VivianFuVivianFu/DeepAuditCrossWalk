@@ -414,13 +414,11 @@ class TenantStore:
         if baseline.baseline_id in bucket:
             existing = bucket[baseline.baseline_id]
             if (
-                existing.status == "active"
-                and baseline.status == "active"
-                and existing.revision == baseline.revision
+                existing.revision == baseline.revision
                 and existing.baseline_sha256 is not None
                 and existing.baseline_sha256 != baseline.baseline_sha256
             ):
-                raise ConflictError("Active enterprise baseline is immutable; increment revision to update.")
+                raise ConflictError("Enterprise baseline is immutable; increment revision to update.")
         bucket[baseline.baseline_id] = baseline
         self._record(tenant_id, "enterprise_baseline.saved", baseline.baseline_id)
         return baseline

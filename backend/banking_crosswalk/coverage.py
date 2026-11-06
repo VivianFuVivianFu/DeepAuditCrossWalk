@@ -8,6 +8,7 @@ from collections import defaultdict
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from .applicability import decide_applicability
+from .policy import verify_baseline_integrity
 import uuid
 from .models import (
     ApplicabilityDecision,
@@ -267,95 +268,65 @@ def evaluate_questionnaire_coverage(
         use_case = BankingUseCase.enterprise_baseline()
     results: List[ObligationCoverage] = []
 
-    if assessment_mode is not None:
-        effective_mode = assessment_mode
-    elif enterprise_baseline is not None or bool(enterprise_clauses):
-        effective_mode = "enterprise_enhanced"
-    elif use_case_was_omitted:
-        effective_mode = "enterprise_enhanced"
-    else:
+    # Step 3: Required invariant — if mode is omitted, it MUST resolve to regulatory_only
+    if assessment_mode is None:
         effective_mode = "regulatory_only"
+    else:
+        effective_mode = assessment_mode
 
-    is_enterprise = effective_mode in {"enterprise_enhanced", "provisional"}
-    if not is_enterprise:
+    if effective_mode not in {"regulatory_only", "enterprise_enhanced", "provisional"}:
+        raise ValueError(f"Unsupported assessment mode '{effective_mode}'")
+
+    if effective_mode == "regulatory_only":
         enterprise_baseline = None
         enterprise_clauses = ()
-
-    for obligation in regulatory_pack.obligations:
-        if not is_enterprise and (
-            obligation.obligation_id == "ENT-AI-DELEGATED-APPROVAL"
-            or getattr(obligation, "layer", None) == "enterprise_control_baseline"
-            or str(getattr(obligation, "authority", "")).lower() in {"enterprise", "authority.enterprise"}
-            or getattr(obligation, "source_id", "") == "ENTERPRISE-AI-STD"
-        ):
-            applicability = ApplicabilityDecision(
-                obligation_id=obligation.obligation_id,
-                status=ApplicabilityStatus.NOT_APPLICABLE,
-                reason="Enterprise internal baseline requirement excluded from Regulatory-Only assessment",
-                authority=obligation.authority,
-                assessment_scope=obligation.assessment_scope,
-                rule_key=obligation.applicability_key,
+    elif effective_mode == "enterprise_enhanced":
+        if enterprise_baseline is None and not enterprise_clauses:
+            raise ValueError(
+                "assessment_mode is 'enterprise_enhanced' but no eligible enterprise_baseline was provided. "
+                "An explicit selected eligible enterprise baseline is required for enterprise_enhanced assessments."
             )
-        elif is_enterprise and (
-            obligation.obligation_id == "ENT-AI-DELEGATED-APPROVAL"
-            or getattr(obligation, "layer", None) == "enterprise_control_baseline"
-            or str(getattr(obligation, "authority", "")).lower() in {"enterprise", "authority.enterprise"}
-            or getattr(obligation, "source_id", "") == "ENTERPRISE-AI-STD"
-        ):
-            source_clauses = (
-                enterprise_baseline.clause_snapshots
-                if enterprise_baseline and enterprise_baseline.clause_snapshots
-                else enterprise_clauses or ()
-            )
-            if source_clauses:
-                has_approved_baseline_clause = False
-                for c in source_clauses:
-                    if getattr(c, "status", None) in {"superseded", "retired"}:
-                        continue
-                    if getattr(c, "review_status", None) not in {
-                        ClauseReviewStatus.APPROVED,
-                        ClauseReviewStatus.CONFIRMED,
-                    }:
-                        continue
-                    clause_control_ids = {
-                        m.control_id for m in getattr(c, "control_mappings", [])
-                    }
-                    if getattr(c, "control_id", None):
-                        clause_control_ids.add(c.control_id)
-                    if (
-                        c.clause_id == obligation.obligation_id
-                        or obligation.control_id in clause_control_ids
-                        or "CTRL-DELEGATED-AUTHORITY-THRESHOLD" in clause_control_ids
-                        or getattr(c, "source_id", "") == "ENTERPRISE-AI-STD"
-                    ):
-                        has_approved_baseline_clause = True
-                        break
-
-                if has_approved_baseline_clause:
-                    applicability = decide_applicability(obligation, use_case)
-                else:
-                    applicability = ApplicabilityDecision(
-                        obligation_id=obligation.obligation_id,
-                        status=ApplicabilityStatus.NOT_APPLICABLE,
-                        reason="Enterprise internal baseline requirement not present in tenant's approved baseline",
-                        authority=obligation.authority,
-                        assessment_scope=obligation.assessment_scope,
-                        rule_key=obligation.applicability_key,
-                    )
-            elif enterprise_baseline is None and not enterprise_clauses:
-                # Mode B without custom tenant baseline (e.g. synthetic catalog validation)
-                applicability = decide_applicability(obligation, use_case)
-            else:
-                applicability = ApplicabilityDecision(
-                    obligation_id=obligation.obligation_id,
-                    status=ApplicabilityStatus.NOT_APPLICABLE,
-                    reason="Enterprise internal baseline requirement not present in tenant's approved baseline",
-                    authority=obligation.authority,
-                    assessment_scope=obligation.assessment_scope,
-                    rule_key=obligation.applicability_key,
+        if enterprise_baseline is not None:
+            if enterprise_baseline.tenant_id != tenant_id:
+                raise ValueError(
+                    f"Cross-tenant baseline access rejected: baseline tenant '{enterprise_baseline.tenant_id}' "
+                    f"does not match assessment tenant '{tenant_id}'"
                 )
-        else:
-            applicability = decide_applicability(obligation, use_case)
+            if enterprise_baseline.status != "active":
+                raise ValueError(
+                    f"Enterprise baseline '{enterprise_baseline.baseline_id}' is in '{enterprise_baseline.status}' status. "
+                    "Draft baselines cannot be selected for confirmed enterprise_enhanced assessments."
+                )
+            # Baseline eligibility check: must not be empty and must have at least one approved/confirmed clause
+            has_approved = any(
+                c.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+                for c in (enterprise_baseline.clause_snapshots or ())
+            )
+            if not has_approved:
+                raise ValueError(
+                    f"Enterprise baseline '{enterprise_baseline.baseline_id}' contains no approved or confirmed clauses "
+                    "and is not eligible for enterprise_enhanced assessment."
+                )
+            if not verify_baseline_integrity(enterprise_baseline):
+                raise ValueError(
+                    f"Baseline integrity error: cryptographic fingerprint mismatch on baseline '{enterprise_baseline.baseline_id}'"
+                )
+
+    is_enterprise = effective_mode in {"enterprise_enhanced", "provisional"}
+
+    # Resolve eligible external obligations from the Shared Regulatory Library.
+    # Exclude all enterprise-specific obligations before applicability evaluation.
+    external_obligations: List[AtomicObligation] = [
+        ob
+        for ob in regulatory_pack.obligations
+        if ob.authority != Authority.ENTERPRISE
+        and getattr(ob, "layer", None) != "enterprise_control_baseline"
+        and getattr(ob, "source_id", "") != "ENTERPRISE-AI-STD"
+        and ob.obligation_id != "ENT-AI-DELEGATED-APPROVAL"
+    ]
+
+    for obligation in external_obligations:
+        applicability = decide_applicability(obligation, use_case)
         if applicability.status is not ApplicabilityStatus.APPLICABLE:
             results.append(
                 ObligationCoverage(

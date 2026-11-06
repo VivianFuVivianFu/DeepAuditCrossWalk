@@ -389,13 +389,30 @@ class BankingUseCase(BaseModel):
             "eu_establishment_or_market": False,
             "eu_output_used": False,
             "eu_deployer_or_provider_role": False,
-            "nist_ai_rmf_adopted": True,
-            "au_ai_guidance_adopted": True,
-            "iso_42001_adopted": True,
-            "iso_23894_adopted": True,
-            "iso_27001_adopted": True,
-            "enterprise_controls_enabled": True,
+            "nist_ai_rmf_adopted": None,
+            "au_ai_guidance_adopted": None,
+            "iso_42001_adopted": None,
+            "iso_23894_adopted": None,
+            "iso_27001_adopted": None,
+            "enterprise_controls_enabled": False,
         }
+        defaults.update(overrides)
+        return cls(**defaults)
+
+    @classmethod
+    def synthetic_demo(cls, **overrides: Any) -> "BankingUseCase":
+        """Synthetic demo context where voluntary frameworks and enterprise controls are explicitly adopted."""
+        defaults = cls.enterprise_baseline().model_dump()
+        defaults.update(
+            {
+                "nist_ai_rmf_adopted": True,
+                "au_ai_guidance_adopted": True,
+                "iso_42001_adopted": True,
+                "iso_23894_adopted": True,
+                "iso_27001_adopted": True,
+                "enterprise_controls_enabled": True,
+            }
+        )
         defaults.update(overrides)
         return cls(**defaults)
 
