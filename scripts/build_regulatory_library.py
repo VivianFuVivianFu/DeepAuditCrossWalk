@@ -480,30 +480,6 @@ def build_sources() -> List[Dict[str, Any]]:
             "reviewer_status": "proposed",
             "notes": "High-level ISMS control themes only; licensed ISO text is not stored.",
         },
-        {
-            "source_id": "ENTERPRISE-AI-STD",
-            "title": "Enterprise AI & Delegated Authority Control Baseline",
-            "instrument_title": "Internal Enterprise AI Governance and Delegated Financial Authority Control Standard (Synthetic Baseline)",
-            "regulator_or_publisher": "Enterprise Risk & Policy Owner (Internal Bank Baseline)",
-            "authority": "enterprise",
-            "legal_authority_type": "enterprise_defined_control",
-            "jurisdiction": "AU",
-            "version": "1.0",
-            "version_id": "ENT-AI-STD-1.0",
-            "publication_date": "2026-10-27",
-            "effective_from": "2026-10-27",
-            "effective_to": "NONE_CURRENT",
-            "verified_as_of": VERIFIED_AS_OF,
-            "source_url": "https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/blob/main/APPLICABILITY_RULES.md",
-            "applicable_entity_types": ["ENTERPRISE_INTERNAL", "ADI"],
-            "licence_conditions": "Internal enterprise control baseline governing automated financial execution, human approval thresholds and audit log retention.",
-            "source_sha256": "INTERNAL_SYNTHETIC_BASELINE",
-            "source_location": "APPLICABILITY_RULES.md",
-            "licensing_or_copyright_status": "Apache-2.0 repository authored control definition.",
-            "extraction_status": "complete_internal_baseline",
-            "reviewer_status": "proposed",
-            "notes": "Represents enterprise-defined internal controls separately from statutory, regulatory guidance and voluntary standards.",
-        },
     ]
 
 
@@ -3557,81 +3533,6 @@ def build_obligations() -> List[Dict[str, Any]]:
             "reviewer_status": "proposed",
             "legal_note": "Voluntary standard; licensed ISO text is not stored.",
         },
-
-        # --- 18. Enterprise AI & Delegated Authority Control Baseline (ENTERPRISE-AI-STD) ---
-        {
-            "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
-            "source_id": "ENTERPRISE-AI-STD",
-            "instrument": "Enterprise AI & Delegated Authority Standard",
-            "provision": "Clause E-DA-01 (Delegated financial authority, human approval threshold and non-bypass execution)",
-            "exact_clause_reference": "Enterprise AI & Delegated Authority Standard v1.0, Clause E-DA-01",
-            "title": "Mandatory human approval, pre-execution payment block and audit logging above delegated AUD threshold",
-            "concise_obligation_summary": "Any AI-initiated or AI-recommended refund, payment, fee waiver or credit adjustment exceeding the approved enterprise AUD delegated-authority threshold must be blocked from automatic execution until an authorised human officer reviews and approves the action, with immutable approval logs retained for at least seven years.",
-            "jurisdiction": "AU",
-            "layer": "enterprise_control_baseline",
-            "authority": "enterprise",
-            "legal_authority_classification": "enterprise_defined_control",
-            "version": "1.0",
-            "source_url": "https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/blob/main/APPLICABILITY_RULES.md",
-            "effective_from": "2026-10-27",
-            "effective_to": "NONE_CURRENT",
-            "applicability_key": "enterprise_delegated_authority",
-            "applicability_conditions": [
-                "Enterprise internal controls are enabled OR a delegated AUD approval threshold applies to the AI workflow",
-            ],
-            "entity_and_business_scope": "Banking AI agents capable of recommending or executing refunds, payments, waivers or account adjustments.",
-            "assessment_scope": "use_case",
-            "control_id": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
-            "control_objective": "Enforce deterministic pre-execution human approval gates and 7-year audit log retention for AI financial actions above the enterprise AUD threshold.",
-            "coverage_facets": [
-                "human_approval_required",
-                "approval_threshold_defined",
-                "pre_execution_block",
-                "approval_logs_retained",
-            ],
-            "evidence_requirements": [
-                "Approved delegated-authority schedule",
-                "Production workflow pre-execution gate configuration",
-                "Immutable 7-year approval audit log sample",
-            ],
-            "facet_keywords": {
-                "human_approval_required": [
-                    "human approval",
-                    "manual approval",
-                    "authorised officer",
-                ],
-                "approval_threshold_defined": [
-                    "threshold",
-                    "AUD",
-                    "delegated authority",
-                ],
-                "pre_execution_block": [
-                    "before payment",
-                    "before execution",
-                    "prevent execution",
-                    "cannot proceed",
-                ],
-                "approval_logs_retained": [
-                    "approval log",
-                    "audit log",
-                    "seven years",
-                    "retain approval",
-                ],
-            },
-            "suggested_questions": {
-                "human_approval_required": "Does the workflow require human approval from an authorised officer for financial actions above the policy limit?",
-                "approval_threshold_defined": "Does the system configuration enforce the exact enterprise AUD delegated-authority threshold?",
-                "pre_execution_block": "Does a deterministic technical guardrail prevent payment execution prior to human approval?",
-                "approval_logs_retained": "Are approval decisions, actor identities and rationales retained in an immutable audit log for seven years?",
-            },
-            "source_citation": "Enterprise AI & Delegated Authority Standard v1.0, Clause E-DA-01",
-            "source_location": "APPLICABILITY_RULES.md — Enterprise Internal Controls",
-            "extraction_confidence": "high",
-            "extraction_uncertainty": "Enterprise-defined internal control; exact AUD threshold varies by business unit and delegated authority schedule.",
-            "review_status": "proposed",
-            "reviewer_status": "proposed",
-            "legal_note": "Enterprise internal control baseline reported separately from statutory obligations.",
-        },
     ]
 
 
@@ -3867,6 +3768,16 @@ CONTROL_METADATA: dict[str, dict[str, Any]] = {
         "objective": "Enforce deterministic pre-execution human approval gates and 7-year immutable audit log retention for any AI-initiated refund, payment, fee waiver or credit adjustment exceeding the enterprise AUD limit.",
         "owner_function": "Chief Operations Officer / Financial Delegations Governance",
         "testing_frequency": "Pre-release automated integration test and quarterly log audit",
+        "default_facets": [
+            "human_approval_required",
+            "approval_threshold_defined",
+            "pre_execution_block",
+            "approval_logs_retained",
+        ],
+        "default_evidence": [
+            "Approved delegated-authority schedule",
+            "Production workflow pre-execution gate configuration",
+        ],
     },
 }
 
@@ -4185,26 +4096,6 @@ def build_mappings(obligations: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "review_status": "proposed",
             "reviewer_status": "proposed",
         },
-        {
-            "mapping_id": "MAP-CROSS-011",
-            "obligation_id": "ENT-AI-DELEGATED-APPROVAL",
-            "source_id": "ENTERPRISE-AI-STD",
-            "control_id": "CTRL-HUMAN-OVERSIGHT",
-            "relationship": "partial",
-            "covered_facets": [
-                "human_approval_required",
-                "pre_execution_block",
-            ],
-            "unmapped_facets": [
-                "approval_threshold_defined",
-                "approval_logs_retained",
-            ],
-            "rationale": "Enterprise delegated authority gates (ENT-AI-DELEGATED-APPROVAL) instantiate human-in-the-loop approval (CTRL-HUMAN-OVERSIGHT) specifically for financial transactions above an AUD threshold.",
-            "equivalence_caution": "General human oversight does not automatically enforce exact AUD delegated-authority thresholds or 7-year financial audit log retention.",
-            "requires_human_validation": True,
-            "review_status": "proposed",
-            "reviewer_status": "proposed",
-        },
     ]
 
     for cm in cross_mappings:
@@ -4255,6 +4146,11 @@ def build_controls(
                 src_id = ob_by_id[m["obligation_id"]]["source_id"]
                 if src_id not in mapped_src_ids:
                     mapped_src_ids.append(src_id)
+
+        if not facets and "default_facets" in meta:
+            facets = list(meta["default_facets"])
+        if not evidence and "default_evidence" in meta:
+            evidence = list(meta["default_evidence"])
 
         controls.append(
             {

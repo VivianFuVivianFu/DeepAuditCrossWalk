@@ -887,20 +887,17 @@
       "associated_obligation_ids": [
         "AU-ASIC-RG104-REPRESENTATIVES",
         "AU-NAIC-AI6-TEST-HUMAN",
-        "EU-AIA-ART26-27-DEPLOYER-CREDIT",
-        "ENT-AI-DELEGATED-APPROVAL"
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
       ],
       "associated_obligations": [
         "AU-ASIC-RG104-REPRESENTATIVES",
         "AU-NAIC-AI6-TEST-HUMAN",
-        "EU-AIA-ART26-27-DEPLOYER-CREDIT",
-        "ENT-AI-DELEGATED-APPROVAL"
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
       ],
       "associated_source_ids": [
         "ASIC-RG104",
         "AU-AI-GUIDANCE-2025",
-        "EU-AI-ACT",
-        "ENTERPRISE-AI-STD"
+        "EU-AI-ACT"
       ],
       "evidence_requirements": [
         "Representative AI training curriculum and completion logs",
@@ -1250,19 +1247,12 @@
         "pre_execution_block",
         "approval_logs_retained"
       ],
-      "associated_obligation_ids": [
-        "ENT-AI-DELEGATED-APPROVAL"
-      ],
-      "associated_obligations": [
-        "ENT-AI-DELEGATED-APPROVAL"
-      ],
-      "associated_source_ids": [
-        "ENTERPRISE-AI-STD"
-      ],
+      "associated_obligation_ids": [],
+      "associated_obligations": [],
+      "associated_source_ids": [],
       "evidence_requirements": [
         "Approved delegated-authority schedule",
-        "Production workflow pre-execution gate configuration",
-        "Immutable 7-year approval audit log sample"
+        "Production workflow pre-execution gate configuration"
       ],
       "testing_and_assurance_guidance": "Owner: Chief Operations Officer / Financial Delegations Governance | Frequency: Pre-release automated integration test and quarterly log audit",
       "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",

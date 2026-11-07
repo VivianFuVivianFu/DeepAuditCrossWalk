@@ -49,11 +49,11 @@ def test_required_deliverable_files_exist_and_load():
     )
     pack = load_regulatory_pack()
 
-    assert len(sources) == 18
-    assert len(obligations) == 46
+    assert len(sources) == 17
+    assert len(obligations) == 45
     assert len(controls.controls) == 33
-    assert len(mappings.mappings) == 57
-    assert len(pack.obligations) == 46
+    assert len(mappings.mappings) == 55
+    assert len(pack.obligations) == 45
     assert all(ob.review_status == ReviewStatus.PROPOSED for ob in obligations)
     assert all(m.review_status == ReviewStatus.PROPOSED for m in mappings.mappings)
 

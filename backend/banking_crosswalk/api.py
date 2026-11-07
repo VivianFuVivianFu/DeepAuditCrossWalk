@@ -571,6 +571,11 @@ def create_coverage_assessment(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="enterprise_baseline_id cannot be provided when assessment_mode is 'regulatory_only'",
             )
+        if req.enterprise_baseline_version:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="enterprise_baseline_version cannot be provided when assessment_mode is 'regulatory_only'",
+            )
         enterprise_baseline = None
         enterprise_clauses = []
     elif mode == "enterprise_enhanced":
@@ -593,6 +598,16 @@ def create_coverage_assessment(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Enterprise baseline '{req.enterprise_baseline_id}' is not active",
+            )
+
+        has_approved = any(
+            c.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+            for c in (enterprise_baseline.clause_snapshots or ())
+        )
+        if not has_approved:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Enterprise baseline '{req.enterprise_baseline_id}' contains no approved or confirmed clauses and is not eligible for enterprise_enhanced assessment",
             )
 
         if (
@@ -970,6 +985,7 @@ class EnterpriseBaselineCreateRequest(BaseModel):
     description: Optional[str] = None
     policy_ids: List[str] = Field(default_factory=list)
     version: Optional[str] = "1.0.0"
+    status: Optional[str] = "active"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1096,14 +1112,20 @@ def create_enterprise_baseline_endpoint(
     same_name = [b for b in existing if b.name == req.name]
     revision = max([b.revision for b in same_name], default=0) + 1
 
-    baseline = compile_enterprise_baseline(
-        tenant_id=x_tenant_id,
-        name=req.name,
-        description=req.description,
-        policies=policies,
-        version=req.version or "1.0.0",
-        revision=revision,
-    )
+    try:
+        baseline = compile_enterprise_baseline(
+            tenant_id=x_tenant_id,
+            name=req.name,
+            description=req.description,
+            policies=policies,
+            version=req.version or "1.0.0",
+            revision=revision,
+            status=req.status or "active",
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
+        ) from exc
     try:
         return store.save_enterprise_baseline(x_tenant_id, baseline)
     except ConflictError as exc:

@@ -387,12 +387,12 @@ def test_scenario_10_mode_a_never_activates_delegated_approval():
         assessment_mode="regulatory_only",
     )
 
-    del_app = next(
-        r for r in assessment.results if r.obligation_id == "ENT-AI-DELEGATED-APPROVAL"
+    # In Mode A, enterprise obligations are completely excluded from results
+    assert not any(
+        r.obligation_id == "ENT-AI-DELEGATED-APPROVAL" for r in assessment.results
     )
-    assert del_app.applicability.status == ApplicabilityStatus.NOT_APPLICABLE
-    assert "Enterprise internal baseline requirement excluded from Regulatory-Only assessment" in del_app.applicability.reason
     assert "ENT-AI-DELEGATED-APPROVAL" not in assessment.applicable_obligation_ids
+    assert len(assessment.applicable_enterprise_requirement_ids) == 0
 
 
 # ---------------------------------------------------------------------------
@@ -426,6 +426,7 @@ def test_scenario_11_mode_b_evaluates_regulatory_plus_approved_baseline():
         clause_snapshots=[clause],
         mapping_snapshots=[],
         version="1.0.0",
+        status="active",
     )
 
     assessment = evaluate_questionnaire_coverage(
@@ -442,7 +443,7 @@ def test_scenario_11_mode_b_evaluates_regulatory_plus_approved_baseline():
 
 
 # ---------------------------------------------------------------------------
-# Scenario 12: Mode B evaluates ENT-AI-DELEGATED-APPROVAL against tenant baseline
+# Scenario 12: Mode B evaluates tenant approved clause in baseline
 # ---------------------------------------------------------------------------
 def test_scenario_12_mode_b_evaluates_delegated_approval_when_in_baseline():
     pack = load_regulatory_pack()
@@ -456,8 +457,8 @@ def test_scenario_12_mode_b_evaluates_delegated_approval_when_in_baseline():
     )
 
     clause = EnterpriseClause(
-        clause_id="ENT-AI-DELEGATED-APPROVAL",
-        policy_id="ENTERPRISE-AI-STD",
+        clause_id="POL-DA-500",
+        policy_id="POL-DELEGATED-AUTH",
         tenant_id="tenant-scen12",
         source_name="Enterprise Delegated Authority",
         clause_number="4.2",
@@ -470,10 +471,11 @@ def test_scenario_12_mode_b_evaluates_delegated_approval_when_in_baseline():
         baseline_id="base-tenant-12",
         tenant_id="tenant-scen12",
         name="Delegated Authority Baseline",
-        policy_ids=["ENTERPRISE-AI-STD"],
+        policy_ids=["POL-DELEGATED-AUTH"],
         clause_snapshots=[clause],
         mapping_snapshots=[],
         version="1.0.0",
+        status="active",
     )
 
     assessment = evaluate_questionnaire_coverage(
@@ -485,11 +487,9 @@ def test_scenario_12_mode_b_evaluates_delegated_approval_when_in_baseline():
         assessment_mode="enterprise_enhanced",
     )
 
-    del_app = next(
-        r for r in assessment.results if r.obligation_id == "ENT-AI-DELEGATED-APPROVAL"
-    )
-    assert del_app.applicability.status == ApplicabilityStatus.APPLICABLE
-    assert "ENT-AI-DELEGATED-APPROVAL" in assessment.applicable_obligation_ids
+    # In Mode B, the tenant's approved clause is in applicable enterprise requirements
+    assert "POL-DA-500" in assessment.applicable_enterprise_requirement_ids
+    assert assessment.enterprise_baseline_id == "base-tenant-12"
 
 
 # ---------------------------------------------------------------------------
@@ -581,8 +581,8 @@ def test_scenario_16_all_six_source_categories_represented():
     # Category C: ASIC Financial Conduct & Regulatory Guides
     assert {"ASIC-RG271", "ASIC-RG104", "ASIC-RG105", "ASIC-REP798"}.issubset(sources)
 
-    # Category D: Enterprise Internal Baseline
-    assert "ENTERPRISE-AI-STD" in sources
+    # Category D: Enterprise Internal Baseline is strictly tenant-owned and excluded from the external shared pack
+    assert "ENTERPRISE-AI-STD" not in sources
 
     # Category E: EU AI Act (cross-border)
     assert "EU-AI-ACT" in sources

@@ -224,6 +224,7 @@ def test_4_enterprise_policy_exceeds_regulatory_minimum(regulatory_pack, questio
         question_bank=question_bank,
         regulatory_pack=regulatory_pack,
         enterprise_clauses=policy.clauses,
+        assessment_mode="enterprise_enhanced",
     )
 
     assert cov.enterprise_gaps is not None

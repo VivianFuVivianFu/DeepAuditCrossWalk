@@ -532,12 +532,14 @@ def test_scenario_12_unapproved_baseline_requirements_gated(regulatory_pack, tes
     pol = extract_enterprise_policy(
         tenant_id=tenant,
         name="Proposed Policy",
-        text="Human approval is required for refunds exceeding AUD 500.",
+        text="Clause 1: Human approval is required for refunds exceeding AUD 500.\nClause 2: Critical customer data must be encrypted.",
     )
-    # Clause is left as PROPOSED (not approved)
+    # Clause 1 is left as PROPOSED (not approved)
+    # Clause 2 is APPROVED so baseline is active
+    pol.clauses[1].review_status = ClauseReviewStatus.APPROVED
     baseline = compile_enterprise_baseline(
         tenant_id=tenant,
-        name="Draft Baseline",
+        name="Active Baseline with Mixed Clauses",
         policies=[pol],
     )
     use_case = BankingUseCase(
