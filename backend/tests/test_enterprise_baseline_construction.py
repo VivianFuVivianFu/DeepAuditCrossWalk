@@ -334,7 +334,7 @@ def test_7_mapping_review_states_workflow(client):
     # Initial state: all proposed
     assert all(c["review_status"] == "proposed" for c in clauses)
 
-    # 1. Approve Clause 0 (refund approval)
+    # 1. Approve Clause 0 (refund approval) and independently approve its control mappings
     c0_id = clauses[0]["clause_id"]
     rev0 = client.put(
         f"/v1/enterprise/clauses/{c0_id}/review",
@@ -348,6 +348,19 @@ def test_7_mapping_review_states_workflow(client):
     )
     assert rev0.status_code == 200
     assert rev0.json()["review_status"] == "approved"
+    # Clause approval does not implicitly approve control mappings; approve them explicitly
+    for m in rev0.json()["control_mappings"]:
+        rev_m = client.put(
+            f"/v1/enterprise/clauses/{c0_id}/mappings/{m['mapping_id']}/review",
+            headers={"X-Tenant-ID": tenant},
+            json={
+                "status": "approved",
+                "actor": "lead-compliance-officer",
+                "role": "compliance",
+                "review_comment": "Verified control mapping equivalence",
+            },
+        )
+        assert rev_m.status_code == 200
 
     # 2. Reject Clause 1 (prompt logging)
     c1_id = clauses[1]["clause_id"]

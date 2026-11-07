@@ -261,13 +261,26 @@ GENERIC_FACET_PATTERNS: Dict[str, Sequence[str]] = {
 
 
 QUESTION_KEYWORDS: Dict[str, Sequence[str]] = {
-    "human_approval_required": ("human approval", "human oversight", "manual review"),
+    "human_approval_required": (
+        "human approval",
+        "manual approval",
+        "approved by a human",
+        "authorised officer approval",
+        "authorized officer approval",
+        "human sign-off",
+        "dual sign-off",
+        "manager sign-off",
+        "manager approval",
+    ),
     "approval_threshold_defined": ("threshold", "aud", "$500", "500"),
     "pre_execution_block": (
         "before execution",
+        "before payment",
+        "prior to execution",
+        "prior to payment",
         "prevent execution",
         "cannot proceed",
-        "override",
+        "pre-execution block",
     ),
     "approval_logs_retained": ("approval log", "audit log", "recorded", "traceability"),
     "privacy_governance": ("privacy", "personal information", "consent"),
@@ -471,15 +484,20 @@ def _questionnaire_covers_generic_facet(
         assessed_amounts = {
             float(match.replace(",", ""))
             for question in bank.questions
-            if any(
+            if not ABSENCE_OF_CONTROL_PATTERN.search(question.question_text)
+            and any(
                 term in question.question_text.lower()
-                for term in ("approval", "refund", "payment")
+                for term in ("approval", "refund", "payment", "sign-off", "transaction", "credit")
             )
             for match in AUD_PATTERN.findall(question.question_text)
         }
         return required_amounts.issubset(assessed_amounts)
     keywords = QUESTION_KEYWORDS.get(facet, (facet.replace("_", " "),))
     for question in bank.questions:
+        if ABSENCE_OF_CONTROL_PATTERN.search(question.question_text):
+            continue
+        if facet == "pre_execution_block" and _detect_approval_timing(question.question_text) == "post_execution":
+            continue
         lower = question.question_text.lower()
         if any(keyword in lower for keyword in keywords):
             return True
@@ -666,6 +684,10 @@ ENTERPRISE_FACET_PATTERNS: Dict[str, Sequence[str]] = {
         "manual approval",
         "approved by a human",
         "authorised officer",
+        "authorized officer",
+        "senior manager approval",
+        "manager approval",
+        "supervisor approval",
         "sign-off",
         "dual sign-off",
         "dual approval",
@@ -920,6 +942,7 @@ def extract_enterprise_policy(
                             clause_id=clause_id,
                             control_id=ctrl_id,
                             relationship=MappingRelationship.FULL,
+                            mapped_facets=[facet],
                             rationale=f"Clause contains facet '{facet}' associated with control {ctrl_id}.",
                             review_status=ClauseReviewStatus.PROPOSED,
                         )
@@ -978,6 +1001,24 @@ def extract_enterprise_policy(
     )
 
 
+def _valid_control_ids() -> Set[str]:
+    """Return all valid control identifiers from the Unified Control Library and registered facet aliases."""
+    from .catalog import load_unified_control_library
+
+    valid_ids = {
+        ctrl_id
+        for ctrls in FACET_TO_UNIFIED_CONTROLS.values()
+        for ctrl_id in ctrls
+    }
+    try:
+        lib = load_unified_control_library()
+        for ctrl in lib.controls:
+            valid_ids.add(ctrl.control_id)
+    except Exception:
+        pass
+    return valid_ids
+
+
 def compute_baseline_fingerprint(
     *,
     tenant_id: str,
@@ -1008,6 +1049,16 @@ def compute_baseline_fingerprint(
                 "mandatory": c.mandatory,
                 "control_facets": sorted(c.control_facets),
                 "thresholds_aud": sorted(c.thresholds_aud),
+                "control_mappings": [
+                    {
+                        "mapping_id": m.mapping_id,
+                        "control_id": m.control_id,
+                        "relationship": str(m.relationship),
+                        "review_status": str(m.review_status),
+                        "mapped_facets": sorted(getattr(m, "mapped_facets", []) or []),
+                    }
+                    for m in sorted(c.control_mappings, key=lambda x: x.mapping_id)
+                ],
             }
             for c in sorted(clauses, key=lambda x: x.clause_id)
         ],
@@ -1054,7 +1105,17 @@ def compile_enterprise_baseline(
     Enterprise Policy Upload -> Clause Extraction -> Atomic Enterprise Requirements ->
     Candidate Unified Control Mapping -> Human Review -> Versioned Enterprise Baseline.
     """
+    for p in policies:
+        if p.tenant_id != tenant_id:
+            raise ValueError(f"Policy '{p.policy_id}' does not belong to tenant '{tenant_id}'")
+        for c in p.clauses:
+            if c.tenant_id != tenant_id or c.policy_id != p.policy_id:
+                raise ValueError(
+                    f"Clause '{c.clause_id}' has inconsistent tenant or policy ownership reference"
+                )
+
     policy_ids = [p.policy_id for p in policies]
+    policy_status_by_id = {p.policy_id: p.status for p in policies}
     all_clauses = [c for p in policies for c in p.clauses]
     warnings: List[str] = []
     source_policy_versions = {p.policy_id: p.version for p in policies}
@@ -1104,25 +1165,57 @@ def compile_enterprise_baseline(
                     f"Policy '{p.name}' (v{p.version}) has status '{p.status}'. Superseded policies should be excluded from active baselines."
                 )
 
-    # 3. Classify clauses and control mappings
+    # 3. Classify clauses and control mappings (Section 5: Separate Approval Decisions)
+    valid_controls = _valid_control_ids()
+    approved_clause_ids: List[str] = []
     confirmed_controls: Set[str] = set()
     pending_clause_ids: List[str] = []
     unmapped_clause_ids: List[str] = []
 
     for c in all_clauses:
-        is_approved = c.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+        pol_status = policy_status_by_id.get(c.policy_id, "active")
+        is_superseded = pol_status in {"superseded", "retired"} or getattr(c, "status", None) in {
+            "superseded",
+            "retired",
+        }
+        is_approved = (
+            not is_superseded
+            and c.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+        )
         has_mappings = len(c.control_mappings) > 0
+
+        if is_approved:
+            approved_clause_ids.append(c.clause_id)
 
         if not has_mappings:
             unmapped_clause_ids.append(c.clause_id)
-        elif not is_approved:
+        elif not is_approved and c.review_status != ClauseReviewStatus.REJECTED:
             pending_clause_ids.append(c.clause_id)
 
-        # Only approved/confirmed mappings contribute to confirmed baseline controls
+        # A Control Mapping enters confirmed_control_ids ONLY when:
+        # 1. Source clause is approved or confirmed (and not superseded/retired)
+        # 2. Specific mapping is independently approved or confirmed
+        # 3. Mapping relationship is FULL or PARTIAL (not non-equivalent/missing/undetermined)
+        # 4. Mapping references a valid control in the Unified Control Library
+        # 5. Tenant and clause ownership references are internally consistent
         for m in c.control_mappings:
-            if m.control_id and (
+            mapping_is_approved = m.review_status in {
+                ClauseReviewStatus.APPROVED,
+                ClauseReviewStatus.CONFIRMED,
+            }
+            valid_relationship = m.relationship in {
+                MappingRelationship.FULL,
+                MappingRelationship.PARTIAL,
+            }
+            valid_control = bool(m.control_id and m.control_id in valid_controls)
+            consistent_refs = (m.tenant_id == tenant_id and m.clause_id == c.clause_id)
+
+            if (
                 is_approved
-                or m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+                and mapping_is_approved
+                and valid_relationship
+                and valid_control
+                and consistent_refs
             ):
                 confirmed_controls.add(m.control_id)
 
@@ -1171,6 +1264,7 @@ def compile_enterprise_baseline(
         policy_ids=policy_ids,
         source_policy_versions=source_policy_versions,
         clause_snapshots=clause_snapshots,
+        approved_clause_ids=approved_clause_ids,
         confirmed_control_ids=sorted(confirmed_controls),
         pending_clause_ids=pending_clause_ids,
         unmapped_clause_ids=unmapped_clause_ids,

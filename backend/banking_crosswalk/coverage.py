@@ -8,13 +8,22 @@ from collections import defaultdict
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from .applicability import decide_applicability
-from .policy import verify_baseline_integrity
-import uuid
+from .policy import (
+    ABSENCE_OF_CONTROL_PATTERN,
+    NEGATION_OR_EXEMPTION_PATTERN,
+    PROHIBITION_BLOCK_PATTERN,
+    THRESHOLD_AMOUNT_PATTERN,
+    _detect_approval_timing,
+    _detect_threshold_currency,
+    _detect_threshold_operator,
+    verify_baseline_integrity,
+)
 from .models import (
     ApplicabilityDecision,
     ClauseReviewStatus,
     EnterpriseBaseline,
     EnterpriseClause,
+    EnterpriseClauseCoverage,
     GapRecord,
     GapType,
     ApplicabilityStatus,
@@ -26,6 +35,7 @@ from .models import (
     CoverageStatus,
     LayerCoverageMetrics,
     MappingDecision,
+    MappingRelationship,
     ObligationCoverage,
     QuestionBank,
     QuestionRecord,
@@ -532,6 +542,7 @@ def evaluate_questionnaire_coverage(
     selection_warning = question_bank.routing_metadata.get("selection_warning")
 
     enterprise_gaps: List[GapRecord] = []
+    enterprise_clause_coverage: List[EnterpriseClauseCoverage] = []
     applicable_enterprise_requirement_ids: List[str] = []
 
     if is_enterprise:
@@ -550,61 +561,212 @@ def evaluate_questionnaire_coverage(
                 continue
 
             # Proposed / pending requirements remain visible for reviewer follow-up but must not contribute to confirmed coverage
-            is_pending = clause.review_status == ClauseReviewStatus.PROPOSED
-            is_approved = clause.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+            is_pending = clause.review_status in {
+                ClauseReviewStatus.PROPOSED,
+                ClauseReviewStatus.UNREVIEWED,
+            }
+            is_approved = clause.review_status in {
+                ClauseReviewStatus.APPROVED,
+                ClauseReviewStatus.CONFIRMED,
+            }
 
+            # Determine Control Mapping approval status independently from Clause approval
+            if clause.is_unmapped or not clause.control_mappings:
+                control_mapping_status = ClauseReviewStatus.UNREVIEWED
+            elif any(
+                m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+                and m.relationship in {MappingRelationship.FULL, MappingRelationship.PARTIAL}
+                for m in clause.control_mappings
+            ):
+                control_mapping_status = ClauseReviewStatus.APPROVED
+            elif all(
+                m.review_status == ClauseReviewStatus.REJECTED
+                for m in clause.control_mappings
+            ):
+                control_mapping_status = ClauseReviewStatus.REJECTED
+            else:
+                control_mapping_status = ClauseReviewStatus.PROPOSED
+
+            impl_status = (
+                clause.implementation_status
+                if clause.implementation_status in {"implemented", "unimplemented", "unverified"}
+                else "not_assessed"
+            )
+
+            # Non-mandatory or exempt clauses are recorded as NOT_APPLICABLE and do not generate false gaps
             if not clause.mandatory:
+                enterprise_clause_coverage.append(
+                    EnterpriseClauseCoverage(
+                        clause_id=clause.clause_id,
+                        policy_id=clause.policy_id,
+                        source_name=clause.source_name,
+                        applicability_status=ApplicabilityStatus.NOT_APPLICABLE,
+                        clause_approval_status=clause.review_status,
+                        control_mapping_approval_status=control_mapping_status,
+                        questionnaire_to_facet_approval_status=ReviewStatus.UNREVIEWED,
+                        coverage_status=CoverageStatus.NOT_APPLICABLE,
+                        implementation_evidence_status=impl_status,
+                        operational_effectiveness_status="not_assessed",
+                        is_unmapped=clause.is_unmapped,
+                        is_conditional=clause.is_conditional,
+                        condition_description=clause.condition_description,
+                        has_exception_clause=clause.has_exception_clause,
+                        exception_description=clause.exception_description,
+                        rationale=(
+                            "Clause is non-mandatory or represents a policy exemption; excluded from mandatory coverage gaps."
+                        ),
+                    )
+                )
                 continue
-
-            missing_facets = []
-            if clause.control_facets:
-                for facet in clause.control_facets:
-                    facet_covered = False
-                    facet_terms = [facet.replace("_", " "), *facet.split("_")]
-                    for q in question_bank.questions:
-                        ql = q.question_text.lower()
-                        if any(term in ql for term in facet_terms if len(term) > 3):
-                            facet_covered = True
-                            break
-                    if not facet_covered:
-                        missing_facets.append(facet)
-            elif clause.is_unmapped or not clause.control_mappings:
-                # Approved but unmapped enterprise requirements: assess through distinctive clause keywords
-                generic_words = {
-                    "about", "action", "actions", "adversarial", "after", "against", "algorithmic",
-                    "apra", "approval", "approvals", "approved", "assess", "assessed", "assessment",
-                    "asset", "assets", "audit", "banking", "before", "being", "board", "business",
-                    "control", "controls", "critical", "customer", "customers", "data", "decision",
-                    "decisions", "defined", "department", "disposal", "documented", "does", "during",
-                    "element", "elements", "encryption", "ensure", "enterprise", "escalation",
-                    "evidence", "framework", "have", "impact", "incident", "including", "information",
-                    "lineage", "logs", "management", "material", "measures", "model", "models",
-                    "monitoring", "must", "operation", "operations", "oversight", "owner", "owners",
-                    "performance", "personal", "pipeline", "policy", "privacy", "process",
-                    "processes", "question", "questions", "record", "records", "regular", "regulated",
-                    "report", "reported", "reporting", "requirements", "response", "review",
-                    "reviewed", "risk", "risks", "roles", "security", "senior", "service", "services",
-                    "system", "systems", "testing", "their", "these", "third", "threshold",
-                    "thresholds", "training", "validation", "vendor", "weakness", "weaknesses", "which",
-                    "will", "with",
-                }
-                distinctive_terms = [
-                    w.lower()
-                    for w in clause.text.split()
-                    if len(w) > 3 and w.isalnum() and w.lower() not in generic_words
-                ]
-                clause_covered = False
-                if distinctive_terms:
-                    for q in question_bank.questions:
-                        ql = q.question_text.lower()
-                        if any(term in ql for term in distinctive_terms):
-                            clause_covered = True
-                            break
-                if not clause_covered:
-                    missing_facets.append(clause.clause_id)
 
             if is_approved:
                 applicable_enterprise_requirement_ids.append(clause.clause_id)
+
+            # Resolve required facets strictly from explicit clause facets or validated mapping facets.
+            # Never assume all facets of a generic Unified Control apply or are satisfied merely because a Control ID is present.
+            resolved_facets: List[str] = list(clause.control_facets)
+            for m in clause.control_mappings:
+                if (
+                    m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+                    and m.relationship in {MappingRelationship.FULL, MappingRelationship.PARTIAL}
+                ):
+                    for mf in getattr(m, "mapped_facets", []) or []:
+                        if mf not in resolved_facets:
+                            resolved_facets.append(mf)
+
+            missing_facets: List[str] = []
+            covered_facets: List[str] = []
+            needs_review_facets: List[str] = []
+            candidate_q_ids: List[str] = []
+            confirmed_q_ids: List[str] = []
+
+            if clause.is_unmapped or not clause.control_mappings:
+                # Section 4: Approved unmapped requirements must keep the original clause visible,
+                # preserve its source and approval, and mark the missing mapping relationship for review.
+                # Do NOT use single-word keyword overlap to silently pass unmapped requirements.
+                clause_cov_status = CoverageStatus.MAPPING_INCOMPLETE
+                q_to_facet_status = ReviewStatus.UNREVIEWED
+                missing_facets = ["mapping_incomplete", clause.clause_id]
+                rationale = (
+                    "Requirement is unmapped to a canonical control or validated facet specification; "
+                    "human mapping review is required before coverage can be confirmed."
+                )
+            elif not resolved_facets:
+                # Section 4 / Defect B: Mapped clause without explicit validated facets cannot silently bypass assessment.
+                clause_cov_status = CoverageStatus.MAPPING_INCOMPLETE
+                q_to_facet_status = ReviewStatus.UNREVIEWED
+                missing_facets = ["mapping_incomplete"]
+                rationale = (
+                    "Clause has a control mapping but no explicit validated control facets; "
+                    "cannot assume control facets are satisfied without facet-level resolution."
+                )
+            else:
+                for facet in resolved_facets:
+                    facet_satisfied = False
+                    facet_has_weak_candidate = False
+                    for q in question_bank.questions:
+                        if _question_satisfies_enterprise_facet(facet, q.question_text, clause):
+                            facet_satisfied = True
+                            if q.question_id not in confirmed_q_ids:
+                                confirmed_q_ids.append(q.question_id)
+                            if q.question_id not in candidate_q_ids:
+                                candidate_q_ids.append(q.question_id)
+                        elif _question_is_weak_candidate_for_facet(facet, q.question_text):
+                            facet_has_weak_candidate = True
+                            if q.question_id not in candidate_q_ids:
+                                candidate_q_ids.append(q.question_id)
+
+                    if facet_satisfied:
+                        covered_facets.append(facet)
+                    else:
+                        missing_facets.append(facet)
+                        if facet_has_weak_candidate:
+                            needs_review_facets.append(facet)
+
+                # If clause specifies a required approval role, ensure at least one non-negated question satisfies that role
+                if clause.required_approval_role:
+                    role_satisfied = any(
+                        not _is_question_negated_for_facet(q.question_text, "human_approval_required")
+                        and _question_satisfies_approval_role(
+                            q.question_text, clause.required_approval_role
+                        )
+                        for q in question_bank.questions
+                    )
+                    if not role_satisfied:
+                        if "approval_authority_role" not in missing_facets:
+                            missing_facets.append("approval_authority_role")
+                        if (
+                            "human_approval_required" in covered_facets
+                        ):
+                            covered_facets.remove("human_approval_required")
+                            if "human_approval_required" not in missing_facets:
+                                missing_facets.insert(0, "human_approval_required")
+
+                if not missing_facets:
+                    if is_approved and control_mapping_status in {
+                        ClauseReviewStatus.APPROVED,
+                        ClauseReviewStatus.CONFIRMED,
+                    }:
+                        clause_cov_status = CoverageStatus.COVERED
+                        q_to_facet_status = ReviewStatus.APPROVED
+                        rationale = "All required clause facets and deterministic constraints are satisfied."
+                    else:
+                        clause_cov_status = CoverageStatus.NEEDS_REVIEW
+                        q_to_facet_status = ReviewStatus.PROPOSED
+                        rationale = (
+                            "Candidate questions satisfy clause facets, but clause or control mapping approval is still pending."
+                        )
+                elif covered_facets:
+                    if needs_review_facets:
+                        clause_cov_status = CoverageStatus.NEEDS_REVIEW
+                        q_to_facet_status = ReviewStatus.PROPOSED
+                    else:
+                        clause_cov_status = CoverageStatus.PARTIAL
+                        q_to_facet_status = ReviewStatus.PROPOSED
+                    rationale = (
+                        f"Some required facets are satisfied ({covered_facets}), but required facets remain unresolved ({missing_facets})."
+                    )
+                elif needs_review_facets or candidate_q_ids:
+                    clause_cov_status = CoverageStatus.NEEDS_REVIEW
+                    q_to_facet_status = ReviewStatus.PROPOSED
+                    rationale = (
+                        "Candidate question text touches related concepts, but semantic and constraint sufficiency is not established."
+                    )
+                else:
+                    clause_cov_status = CoverageStatus.MISSING
+                    q_to_facet_status = ReviewStatus.UNREVIEWED
+                    rationale = "No candidate question in the assessed questionnaire addresses the required facets."
+
+            enterprise_clause_coverage.append(
+                EnterpriseClauseCoverage(
+                    clause_id=clause.clause_id,
+                    policy_id=clause.policy_id,
+                    source_name=clause.source_name,
+                    applicability_status=(
+                        ApplicabilityStatus.CONDITIONAL
+                        if clause.is_conditional
+                        else ApplicabilityStatus.APPLICABLE
+                    ),
+                    clause_approval_status=clause.review_status,
+                    control_mapping_approval_status=control_mapping_status,
+                    questionnaire_to_facet_approval_status=q_to_facet_status,
+                    coverage_status=clause_cov_status,
+                    implementation_evidence_status=impl_status,
+                    operational_effectiveness_status="not_assessed",
+                    required_facets=resolved_facets,
+                    covered_facets=covered_facets,
+                    missing_facets=missing_facets,
+                    needs_review_facets=needs_review_facets,
+                    candidate_question_ids=candidate_q_ids,
+                    confirmed_question_ids=confirmed_q_ids,
+                    is_unmapped=clause.is_unmapped,
+                    is_conditional=clause.is_conditional,
+                    condition_description=clause.condition_description,
+                    has_exception_clause=clause.has_exception_clause,
+                    exception_description=clause.exception_description,
+                    rationale=rationale,
+                )
+            )
 
             if missing_facets:
                 is_voluntary = (
@@ -613,7 +775,14 @@ def evaluate_questionnaire_coverage(
                     else str(clause.authority_level) == "industry_framework"
                 )
                 severity = "low" if is_voluntary else "medium"
-                gap_status = "in_review" if is_pending else "open"
+                if (
+                    is_pending
+                    or clause_cov_status
+                    in {CoverageStatus.MAPPING_INCOMPLETE, CoverageStatus.NEEDS_REVIEW}
+                ):
+                    gap_status = "in_review" if (is_pending or clause_cov_status == CoverageStatus.MAPPING_INCOMPLETE) else "open"
+                else:
+                    gap_status = "open"
 
                 egap = GapRecord(
                     gap_id=f"GAP-E-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|{clause.clause_id}').hex[:16].upper()}",
@@ -621,10 +790,15 @@ def evaluate_questionnaire_coverage(
                     title=(
                         f"Pending review: questionnaire does not test candidate enterprise requirement ({clause.clause_id})"
                         if is_pending
+                        else f"Mapping incomplete: enterprise requirement requires facet/mapping review ({clause.clause_id})"
+                        if clause_cov_status == CoverageStatus.MAPPING_INCOMPLETE
+                        else f"Needs review: candidate question insufficient for enterprise requirement ({clause.clause_id})"
+                        if clause_cov_status == CoverageStatus.NEEDS_REVIEW
                         else f"Questionnaire does not test approved enterprise requirement ({clause.clause_id})"
                     ),
                     status=gap_status,
                     severity=severity,
+                    coverage_status=clause_cov_status,
                     policy_clause_id=clause.clause_id,
                     missing_facets=missing_facets,
                     recommendation=f"Add a question testing enterprise policy requirement '{clause.clause_id}' ({clause.source_name}).",
@@ -927,8 +1101,286 @@ def evaluate_questionnaire_coverage(
         enterprise_baseline_version=enterprise_baseline.version if (is_enterprise and enterprise_baseline) else None,
         enterprise_baseline_revision=enterprise_baseline.revision if (is_enterprise and enterprise_baseline) else None,
         enterprise_gaps=enterprise_gaps if is_enterprise else [],
+        enterprise_clause_coverage=enterprise_clause_coverage if is_enterprise else [],
         applicable_obligation_ids=applicable_obligation_ids,
         applicable_enterprise_requirement_ids=applicable_enterprise_requirement_ids if is_enterprise else [],
         legal_disclaimer="Assessment gaps do not constitute judicial or regulatory findings of legal non-compliance.",
         provenance=provenance,
     )
+
+
+def _is_question_negated_for_facet(q_text: str, facet: str) -> bool:
+    """Return True if the question text explicitly negates or exempts the control."""
+    if facet == "zero_data_retention":
+        return False
+    if ABSENCE_OF_CONTROL_PATTERN.search(q_text):
+        return True
+    if NEGATION_OR_EXEMPTION_PATTERN.search(q_text) and not PROHIBITION_BLOCK_PATTERN.search(
+        q_text
+    ):
+        return True
+    return False
+
+
+def _question_satisfies_approval_role(q_text: str, required_role: str) -> bool:
+    """Verify whether the question explicitly tests the required approval authority role."""
+    lower = q_text.lower()
+    req_lower = required_role.lower()
+    if req_lower == "senior manager":
+        return "senior manager" in lower or "executive" in lower
+    if req_lower in ("authorised officer", "authorized officer"):
+        return (
+            "authorised officer" in lower
+            or "authorized officer" in lower
+            or "delegated authority" in lower
+        )
+    if "two-up" in req_lower or "dual" in req_lower:
+        return any(
+            p in lower
+            for p in (
+                "dual sign-off",
+                "dual human sign-off",
+                "dual approval",
+                "two-up",
+                "four-eyes",
+            )
+        )
+    return req_lower in lower
+
+
+def _question_satisfies_enterprise_facet(
+    facet: str, q_text: str, clause: EnterpriseClause
+) -> bool:
+    """Deterministically verify whether a question satisfies a required enterprise facet and its constraints."""
+    if _is_question_negated_for_facet(q_text, facet):
+        return False
+
+    ql = q_text.lower()
+
+    if facet == "human_approval_required":
+        explicit_approval_phrases = (
+            "human approval",
+            "manual approval",
+            "approved by a human",
+            "human sign-off",
+            "dual sign-off",
+            "dual human sign-off",
+            "dual approval",
+            "manager approval",
+            "manager sign-off",
+            "authorised officer approval",
+            "authorized officer approval",
+            "officer sign-off",
+            "supervisor approval",
+        )
+        if not any(p in ql for p in explicit_approval_phrases):
+            return False
+        if clause.required_approval_role:
+            if not _question_satisfies_approval_role(q_text, clause.required_approval_role):
+                return False
+        return True
+
+    if facet == "approval_threshold_defined":
+        if not any(
+            t in ql
+            for t in (
+                "approval",
+                "sign-off",
+                "refund",
+                "payment",
+                "transaction",
+                "credit",
+                "limit",
+                "adjustment",
+                "threshold",
+            )
+        ):
+            return False
+
+        if clause.thresholds_aud:
+            q_amounts = [
+                float(m.replace(",", ""))
+                for m in THRESHOLD_AMOUNT_PATTERN.findall(q_text)
+            ]
+            if not q_amounts:
+                return False
+            req_curr = (clause.threshold_currency or "AUD").upper()
+            q_curr = (_detect_threshold_currency(q_text) or "AUD").upper()
+            if q_curr != req_curr:
+                return False
+
+            req_op = clause.threshold_operator or ">"
+            q_op = _detect_threshold_operator(q_text) or ">"
+            for req_amt in clause.thresholds_aud:
+                amt_satisfied = False
+                for q_amt in q_amounts:
+                    if q_amt < req_amt:
+                        amt_satisfied = True
+                        break
+                    if q_amt == req_amt:
+                        if req_op == ">=" and q_op == ">":
+                            continue
+                        amt_satisfied = True
+                        break
+                if not amt_satisfied:
+                    return False
+            return True
+
+        return any(
+            p in ql
+            for p in (
+                "approval threshold",
+                "monetary threshold",
+                "delegated authority threshold",
+                "financial threshold",
+            )
+        )
+
+    if facet == "pre_execution_block":
+        if _detect_approval_timing(q_text) == "post_execution" or any(
+            p in ql
+            for p in (
+                "post-execution",
+                "post execution",
+                "after execution",
+                "after payment",
+                "retrospective",
+            )
+        ):
+            return False
+        pre_exec_phrases = (
+            "before payment",
+            "before execution",
+            "prior to payment",
+            "prior to execution",
+            "prior to transaction",
+            "prior to approval",
+            "must not execute",
+            "shall not execute",
+            "cannot proceed",
+            "cannot execute",
+            "blocked prior to",
+            "pre-execution block",
+            "pre-execution",
+            "prevent execution",
+        )
+        return any(p in ql for p in pre_exec_phrases)
+
+    if facet in ("prompt_logging", "prompt_logging_enabled"):
+        prompt_log_phrases = (
+            "prompt logging",
+            "log all prompts",
+            "prompt and output log",
+            "interaction logs",
+            "llm telemetry",
+            "prompt telemetry",
+            "prompt audit log",
+        )
+        return any(p in ql for p in prompt_log_phrases)
+
+    if facet == "zero_data_retention":
+        return any(
+            p in ql
+            for p in (
+                "zero data retention",
+                "no data retention",
+                "do not retain",
+                "not retain customer data",
+                "zero-retention",
+            )
+        )
+
+    if facet == "data_sovereignty":
+        return any(
+            p in ql
+            for p in (
+                "data sovereignty",
+                "sovereign cloud",
+                "on-shore",
+                "australian data center",
+                "australian data centre",
+                "stored within australia",
+                "cross-border data",
+            )
+        )
+
+    if facet == "bias_testing":
+        return any(
+            p in ql
+            for p in (
+                "bias testing",
+                "algorithmic bias",
+                "fairness testing",
+                "demographic parity",
+                "disparate impact",
+                "protected attributes",
+            )
+        )
+
+    if facet == "model_inventory":
+        return any(
+            p in ql
+            for p in (
+                "ai inventory",
+                "model inventory",
+                "model registry",
+                "use case register",
+                "ai catalog",
+                "model card",
+            )
+        )
+
+    return facet.replace("_", " ").lower() in ql
+
+
+def _question_is_weak_candidate_for_facet(facet: str, q_text: str) -> bool:
+    """Return True if a non-negated question touches related topical concepts without satisfying the facet."""
+    if _is_question_negated_for_facet(q_text, facet):
+        return False
+
+    ql = q_text.lower()
+    weak_cues_by_facet: Dict[str, Tuple[str, ...]] = {
+        "human_approval_required": (
+            "human oversight",
+            "human review",
+            "manual review",
+            "human-in-the-loop",
+            "human approval",
+            "approval",
+            "sign-off",
+            "oversight",
+        ),
+        "approval_threshold_defined": (
+            "threshold",
+            "high-value",
+            "defined",
+            "approval",
+            "limit",
+            "exceeding",
+            "aud",
+        ),
+        "pre_execution_block": (
+            "execution",
+            "executions",
+            "block",
+            "prior to",
+            "before",
+            "post-execution",
+            "override",
+        ),
+        "prompt_logging": ("log", "logs", "logging", "telemetry", "traceability", "audit"),
+        "prompt_logging_enabled": ("log", "logs", "logging", "telemetry", "traceability", "audit"),
+        "zero_data_retention": ("retention", "retain", "deletion", "disposal"),
+        "data_sovereignty": (
+            "sovereignty",
+            "cross-border",
+            "jurisdiction",
+            "offshore",
+            "data center",
+            "data centre",
+        ),
+        "bias_testing": ("bias", "fairness", "discrimination", "equitable"),
+        "model_inventory": ("inventory", "registry", "register", "catalog", "catalogue"),
+    }
+    cues = weak_cues_by_facet.get(facet, (facet.replace("_", " ").lower(),))
+    return any(cue in ql for cue in cues)
