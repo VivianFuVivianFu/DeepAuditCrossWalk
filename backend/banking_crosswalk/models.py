@@ -84,6 +84,10 @@ class CoverageStatus(str, Enum):
     COVERED = "covered"
     PARTIAL = "partial"
     MISSING = "missing"
+    NEEDS_REVIEW = "needs_review"
+    MAPPING_INCOMPLETE = "mapping_incomplete"
+    APPLICABILITY_UNDETERMINED = "applicability_undetermined"
+    NOT_APPLICABLE = "not_applicable"
     NOT_ASSESSED = "not_assessed"
 
 
@@ -555,6 +559,7 @@ class CoverageAssessment(BaseModel):
     enterprise_baseline_version: Optional[str] = None
     enterprise_baseline_revision: Optional[int] = None
     enterprise_gaps: List["GapRecord"] = Field(default_factory=list)
+    enterprise_clause_coverage: List["EnterpriseClauseCoverage"] = Field(default_factory=list)
     applicable_obligation_ids: List[str] = Field(default_factory=list)
     applicable_enterprise_requirement_ids: List[str] = Field(default_factory=list)
     question_scope: Literal["core_only", "routed_snapshot", "full_questionnaire"] = "full_questionnaire"
@@ -612,9 +617,41 @@ class ClauseControlMapping(BaseModel):
     clause_id: str
     control_id: str
     relationship: MappingRelationship = MappingRelationship.FULL
+    mapped_facets: List[str] = Field(default_factory=list)
     rationale: Optional[str] = None
     review_status: ClauseReviewStatus = ClauseReviewStatus.PROPOSED
+    reviewer_actor: Optional[str] = None
+    reviewer_role: Optional[str] = None
+    review_comment: Optional[str] = None
+    reviewed_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=utc_now)
+
+
+class EnterpriseClauseCoverage(BaseModel):
+    clause_id: str
+    policy_id: str
+    source_name: str
+    applicability_status: ApplicabilityStatus = ApplicabilityStatus.APPLICABLE
+    clause_approval_status: ClauseReviewStatus = ClauseReviewStatus.PROPOSED
+    control_mapping_approval_status: ClauseReviewStatus = ClauseReviewStatus.UNREVIEWED
+    questionnaire_to_facet_approval_status: ReviewStatus = ReviewStatus.UNREVIEWED
+    coverage_status: CoverageStatus = CoverageStatus.NOT_ASSESSED
+    implementation_evidence_status: Literal[
+        "not_assessed", "unverified", "implemented", "unimplemented"
+    ] = "not_assessed"
+    operational_effectiveness_status: Literal["not_assessed", "unverified"] = "not_assessed"
+    required_facets: List[str] = Field(default_factory=list)
+    covered_facets: List[str] = Field(default_factory=list)
+    missing_facets: List[str] = Field(default_factory=list)
+    needs_review_facets: List[str] = Field(default_factory=list)
+    candidate_question_ids: List[str] = Field(default_factory=list)
+    confirmed_question_ids: List[str] = Field(default_factory=list)
+    is_unmapped: bool = False
+    is_conditional: bool = False
+    condition_description: Optional[str] = None
+    has_exception_clause: bool = False
+    exception_description: Optional[str] = None
+    rationale: Optional[str] = None
 
 
 class EnterpriseClause(BaseModel):
@@ -671,6 +708,7 @@ class EnterpriseBaseline(BaseModel):
     version: str = "1.0.0"
     revision: int = 1
     policy_ids: List[str] = Field(default_factory=list)
+    approved_clause_ids: List[str] = Field(default_factory=list)
     confirmed_control_ids: List[str] = Field(default_factory=list)
     pending_clause_ids: List[str] = Field(default_factory=list)
     unmapped_clause_ids: List[str] = Field(default_factory=list)
@@ -701,6 +739,7 @@ class GapRecord(BaseModel):
     title: str
     status: Literal["open", "in_review", "closed", "rejected"] = "open"
     severity: Literal["low", "medium", "high", "critical"] = "medium"
+    coverage_status: Optional[CoverageStatus] = None
     obligation_id: Optional[str] = None
     policy_clause_id: Optional[str] = None
     missing_facets: List[str] = Field(default_factory=list)
@@ -746,6 +785,8 @@ class PolicyGapAssessment(BaseModel):
     gaps_by_authority_layer: Dict[str, List[GapRecord]] = Field(default_factory=dict)
     policy_clauses: List[PolicyClause] = Field(default_factory=list)
     warnings: List[str] = Field(default_factory=list)
+    enterprise_baseline_id: Optional[str] = None
+    enterprise_policy_ids: List[str] = Field(default_factory=list)
 
     @computed_field
     @property
@@ -761,3 +802,4 @@ class PolicyGapAssessment(BaseModel):
 EnterpriseBaseline.model_rebuild()
 CoverageAssessment.model_rebuild()
 GapRecord.model_rebuild()
+EnterpriseClauseCoverage.model_rebuild()

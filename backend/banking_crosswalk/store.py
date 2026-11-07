@@ -366,19 +366,21 @@ class TenantStore:
         actor: str,
         role: str,
         mappings: Optional[List[ClauseControlMapping]] = None,
+        review_comment: Optional[str] = None,
     ) -> EnterpriseClause:
-        clause = self.get_enterprise_clause(tenant_id, clause_id)
+        clause = self.get_enterprise_clause(tenant_id, clause_id).model_copy(deep=True)
         clause.review_status = status
         clause.reviewer_actor = actor
         clause.reviewer_role = role
+        if review_comment is not None:
+            clause.review_comment = review_comment
         clause.reviewed_at = datetime.now(timezone.utc)
         if mappings is not None:
-            clause.control_mappings = mappings
             for m in mappings:
-                self._bucket(self._clause_mappings, tenant_id)[m.mapping_id] = m
-        else:
+                if m.tenant_id != tenant_id or m.clause_id != clause_id:
+                    raise NotFoundError("Control mapping does not belong to this tenant or clause")
+            clause.control_mappings = [m.model_copy(deep=True) for m in mappings]
             for m in clause.control_mappings:
-                m.review_status = status
                 self._bucket(self._clause_mappings, tenant_id)[m.mapping_id] = m
         self._bucket(self._enterprise_clauses, tenant_id)[clause_id] = clause
         if tenant_id in self._enterprise_policies and clause.policy_id in self._enterprise_policies[tenant_id]:
@@ -389,6 +391,61 @@ class TenantStore:
                     break
         self._record(tenant_id, "clause.reviewed", clause_id, actor=actor, detail={"status": status.value})
         return clause
+
+    def update_clause_mapping_review(
+        self,
+        tenant_id: str,
+        clause_id: str,
+        mapping_id: str,
+        status: ClauseReviewStatus,
+        actor: str,
+        role: str,
+        relationship: Optional[Any] = None,
+        mapped_facets: Optional[List[str]] = None,
+        review_comment: Optional[str] = None,
+    ) -> ClauseControlMapping:
+        clause = self.get_enterprise_clause(tenant_id, clause_id).model_copy(deep=True)
+        target_mapping: Optional[ClauseControlMapping] = None
+        for idx, m in enumerate(clause.control_mappings):
+            if m.mapping_id == mapping_id:
+                if m.tenant_id != tenant_id or m.clause_id != clause_id:
+                    raise NotFoundError("Control mapping not found for this tenant or clause")
+                updated_m = m.model_copy(deep=True)
+                updated_m.review_status = status
+                updated_m.reviewer_actor = actor
+                updated_m.reviewer_role = role
+                if review_comment is not None:
+                    updated_m.review_comment = review_comment
+                if relationship is not None:
+                    updated_m.relationship = relationship
+                if mapped_facets is not None:
+                    updated_m.mapped_facets = list(mapped_facets)
+                updated_m.reviewed_at = datetime.now(timezone.utc)
+                clause.control_mappings[idx] = updated_m
+                target_mapping = updated_m
+                break
+        if target_mapping is None:
+            raise NotFoundError("Control mapping not found for this clause")
+        self._bucket(self._clause_mappings, tenant_id)[mapping_id] = target_mapping
+        self._bucket(self._enterprise_clauses, tenant_id)[clause_id] = clause
+        if tenant_id in self._enterprise_policies and clause.policy_id in self._enterprise_policies[tenant_id]:
+            pol = self._enterprise_policies[tenant_id][clause.policy_id]
+            for idx, c in enumerate(pol.clauses):
+                if c.clause_id == clause_id:
+                    pol.clauses[idx] = clause
+                    break
+        self._record(
+            tenant_id,
+            "clause_mapping.reviewed",
+            mapping_id,
+            actor=actor,
+            detail={
+                "clause_id": clause_id,
+                "control_id": target_mapping.control_id,
+                "status": status.value,
+            },
+        )
+        return target_mapping
 
     def save_clause_mapping(
         self, tenant_id: str, mapping: ClauseControlMapping

@@ -27,6 +27,7 @@ from .models import (
     CoverageAssessment,
     GapRecord,
     MappingDecision,
+    MappingRelationship,
     PolicyGapAssessment,
     PolicyPack,
     QuestionBank,
@@ -976,6 +977,15 @@ class ClauseReviewRequest(BaseModel):
     review_comment: Optional[str] = None
 
 
+class ClauseMappingReviewRequest(BaseModel):
+    status: ClauseReviewStatus
+    actor: str = Field(min_length=1, max_length=128)
+    role: str = Field(min_length=1, max_length=64)
+    relationship: Optional[MappingRelationship] = None
+    mapped_facets: Optional[List[str]] = None
+    review_comment: Optional[str] = None
+
+
 class DeleteResponse(BaseModel):
     status: str
     policy_id: str
@@ -1090,6 +1100,35 @@ def review_enterprise_clause_endpoint(
             actor=req.actor,
             role=req.role,
             mappings=req.control_mappings,
+            review_comment=req.review_comment,
+        )
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc
+
+
+@router.put(
+    "/enterprise/clauses/{clause_id}/mappings/{mapping_id}/review",
+    response_model=ClauseControlMapping,
+)
+def review_enterprise_clause_mapping_endpoint(
+    clause_id: str,
+    mapping_id: str,
+    req: ClauseMappingReviewRequest,
+    x_tenant_id: TenantHeader,
+) -> ClauseControlMapping:
+    _require_crosswalk_state()
+    _validate_reviewer_identity(req.actor, req.role)
+    try:
+        return store.update_clause_mapping_review(
+            x_tenant_id,
+            clause_id,
+            mapping_id,
+            status=req.status,
+            actor=req.actor,
+            role=req.role,
+            relationship=req.relationship,
+            mapped_facets=req.mapped_facets,
+            review_comment=req.review_comment,
         )
     except NotFoundError as exc:
         raise _not_found(exc) from exc

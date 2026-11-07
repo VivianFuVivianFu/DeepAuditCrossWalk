@@ -519,18 +519,27 @@ class SQLTenantStore:
             return [EnterpriseClause.model_validate(r) for r in rows]
 
     def update_clause_review(
-        self, tenant_id, clause_id, status, actor, role, mappings=None
+        self,
+        tenant_id,
+        clause_id,
+        status,
+        actor,
+        role,
+        mappings=None,
+        review_comment=None,
     ):
         clause = self.get_enterprise_clause(tenant_id, clause_id)
         clause.review_status = status
         clause.reviewer_actor = actor
         clause.reviewer_role = role
+        if review_comment is not None:
+            clause.review_comment = review_comment
         clause.reviewed_at = datetime.now(timezone.utc)
         if mappings is not None:
+            for m in mappings:
+                if m.tenant_id != tenant_id or m.clause_id != clause_id:
+                    raise NotFoundError("Control mapping does not belong to this tenant or clause")
             clause.control_mappings = mappings
-        else:
-            for m in clause.control_mappings:
-                m.review_status = status
         self.save_enterprise_clause(tenant_id, clause)
         self._record_audit_event(
             tenant_id,
@@ -540,6 +549,53 @@ class SQLTenantStore:
             detail={"status": status.value if hasattr(status, "value") else str(status)},
         )
         return clause
+
+    def update_clause_mapping_review(
+        self,
+        tenant_id,
+        clause_id,
+        mapping_id,
+        status,
+        actor,
+        role,
+        relationship=None,
+        mapped_facets=None,
+        review_comment=None,
+    ):
+        clause = self.get_enterprise_clause(tenant_id, clause_id)
+        target_mapping = None
+        for idx, m in enumerate(clause.control_mappings):
+            if m.mapping_id == mapping_id:
+                if m.tenant_id != tenant_id or m.clause_id != clause_id:
+                    raise NotFoundError("Control mapping not found for this tenant or clause")
+                m.review_status = status
+                m.reviewer_actor = actor
+                m.reviewer_role = role
+                if review_comment is not None:
+                    m.review_comment = review_comment
+                if relationship is not None:
+                    m.relationship = relationship
+                if mapped_facets is not None:
+                    m.mapped_facets = list(mapped_facets)
+                m.reviewed_at = datetime.now(timezone.utc)
+                clause.control_mappings[idx] = m
+                target_mapping = m
+                break
+        if target_mapping is None:
+            raise NotFoundError("Control mapping not found for this clause")
+        self.save_enterprise_clause(tenant_id, clause)
+        self._record_audit_event(
+            tenant_id,
+            "clause_mapping.reviewed",
+            mapping_id,
+            actor=actor,
+            detail={
+                "clause_id": clause_id,
+                "control_id": target_mapping.control_id,
+                "status": status.value if hasattr(status, "value") else str(status),
+            },
+        )
+        return target_mapping
 
     def _record_audit_event(self, tenant_id, action, object_id, actor="api", detail=None):
         with self._transaction(tenant_id) as connection:
