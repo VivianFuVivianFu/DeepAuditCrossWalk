@@ -1,54 +1,50 @@
-# DeepAuditCrossWalk
+# DeepAudit Crosswalk
 
 [![CI](https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/actions/workflows/ci.yml/badge.svg)](https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-**Find the applicable requirements your AI questionnaire and enterprise policies do not sufficiently assess.**
+*Open-source AI governance coverage assessment for Australian financial services.*
 
-DeepAuditCrossWalk is an independent, open-source AI governance assessment engine,
-starting with Australian banking. It shares an obligation-and-control library
-across questionnaire coverage validation and enterprise policy gap detection.
+## Overview
 
-> Status: experimental MVP, v0.1.0. Results support expert review. Coverage of an
-> assessment question does not establish control implementation or regulatory compliance.
+DeepAudit Crosswalk helps organisations identify potential gaps between applicable regulatory requirements, internal enterprise policies and their existing AI governance documentation. Built with a focus on Australian banking and financial services, the platform takes a document-first approach: it evaluates the assurance questionnaires and policy documents an organisation already uses, rather than requiring teams to complete another governance questionnaire. It supports regulatory requirement mapping, coverage gap detection, source traceability and structured human review.
 
-![Independent Crosswalk demo using synthetic questions](docs/images/demo.png)
+## What You Can Do
 
-## What it does
+### Assess a Governance Document
 
-- Imports enterprise AI governance questionnaires (.xlsx) dynamically across any sheet layout, with content-addressable SHA-256 question hashing, auto-detected columns, and strict security limits (zip bomb protection, streaming XML validation, formula rejection, HTML stripping).
-- Keeps the original question bank separate from banking overlay questions.
-- Selects obligations using explicit applicability rules: applicable, conditional,
-  not applicable, or undetermined. Unknown facts remain unknown.
-- Compares required control facets with question candidates. Only approved,
-  version-bound mappings contribute to confirmed questionnaire coverage.
-- Finds regulatory-to-policy gaps, policy-to-questionnaire gaps, possible control
-  conflicts, and missing implementation evidence.
-- Parses policy text, PDF and DOCX files with resource limits and inert treatment
-  of embedded instructions.
-- Records reviewer decisions, closure requirements, retest references and audit
-  events in a tenant-scoped workspace, optionally backed by PostgreSQL.
+Upload an existing AI Governance or Assurance Questionnaire in `.xlsx` format. DeepAudit Crosswalk previews the extracted questions and compares them against applicable requirements to surface potential coverage gaps, incomplete requirements and items requiring human review.
 
-```text
-Applicable obligation → Control objective → Assessment question
-                     → Evidence requirement → Reviewer decision
+You can run an assessment in two modes:
 
-                 Shared obligation and control library
-                    /                          \
-       Questionnaire coverage             Enterprise policy gaps
-                    \                          /
-                     Gaps and remediation report
-```
+- **Regulatory-Only (Default):** Evaluates your questionnaire against applicable external regulatory obligations and selected governance standards.
+- **Enterprise-Enhanced (Optional):** Evaluates your questionnaire against both external obligations and an explicitly selected, approved internal Enterprise Baseline.
 
-## Quick start
+### Add Enterprise Policies (Optional)
 
-Prerequisites: Python 3.11+, Node.js 22 or 24, or Docker Compose.
+Upload internal governance documents—such as AI Governance, Risk Management, Privacy, Cybersecurity, Data Governance or Delegated Authority policies—to build an optional Enterprise Baseline. The platform extracts candidate requirements and proposed control mappings so authorised reviewers can approve or reject them and compile a versioned baseline.
+
+Enterprise Policy uploads are optional, supplement only your workspace's assessments, never alter the shared regulatory library, and require explicit human approval before taking effect.
+
+## How It Works
+
+`Upload documents → Select assessment requirements → Identify coverage gaps → Review findings`
+
+Start by uploading your existing `.xlsx` questionnaire, optionally configure high-level organisational applicability context, and choose either Regulatory-Only or an approved Enterprise Baseline. The platform links every finding back to the relevant regulatory provision, internal policy clause and questionnaire item, and allows you to export a structured JSON report for further review. A separate synthetic demonstration tab is also included for exploring example data without uploading documents.
+
+## Getting Started
+
+The application separates its stateless synthetic demo (`public-demo`) from the private local document workspace. Because `.env.example` and `compose.yaml` default to `public-demo`, private document uploads require a non-demo workspace tenant ID.
+
+### Local Development (Python and Node.js)
+
+Prerequisites: Python 3.11+ and Node.js 22 or 24. When running the development servers without overriding `BANKING_CROSSWALK_TENANT_ID`, the web workspace binds to `local-private-workspace`:
 
 ```bash
 git clone https://github.com/VivianFuVivianFu/DeepAuditCrossWalk.git
 cd DeepAuditCrossWalk
 python -m venv .venv
-# Activate .venv using your shell's usual activation command.
+# Activate .venv for your shell
 pip install -e './backend[dev]'
 uvicorn banking_crosswalk.app:app --host 127.0.0.1 --port 8000
 ```
@@ -61,106 +57,36 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:3000** for the app and **http://localhost:8000/docs** for
-the independent API. The web app calls only this project's backend; it does not
-depend on the original DeepAudit deployment, login service or database.
+Open `http://localhost:3000` for the web workspace and `http://localhost:8000/docs` for the API reference.
 
-Alternatively:
+### Docker Compose
+
+To use the private two-upload workspace with Docker Compose, configure a non-demo workspace tenant ID and local API key before starting the containers:
 
 ```bash
+cp .env.example .env
+# In .env, set BANKING_CROSSWALK_TENANT_ID=local-private-workspace
+# and set CROSSWALK_API_KEY to a non-empty local secret string.
 docker compose up --build
 ```
 
-## Demonstration Data & Questionnaire Importing
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) and [docs/PERSISTENCE.md](docs/PERSISTENCE.md) for detailed configuration and optional PostgreSQL persistence.
 
-The bundled questionnaire contains **16 original synthetic core questions and 3
-synthetic focus questions**. It is explicitly labelled as demonstration data.
-The NSW AIAF questionnaire is not a regulatory library, an authoritative banking standard, or a required product dependency.
+## Current Status
 
-Import your organisation's enterprise questionnaire with `POST /v1/questionnaires/import`.
-The importer dynamically identifies question text, question IDs, and categories across any sheet layout,
-defaulting to full questionnaire evaluation (`full_questionnaire`).
+DeepAudit Crosswalk is an **Experimental MVP**.
 
-The Shared Regulatory Library covers six authoritative source categories:
-- **Category A: Australian Legislation & Statutory Guidance** (Privacy Act 1988, Competition and Consumer Act 2010 / ACL, NCCP Act 2009, OAIC APP Guidelines).
-- **Category B: APRA Prudential Framework** (CPS 220 Risk Management, CPS 230 Operational Resilience, CPS 234 Information Security, CPG 235 Managing Data Risk).
-- **Category C: ASIC Financial Conduct & Regulatory Guidance** (RG 271 Internal Dispute Resolution, RG 104 Licensing Obligations, RG 105 Organisational Competence, REP 798 AI Governance Review).
-- **Category D: Enterprise Internal Baseline** (Tenant-specific policies uploaded and approved through the Enterprise Baseline engine in Mode B).
-- **Category E: EU AI Act** (Regulation (EU) 2024/1689 extraterritorial high-risk AI requirements under Article 2).
-- **Category F: NIST AI RMF & ISO/IEC Standards** (NIST AI RMF 1.0, ISO/IEC 42001:2023, ISO/IEC 23894:2023, ISO/IEC 27001:2022).
+- **Available today:** Web-based `.xlsx` Questionnaire import and coverage assessment, optional Enterprise Policy upload and human review, Regulatory-Only and Enterprise-Enhanced assessment modes, traceable gap findings, JSON report export and an isolated synthetic demonstration workflow.
+- **Planned and current limitations:** AI Governance Strategy assessment (for `.docx`, `.pdf` and text strategy documents) is planned and currently unavailable. Production semantic model integration, federated multi-tenant authentication and certified compliance automation are not implemented.
 
-## API workflow
+Assessment outputs support professional review by governance, risk, compliance and legal teams; they do not establish regulatory compliance or operational control effectiveness.
 
-All `/v1` analysis routes require `X-Tenant-ID`. When configured, also supply
-`X-API-Key`. Human review routes additionally require `X-Actor` and `X-Role`.
-These headers belong behind a trusted identity-aware gateway in an enterprise deployment.
+## Contributing & Collaboration
 
-```bash
-curl -X POST http://localhost:8000/v1/assessments/coverage \
-  -H 'Content-Type: application/json' -H 'X-Tenant-ID: example-bank' \
-  -d '{"use_case":{"name":"Refund agent","apra_regulated":true,"handles_personal_information":true},"questionnaire_pack":"DEMO_BANKING_V1","persist":false}'
-```
+We welcome contributions and feedback from AI governance and assurance practitioners, risk and compliance professionals, open-source developers and researchers working on regulatory mapping and evaluation accuracy.
 
-| Endpoint | Purpose |
-| --- | --- |
-| `GET /health`, `GET /ready`, `GET /v1/demo` | Liveness, storage readiness, synthetic data provenance and pack metadata |
-| `POST /v1/questionnaires/import` | Read-only base64 XLSX import |
-| `POST /v1/questionnaires/route` | Version-bound focus-question selection |
-| `POST /v1/regulatory-packs/validate` | Validate the active obligation pack |
-| `POST /v1/use-cases` | Store a local use-case context |
-| `POST /v1/assessments/coverage` | Questionnaire coverage and remediation |
-| `POST /v1/policies/import`, `/import-file` | Text or base64 PDF/DOCX/TXT/MD policy import |
-| `POST /v1/assessments/policy-gaps` | Regulatory/policy/questionnaire comparisons |
-| `POST /v1/mappings/review` | Approve or reject a version-bound mapping |
-| `GET /v1/assessments/{id}/gaps` | Assessment gaps |
-| `POST /v1/gaps/{id}/review` | Review and evidence-gated closure |
-| `GET /v1/assessments/{id}/report` | JSON report and audit events |
+To report a bug, suggest an improvement or contribute changes, please see [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [GitHub Issues](https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/issues).
 
-## Current boundaries
+## License
 
-- Without `DATABASE_URL`, the workspace is in memory and records disappear on
-  restart. Optional PostgreSQL persistence includes explicit Alembic migrations,
-  forced row security, transactional audit events and conflict-checked reviews.
-  Production rejects an unmigrated database or an owner/superuser runtime role;
-  stateful routes return 503 when only memory storage is available.
-  See [PostgreSQL setup and recovery](docs/PERSISTENCE.md).
-- The public web demo uses non-persistent inline analyses and the synthetic core
-  questions. Full workbook import, routing, mapping review and gap closure are
-  available through the API for local evaluation, not yet through the web UI.
-- Matching and policy extraction are deterministic heuristics. They propose
-  candidates; they cannot approve their own interpretations or prove operating
-  effectiveness. No external model API is required or contacted.
-- PDF extraction supports text PDFs, not scanned-document OCR. DOCX extraction
-  currently covers body paragraphs and tables; headers, footnotes and tracked
-  changes require reviewer inspection in the original document. PDF page
-  delimiters remain in extracted text; clause-level page references are pending.
-- JSON export is available. PDF/CSV reports, federated RBAC, and behavioural-test
-  evidence integration remain roadmap items. Database persistence does not make
-  the public demo an authenticated enterprise workspace.
-
-## Verification and contribution
-
-```bash
-pip install -e './backend[dev,postgres]'
-python -m pytest backend/tests -q
-python -m ruff check backend
-python scripts/check_secrets.py
-cd web
-npm test
-npm run typecheck
-npm run build
-npm audit --audit-level=high
-```
-
-See [architecture](docs/ARCHITECTURE.md), [deployment](docs/DEPLOYMENT.md),
-[contributing](CONTRIBUTING.md), [security](SECURITY.md) and [roadmap](ROADMAP.md).
-The [verification record](docs/VERIFICATION.md) distinguishes local checks from CI/container checks.
-We welcome control mappings with source citations, applicability edge cases,
-false-coverage regressions, deployment improvements and early evaluation feedback.
-
-## License and provenance
-
-Apache-2.0 for project code; dependency licenses remain their own. The Crosswalk
-core originated in DeepAudit and was extracted into this independent project.
-See [NOTICE](NOTICE) and [third-party notices](THIRD_PARTY_NOTICES.md). No original
-DeepAudit Git history, credentials, private policies, or source workbooks are included.
+This repository is licensed under the Apache License 2.0. See [LICENSE](LICENSE), [NOTICE](NOTICE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for license terms and attribution details.
