@@ -112,6 +112,19 @@ class TenantStore:
         except KeyError as exc:
             raise NotFoundError("Questionnaire not found for this tenant") from exc
 
+    def list_questionnaires(self, tenant_id: str) -> List[QuestionBank]:
+        with self._lock:
+            return list(self._questionnaires.get(tenant_id, {}).values())
+
+    def get_tenant_questionnaire(
+        self, tenant_id: str, questionnaire_id: str
+    ) -> QuestionBank:
+        with self._lock:
+            try:
+                return self._questionnaires[tenant_id][questionnaire_id]
+            except KeyError as exc:
+                raise NotFoundError("Questionnaire not found for this tenant") from exc
+
     def save_routing_snapshot(
         self, tenant_id: str, snapshot: QuestionRoutingSnapshot
     ) -> QuestionRoutingSnapshot:

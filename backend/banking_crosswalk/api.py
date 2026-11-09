@@ -448,6 +448,23 @@ def import_questionnaire(
     return store.save_questionnaire(x_tenant_id, bank)
 
 
+@router.get("/questionnaires", response_model=List[QuestionBank])
+def list_questionnaires_endpoint(x_tenant_id: TenantHeader) -> List[QuestionBank]:
+    _require_crosswalk_state()
+    return store.list_questionnaires(x_tenant_id)
+
+
+@router.get("/questionnaires/{questionnaire_id}", response_model=QuestionBank)
+def get_questionnaire_endpoint(
+    questionnaire_id: str, x_tenant_id: TenantHeader
+) -> QuestionBank:
+    _require_crosswalk_state()
+    try:
+        return store.get_tenant_questionnaire(x_tenant_id, questionnaire_id)
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc
+
+
 @router.post(
     "/questionnaires/route", response_model=QuestionRoutingSnapshot, status_code=201
 )
