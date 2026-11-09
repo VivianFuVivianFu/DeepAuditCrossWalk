@@ -203,6 +203,20 @@ class SQLTenantStore:
             schema.questionnaires, tenant_id, questionnaire_id, QuestionBank
         )
 
+    def list_questionnaires(self, tenant_id):
+        with self._transaction(tenant_id) as connection:
+            rows = connection.execute(
+                sa.select(schema.questionnaires.c.payload).where(
+                    schema.questionnaires.c.tenant_id == tenant_id
+                )
+            ).scalars()
+            return [QuestionBank.model_validate(row) for row in rows]
+
+    def get_tenant_questionnaire(self, tenant_id, questionnaire_id):
+        return self._read(
+            schema.questionnaires, tenant_id, questionnaire_id, QuestionBank
+        )
+
     def save_routing_snapshot(self, tenant_id, snapshot):
         return self._save(
             schema.routing_snapshots,

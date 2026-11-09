@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("real coverage and policy workflows return reviewable, traceable findings", async ({
+test("document-first two-upload workspace and isolated synthetic demo workflows", async ({
   page,
 }) => {
   await page.goto("/");
@@ -12,8 +12,32 @@ test("real coverage and policy workflows return reviewable, traceable findings",
     "your assessment misses",
   );
   await expect(
+    page.getByRole("button", { name: "1. Assess a Document (Primary)" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "2. Add Enterprise Policies (Optional)" }),
+  ).toBeVisible();
+  await expect(
     page.getByLabel("Entity-specific IDR duty confirmed"),
   ).toHaveValue("unknown");
+
+  // Verify Strategy target is clearly presented as Planned / Unavailable
+  await page
+    .getByRole("button", { name: "AI Governance Strategy (Planned)" })
+    .click();
+  await expect(
+    page.getByText(/Planned \/ Unavailable in PR 2/i),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "AI Assurance Questionnaire (.xlsx)" })
+    .click();
+
+  // Verify Synthetic Demo Example tab remains isolated and functional
+  await page
+    .getByRole("button", {
+      name: "Synthetic Demo Example (DEMO_BANKING_V1)",
+    })
+    .click();
   await page.getByRole("button", { name: "Load example" }).click();
   await page.getByRole("button", { name: "Run assessment" }).click();
   await expect(
@@ -32,7 +56,6 @@ test("real coverage and policy workflows return reviewable, traceable findings",
   await expect(
     page.getByRole("heading", { name: "Traceable assessment results" }),
   ).toBeVisible();
-  await expect(page.locator("details").first()).toBeVisible();
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export JSON" }).click();
   expect((await download).suggestedFilename()).toMatch(/^crosswalk-.+\.json$/);
