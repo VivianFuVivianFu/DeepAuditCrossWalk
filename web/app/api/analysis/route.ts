@@ -53,6 +53,28 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
+  if (input.questionnaire_id) {
+    return NextResponse.json(
+      {
+        error:
+          "The public demo endpoint only evaluates DEMO_BANKING_V1 and cannot access private questionnaire_id records.",
+      },
+      { status: 400 },
+    );
+  }
+  if (
+    input.assessment_mode === "enterprise_enhanced" ||
+    input.enterprise_baseline_id ||
+    input.enterprise_policy_ids
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "The public demo endpoint only supports regulatory_only mode and cannot access private enterprise baselines.",
+      },
+      { status: 400 },
+    );
+  }
   const payload: Record<string, unknown> = {
     use_case: input.use_case,
     questionnaire_pack: "DEMO_BANKING_V1",
