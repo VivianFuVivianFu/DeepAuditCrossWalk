@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
+import hmac
+import json
 import os
 import secrets
+import time
 import uuid
 from datetime import datetime, timezone
-from typing import Annotated, Dict, List, Literal, Optional
+from typing import Annotated, Any, Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -52,6 +56,108 @@ RawTenantHeader = Annotated[
 ]
 ActorHeader = Annotated[str, Header(alias="X-Actor", min_length=1, max_length=256)]
 RoleHeader = Annotated[str, Header(alias="X-Role", min_length=1, max_length=64)]
+OptionalActorHeader = Annotated[
+    Optional[str], Header(alias="X-Actor", max_length=256)
+]
+OptionalRoleHeader = Annotated[
+    Optional[str], Header(alias="X-Role", max_length=64)
+]
+WorkspaceContextHeader = Annotated[
+    Optional[str], Header(alias="X-Workspace-Context", max_length=4096)
+]
+
+READER_ROLES = {
+    "viewer",
+    "analyst",
+    "contributor",
+    "reviewer",
+    "compliance",
+    "legal",
+    "risk",
+    "policy_owner",
+    "admin",
+    "assurance",
+    "general counsel",
+    "general_counsel",
+}
+CONTRIBUTOR_ROLES = {
+    "analyst",
+    "contributor",
+    "reviewer",
+    "compliance",
+    "legal",
+    "risk",
+    "policy_owner",
+    "admin",
+    "assurance",
+    "general counsel",
+    "general_counsel",
+}
+REVIEWER_ROLES = {
+    "reviewer",
+    "compliance",
+    "legal",
+    "risk",
+    "policy_owner",
+    "admin",
+    "assurance",
+    "counsel",
+    "general counsel",
+    "general_counsel",
+    "lead counsel",
+    "lead_counsel",
+    "control_architect",
+    "auditor",
+    "audit",
+}
+NON_REVIEWER_ROLES = {
+    "viewer",
+    "read_only",
+    "readonly",
+    "analyst",
+    "contributor",
+}
+ADMIN_ROLES = {"admin"}
+
+
+def _normalize_role(role: Optional[str]) -> Optional[str]:
+    if not role:
+        return None
+    r = role.strip().lower().replace("-", "_").replace(" ", "_")
+    if r in {"viewer", "read_only", "readonly"}:
+        return "viewer"
+    if r in {"analyst", "contributor"}:
+        return "analyst"
+    if r in {"admin", "administrator"}:
+        return "admin"
+    if r in {
+        "reviewer",
+        "compliance",
+        "legal",
+        "risk",
+        "policy_owner",
+        "assurance",
+        "counsel",
+        "general_counsel",
+        "lead_counsel",
+        "control_architect",
+        "auditor",
+        "audit",
+    }:
+        return "reviewer"
+    return r
+
+
+def _actors_match(header_actor: str, body_actor: str) -> bool:
+    h = header_actor.strip()
+    b = body_actor.strip()
+    if _constant_match(h, b):
+        return True
+    if "@" in h and _constant_match(h.split("@")[0].lower(), b.lower()):
+        return True
+    if "@" in b and _constant_match(b.split("@")[0].lower(), h.lower()):
+        return True
+    return False
 
 
 def _production() -> bool:
@@ -60,6 +166,81 @@ def _production() -> bool:
 
 def _constant_match(value: str, expected: str) -> bool:
     return secrets.compare_digest(value.encode("utf-8"), expected.encode("utf-8"))
+
+
+def _verify_signed_workspace_context(
+    raw_context: Optional[str],
+    expected_tenant: str,
+    header_actor: Optional[str] = None,
+    header_role: Optional[str] = None,
+) -> Optional[Dict[str, Any]]:
+    """Verify HMAC-SHA256 signed X-Workspace-Context from the web gateway when configured."""
+    secret = (
+        os.getenv("WORKSPACE_SESSION_SECRET", "").strip()
+        or os.getenv("CROSSWALK_CONTEXT_SECRET", "").strip()
+    )
+    if not secret:
+        return None
+    if expected_tenant == "public-demo" and not raw_context:
+        return None
+    if not raw_context or "." not in raw_context:
+        raise HTTPException(
+            status_code=401,
+            detail="Missing or malformed signed X-Workspace-Context assertion",
+        )
+    body_b64, provided_sig = raw_context.rsplit(".", 1)
+    expected_sig = hmac.new(
+        secret.encode("utf-8"), body_b64.encode("ascii"), hashlib.sha256
+    ).hexdigest()
+    if not _constant_match(provided_sig.lower(), expected_sig.lower()):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid X-Workspace-Context signature",
+        )
+    padding = "=" * (-len(body_b64) % 4)
+    try:
+        payload = json.loads(
+            base64.urlsafe_b64decode((body_b64 + padding).encode("ascii")).decode(
+                "utf-8"
+            )
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=401, detail="Invalid X-Workspace-Context payload"
+        ) from exc
+
+    exp = payload.get("exp")
+    if not isinstance(exp, (int, float)) or exp <= time.time():
+        raise HTTPException(
+            status_code=401, detail="Expired X-Workspace-Context assertion"
+        )
+    ctx_tenant = str(payload.get("tenant_id") or "").strip()
+    if not ctx_tenant or not _constant_match(ctx_tenant, expected_tenant):
+        raise HTTPException(
+            status_code=403,
+            detail="X-Tenant-ID does not match signed workspace context tenant",
+        )
+    ctx_user = str(payload.get("user_id") or "").strip()
+    if not ctx_user:
+        raise HTTPException(
+            status_code=401, detail="Signed workspace context is missing user_id"
+        )
+    if header_actor and not _constant_match(header_actor.strip(), ctx_user):
+        raise HTTPException(
+            status_code=403,
+            detail="X-Actor header does not match signed workspace context user_id",
+        )
+    ctx_roles = {
+        str(r).strip().lower()
+        for r in (payload.get("roles") or [])
+        if str(r).strip()
+    }
+    if header_role and header_role.strip().lower() not in ctx_roles:
+        raise HTTPException(
+            status_code=403,
+            detail="X-Role header is not authorised in signed workspace context",
+        )
+    return payload
 
 
 def _require_crosswalk_api_key(
@@ -79,17 +260,33 @@ def _require_crosswalk_api_key(
         )
 
 
-def _tenant_context(x_tenant_id: RawTenantHeader) -> str:
+def _tenant_context(
+    x_tenant_id: RawTenantHeader,
+    x_workspace_context: WorkspaceContextHeader = None,
+    x_actor: OptionalActorHeader = None,
+    x_role: OptionalRoleHeader = None,
+) -> str:
     """Bind production requests to the tenant configured on the trusted gateway."""
 
     if not x_tenant_id.strip():
         raise HTTPException(status_code=422, detail="Tenant context must not be blank")
+    _verify_signed_workspace_context(
+        x_workspace_context,
+        expected_tenant=x_tenant_id,
+        header_actor=x_actor,
+        header_role=x_role,
+    )
     if _production():
         expected = os.getenv("BANKING_CROSSWALK_TENANT_ID", "")
-        if not expected or not _constant_match(x_tenant_id, expected):
+        if expected and not _constant_match(x_tenant_id, expected):
             raise HTTPException(
                 status_code=403,
                 detail="Tenant context does not match the server-bound tenant",
+            )
+        if not expected and not x_workspace_context:
+            raise HTTPException(
+                status_code=403,
+                detail="Tenant context is not bound to a verified workspace session",
             )
     return x_tenant_id
 
@@ -97,8 +294,78 @@ def _tenant_context(x_tenant_id: RawTenantHeader) -> str:
 TenantHeader = Annotated[str, Depends(_tenant_context)]
 
 
-def _validate_reviewer_identity(actor: str, role: str) -> None:
-    """Reject spoofed reviewer identity in production service deployments."""
+def _enforce_role_if_present(
+    role: Optional[str],
+    allowed_roles: set[str],
+    action_description: str,
+) -> None:
+    if role is None:
+        return
+    norm = role.strip().lower()
+    if norm not in allowed_roles:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Role '{norm}' is not authorised for {action_description}",
+        )
+
+
+def _reject_public_demo_tenant(tenant_id: str) -> None:
+    if tenant_id.strip().lower() == "public-demo":
+        raise HTTPException(
+            status_code=403,
+            detail="The 'public-demo' tenant is restricted to stateless synthetic demo assessments",
+        )
+
+
+
+def _validate_reviewer_identity(
+    actor: str,
+    role: str,
+    header_actor: Optional[str] = None,
+    header_role: Optional[str] = None,
+    x_workspace_context: Optional[str] = None,
+    tenant_id: Optional[str] = None,
+) -> None:
+    """Enforce verified reviewer identity and role authorisation across all modes."""
+    raw_role = (role or "").strip().lower()
+    norm_role = _normalize_role(role) or ""
+    if norm_role in NON_REVIEWER_ROLES or (
+        norm_role not in REVIEWER_ROLES and raw_role not in REVIEWER_ROLES
+    ):
+        raise HTTPException(
+            status_code=403,
+            detail=f"Role '{role}' is not authorised to review or approve requirements",
+        )
+    if header_actor is not None and not _actors_match(header_actor, actor):
+        raise HTTPException(
+            status_code=403,
+            detail="X-Actor header does not match review payload actor",
+        )
+    if header_role is not None:
+        raw_h = header_role.strip().lower()
+        norm_h = _normalize_role(header_role) or ""
+        if norm_h in NON_REVIEWER_ROLES or (
+            norm_h not in REVIEWER_ROLES and raw_h not in REVIEWER_ROLES
+        ):
+            raise HTTPException(
+                status_code=403,
+                detail=f"Role '{header_role}' is not authorised to review or approve requirements",
+            )
+        if norm_h != norm_role and not _constant_match(raw_h, raw_role):
+            raise HTTPException(
+                status_code=403,
+                detail="X-Role header does not match review payload role",
+            )
+
+    if x_workspace_context and tenant_id:
+        ctx = _verify_signed_workspace_context(
+            x_workspace_context,
+            expected_tenant=tenant_id,
+            header_actor=actor,
+            header_role=role,
+        )
+        if ctx is not None:
+            return
 
     if not _production():
         return
@@ -427,9 +694,13 @@ def _resolve_routing_snapshot(
 
 @router.post("/questionnaires/import", response_model=QuestionBank)
 def import_questionnaire(
-    req: QuestionnaireImportRequest, x_tenant_id: TenantHeader
+    req: QuestionnaireImportRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> QuestionBank:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, CONTRIBUTOR_ROLES, "importing questionnaires")
     try:
         raw = base64.b64decode(req.workbook_base64, validate=True)
     except (binascii.Error, ValueError) as exc:
@@ -449,16 +720,25 @@ def import_questionnaire(
 
 
 @router.get("/questionnaires", response_model=List[QuestionBank])
-def list_questionnaires_endpoint(x_tenant_id: TenantHeader) -> List[QuestionBank]:
+def list_questionnaires_endpoint(
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> List[QuestionBank]:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "listing questionnaires")
     return store.list_questionnaires(x_tenant_id)
 
 
 @router.get("/questionnaires/{questionnaire_id}", response_model=QuestionBank)
 def get_questionnaire_endpoint(
-    questionnaire_id: str, x_tenant_id: TenantHeader
+    questionnaire_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> QuestionBank:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "reading questionnaires")
     try:
         return store.get_tenant_questionnaire(x_tenant_id, questionnaire_id)
     except NotFoundError as exc:
@@ -469,9 +749,13 @@ def get_questionnaire_endpoint(
     "/questionnaires/route", response_model=QuestionRoutingSnapshot, status_code=201
 )
 def route_questionnaire(
-    req: QuestionnaireRouteRequest, x_tenant_id: TenantHeader
+    req: QuestionnaireRouteRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> QuestionRoutingSnapshot:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, CONTRIBUTOR_ROLES, "routing questionnaires")
     try:
         question_bank = store.get_questionnaire(x_tenant_id, req.questionnaire_id)
     except NotFoundError as exc:
@@ -507,9 +791,13 @@ def validate_pack(x_tenant_id: TenantHeader) -> dict:
 
 @router.post("/use-cases", response_model=BankingUseCase, status_code=201)
 def create_use_case(
-    use_case: BankingUseCase, x_tenant_id: TenantHeader
+    use_case: BankingUseCase,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> BankingUseCase:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, CONTRIBUTOR_ROLES, "creating use cases")
     stored = use_case.model_copy(
         update={"use_case_id": use_case.use_case_id or str(uuid.uuid4())}
     )
@@ -520,15 +808,23 @@ def create_use_case(
     "/assessments/coverage", response_model=CoverageAssessment, status_code=201
 )
 def create_coverage_assessment(
-    req: CoverageAssessmentRequest, x_tenant_id: TenantHeader
+    req: CoverageAssessmentRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> CoverageAssessment:
     if (
         req.persist
         or req.use_case_id
         or req.questionnaire_id
         or req.routing_snapshot_id
+        or req.enterprise_baseline_id
     ):
+        _reject_public_demo_tenant(x_tenant_id)
         _require_crosswalk_state()
+    if x_tenant_id.strip().lower() != "public-demo":
+        _enforce_role_if_present(
+            x_role, CONTRIBUTOR_ROLES, "running coverage assessments"
+        )
     try:
         if req.use_case is not None:
             use_case = req.use_case
@@ -703,8 +999,14 @@ def create_coverage_assessment(
 
 
 @router.post("/policies/import", response_model=PolicyPack, status_code=201)
-def import_policy(req: PolicyImportRequest, x_tenant_id: TenantHeader) -> PolicyPack:
+def import_policy(
+    req: PolicyImportRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> PolicyPack:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, CONTRIBUTOR_ROLES, "importing policies")
     try:
         policy = extract_policy_pack(
             tenant_id=x_tenant_id, name=req.name, text=req.text, version=req.version
@@ -716,9 +1018,13 @@ def import_policy(req: PolicyImportRequest, x_tenant_id: TenantHeader) -> Policy
 
 @router.post("/policies/import-file", response_model=PolicyPack, status_code=201)
 def import_policy_file(
-    req: PolicyFileImportRequest, x_tenant_id: TenantHeader
+    req: PolicyFileImportRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> PolicyPack:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, CONTRIBUTOR_ROLES, "importing policy files")
     from .policy_documents import extract_policy_file
 
     try:
@@ -734,7 +1040,9 @@ def import_policy_file(
             detail="Policy file could not be extracted within supported limits",
         ) from exc
     return import_policy(
-        PolicyImportRequest(name=req.name, text=text, version=req.version), x_tenant_id
+        PolicyImportRequest(name=req.name, text=text, version=req.version),
+        x_tenant_id,
+        x_role=x_role,
     )
 
 
@@ -742,7 +1050,9 @@ def import_policy_file(
     "/assessments/policy-gaps", response_model=PolicyGapAssessment, status_code=201
 )
 def create_policy_gap_assessment(
-    req: PolicyGapAssessmentRequest, x_tenant_id: TenantHeader
+    req: PolicyGapAssessmentRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> PolicyGapAssessment:
     if (
         req.persist
@@ -750,8 +1060,15 @@ def create_policy_gap_assessment(
         or req.policy_pack_id
         or req.questionnaire_id
         or req.routing_snapshot_id
+        or req.enterprise_baseline_id
+        or req.enterprise_policy_ids
     ):
+        _reject_public_demo_tenant(x_tenant_id)
         _require_crosswalk_state()
+    if x_tenant_id.strip().lower() != "public-demo":
+        _enforce_role_if_present(
+            x_role, CONTRIBUTOR_ROLES, "running policy gap assessments"
+        )
     try:
         if req.use_case is not None:
             use_case = req.use_case
@@ -816,8 +1133,14 @@ def create_policy_gap_assessment(
 
 
 @router.get("/assessments/{assessment_id}/gaps", response_model=List[GapRecord])
-def get_gaps(assessment_id: str, x_tenant_id: TenantHeader) -> List[GapRecord]:
+def get_gaps(
+    assessment_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> List[GapRecord]:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "reading assessment gaps")
     try:
         return store.gaps_for_assessment(x_tenant_id, assessment_id)
     except NotFoundError as exc:
@@ -831,12 +1154,13 @@ def review_mapping(
     x_actor: ActorHeader,
     x_role: RoleHeader,
 ) -> MappingDecision:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
     _validate_reviewer_identity(x_actor, x_role)
-    if x_role.lower() not in {"legal", "compliance", "risk", "admin"}:
+    if x_role.lower() not in {"reviewer", "legal", "compliance", "risk", "admin"}:
         raise HTTPException(
             status_code=403,
-            detail="Mapping approval requires Legal, Compliance, Risk or Admin role",
+            detail="Mapping approval requires Reviewer, Legal, Compliance, Risk or Admin role",
         )
     try:
         question_bank = store.get_questionnaire(x_tenant_id, req.questionnaire_id)
@@ -889,12 +1213,28 @@ def review_gap(
     x_actor: ActorHeader,
     x_role: RoleHeader,
 ) -> GapRecord:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
-    _validate_reviewer_identity(x_actor, x_role)
-    if x_role.lower() not in {"legal", "compliance", "risk", "policy_owner", "admin"}:
+    if x_role.lower() not in {"reviewer", "legal", "compliance", "risk", "policy_owner", "admin"}:
         raise HTTPException(
             status_code=403, detail="Role is not authorised to review gaps"
         )
+    if not _production():
+        pass
+    else:
+        expected_actor = os.getenv("BANKING_CROSSWALK_ACTOR", "")
+        expected_role = os.getenv("BANKING_CROSSWALK_ROLE", "")
+        if not expected_actor.strip() or not expected_role.strip():
+            raise HTTPException(
+                status_code=503,
+                detail="Reviewer identity is not configured on this service",
+            )
+        if not _constant_match(x_actor, expected_actor) or not _constant_match(
+            x_role.lower(), expected_role.lower()
+        ):
+            raise HTTPException(
+                status_code=403, detail="Reviewer identity is not server-authorised"
+            )
     try:
         gap = store.get_gap(x_tenant_id, gap_id)
     except NotFoundError as exc:
@@ -949,8 +1289,14 @@ def review_gap(
 
 
 @router.get("/assessments/{assessment_id}/report")
-def get_report(assessment_id: str, x_tenant_id: TenantHeader) -> dict:
+def get_report(
+    assessment_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> dict:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "reading assessment reports")
     try:
         assessment = store.get_assessment(x_tenant_id, assessment_id)
     except NotFoundError as exc:
@@ -1021,9 +1367,13 @@ class EnterpriseBaselineCreateRequest(BaseModel):
 
 @router.post("/enterprise/policies/import", response_model=EnterprisePolicy, status_code=201)
 def import_enterprise_policy(
-    req: EnterprisePolicyImportRequest, x_tenant_id: TenantHeader
+    req: EnterprisePolicyImportRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> EnterprisePolicy:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, CONTRIBUTOR_ROLES, "importing enterprise policies")
     try:
         policy = extract_enterprise_policy(
             tenant_id=x_tenant_id,
@@ -1041,9 +1391,13 @@ def import_enterprise_policy(
 
 @router.post("/enterprise/policies/import-file", response_model=EnterprisePolicy, status_code=201)
 def import_enterprise_policy_file(
-    req: EnterprisePolicyFileImportRequest, x_tenant_id: TenantHeader
+    req: EnterprisePolicyFileImportRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> EnterprisePolicy:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, CONTRIBUTOR_ROLES, "importing enterprise policy files")
     from .policy_documents import extract_policy_file
 
     try:
@@ -1066,20 +1420,30 @@ def import_enterprise_policy_file(
             effective_date=req.effective_date,
         ),
         x_tenant_id,
+        x_role=x_role,
     )
 
 
 @router.get("/enterprise/policies", response_model=List[EnterprisePolicy])
-def list_enterprise_policies(x_tenant_id: TenantHeader) -> List[EnterprisePolicy]:
+def list_enterprise_policies(
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> List[EnterprisePolicy]:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "listing enterprise policies")
     return store.list_enterprise_policies(x_tenant_id)
 
 
 @router.get("/enterprise/policies/{policy_id}", response_model=EnterprisePolicy)
 def get_enterprise_policy_endpoint(
-    policy_id: str, x_tenant_id: TenantHeader
+    policy_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> EnterprisePolicy:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "reading enterprise policies")
     try:
         return store.get_enterprise_policy(x_tenant_id, policy_id)
     except NotFoundError as exc:
@@ -1088,27 +1452,48 @@ def get_enterprise_policy_endpoint(
 
 @router.delete("/enterprise/policies/{policy_id}", status_code=200)
 def delete_enterprise_policy_endpoint(
-    policy_id: str, x_tenant_id: TenantHeader
+    policy_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> DeleteResponse:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, ADMIN_ROLES, "deleting enterprise policies")
     store.delete_enterprise_policy(x_tenant_id, policy_id)
     return DeleteResponse(status="deleted", policy_id=policy_id)
 
 
 @router.get("/enterprise/policies/{policy_id}/clauses", response_model=List[EnterpriseClause])
 def list_policy_clauses_endpoint(
-    policy_id: str, x_tenant_id: TenantHeader
+    policy_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> List[EnterpriseClause]:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "listing policy clauses")
     return store.list_enterprise_clauses(x_tenant_id, policy_id=policy_id)
 
 
 @router.put("/enterprise/clauses/{clause_id}/review", response_model=EnterpriseClause)
 def review_enterprise_clause_endpoint(
-    clause_id: str, req: ClauseReviewRequest, x_tenant_id: TenantHeader
+    clause_id: str,
+    req: ClauseReviewRequest,
+    x_tenant_id: TenantHeader,
+    x_actor: OptionalActorHeader = None,
+    x_role: OptionalRoleHeader = None,
+    x_workspace_context: WorkspaceContextHeader = None,
 ) -> EnterpriseClause:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
-    _validate_reviewer_identity(req.actor, req.role)
+    _validate_reviewer_identity(
+        req.actor,
+        req.role,
+        header_actor=x_actor,
+        header_role=x_role,
+        x_workspace_context=x_workspace_context,
+        tenant_id=x_tenant_id,
+    )
     try:
         return store.update_clause_review(
             x_tenant_id,
@@ -1121,6 +1506,10 @@ def review_enterprise_clause_endpoint(
         )
     except NotFoundError as exc:
         raise _not_found(exc) from exc
+    except PermissionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)
+        ) from exc
 
 
 @router.put(
@@ -1132,9 +1521,20 @@ def review_enterprise_clause_mapping_endpoint(
     mapping_id: str,
     req: ClauseMappingReviewRequest,
     x_tenant_id: TenantHeader,
+    x_actor: OptionalActorHeader = None,
+    x_role: OptionalRoleHeader = None,
+    x_workspace_context: WorkspaceContextHeader = None,
 ) -> ClauseControlMapping:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
-    _validate_reviewer_identity(req.actor, req.role)
+    _validate_reviewer_identity(
+        req.actor,
+        req.role,
+        header_actor=x_actor,
+        header_role=x_role,
+        x_workspace_context=x_workspace_context,
+        tenant_id=x_tenant_id,
+    )
     try:
         return store.update_clause_mapping_review(
             x_tenant_id,
@@ -1149,13 +1549,23 @@ def review_enterprise_clause_mapping_endpoint(
         )
     except NotFoundError as exc:
         raise _not_found(exc) from exc
+    except PermissionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)
+        ) from exc
 
 
 @router.post("/enterprise/baselines", response_model=EnterpriseBaseline, status_code=201)
 def create_enterprise_baseline_endpoint(
-    req: EnterpriseBaselineCreateRequest, x_tenant_id: TenantHeader
+    req: EnterpriseBaselineCreateRequest,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> EnterpriseBaseline:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, REVIEWER_ROLES, "compiling an enterprise baseline"
+    )
     policies = []
     for pid in req.policy_ids:
         try:
@@ -1190,17 +1600,24 @@ def create_enterprise_baseline_endpoint(
 
 @router.get("/enterprise/baselines", response_model=List[EnterpriseBaseline])
 def list_enterprise_baselines_endpoint(
-    x_tenant_id: TenantHeader
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> List[EnterpriseBaseline]:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "listing enterprise baselines")
     return store.list_enterprise_baselines(x_tenant_id)
 
 
 @router.get("/enterprise/baselines/{baseline_id}", response_model=EnterpriseBaseline)
 def get_enterprise_baseline_endpoint(
-    baseline_id: str, x_tenant_id: TenantHeader
+    baseline_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
 ) -> EnterpriseBaseline:
+    _reject_public_demo_tenant(x_tenant_id)
     _require_crosswalk_state()
+    _enforce_role_if_present(x_role, READER_ROLES, "reading enterprise baselines")
     try:
         return store.get_enterprise_baseline(x_tenant_id, baseline_id)
     except NotFoundError as exc:

@@ -100,25 +100,86 @@ export default function Home() {
   const [statusMessage, setStatusMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function callWorkspace(payload: Record<string, unknown>) {
+  // Authentication & Workspace Session state
+  const [authLoaded, setAuthLoaded] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [deploymentMode, setDeploymentMode] = useState<string>(
+    "authenticated_self_hosted",
+  );
+  const [userId, setUserId] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [tenantId, setTenantId] = useState("");
+  const [roles, setRoles] = useState<string[]>([]);
+  const [permissions, setPermissions] = useState<string[]>([]);
+  const [csrfToken, setCsrfToken] = useState("");
+  const [localCommunityHint, setLocalCommunityHint] = useState("");
+
+  // Sign-In form inputs
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginTenantId, setLoginTenantId] = useState("");
+  const [authBusy, setAuthBusy] = useState(false);
+
+  const hasWorkspaceAccess =
+    authenticated || deploymentMode === "local_dev_bypass";
+
+  function can(permission: string): boolean {
+    if (deploymentMode === "local_dev_bypass") return true;
+    return permissions.includes(permission);
+  }
+
+  function clearPrivateWorkspaceState() {
+    setQuestionnaires([]);
+    setSelectedQuestionnaireId("");
+    setPolicies([]);
+    setSelectedPolicyId("");
+    setPolicyClauses({});
+    setBaselines([]);
+    setSelectedBaselineId("");
+    setSelectedPolicyIdsForBaseline([]);
+    setResult(null);
+  }
+
+  async function callWorkspace(
+    payload: Record<string, unknown>,
+    csrfOverride?: string,
+  ) {
+    const tokenToUse = csrfOverride ?? csrfToken;
     const response = await fetch("/api/workspace", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(tokenToUse ? { "X-CSRF-Token": tokenToUse } : {}),
+      },
       body: JSON.stringify(payload),
     });
     const data = await response.json();
+    if (response.status === 401) {
+      setAuthenticated(false);
+      setUserId("");
+      setDisplayName("");
+      setRoles([]);
+      setPermissions([]);
+      setCsrfToken("");
+      clearPrivateWorkspaceState();
+      throw new Error(
+        data.error ||
+          data.detail ||
+          "Your workspace session has expired or been revoked. Please sign in again.",
+      );
+    }
     if (!response.ok) {
-      throw new Error(data.error || "Workspace request failed.");
+      throw new Error(data.error || data.detail || "Workspace request failed.");
     }
     return data;
   }
 
-  async function refreshWorkspaceInventory() {
+  async function refreshWorkspaceInventory(csrfOverride?: string) {
     try {
       const [qList, pList, bList] = await Promise.all([
-        callWorkspace({ action: "list_questionnaires" }),
-        callWorkspace({ action: "list_policies" }),
-        callWorkspace({ action: "list_baselines" }),
+        callWorkspace({ action: "list_questionnaires" }, csrfOverride),
+        callWorkspace({ action: "list_policies" }, csrfOverride),
+        callWorkspace({ action: "list_baselines" }, csrfOverride),
       ]);
       if (Array.isArray(qList)) {
         setQuestionnaires(qList);
@@ -145,8 +206,107 @@ export default function Home() {
     }
   }
 
+  async function refreshSessionAndInventory() {
+    try {
+      const res = await fetch("/api/auth/session", { cache: "no-store" });
+      const data = await res.json();
+      setDeploymentMode(data.deployment_mode || "authenticated_self_hosted");
+      setLocalCommunityHint(data.local_community_hint || "");
+      if (
+        res.ok &&
+        (data.authenticated || data.deployment_mode === "local_dev_bypass")
+      ) {
+        setAuthenticated(Boolean(data.authenticated));
+        setUserId(data.user_id || "");
+        setDisplayName(data.display_name || data.user_id || "");
+        setTenantId(data.tenant_id || "");
+        setRoles(Array.isArray(data.roles) ? data.roles : []);
+        setPermissions(Array.isArray(data.permissions) ? data.permissions : []);
+        setCsrfToken(data.csrf_token || "");
+        await refreshWorkspaceInventory(data.csrf_token || "");
+      } else {
+        setAuthenticated(false);
+        setUserId("");
+        setDisplayName("");
+        setRoles([]);
+        setPermissions([]);
+        setCsrfToken("");
+      }
+    } catch {
+      setAuthenticated(false);
+    } finally {
+      setAuthLoaded(true);
+    }
+  }
+
+  async function handleLoginSubmit(e?: React.FormEvent) {
+    if (e) e.preventDefault();
+    setError("");
+    setStatusMessage("");
+    setAuthBusy(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: loginUsername,
+          password: loginPassword,
+          ...(loginTenantId.trim() ? { tenant_id: loginTenantId.trim() } : {}),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.detail || data.error || "Sign-in failed.");
+      }
+      setAuthenticated(true);
+      setUserId(data.user_id || "");
+      setDisplayName(data.display_name || data.user_id || "");
+      setTenantId(data.tenant_id || "");
+      setRoles(Array.isArray(data.roles) ? data.roles : []);
+      setPermissions(Array.isArray(data.permissions) ? data.permissions : []);
+      setCsrfToken(data.csrf_token || "");
+      setLoginPassword("");
+      setStatusMessage(
+        `Signed in as ${data.display_name || data.user_id} (${(data.roles || []).join(", ")}) in tenant "${data.tenant_id}".`,
+      );
+      await refreshWorkspaceInventory(data.csrf_token || "");
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Sign-in failed.");
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
+  async function handleLogout() {
+    setError("");
+    setStatusMessage("");
+    setAuthBusy(true);
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
+        },
+      });
+    } catch {
+      // Clear client state even if network call fails
+    } finally {
+      setAuthenticated(false);
+      setUserId("");
+      setDisplayName("");
+      setTenantId("");
+      setRoles([]);
+      setPermissions([]);
+      setCsrfToken("");
+      clearPrivateWorkspaceState();
+      setStatusMessage("Signed out of private document workspace.");
+      setAuthBusy(false);
+    }
+  }
+
   useEffect(() => {
-    void refreshWorkspaceInventory();
+    void refreshSessionAndInventory();
   }, []);
 
   function updateFact(key: FactKey, value: Fact) {
@@ -486,9 +646,30 @@ export default function Home() {
           DeepAudit<span>CrossWalk</span>
         </a>
         <div className="nav-links">
-          <span className="badge applicable">
-            Private Local Single-Tenant Workspace
-          </span>
+          {authenticated ? (
+            <>
+              <span className="badge applicable" data-testid="session-badge">
+                {displayName || userId} ({roles.join(", ")}) · Tenant:{" "}
+                {tenantId}
+              </span>
+              <button
+                type="button"
+                className="quiet"
+                disabled={authBusy}
+                onClick={handleLogout}
+              >
+                Sign out
+              </button>
+            </>
+          ) : deploymentMode === "local_dev_bypass" ? (
+            <span className="badge undetermined" data-testid="session-badge">
+              Local Dev Bypass Mode (Unauthenticated Loopback)
+            </span>
+          ) : (
+            <span className="badge undetermined" data-testid="session-badge">
+              Sign-In Required for Private Workspace
+            </span>
+          )}
           <a
             href="https://github.com/VivianFuVivianFu/DeepAuditCrossWalk"
             target="_blank"
@@ -498,6 +679,15 @@ export default function Home() {
           </a>
         </div>
       </nav>
+      {deploymentMode === "local_dev_bypass" && (
+        <aside className="notice" role="note">
+          <strong>LOCAL DEVELOPMENT AUTH BYPASS ACTIVE.</strong> Requests from
+          loopback are permitted without sign-in because{" "}
+          <code>ALLOW_LOCAL_DEV_AUTH_BYPASS=true</code> is set in a
+          non-production environment. Never enable this mode on shared or
+          network-reachable hosts.
+        </aside>
+      )}
       <header>
         <p className="eyebrow">
           AUSTRALIAN BANKING & FINANCIAL SERVICES · DOCUMENT-FIRST ASSURANCE
@@ -565,7 +755,117 @@ export default function Home() {
         </p>
       )}
 
-      {activeTab === "assess_document" && (
+      {activeTab !== "synthetic_demo" && !hasWorkspaceAccess && (
+        <section
+          className="workspace"
+          role="region"
+          aria-label="Workspace Sign-In"
+        >
+          <div className="panel">
+            <p className="eyebrow">00 / AUTHENTICATED DOCUMENT WORKSPACE</p>
+            <h2>Sign in to access private tenant documents</h2>
+            <p className="muted">
+              Uploading questionnaires, managing internal enterprise policies,
+              reviewing candidate clauses and control mappings, and running
+              tenant assessments require an authenticated workspace session. The{" "}
+              <strong>Synthetic Demo Example (DEMO_BANKING_V1)</strong> tab
+              remains available without sign-in.
+            </p>
+            {localCommunityHint && (
+              <aside className="notice" role="note">
+                <strong>Self-Hosted Community Accounts:</strong>{" "}
+                {localCommunityHint}
+              </aside>
+            )}
+            <form onSubmit={handleLoginSubmit}>
+              <fieldset disabled={authBusy}>
+                <label>
+                  Username or email
+                  <input
+                    aria-label="Workspace username"
+                    autoComplete="username"
+                    value={loginUsername}
+                    onChange={(e) => setLoginUsername(e.target.value)}
+                    placeholder="e.g. analyst or reviewer"
+                  />
+                </label>
+                <label>
+                  Password
+                  <input
+                    type="password"
+                    aria-label="Workspace password"
+                    autoComplete="current-password"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    placeholder="Enter workspace password"
+                  />
+                </label>
+                <label>
+                  Tenant ID (optional)
+                  <input
+                    aria-label="Tenant ID (optional)"
+                    value={loginTenantId}
+                    onChange={(e) => setLoginTenantId(e.target.value)}
+                    placeholder="Defaults to assigned tenant"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="primary"
+                  disabled={
+                    authBusy || !loginUsername.trim() || !loginPassword.trim()
+                  }
+                >
+                  {authBusy ? "Signing in…" : "Sign in to Workspace →"}
+                </button>
+              </fieldset>
+            </form>
+          </div>
+          <div className="panel">
+            <p className="eyebrow">ROLE-BASED ACCESS CONTROL</p>
+            <h2>Enforced workspace permissions</h2>
+            <p className="muted">
+              Every workspace operation is verified against your authenticated
+              user identity, tenant membership, and assigned role:
+            </p>
+            <div className="question-preview-list">
+              <div className="preview-item">
+                <strong>Viewer</strong>
+                <p>
+                  Read authorised tenant questionnaires, policies, clauses,
+                  baselines, and assessment reports.
+                </p>
+              </div>
+              <div className="preview-item">
+                <strong>Analyst (Contributor)</strong>
+                <p>
+                  Upload questionnaires (.xlsx) and internal policy documents,
+                  and run Regulatory-Only or Enterprise-Enhanced coverage
+                  assessments. Cannot approve clauses, approve control mappings,
+                  or compile baselines.
+                </p>
+              </div>
+              <div className="preview-item">
+                <strong>Reviewer (Compliance / Legal / Risk)</strong>
+                <p>
+                  Separately review and approve or reject candidate Enterprise
+                  Clauses and Control Mappings, and compile versioned Enterprise
+                  Baselines attributed to your verified user identity.
+                </p>
+              </div>
+              <div className="preview-item">
+                <strong>Admin</strong>
+                <p>
+                  Full tenant workspace administration including policy deletion
+                  within the authorised tenant.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === "assess_document" && hasWorkspaceAccess && (
         <>
           <aside className="notice">
             <strong>Document-First Assessment (Upload B).</strong> Upload your
@@ -902,7 +1202,7 @@ export default function Home() {
         </>
       )}
 
-      {activeTab === "enterprise_policies" && (
+      {activeTab === "enterprise_policies" && hasWorkspaceAccess && (
         <>
           <aside className="notice">
             <strong>
@@ -1054,12 +1354,20 @@ export default function Home() {
                   onChange={(e) => setBaselineVersion(e.target.value)}
                 />
               </label>
+              {!can("baseline:create") && (
+                <p className="notice" role="note">
+                  <strong>Reviewer Role Required:</strong> Your current role (
+                  {roles.join(", ") || "viewer"}) cannot compile an Enterprise
+                  Baseline. Sign in as a Reviewer or Admin.
+                </p>
+              )}
               <button
                 type="button"
                 className="primary"
                 disabled={
                   busy ||
                   uploadBusy ||
+                  !can("baseline:create") ||
                   selectedPolicyIdsForBaseline.length === 0 ||
                   !baselineName.trim()
                 }
@@ -1230,7 +1538,7 @@ export default function Home() {
                             <button
                               type="button"
                               className="quiet"
-                              disabled={busy}
+                              disabled={busy || !can("clause:review")}
                               onClick={() =>
                                 handleClauseReview(
                                   activePolicy.policy_id,
@@ -1244,7 +1552,7 @@ export default function Home() {
                             <button
                               type="button"
                               className="quiet"
-                              disabled={busy}
+                              disabled={busy || !can("clause:review")}
                               onClick={() =>
                                 handleClauseReview(
                                   activePolicy.policy_id,
@@ -1255,6 +1563,11 @@ export default function Home() {
                             >
                               Reject Clause
                             </button>
+                            {!can("clause:review") && (
+                              <span className="badge undetermined">
+                                Reviewer role required for clause approval
+                              </span>
+                            )}
                           </div>
 
                           {clause.control_mappings.length > 0 ? (
@@ -1277,7 +1590,7 @@ export default function Home() {
                                     <button
                                       type="button"
                                       className="quiet"
-                                      disabled={busy}
+                                      disabled={busy || !can("mapping:review")}
                                       onClick={() =>
                                         handleMappingReview(
                                           activePolicy.policy_id,
@@ -1292,7 +1605,7 @@ export default function Home() {
                                     <button
                                       type="button"
                                       className="quiet"
-                                      disabled={busy}
+                                      disabled={busy || !can("mapping:review")}
                                       onClick={() =>
                                         handleMappingReview(
                                           activePolicy.policy_id,
@@ -1304,6 +1617,12 @@ export default function Home() {
                                     >
                                       Reject Mapping
                                     </button>
+                                    {!can("mapping:review") && (
+                                      <span className="badge undetermined">
+                                        Reviewer role required for mapping
+                                        approval
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
                               ))}

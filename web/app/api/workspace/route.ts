@@ -1,112 +1,37 @@
-import { timingSafeEqual } from "crypto";
 import { NextResponse } from "next/server";
+import {
+  ACTION_PERMISSIONS,
+  SecurityContext,
+  hasPermission,
+  primaryRole,
+  resolveSecurityContext,
+  signBackendWorkspaceContext,
+  verifyCsrfProtection,
+} from "../../security";
 
-export const MAX_WORKSPACE_UPLOAD_BYTES = 28_000_000;
-export const MAX_WORKSPACE_JSON_BYTES = 1_000_000;
+const MAX_WORKSPACE_UPLOAD_BYTES = 28_000_000;
+const MAX_WORKSPACE_JSON_BYTES = 1_000_000;
 
 const UPLOAD_ACTIONS = new Set([
   "import_questionnaire",
   "import_policy_file",
   "import_policy_text",
+  "import_policy",
 ]);
 
 const SAFE_ID_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
 const XLSX_FILENAME_PATTERN = /^[^/\\\x00]+\.xlsx$/i;
 const POLICY_FILENAME_PATTERN = /^[^/\\\x00]+\.(pdf|docx|txt|md)$/i;
 
-function isProduction(): boolean {
-  return (
-    (process.env.ENV || "").trim().toLowerCase() === "production" ||
-    (process.env.NODE_ENV || "").trim().toLowerCase() === "production"
-  );
-}
-
-function constantMatch(provided: string, expected: string): boolean {
-  const a = Buffer.from(provided, "utf8");
-  const b = Buffer.from(expected, "utf8");
-  if (a.length !== b.length) return false;
-  return timingSafeEqual(a, b);
-}
-
-function resolveWorkspaceTenant(request: Request): {
-  ok: true;
-  tenantId: string;
-  actor: string;
-  role: string;
-  mode: "authenticated_single_tenant" | "local_private_single_tenant";
-} | {
-  ok: false;
-  response: NextResponse;
-} {
-  const configuredToken = (process.env.WORKSPACE_AUTH_TOKEN || "").trim();
-  if (configuredToken) {
-    const headerToken =
-      request.headers.get("x-workspace-token") ||
-      (request.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
-    if (!headerToken || !constantMatch(headerToken.trim(), configuredToken)) {
-      return {
-        ok: false,
-        response: NextResponse.json(
-          { error: "Missing or invalid workspace authentication token." },
-          { status: 401 },
-        ),
-      };
-    }
-  }
-
-  const configuredTenant = (process.env.BANKING_CROSSWALK_TENANT_ID || "").trim();
-  const configuredApiKey = (process.env.CROSSWALK_API_KEY || "").trim();
-
-  if (configuredTenant.toLowerCase() === "public-demo") {
-    return {
-      ok: false,
-      response: NextResponse.json(
-        {
-          error:
-            "The shared public-demo tenant is strictly isolated and cannot access the private document workspace.",
-        },
-        { status: 403 },
-      ),
-    };
-  }
-
-  if (isProduction()) {
-    if (!configuredTenant || !configuredApiKey) {
-      return {
-        ok: false,
-        response: NextResponse.json(
-          {
-            error:
-              "Private document uploads are disabled in production until server-bound BANKING_CROSSWALK_TENANT_ID and CROSSWALK_API_KEY are configured.",
-          },
-          { status: 403 },
-        ),
-      };
-    }
-    return {
-      ok: true,
-      tenantId: configuredTenant,
-      actor: (process.env.BANKING_CROSSWALK_ACTOR || "authorised-reviewer").trim(),
-      role: (process.env.BANKING_CROSSWALK_ROLE || "compliance").trim(),
-      mode: "authenticated_single_tenant",
-    };
-  }
-
-  return {
-    ok: true,
-    tenantId: configuredTenant || "local-private-workspace",
-    actor: (process.env.BANKING_CROSSWALK_ACTOR || "local-reviewer").trim(),
-    role: (process.env.BANKING_CROSSWALK_ROLE || "compliance").trim(),
-    mode: "local_private_single_tenant",
-  };
-}
-
-function backendHeaders(tenantId: string, actor: string, role: string): Record<string, string> {
+function backendHeaders(ctx: SecurityContext): Record<string, string> {
+  const role = primaryRole(ctx.roles);
+  const signedContext = signBackendWorkspaceContext(ctx);
   return {
     "Content-Type": "application/json",
-    "X-Tenant-ID": tenantId,
-    "X-Actor": actor,
+    "X-Tenant-ID": ctx.tenant_id,
+    "X-Actor": ctx.user_id,
     "X-Role": role,
+    ...(signedContext ? { "X-Workspace-Context": signedContext } : {}),
     ...(process.env.CROSSWALK_API_KEY
       ? { "X-API-Key": process.env.CROSSWALK_API_KEY }
       : {}),
@@ -121,13 +46,29 @@ function assertSafeId(value: unknown, label: string): string {
 }
 
 export async function GET(request: Request) {
-  const ctx = resolveWorkspaceTenant(request);
-  if (!ctx.ok) return ctx.response;
+  const resolved = resolveSecurityContext(request);
+  if (!resolved.ok) {
+    return NextResponse.json(
+      { error: resolved.error, detail: resolved.error },
+      { status: resolved.status }
+    );
+  }
+  const ctx = resolved.context;
 
   return NextResponse.json(
     {
-      workspace_mode: ctx.mode,
-      tenant_scope: ctx.tenantId,
+      workspace_mode:
+        ctx.deployment_mode === "local_dev_bypass"
+          ? "local_private_single_tenant"
+          : "authenticated_single_tenant",
+      deployment_mode: ctx.deployment_mode,
+      authenticated: ctx.authenticated,
+      user_id: ctx.user_id,
+      display_name: ctx.display_name,
+      tenant_scope: ctx.tenant_id,
+      roles: ctx.roles,
+      permissions: ctx.permissions,
+      csrf_token: ctx.csrf_token,
       public_demo_isolated: true,
       supported_targets: {
         questionnaire: {
@@ -142,13 +83,26 @@ export async function GET(request: Request) {
         },
       },
     },
-    { headers: { "Cache-Control": "no-store" } },
+    { headers: { "Cache-Control": "no-store" } }
   );
 }
 
 export async function POST(request: Request) {
-  const ctx = resolveWorkspaceTenant(request);
-  if (!ctx.ok) return ctx.response;
+  const initialResolved = resolveSecurityContext(request);
+  if (!initialResolved.ok) {
+    return NextResponse.json(
+      { error: initialResolved.error, detail: initialResolved.error },
+      { status: initialResolved.status }
+    );
+  }
+
+  const csrfCheck = verifyCsrfProtection(request, initialResolved.context);
+  if (!csrfCheck.ok) {
+    return NextResponse.json(
+      { error: csrfCheck.error, detail: csrfCheck.error },
+      { status: csrfCheck.status }
+    );
+  }
 
   let input: Record<string, unknown>;
   let rawByteCount = 0;
@@ -157,7 +111,7 @@ export async function POST(request: Request) {
     if (!reader) {
       return NextResponse.json(
         { error: "A JSON request body is required." },
-        { status: 400 },
+        { status: 400 }
       );
     }
     const chunks: Uint8Array[] = [];
@@ -169,7 +123,7 @@ export async function POST(request: Request) {
         await reader.cancel();
         return NextResponse.json(
           { error: "Workspace upload request exceeds the 28 MB limit." },
-          { status: 413 },
+          { status: 413 }
         );
       }
       chunks.push(value);
@@ -178,22 +132,52 @@ export async function POST(request: Request) {
     if (!input || Array.isArray(input) || typeof input !== "object") {
       return NextResponse.json(
         { error: "A JSON object body is required." },
-        { status: 400 },
+        { status: 400 }
       );
     }
   } catch {
     return NextResponse.json(
       { error: "Invalid JSON request." },
-      { status: 400 },
+      { status: 400 }
     );
+  }
+
+  let ctx = initialResolved.context;
+  if (typeof input.tenant_id === "string" && input.tenant_id.trim()) {
+    const tenantResolved = resolveSecurityContext(
+      request,
+      input.tenant_id.trim()
+    );
+    if (!tenantResolved.ok) {
+      return NextResponse.json(
+        { error: tenantResolved.error, detail: tenantResolved.error },
+        { status: tenantResolved.status }
+      );
+    }
+    ctx = tenantResolved.context;
   }
 
   const action = typeof input.action === "string" ? input.action : "";
   if (!UPLOAD_ACTIONS.has(action) && rawByteCount > MAX_WORKSPACE_JSON_BYTES) {
     return NextResponse.json(
       { error: "Workspace request exceeds the 1 MB JSON payload limit." },
-      { status: 413 },
+      { status: 413 }
     );
+  }
+
+  const requiredPermission = ACTION_PERMISSIONS[action];
+  if (!requiredPermission) {
+    return NextResponse.json(
+      { error: "Unsupported workspace action.", detail: "Unsupported workspace action." },
+      { status: 400 }
+    );
+  }
+
+  if (!hasPermission(ctx, requiredPermission)) {
+    const msg = `Permission denied: role '${primaryRole(
+      ctx.roles
+    )}' lacks '${requiredPermission}' required for '${action}'.`;
+    return NextResponse.json({ error: msg, detail: msg }, { status: 403 });
   }
 
   const baseUrl = process.env.CROSSWALK_API_URL || "http://127.0.0.1:8000";
@@ -213,13 +197,13 @@ export async function POST(request: Request) {
         if (!XLSX_FILENAME_PATTERN.test(filename)) {
           return NextResponse.json(
             { error: "Questionnaire upload requires a valid .xlsx filename." },
-            { status: 400 },
+            { status: 400 }
           );
         }
         if (!workbookBase64) {
           return NextResponse.json(
             { error: "Questionnaire workbook content is required." },
-            { status: 400 },
+            { status: 400 }
           );
         }
         targetPath = "/v1/questionnaires/import";
@@ -253,7 +237,7 @@ export async function POST(request: Request) {
               error:
                 "DEMO_BANKING_V1 is reserved for the synthetic demo and cannot be loaded as a customer questionnaire.",
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         targetPath = `/v1/questionnaires/${encodeURIComponent(qid)}`;
@@ -261,7 +245,8 @@ export async function POST(request: Request) {
         break;
       }
 
-      case "assess_coverage": {
+      case "assess_coverage":
+      case "run_coverage_assessment": {
         const targetType =
           typeof input.assessment_target_type === "string"
             ? input.assessment_target_type
@@ -272,7 +257,7 @@ export async function POST(request: Request) {
               error:
                 "AI Governance Strategy Assessment is planned for PR 4 and is not available in this release. Select AI Assurance / Governance Questionnaire (.xlsx).",
             },
-            { status: 501 },
+            { status: 501 }
           );
         }
         if (input.questionnaire_pack) {
@@ -281,7 +266,7 @@ export async function POST(request: Request) {
               error:
                 "Customer document assessments must use an uploaded questionnaire_id and cannot use DEMO_BANKING_V1.",
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         const qid = assertSafeId(input.questionnaire_id, "questionnaire_id");
@@ -291,23 +276,23 @@ export async function POST(request: Request) {
               error:
                 "DEMO_BANKING_V1 is reserved for the synthetic demo and cannot be used for customer questionnaire assessment.",
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         const mode =
           input.assessment_mode === "enterprise_enhanced"
             ? "enterprise_enhanced"
             : input.assessment_mode === "regulatory_only" ||
-                input.assessment_mode === undefined
-              ? "regulatory_only"
-              : "";
+              input.assessment_mode === undefined
+            ? "regulatory_only"
+            : "";
         if (!mode) {
           return NextResponse.json(
             {
               error:
                 "assessment_mode must be 'regulatory_only' or 'enterprise_enhanced'.",
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         if (mode === "regulatory_only" && input.enterprise_baseline_id) {
@@ -316,14 +301,14 @@ export async function POST(request: Request) {
               error:
                 "enterprise_baseline_id cannot be supplied when assessment_mode is 'regulatory_only'.",
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         let baselineId: string | undefined;
         if (mode === "enterprise_enhanced") {
           baselineId = assertSafeId(
             input.enterprise_baseline_id,
-            "enterprise_baseline_id",
+            "enterprise_baseline_id"
           );
         }
         const useCase =
@@ -364,7 +349,7 @@ export async function POST(request: Request) {
         if (!name) {
           return NextResponse.json(
             { error: "Policy name is required." },
-            { status: 400 },
+            { status: 400 }
           );
         }
         if (!POLICY_FILENAME_PATTERN.test(filename)) {
@@ -373,13 +358,13 @@ export async function POST(request: Request) {
               error:
                 "Enterprise policy file upload requires a .pdf, .docx, .txt, or .md filename.",
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         if (!fileBase64) {
           return NextResponse.json(
             { error: "Policy file content is required." },
-            { status: 400 },
+            { status: 400 }
           );
         }
         targetPath = "/v1/enterprise/policies/import-file";
@@ -405,13 +390,14 @@ export async function POST(request: Request) {
         break;
       }
 
-      case "import_policy_text": {
+      case "import_policy_text":
+      case "import_policy": {
         const name = typeof input.name === "string" ? input.name.trim() : "";
         const text = typeof input.text === "string" ? input.text.trim() : "";
         if (!name || !text) {
           return NextResponse.json(
             { error: "Policy name and policy text are required." },
-            { status: 400 },
+            { status: 400 }
           );
         }
         targetPath = "/v1/enterprise/policies/import";
@@ -442,7 +428,15 @@ export async function POST(request: Request) {
         break;
       }
 
-      case "get_policy_clauses": {
+      case "get_policy": {
+        const policyId = assertSafeId(input.policy_id, "policy_id");
+        targetPath = `/v1/enterprise/policies/${encodeURIComponent(policyId)}`;
+        method = "GET";
+        break;
+      }
+
+      case "get_policy_clauses":
+      case "list_clauses": {
         const policyId = assertSafeId(input.policy_id, "policy_id");
         targetPath = `/v1/enterprise/policies/${encodeURIComponent(policyId)}/clauses`;
         method = "GET";
@@ -463,15 +457,15 @@ export async function POST(request: Request) {
         if (!["approved", "confirmed", "rejected", "proposed"].includes(status)) {
           return NextResponse.json(
             { error: "Invalid clause review status." },
-            { status: 400 },
+            { status: 400 }
           );
         }
         targetPath = `/v1/enterprise/clauses/${encodeURIComponent(clauseId)}/review`;
         method = "PUT";
         bodyPayload = {
           status,
-          actor: ctx.actor,
-          role: ctx.role,
+          actor: ctx.user_id,
+          role: primaryRole(ctx.roles),
           ...(typeof input.review_comment === "string" &&
           input.review_comment.trim()
             ? { review_comment: input.review_comment.trim() }
@@ -488,15 +482,15 @@ export async function POST(request: Request) {
         if (!["approved", "confirmed", "rejected", "proposed"].includes(status)) {
           return NextResponse.json(
             { error: "Invalid control mapping review status." },
-            { status: 400 },
+            { status: 400 }
           );
         }
         targetPath = `/v1/enterprise/clauses/${encodeURIComponent(clauseId)}/mappings/${encodeURIComponent(mappingId)}/review`;
         method = "PUT";
         bodyPayload = {
           status,
-          actor: ctx.actor,
-          role: ctx.role,
+          actor: ctx.user_id,
+          role: primaryRole(ctx.roles),
           ...(typeof input.relationship === "string" &&
           input.relationship.trim()
             ? { relationship: input.relationship.trim() }
@@ -523,7 +517,7 @@ export async function POST(request: Request) {
               error:
                 "Baseline name and at least one reviewed policy_id are required.",
             },
-            { status: 400 },
+            { status: 400 }
           );
         }
         targetPath = "/v1/enterprise/baselines";
@@ -550,10 +544,37 @@ export async function POST(request: Request) {
         break;
       }
 
+      case "get_baseline": {
+        const baselineId = assertSafeId(input.baseline_id, "baseline_id");
+        targetPath = `/v1/enterprise/baselines/${encodeURIComponent(baselineId)}`;
+        method = "GET";
+        break;
+      }
+
+      case "get_report": {
+        const assessmentId = assertSafeId(
+          input.assessment_id,
+          "assessment_id"
+        );
+        targetPath = `/v1/assessments/${encodeURIComponent(assessmentId)}/report`;
+        method = "GET";
+        break;
+      }
+
+      case "get_gaps": {
+        const assessmentId = assertSafeId(
+          input.assessment_id,
+          "assessment_id"
+        );
+        targetPath = `/v1/assessments/${encodeURIComponent(assessmentId)}/gaps`;
+        method = "GET";
+        break;
+      }
+
       default:
         return NextResponse.json(
           { error: "Unsupported workspace action." },
-          { status: 400 },
+          { status: 400 }
         );
     }
   } catch (err) {
@@ -562,7 +583,7 @@ export async function POST(request: Request) {
         error:
           err instanceof Error ? err.message : "Invalid workspace parameters.",
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -571,7 +592,7 @@ export async function POST(request: Request) {
       method,
       cache: "no-store",
       signal: AbortSignal.timeout(30_000),
-      headers: backendHeaders(ctx.tenantId, ctx.actor, ctx.role),
+      headers: backendHeaders(ctx),
       ...(bodyPayload !== undefined
         ? { body: JSON.stringify(bodyPayload) }
         : {}),
@@ -587,12 +608,13 @@ export async function POST(request: Request) {
       } catch {
         // Ignore non-JSON upstream bodies so internal stack traces never leak
       }
-      if (response.status === 401 || response.status === 403) {
-        detail = "The API gateway authentication or role is not authorised.";
-      } else if (response.status >= 500 && response.status !== 501) {
+      if (response.status >= 500 && response.status !== 501) {
         detail = "The backend analysis service is temporarily unavailable.";
       }
-      return NextResponse.json({ error: detail }, { status: response.status });
+      return NextResponse.json(
+        { error: detail, detail },
+        { status: response.status }
+      );
     }
 
     return NextResponse.json(await response.json(), {
@@ -604,7 +626,7 @@ export async function POST(request: Request) {
         error:
           "Could not reach the backend API. Start the backend server or verify configuration.",
       },
-      { status: 502 },
+      { status: 502 }
     );
   }
 }

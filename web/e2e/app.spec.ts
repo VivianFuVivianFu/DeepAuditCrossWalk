@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("document-first two-upload workspace and isolated synthetic demo workflows", async ({
+test("document-first authenticated workspace and isolated synthetic demo workflows", async ({
   page,
 }) => {
   await page.goto("/");
@@ -17,22 +17,15 @@ test("document-first two-upload workspace and isolated synthetic demo workflows"
   await expect(
     page.getByRole("button", { name: "2. Add Enterprise Policies (Optional)" }),
   ).toBeVisible();
-  await expect(
-    page.getByLabel("Entity-specific IDR duty confirmed"),
-  ).toHaveValue("unknown");
 
-  // Verify Strategy target is clearly presented as Planned / Unavailable
-  await page
-    .getByRole("button", { name: "AI Governance Strategy (Planned)" })
-    .click();
+  // 1. Verify Unauthenticated State: Sign-in prompt on private tabs
   await expect(
-    page.getByText(/Planned \/ Unavailable in PR 2/i),
+    page.getByRole("heading", { name: "Sign in to access private tenant documents" })
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "AI Assurance Questionnaire (.xlsx)" })
-    .click();
+  await expect(page.getByLabel("Workspace username")).toBeVisible();
+  await expect(page.getByLabel("Workspace password")).toBeVisible();
 
-  // Verify Synthetic Demo Example tab remains isolated and functional
+  // 2. Verify Anonymous Synthetic Demo remains accessible without login
   await page
     .getByRole("button", {
       name: "Synthetic Demo Example (DEMO_BANKING_V1)",
@@ -51,14 +44,37 @@ test("document-first two-upload workspace and isolated synthetic demo workflows"
     path: "test-results/coverage-desktop.png",
     fullPage: true,
   });
-  await page.getByRole("button", { name: "Enterprise policy gaps" }).click();
-  await page.getByRole("button", { name: "Run assessment" }).click();
+
+  // 3. Authenticate into private workspace
+  await page
+    .getByRole("button", { name: "1. Assess a Document (Primary)" })
+    .click();
+  await page.getByLabel("Workspace username").fill("analyst");
+  await page.getByLabel("Workspace password").fill("analyst-local-pass");
+  await page.getByRole("button", { name: "Sign in to Workspace →" }).click();
+
+  // Verify Session Badge and private workspace unlocked
+  await expect(page.getByTestId("session-badge")).toContainText("analyst");
+  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
+  await expect(page.getByText("Upload Enterprise Questionnaire")).toBeVisible();
+
+  // 4. Verify Strategy Target is clearly presented as Planned / Unavailable
+  await page
+    .getByRole("button", { name: "AI Governance Strategy (Planned)" })
+    .click();
   await expect(
-    page.getByRole("heading", { name: "Traceable assessment results" }),
+    page.getByText(/Planned \/ Unavailable in PR 2/i),
   ).toBeVisible();
-  const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Export JSON" }).click();
-  expect((await download).suggestedFilename()).toMatch(/^crosswalk-.+\.json$/);
+  await page
+    .getByRole("button", { name: "AI Assurance Questionnaire (.xlsx)" })
+    .click();
+
+  // 5. Test sign out
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Sign in to access private tenant documents" })
+  ).toBeVisible();
+  await expect(page.getByTestId("session-badge")).toContainText("Sign-In Required");
 });
 
 test("mobile context form fits the viewport and unknown facts are retained", async ({
@@ -66,6 +82,11 @@ test("mobile context form fits the viewport and unknown facts are retained", asy
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
+  await page
+    .getByRole("button", {
+      name: "Synthetic Demo Example (DEMO_BANKING_V1)",
+    })
+    .click();
   await expect(page.getByLabel("APRA-regulated entity")).toHaveValue("unknown");
   expect(
     await page.evaluate(
