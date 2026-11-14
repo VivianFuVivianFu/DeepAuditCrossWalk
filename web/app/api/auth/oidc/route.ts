@@ -10,6 +10,16 @@ import {
 } from "../../../security";
 
 export async function GET(request: Request): Promise<NextResponse> {
+  if (isProductionEnv()) {
+    return NextResponse.json(
+      {
+        detail:
+          "OIDC Authorization Code Flow with JWKS verification is currently experimental and disabled for hosted production. Please configure WORKSPACE_USERS_JSON or await the dedicated standards-compliant OIDC release.",
+      },
+      { status: 501 }
+    );
+  }
+
   const url = new URL(request.url);
   const callbackState = url.searchParams.get("state");
   const idToken = url.searchParams.get("id_token");
@@ -67,6 +77,16 @@ export async function GET(request: Request): Promise<NextResponse> {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
+  if (isProductionEnv()) {
+    return NextResponse.json(
+      {
+        detail:
+          "OIDC Authorization Code Flow with JWKS verification is currently experimental and disabled for hosted production. Please configure WORKSPACE_USERS_JSON or await the dedicated standards-compliant OIDC release.",
+      },
+      { status: 501 }
+    );
+  }
+
   let body: Record<string, unknown>;
   try {
     body = (await request.json()) as Record<string, unknown>;
@@ -112,4 +132,3 @@ export async function POST(request: Request): Promise<NextResponse> {
   response.headers.set("Set-Cookie", formatSessionCookie(result.sessionToken));
   return response;
 }
-

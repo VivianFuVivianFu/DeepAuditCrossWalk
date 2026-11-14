@@ -7,10 +7,14 @@ import {
 
 export async function GET(request: Request): Promise<NextResponse> {
   const modeStatus = detectDeploymentSecurityMode();
-  const oidcConfigured = Boolean(
-    (process.env.OIDC_ISSUER_URL || "").trim() &&
-      (process.env.OIDC_CLIENT_ID || "").trim()
-  );
+  const prod = isProductionEnv();
+  // OIDC is disabled for hosted production pending standards-compliant Authorization Code + JWKS flow
+  const oidcConfigured =
+    !prod &&
+    Boolean(
+      (process.env.OIDC_ISSUER_URL || "").trim() &&
+        (process.env.OIDC_CLIENT_ID || "").trim()
+    );
 
   if (!modeStatus.ready) {
     return NextResponse.json(
@@ -27,14 +31,20 @@ export async function GET(request: Request): Promise<NextResponse> {
 
   const resolved = resolveSecurityContext(request);
   if (!resolved.ok) {
+    const hasTestFixtures =
+      !prod &&
+      ((process.env.ENABLE_LOCAL_TEST_FIXTURE_ACCOUNTS || "").trim().toLowerCase() === "true" ||
+        process.env.NODE_ENV === "test" ||
+        Boolean(process.env.VITEST));
+
     return NextResponse.json(
       {
         authenticated: false,
         deployment_mode: modeStatus.mode,
         ready: true,
         oidc_enabled: oidcConfigured,
-        local_community_hint: !isProductionEnv()
-          ? "Local self-hosted accounts available: analyst / analyst-local-pass, reviewer / reviewer-local-pass, viewer / viewer-local-pass, admin / admin-local-pass"
+        local_community_hint: hasTestFixtures
+          ? "Local test fixture accounts available: analyst / analyst-local-pass, reviewer / reviewer-local-pass, viewer / viewer-local-pass, admin / admin-local-pass"
           : undefined,
       },
       { status: 200 }
@@ -60,4 +70,3 @@ export async function GET(request: Request): Promise<NextResponse> {
     { status: 200 }
   );
 }
-

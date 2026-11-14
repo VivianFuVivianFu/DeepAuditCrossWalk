@@ -1,4 +1,6 @@
 import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
 
 export type Role = "viewer" | "analyst" | "reviewer" | "admin";
 
@@ -42,6 +44,7 @@ export type WorkspaceUserRecord = {
   user_id: string;
   username: string;
   display_name: string;
+  password_hash?: string;
   password?: string;
   password_sha256?: string;
   tenants: Record<string, Role[]>;
@@ -128,23 +131,164 @@ export const ACTION_PERMISSIONS: Record<string, Permission> = {
   get_gaps: "assessment:read",
 };
 
-// Server-side revocation and runtime user state
-const revokedSessions = new Set<string>();
-const runtimeUserOverrides = new Map<string, WorkspaceUserRecord>();
+// ─────────────────────────────────────────────────────────────────────────────
+// Durable Server-Side Session Revocation Store
+// ─────────────────────────────────────────────────────────────────────────────
 
-export function clearSecurityStateForTests(): void {
-  revokedSessions.clear();
-  runtimeUserOverrides.clear();
+type RevocationEntry = {
+  sid: string;
+  revokedAt: number;
+  expiresAt: number;
+};
+
+export class DurableRevocationStore {
+  private memory = new Map<string, number>();
+  private filePath: string | null = null;
+  private initialized = false;
+
+  private resolveFilePath(): string | null {
+    const configured = (process.env.SESSION_REVOCATION_PATH || "").trim();
+    if (configured) {
+      return path.resolve(configured);
+    }
+    const tmp = process.env.TMPDIR || process.env.TEMP || process.env.TMP || "/tmp";
+    return path.join(tmp, "crosswalk_revocations.json");
+  }
+
+  private ensureLoaded(): void {
+    if (this.initialized) return;
+    this.initialized = true;
+    this.filePath = this.resolveFilePath();
+    if (!this.filePath) return;
+    try {
+      if (fs.existsSync(this.filePath)) {
+        const raw = fs.readFileSync(this.filePath, "utf8");
+        const parsed: RevocationEntry[] = JSON.parse(raw);
+        const now = Math.floor(Date.now() / 1000);
+        for (const entry of parsed) {
+          if (entry && entry.sid && entry.expiresAt > now) {
+            this.memory.set(entry.sid, entry.expiresAt);
+          }
+        }
+      }
+    } catch {
+      // In-memory fallback if file unreadable
+    }
+  }
+
+  private persist(): void {
+    this.filePath = this.resolveFilePath();
+    if (!this.filePath) return;
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const entries: RevocationEntry[] = [];
+      for (const [sid, exp] of this.memory.entries()) {
+        if (exp > now) {
+          entries.push({ sid, revokedAt: now, expiresAt: exp });
+        }
+      }
+      const dir = path.dirname(this.filePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const tmp = `${this.filePath}.${process.pid}.${Date.now()}.tmp`;
+      fs.writeFileSync(tmp, JSON.stringify(entries), "utf8");
+      fs.renameSync(tmp, this.filePath);
+    } catch {
+      // In-memory fallback if file write fails
+    }
+  }
+
+  revoke(sid: string, expiresAt: number = Math.floor(Date.now() / 1000) + DEFAULT_SESSION_TTL_SECONDS): void {
+    if (!sid) return;
+    this.ensureLoaded();
+    this.memory.set(sid, expiresAt);
+    this.persist();
+  }
+
+  isRevoked(sid: string): boolean {
+    if (!sid) return false;
+    this.ensureLoaded();
+    const exp = this.memory.get(sid);
+    if (!exp) return false;
+    const now = Math.floor(Date.now() / 1000);
+    if (exp <= now) {
+      this.memory.delete(sid);
+      return false;
+    }
+    return true;
+  }
+
+  clear(): void {
+    this.memory.clear();
+    this.initialized = false;
+    const fp = this.resolveFilePath();
+    if (fp && fs.existsSync(fp)) {
+      try {
+        fs.unlinkSync(fp);
+      } catch {}
+    }
+  }
 }
 
-export function revokeSession(sessionId: string): void {
+const revocationStore = new DurableRevocationStore();
+const runtimeUserOverrides = new Map<string, WorkspaceUserRecord>();
+
+type AttemptRecord = { count: number; firstAttempt: number };
+const failedLoginAttempts = new Map<string, AttemptRecord>();
+
+export function clearLoginRateLimitsForTests(): void {
+  failedLoginAttempts.clear();
+}
+
+function getLoginRateLimitKey(request: Request, username: string): string {
+  const xff = (request.headers.get("x-forwarded-for") || "").split(",")[0].trim();
+  const ip = xff || "direct";
+  return `${ip}:${username.toLowerCase()}`;
+}
+
+export function checkLoginRateLimit(request: Request, username: string): boolean {
+  const key = getLoginRateLimitKey(request, username);
+  const record = failedLoginAttempts.get(key);
+  if (!record) return true;
+  const now = Date.now();
+  if (now - record.firstAttempt > 60_000) {
+    failedLoginAttempts.delete(key);
+    return true;
+  }
+  return record.count < 5;
+}
+
+export function recordLoginFailedAttempt(request: Request, username: string): void {
+  const key = getLoginRateLimitKey(request, username);
+  const now = Date.now();
+  const record = failedLoginAttempts.get(key);
+  if (!record || now - record.firstAttempt > 60_000) {
+    failedLoginAttempts.set(key, { count: 1, firstAttempt: now });
+  } else {
+    record.count += 1;
+  }
+}
+
+export function clearLoginRateLimit(request: Request, username: string): void {
+  const key = getLoginRateLimitKey(request, username);
+  failedLoginAttempts.delete(key);
+}
+
+export function clearSecurityStateForTests(): void {
+  revocationStore.clear();
+  runtimeUserOverrides.clear();
+  failedLoginAttempts.clear();
+}
+
+export function revokeSession(sessionId: string, expiresAt?: number): void {
   if (sessionId) {
-    revokedSessions.add(sessionId);
+    revocationStore.revoke(sessionId, expiresAt);
   }
 }
 
 export function isSessionRevoked(sessionId: string): boolean {
-  return revokedSessions.has(sessionId);
+  return revocationStore.isRevoked(sessionId);
 }
 
 export function isProductionEnv(): boolean {
@@ -214,7 +358,73 @@ function getSessionSecret(): string {
   return "";
 }
 
-function defaultNonProdUsers(): WorkspaceUserRecord[] {
+export function hashPassword(password: string): string {
+  if (!password || typeof password !== "string") {
+    throw new Error("Password must be a non-empty string");
+  }
+  const salt = crypto.randomBytes(16).toString("hex");
+  const derived = crypto.scryptSync(password, salt, 64, {
+    N: 16384,
+    r: 8,
+    p: 1,
+  });
+  return `scrypt$${salt}$${derived.toString("hex")}`;
+}
+
+export function verifyPassword(
+  candidate: string,
+  user: WorkspaceUserRecord,
+  isProduction: boolean
+): boolean {
+  if (!candidate || typeof candidate !== "string") {
+    return false;
+  }
+  if (user.password_hash) {
+    if (user.password_hash.startsWith("scrypt$")) {
+      const parts = user.password_hash.split("$");
+      if (parts.length !== 3) return false;
+      const [, salt, expectedHashHex] = parts;
+      const derived = crypto.scryptSync(candidate, salt, 64, {
+        N: 16384,
+        r: 8,
+        p: 1,
+      });
+      const bufExpected = Buffer.from(expectedHashHex, "hex");
+      if (derived.length !== bufExpected.length) return false;
+      return crypto.timingSafeEqual(derived, bufExpected);
+    }
+    if (user.password_hash.startsWith("pbkdf2$")) {
+      const parts = user.password_hash.split("$");
+      if (parts.length !== 4) return false;
+      const [, iterStr, salt, expectedHashHex] = parts;
+      const iters = parseInt(iterStr, 10);
+      if (isNaN(iters) || iters < 10000) return false;
+      const derived = crypto.pbkdf2Sync(candidate, salt, iters, 64, "sha256");
+      const bufExpected = Buffer.from(expectedHashHex, "hex");
+      if (derived.length !== bufExpected.length) return false;
+      return crypto.timingSafeEqual(derived, bufExpected);
+    }
+    return false;
+  }
+
+  // Legacy insecure password formats (plain sha256 or plaintext):
+  // Strictly REJECTED in production
+  if (isProduction) {
+    return false;
+  }
+
+  // Non-production fallback for development/test fixtures only
+  if (user.password_sha256) {
+    const candidateHash = crypto.createHash("sha256").update(candidate, "utf8").digest("hex");
+    return constantTimeEqual(candidateHash.toLowerCase(), user.password_sha256.toLowerCase());
+  }
+  if (typeof user.password === "string") {
+    return constantTimeEqual(candidate, user.password);
+  }
+  return false;
+}
+
+function defaultTestFixtureUsers(): WorkspaceUserRecord[] {
   const defaultTenant =
     (process.env.BANKING_CROSSWALK_TENANT_ID || "").trim() || "local-workspace";
   return [
@@ -222,6 +432,8 @@ function defaultNonProdUsers(): WorkspaceUserRecord[] {
       user_id: "usr-local-analyst",
       username: "analyst",
       display_name: "Local Governance Analyst",
+      password_hash:
+        "scrypt$e5a38ab4c74f5339c3b73dfbae7552e5$e305fd070e4334ca1af6b655f6e9ebab217c42c8c2efda066b8640832dbc88e0ebe1eebeab88db74d3ee7730788ff399b64df6d6748552cfb5abf678436f7155",
       password: "analyst-local-pass",
       tenants: { [defaultTenant]: ["analyst"] },
     },
@@ -229,6 +441,8 @@ function defaultNonProdUsers(): WorkspaceUserRecord[] {
       user_id: "usr-local-reviewer",
       username: "reviewer",
       display_name: "Local Compliance Reviewer",
+      password_hash:
+        "scrypt$b3c11b6fe4df7d1c847b09d108cd8935$5b272507d239e7827a5e08f07e35113e7ac35766cce9a09a6e7dd4584f38150a7a3fa2cc589453f60d90d63e1f0976eaf45ff96fe6b9c143879b7a0e834552b7",
       password: "reviewer-local-pass",
       tenants: { [defaultTenant]: ["reviewer"] },
     },
@@ -236,6 +450,8 @@ function defaultNonProdUsers(): WorkspaceUserRecord[] {
       user_id: "usr-local-viewer",
       username: "viewer",
       display_name: "Local Audit Viewer",
+      password_hash:
+        "scrypt$607fbf979105b278aafbc3627b89cc3b$28de084fe270b26b79be558ce1e0b9b6d81df850a07b658fa4fbe3afbc0dcc4692bc525ac49732ef00056b516b0ba43a2daf247cfcca91d994e060016f7742a3",
       password: "viewer-local-pass",
       tenants: { [defaultTenant]: ["viewer"] },
     },
@@ -243,6 +459,8 @@ function defaultNonProdUsers(): WorkspaceUserRecord[] {
       user_id: "usr-local-admin",
       username: "admin",
       display_name: "Local Workspace Admin",
+      password_hash:
+        "scrypt$a4aed08f1c2b819a4993937782acbbb8$501b0a37d097b3a96f064d408c678c0e2d54aa5cabf6756178f6ea1786c17a8467cfe3f880170fe4fed564373be90a33804f9ef4d91bf9d2955392ad4752352a",
       password: "admin-local-pass",
       tenants: { [defaultTenant]: ["admin"] },
     },
@@ -252,6 +470,7 @@ function defaultNonProdUsers(): WorkspaceUserRecord[] {
 export function loadWorkspaceUsers(): Map<string, WorkspaceUserRecord> {
   const map = new Map<string, WorkspaceUserRecord>();
   const rawJson = (process.env.WORKSPACE_USERS_JSON || "").trim();
+  const prod = isProductionEnv();
 
   if (rawJson) {
     try {
@@ -262,6 +481,12 @@ export function loadWorkspaceUsers(): Map<string, WorkspaceUserRecord> {
           const userId = String(item.user_id || item.username || "").trim();
           const username = String(item.username || item.user_id || "").trim();
           if (!userId || !username) continue;
+
+          // In production, reject accounts with insecure plaintext/unsalted password formats
+          if (prod && !item.password_hash) {
+            continue;
+          }
+
           const tenants: Record<string, Role[]> = {};
           if (item.tenants && typeof item.tenants === "object") {
             for (const [tid, rlist] of Object.entries(item.tenants)) {
@@ -289,10 +514,12 @@ export function loadWorkspaceUsers(): Map<string, WorkspaceUserRecord> {
             user_id: userId,
             username,
             display_name: String(item.display_name || username),
-            password: item.password ? String(item.password) : undefined,
-            password_sha256: item.password_sha256
-              ? String(item.password_sha256)
-              : undefined,
+            password_hash: item.password_hash ? String(item.password_hash) : undefined,
+            password: item.password && !prod ? String(item.password) : undefined,
+            password_sha256:
+              item.password_sha256 && !prod
+                ? String(item.password_sha256)
+                : undefined,
             tenants,
             disabled: Boolean(item.disabled),
           };
@@ -302,8 +529,8 @@ export function loadWorkspaceUsers(): Map<string, WorkspaceUserRecord> {
     } catch {
       // Invalid JSON fails closed
     }
-  } else if (!isProductionEnv()) {
-    for (const u of defaultNonProdUsers()) {
+  } else if (!prod) {
+    for (const u of defaultTestFixtureUsers()) {
       map.set(u.user_id, u);
     }
   }
@@ -353,10 +580,6 @@ export function detectDeploymentSecurityMode(): {
   const sessionSecret = (process.env.WORKSPACE_SESSION_SECRET || "").trim();
   const apiKey = (process.env.CROSSWALK_API_KEY || "").trim();
   const hasUsersJson = Boolean((process.env.WORKSPACE_USERS_JSON || "").trim());
-  const hasOidc = Boolean(
-    (process.env.OIDC_ISSUER_URL || "").trim() &&
-      (process.env.OIDC_CLIENT_ID || "").trim()
-  );
   const hasBearerToken = Boolean((process.env.WORKSPACE_AUTH_TOKEN || "").trim());
 
   if (prod) {
@@ -376,12 +599,12 @@ export function detectDeploymentSecurityMode(): {
           "Document workspace authentication is not configured: WORKSPACE_SESSION_SECRET (>= 32 chars) is required in production.",
       };
     }
-    if (!hasUsersJson && !hasOidc && !hasBearerToken) {
+    if (!hasUsersJson && !hasBearerToken) {
       return {
         mode: "misconfigured_production",
         ready: false,
         reason:
-          "Document workspace authentication is not configured: an identity provider (OIDC_ISSUER_URL or WORKSPACE_USERS_JSON) is required in production.",
+          "Document workspace authentication is not configured: an identity provider (WORKSPACE_USERS_JSON) is required in production. OIDC is currently experimental and disabled for hosted production.",
       };
     }
     return {
@@ -628,6 +851,13 @@ export function signBackendWorkspaceContext(
 
 function isLoopbackRequest(request: Request): boolean {
   try {
+    const xff = request.headers.get("x-forwarded-for");
+    const xri = request.headers.get("x-real-ip");
+    const forwarded = request.headers.get("forwarded");
+    const xfh = request.headers.get("x-forwarded-host");
+    if (xff || xri || forwarded || xfh) {
+      return false;
+    }
     const url = new URL(request.url);
     const host = url.hostname.toLowerCase();
     return host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]";
@@ -651,6 +881,7 @@ export function authenticateUserCredentials(params: {
   const users = loadWorkspaceUsers();
   const uname = (params.username || "").trim().toLowerCase();
   const pwd = params.password || "";
+  const prod = isProductionEnv();
 
   let matchedUser: WorkspaceUserRecord | undefined;
   for (const u of users.values()) {
@@ -665,23 +896,16 @@ export function authenticateUserCredentials(params: {
   }
 
   if (!matchedUser) {
+    try {
+      crypto.scryptSync(pwd, "dummy-salt-16bytes", 64, { N: 16384, r: 8, p: 1 });
+    } catch {}
     return { ok: false, status: 401, error: "Invalid username or password" };
   }
   if (matchedUser.disabled) {
-    return { ok: false, status: 403, error: "User account has been disabled" };
+    return { ok: false, status: 401, error: "Invalid username or password" };
   }
 
-  let passwordValid = false;
-  if (matchedUser.password_sha256) {
-    const candidateHash = crypto.createHash("sha256").update(pwd, "utf8").digest("hex");
-    passwordValid = constantTimeEqual(
-      candidateHash.toLowerCase(),
-      matchedUser.password_sha256.toLowerCase()
-    );
-  } else if (typeof matchedUser.password === "string") {
-    passwordValid = constantTimeEqual(pwd, matchedUser.password);
-  }
-
+  const passwordValid = verifyPassword(pwd, matchedUser, prod);
   if (!passwordValid) {
     return { ok: false, status: 401, error: "Invalid username or password" };
   }
@@ -787,10 +1011,9 @@ export function resolveSecurityContext(
     const configuredToken = (process.env.WORKSPACE_AUTH_TOKEN || "").trim();
     if (configuredToken && constantTimeEqual(rawBearer, configuredToken)) {
       const actor =
-        (process.env.BANKING_CROSSWALK_ACTOR || "").trim() || "workspace-token-user";
-      const rawRole =
-        (process.env.BANKING_CROSSWALK_ROLE || "").trim() || "reviewer";
-      const role = normalizeRole(rawRole) || "reviewer";
+        (process.env.BANKING_CROSSWALK_ACTOR || "").trim() || "service-automation";
+      // Static automation tokens cannot impersonate human reviewers or approve requirements
+      const staticRoles: Role[] = ["viewer"];
       const tenantId = configuredServerTenant || "local-workspace";
       if (
         effectiveRequestedTenant &&
@@ -803,16 +1026,21 @@ export function resolveSecurityContext(
           error: `Authenticated principal is not authorised for tenant '${effectiveRequestedTenant}'`,
         };
       }
-      const roles: Role[] = [role];
       return {
         ok: true,
         context: {
-          user_id: actor,
-          display_name: actor,
+          user_id: `svc-${actor}`,
+          display_name: `Automated Service Principal (${actor})`,
           tenant_id: tenantId,
           authenticated: true,
-          roles,
-          permissions: permissionsForRoles(roles),
+          roles: staticRoles,
+          permissions: permissionsForRoles(staticRoles).filter(
+            (p) =>
+              p !== "clause:review" &&
+              p !== "mapping:review" &&
+              p !== "baseline:create" &&
+              p !== "policy:delete"
+          ),
           session_id: "bearer-static-token",
           csrf_token: "bearer-not-applicable",
           deployment_mode: modeStatus.mode,
@@ -838,13 +1066,37 @@ export function resolveSecurityContext(
   }
 
   if (verifiedClaims && authMethod) {
-    // Live user & tenant membership check against user store (if user exists in registry)
+    if (
+      verifiedClaims.tenant_id.toLowerCase() === "public-demo" ||
+      (effectiveRequestedTenant &&
+        effectiveRequestedTenant.trim().toLowerCase() === "public-demo")
+    ) {
+      return {
+        ok: false,
+        status: 403,
+        error:
+          "The 'public-demo' tenant cannot be used for private workspace sessions",
+      };
+    }
+
+    if (isSessionRevoked(verifiedClaims.sid)) {
+      return { ok: false, status: 401, error: "Session has been logged out or revoked" };
+    }
+
+    // Live user & tenant membership check against user store
     const users = loadWorkspaceUsers();
     const registeredUser = users.get(verifiedClaims.sub);
-    let effectiveRoles = verifiedClaims.roles;
-    let effectiveTenant = verifiedClaims.tenant_id;
 
-    if (registeredUser && registeredUser.disabled) {
+    // Requirement 7: A deleted local user must not retain access through an old signed session
+    if (!registeredUser) {
+      return {
+        ok: false,
+        status: 401,
+        error: "User account no longer exists in workspace registry",
+      };
+    }
+
+    if (registeredUser.disabled) {
       return {
         ok: false,
         status: 401,
@@ -852,37 +1104,22 @@ export function resolveSecurityContext(
       };
     }
 
+    let effectiveTenant = verifiedClaims.tenant_id;
     if (effectiveRequestedTenant && effectiveRequestedTenant.trim()) {
-      const reqTid = effectiveRequestedTenant.trim();
-      if (registeredUser) {
-        const rolesInReqTenant = registeredUser.tenants[reqTid];
-        if (!rolesInReqTenant || rolesInReqTenant.length === 0) {
-          return {
-            ok: false,
-            status: 403,
-            error: `User '${verifiedClaims.sub}' is not a member of tenant '${reqTid}'`,
-          };
-        }
-        effectiveTenant = reqTid;
-        effectiveRoles = rolesInReqTenant;
-      } else if (reqTid !== verifiedClaims.tenant_id) {
-        return {
-          ok: false,
-          status: 403,
-          error: `Session is bound to tenant '${verifiedClaims.tenant_id}', not '${reqTid}'`,
-        };
-      }
-    } else if (registeredUser) {
-      const liveRoles = registeredUser.tenants[effectiveTenant];
-      if (!liveRoles || liveRoles.length === 0) {
-        return {
-          ok: false,
-          status: 403,
-          error: `User '${verifiedClaims.sub}' is no longer a member of tenant '${effectiveTenant}'`,
-        };
-      }
-      effectiveRoles = liveRoles;
+      effectiveTenant = effectiveRequestedTenant.trim();
     }
+
+    const liveTenantRoles = registeredUser.tenants[effectiveTenant];
+    if (!liveTenantRoles || liveTenantRoles.length === 0) {
+      return {
+        ok: false,
+        status: 403,
+        error: `User '${verifiedClaims.sub}' is not a member of tenant '${effectiveTenant}'`,
+      };
+    }
+
+    // Live roles override static token claims (role downgrades take effect immediately)
+    const effectiveRoles = liveTenantRoles;
 
     if (
       isProductionEnv() &&
@@ -986,22 +1223,39 @@ export function verifyCsrfProtection(
   try {
     const reqUrl = new URL(request.url);
     const expectedOrigin = reqUrl.origin.toLowerCase();
+    const isLoopback = (h: string) =>
+      h === "localhost" || h === "127.0.0.1" || h === "::1" || h === "[::1]";
+
+    const matchesExpected = (candidateOrigin: string) => {
+      const cand = new URL(candidateOrigin);
+      if (cand.origin.toLowerCase() === expectedOrigin) return true;
+      if (
+        cand.port === reqUrl.port &&
+        cand.protocol.toLowerCase() === reqUrl.protocol.toLowerCase() &&
+        isLoopback(cand.hostname.toLowerCase()) &&
+        isLoopback(reqUrl.hostname.toLowerCase())
+      ) {
+        return true;
+      }
+      return false;
+    };
+
     if (originHeader) {
-      const actualOrigin = new URL(originHeader).origin.toLowerCase();
-      if (actualOrigin !== expectedOrigin) {
+      if (!matchesExpected(originHeader)) {
         return {
           ok: false,
           status: 403,
-          error: "CSRF origin validation failed: cross-origin state-changing request rejected.",
+          error:
+            "CSRF origin validation failed: cross-origin state-changing request rejected.",
         };
       }
     } else if (refererHeader) {
-      const actualRefererOrigin = new URL(refererHeader).origin.toLowerCase();
-      if (actualRefererOrigin !== expectedOrigin) {
+      if (!matchesExpected(refererHeader)) {
         return {
           ok: false,
           status: 403,
-          error: "CSRF referer validation failed: cross-origin state-changing request rejected.",
+          error:
+            "CSRF referer validation failed: cross-origin state-changing request rejected.",
         };
       }
     }

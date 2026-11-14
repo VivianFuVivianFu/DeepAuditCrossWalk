@@ -10,4 +10,10 @@ export default defineConfig({
     headless: true,
     trace: "retain-on-failure",
   },
+  webServer: {
+    command: "pnpm dev",
+    port: 3000,
+    reuseExistingServer: true,
+    timeout: 30_000,
+  },
 });
