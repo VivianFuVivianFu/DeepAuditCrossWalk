@@ -558,6 +558,8 @@ class CoverageAssessment(BaseModel):
     enterprise_baseline_id: Optional[str] = None
     enterprise_baseline_version: Optional[str] = None
     enterprise_baseline_revision: Optional[int] = None
+    effective_baseline_id: Optional[str] = None
+    effective_baseline_sha256: Optional[str] = None
     enterprise_gaps: List["GapRecord"] = Field(default_factory=list)
     enterprise_clause_coverage: List["EnterpriseClauseCoverage"] = Field(default_factory=list)
     applicable_obligation_ids: List[str] = Field(default_factory=list)
@@ -797,6 +799,220 @@ class PolicyGapAssessment(BaseModel):
             *self.control_conflicts,
             *self.implementation_evidence_gaps,
         ]
+
+
+class ReconciliationRelationship(str, Enum):
+    EQUIVALENT = "equivalent"
+    PARTIALLY_OVERLAPPING = "partially_overlapping"
+    ADDITIONAL_ENTERPRISE_REQUIREMENT = "additional_enterprise_requirement"
+    STRICTER_ENTERPRISE_REQUIREMENT = "stricter_enterprise_requirement"
+    WEAKER_OR_POTENTIALLY_INSUFFICIENT = "weaker_or_potentially_insufficient"
+    POTENTIAL_CONFLICT = "potential_conflict"
+    UNMAPPED_NO_RELIABLE_RELATIONSHIP = "unmapped_no_reliable_relationship"
+    UNDETERMINED = "undetermined"
+
+
+class ReconciliationDecisionStatus(str, Enum):
+    PROPOSED = "proposed"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    NEEDS_REVIEW = "needs_review"
+    SUPERSEDED = "superseded"
+
+
+class ReconciliationDimensionComparison(BaseModel):
+    scope_match: str = "unknown"
+    enterprise_scope: Optional[str] = None
+    external_scope: Optional[str] = None
+    subject_match: str = "unknown"
+    actor_comparison: str = "not_applicable"
+    enterprise_actor: Optional[str] = None
+    external_actor: Optional[str] = None
+    action_polarity: str = "positive_requirement"
+    modality_comparison: str = "aligned"
+    threshold_comparison: str = "not_applicable"
+    enterprise_threshold: Optional[float] = None
+    enterprise_operator: Optional[str] = None
+    enterprise_currency: Optional[str] = None
+    external_threshold: Optional[float] = None
+    external_operator: Optional[str] = None
+    external_currency: Optional[str] = None
+    timing_comparison: str = "not_applicable"
+    enterprise_timing: Optional[str] = None
+    external_timing: Optional[str] = None
+    condition_status: str = "unconditional"
+    exception_status: str = "no_exceptions"
+    authority_comparison: str = "external_binding_vs_enterprise_policy"
+    shared_control_ids: List[str] = Field(default_factory=list)
+    shared_facets: List[str] = Field(default_factory=list)
+    enterprise_only_facets: List[str] = Field(default_factory=list)
+    external_unaddressed_facets: List[str] = Field(default_factory=list)
+
+
+class ReconciliationAuditEntry(BaseModel):
+    timestamp: datetime = Field(default_factory=utc_now)
+    actor: str
+    role: str
+    previous_status: Optional[str] = None
+    new_status: str
+    previous_relationship: Optional[str] = None
+    new_relationship: str
+    comment: Optional[str] = None
+    revision: int = 1
+
+
+class ReconciliationDecision(BaseModel):
+    reconciliation_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    tenant_id: str
+    enterprise_clause_id: str
+    external_obligation_id: Optional[str] = None
+    peer_enterprise_clause_id: Optional[str] = None
+    external_source_id: Optional[str] = None
+    external_source_version: Optional[str] = None
+    external_provision: Optional[str] = None
+    external_legal_authority: Optional[str] = None
+    regulatory_pack_id: str
+    regulatory_pack_version: str
+    enterprise_policy_id: str
+    enterprise_policy_name: Optional[str] = None
+    enterprise_policy_version: str
+    enterprise_authority_level: str = EnterpriseAuthorityLevel.ENTERPRISE_POLICY.value
+    enterprise_clause_sha256: str = ""
+    enterprise_baseline_id: str
+    enterprise_baseline_version: str
+    enterprise_baseline_revision: int = 1
+    enterprise_baseline_sha256: str = ""
+    stage_a_candidate_reason: str = ""
+    proposed_relationship: ReconciliationRelationship
+    validated_relationship: ReconciliationRelationship
+    approved_relationship: Optional[ReconciliationRelationship] = None
+    decision_status: ReconciliationDecisionStatus = ReconciliationDecisionStatus.PROPOSED
+    supporting_passages: List[str] = Field(default_factory=list)
+    comparison_rationale: str = ""
+    dimension_comparison: ReconciliationDimensionComparison = Field(
+        default_factory=ReconciliationDimensionComparison
+    )
+    uncertainties: List[str] = Field(default_factory=list)
+    reviewer_id: Optional[str] = None
+    reviewer_role: Optional[str] = None
+    reviewed_at: Optional[datetime] = None
+    review_comment: Optional[str] = None
+    created_at: datetime = Field(default_factory=utc_now)
+    revision: int = 1
+    is_stale: bool = False
+    stale_reason: Optional[str] = None
+    audit_history: List[ReconciliationAuditEntry] = Field(default_factory=list)
+
+
+class EffectiveBaselineSourceReference(BaseModel):
+    source_kind: Literal["shared_regulatory_library", "enterprise_internal_baseline"]
+    source_id: str
+    source_title: str
+    version: str
+    obligation_or_clause_id: str
+    provision_or_location: str
+    authority_classification: str
+    effective_from: Optional[str] = None
+
+
+class EffectiveBaselineRequirementItem(BaseModel):
+    item_id: str
+    item_kind: Literal[
+        "external_obligation",
+        "additional_enterprise_requirement",
+        "stricter_enterprise_condition",
+        "unmapped_enterprise_requirement",
+    ]
+    obligation_id: Optional[str] = None
+    enterprise_clause_id: Optional[str] = None
+    enterprise_policy_id: Optional[str] = None
+    title: str
+    summary: str
+    authority_classification: str
+    is_legally_binding: bool
+    control_ids: List[str] = Field(default_factory=list)
+    required_facets: List[str] = Field(default_factory=list)
+    stricter_conditions: List[str] = Field(default_factory=list)
+    thresholds_aud: List[float] = Field(default_factory=list)
+    threshold_operator: Optional[str] = None
+    threshold_currency: Optional[str] = None
+    approval_timing: Optional[str] = None
+    required_approval_role: Optional[str] = None
+    reconciliation_ids: List[str] = Field(default_factory=list)
+    reconciliation_relationships: List[ReconciliationRelationship] = Field(
+        default_factory=list
+    )
+    presentation_group_id: Optional[str] = None
+    source_references: List[EffectiveBaselineSourceReference] = Field(
+        default_factory=list
+    )
+    notes: List[str] = Field(default_factory=list)
+
+
+class EffectivePresentationGroup(BaseModel):
+    group_id: str
+    group_type: Literal[
+        "reviewed_equivalence_group",
+        "standalone_obligation",
+        "standalone_enterprise_clause",
+        "stricter_overlay_group",
+    ]
+    primary_title: str
+    member_item_ids: List[str] = Field(default_factory=list)
+    external_obligation_ids: List[str] = Field(default_factory=list)
+    enterprise_clause_ids: List[str] = Field(default_factory=list)
+    reconciliation_id: Optional[str] = None
+    source_references: List[EffectiveBaselineSourceReference] = Field(
+        default_factory=list
+    )
+    rationale: str
+
+
+class EffectiveBaselineUnresolvedItem(BaseModel):
+    reconciliation_id: str
+    enterprise_clause_id: str
+    external_obligation_id: Optional[str] = None
+    peer_enterprise_clause_id: Optional[str] = None
+    validated_relationship: ReconciliationRelationship
+    decision_status: ReconciliationDecisionStatus
+    severity: Literal["critical", "high", "medium", "low"] = "high"
+    summary: str
+    uncertainties: List[str] = Field(default_factory=list)
+    requires_human_resolution: bool = True
+
+
+class EffectiveAssessmentBaseline(BaseModel):
+    effective_baseline_id: str
+    tenant_id: str
+    created_at: datetime = Field(default_factory=utc_now)
+    as_of_date: str
+    regulatory_pack_id: str
+    regulatory_pack_version: str
+    enterprise_baseline_id: Optional[str] = None
+    enterprise_baseline_version: Optional[str] = None
+    enterprise_baseline_revision: Optional[int] = None
+    enterprise_baseline_sha256: Optional[str] = None
+    use_case_id: Optional[str] = None
+    use_case_name: Optional[str] = None
+    applicability_summary: Dict[str, Any] = Field(default_factory=dict)
+    applicable_external_obligation_ids: List[str] = Field(default_factory=list)
+    included_enterprise_clause_ids: List[str] = Field(default_factory=list)
+    excluded_enterprise_clause_ids: List[str] = Field(default_factory=list)
+    approved_reconciliation_ids: List[str] = Field(default_factory=list)
+    stale_reconciliation_ids: List[str] = Field(default_factory=list)
+    requirements: List[EffectiveBaselineRequirementItem] = Field(default_factory=list)
+    presentation_groups: List[EffectivePresentationGroup] = Field(default_factory=list)
+    unresolved_items: List[EffectiveBaselineUnresolvedItem] = Field(default_factory=list)
+    potential_conflicts: List[EffectiveBaselineUnresolvedItem] = Field(
+        default_factory=list
+    )
+    warnings: List[str] = Field(default_factory=list)
+    effective_baseline_sha256: str
+    disclaimer: str = (
+        "Effective Assessment Baseline combines applicable regulatory obligations with "
+        "approved enterprise requirements. It does not constitute legal advice or a "
+        "certification of statutory compliance."
+    )
 
 
 EnterpriseBaseline.model_rebuild()

@@ -63,6 +63,26 @@ sa.Index(
     clause_control_mappings.c.control_id,
 )
 enterprise_baselines = document_table("enterprise_baselines")
+reconciliation_decisions = document_table(
+    "reconciliation_decisions",
+    sa.Column("baseline_id", sa.Text, nullable=False),
+    sa.Column("clause_id", sa.Text, nullable=False),
+    sa.Column("obligation_id", sa.Text, nullable=True),
+)
+sa.Index(
+    "reconciliation_decisions_baseline_idx",
+    reconciliation_decisions.c.tenant_id,
+    reconciliation_decisions.c.baseline_id,
+)
+effective_baselines = document_table(
+    "effective_baselines",
+    sa.Column("baseline_id", sa.Text, nullable=True),
+)
+sa.Index(
+    "effective_baselines_baseline_idx",
+    effective_baselines.c.tenant_id,
+    effective_baselines.c.baseline_id,
+)
 audit_events = sa.Table(
     "audit_events",
     metadata,

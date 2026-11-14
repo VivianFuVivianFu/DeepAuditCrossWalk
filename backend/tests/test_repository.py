@@ -436,3 +436,82 @@ def test_postgresql_production_rejects_migration_superuser():
         pytest.skip("Disposable PostgreSQL migration URL is absent")
     with pytest.raises(StorageUnavailable):
         SQLTenantStore(url, production=True)
+
+
+def test_reconciliation_and_effective_baseline_persist_and_enforce_tenant_isolation(
+    repository, monkeypatch
+):
+    from banking_crosswalk.models import ClauseReviewStatus
+    from banking_crosswalk.policy import compile_enterprise_baseline
+    from banking_crosswalk.reconciliation import (
+        compose_effective_assessment_baseline,
+        generate_reconciliation_candidates,
+    )
+
+    repo, url, tenant = repository
+    monkeypatch.setattr(api, "store", repo)
+    policy = extract_enterprise_policy(
+        tenant_id=tenant,
+        name="Privacy & Refund Standard",
+        text="All customer refunds above AUD 500 require pre-execution authorised officer approval.",
+        category="delegated_authority",
+    )
+    for c in policy.clauses:
+        c.review_status = ClauseReviewStatus.APPROVED
+        for m in c.control_mappings:
+            m.review_status = ClauseReviewStatus.APPROVED
+    repo.save_enterprise_policy(tenant, policy)
+
+    baseline = compile_enterprise_baseline(
+        tenant_id=tenant,
+        name="Approved Baseline",
+        policies=[policy],
+    )
+    repo.save_enterprise_baseline(tenant, baseline)
+
+    candidates = generate_reconciliation_candidates(
+        tenant_id=tenant,
+        enterprise_baseline=baseline,
+        policies=[policy],
+    )
+    assert len(candidates) > 0
+    repo.save_reconciliation_decisions(tenant, candidates, actor="reviewer.1")
+
+    eff = compose_effective_assessment_baseline(
+        tenant_id=tenant,
+        use_case=BankingUseCase(apra_regulated=True),
+        enterprise_baseline=baseline,
+        reconciliation_decisions=candidates,
+        policies=[policy],
+    )
+    repo.save_effective_baseline(tenant, eff, actor="reviewer.1")
+    repo.close()
+
+    restored = SQLTenantStore(url)
+    try:
+        loaded_recs = restored.list_reconciliation_decisions(
+            tenant, baseline_id=baseline.baseline_id
+        )
+        assert len(loaded_recs) == len(candidates)
+        loaded_eff = restored.get_effective_baseline(
+            tenant, eff.effective_baseline_id
+        )
+        assert loaded_eff.effective_baseline_sha256 == eff.effective_baseline_sha256
+
+        other_tenant = f"other-{tenant}"
+        assert (
+            restored.list_reconciliation_decisions(
+                other_tenant, baseline_id=baseline.baseline_id
+            )
+            == []
+        )
+        with pytest.raises(NotFoundError):
+            restored.get_reconciliation_decision(
+                other_tenant, candidates[0].reconciliation_id
+            )
+        with pytest.raises(NotFoundError):
+            restored.get_effective_baseline(
+                other_tenant, eff.effective_baseline_id
+            )
+    finally:
+        restored.close()
