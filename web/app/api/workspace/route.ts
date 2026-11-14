@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   ACTION_PERMISSIONS,
-  SecurityContext,
+  type SecurityContext,
   hasPermission,
   primaryRole,
   resolveSecurityContext,

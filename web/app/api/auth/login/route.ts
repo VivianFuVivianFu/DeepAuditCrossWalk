@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import {
   SESSION_COOKIE_NAME,
+  SecurityStateStorageError,
+  assertSecurityStoreHealthy,
   authenticateUserCredentials,
   checkLoginRateLimit,
   clearLoginRateLimit,
@@ -19,6 +21,20 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (!modeStatus.ready) {
     return NextResponse.json(
       { detail: modeStatus.reason || "Authentication service is not configured." },
+      { status: 503 }
+    );
+  }
+
+  try {
+    assertSecurityStoreHealthy();
+  } catch (err) {
+    return NextResponse.json(
+      {
+        detail:
+          err instanceof SecurityStateStorageError
+            ? `Authentication security store error: ${err.message}`
+            : "Authentication security store is unavailable; failing closed.",
+      },
       { status: 503 }
     );
   }

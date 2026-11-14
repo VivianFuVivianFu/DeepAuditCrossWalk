@@ -18,7 +18,8 @@ DeepAudit Crosswalk enforces strict multi-tenant isolation, role-based access co
 1. **Authentication & Session Security**:
    - Private document workspace routes (`/api/workspace`) require an authenticated user session.
    - Sessions use `HttpOnly; SameSite=Lax` cookies or Bearer JWTs signed with HMAC-SHA256 (`WORKSPACE_SESSION_SECRET` >= 32 characters).
-   - Real-time session revocation ensures immediate invalidation upon logout.
+   - Cross-process session revocation, membership/role overrides, and login rate limits are synchronized across worker processes on a single host via a lockfile-serialized, fail-closed security state store (`SESSION_REVOCATION_PATH`, `0600` permissions) storing only SHA-256 digests of session identifiers (`sha256(sid)`).
+   - Multi-instance horizontal clustering (`DEPLOYMENT_TOPOLOGY=multi_instance`) is explicitly disabled and fails closed (`503`) unless backed by a central transactional session store; shared network filesystems are not claimed as multi-node consistent.
 2. **Reviewer Attribution & Invariants**:
    - Clause review and control mapping review operations are strictly segregated and require `reviewer` or `admin` roles.
    - Decisions are immutably attributed to verified user identities (`user_id`), preventing client-side spoofing.

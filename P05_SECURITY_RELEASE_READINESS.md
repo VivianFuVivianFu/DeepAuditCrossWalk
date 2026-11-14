@@ -1,10 +1,12 @@
 # DeepAudit Crosswalk — P0.5 Security Release Readiness & Deployment Gates
 
+> **P0.6 Security Release Correction Notice:** See [`P06_SECURITY_RELEASE_CORRECTION.md`](P06_SECURITY_RELEASE_CORRECTION.md) and [`P06_CROSS_PROCESS_REVOCATION_AUDIT.md`](P06_CROSS_PROCESS_REVOCATION_AUDIT.md) for the post-merge audit and remediation of multi-process session revocation, membership consistency, login rate-limiting across worker processes on a single host, and the explicit disabling (`503`) of unsupported multi-instance horizontal clustering (`DEPLOYMENT_TOPOLOGY=multi_instance`).
+
 **Date:** 2026-11-14  
 **Author:** Staff Software Security Reviewer & Release Quality Gatekeeper  
 **Repository:** `VivianFuVivianFu/DeepAuditCrossWalk`  
 **Target Branch:** `fix/p05-identity-session-security-hardening`  
-**Verdict:** **READY FOR RELEASE ACROSS GATES A, B, AND C; CONDITIONAL READINESS FOR GATE D**
+**Verdict:** **READY FOR RELEASE ACROSS GATES A, B, AND C (SINGLE-INSTANCE); GATE D1 SINGLE-INSTANCE CONDITIONAL PASS; GATE D2 MULTI-INSTANCE EXPLICITLY DISABLED (`503`)**
 
 ---
 
