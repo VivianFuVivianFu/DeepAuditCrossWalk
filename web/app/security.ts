@@ -132,153 +132,766 @@ export const ACTION_PERMISSIONS: Record<string, Permission> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Durable Server-Side Session Revocation Store
+// Authoritative Cross-Process Session & Security State Store
 // ─────────────────────────────────────────────────────────────────────────────
 
-type RevocationEntry = {
-  sid: string;
-  revokedAt: number;
-  expiresAt: number;
+export class SecurityStateStorageError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SecurityStateStorageError";
+  }
+}
+
+export function hashSessionId(sid: string): string {
+  const trimmed = (sid || "").trim();
+  if (/^[a-f0-9]{64}$/i.test(trimmed)) {
+    return trimmed.toLowerCase();
+  }
+  return crypto.createHash("sha256").update(trimmed, "utf8").digest("hex");
+}
+
+export type ActiveSessionRecord = {
+  sid_digest: string;
+  user_id: string;
+  tenant_id: string;
+  roles: Role[];
+  issued_at: number;
+  expires_at: number;
 };
 
-export class DurableRevocationStore {
-  private memory = new Map<string, number>();
-  private filePath: string | null = null;
-  private initialized = false;
+export type RevocationRecord = {
+  sid_digest: string;
+  user_id?: string;
+  tenant_id?: string;
+  revoked_at: number;
+  expires_at: number;
+  reason?: string;
+};
 
-  private resolveFilePath(): string | null {
+export type AttemptRecord = {
+  count: number;
+  firstAttempt: number;
+};
+
+type LegacyRevocationEntry = {
+  sid?: string;
+  sid_digest?: string;
+  revokedAt?: number;
+  expiresAt?: number;
+};
+
+export type PersistedSecurityState = {
+  version: 2;
+  sessions: Record<string, ActiveSessionRecord>;
+  revocations: Record<string, RevocationRecord>;
+  user_overrides: Record<string, WorkspaceUserRecord>;
+  deleted_users: Record<string, number>;
+  login_attempts: Record<string, AttemptRecord>;
+};
+
+const WAIT_ARRAY = new Int32Array(new SharedArrayBuffer(4));
+
+function sleepSyncMs(ms: number): void {
+  if (ms <= 0) return;
+  try {
+    Atomics.wait(WAIT_ARRAY, 0, 0, ms);
+  } catch {
+    const end = Date.now() + ms;
+    while (Date.now() < end) {
+      // fallback spin if Atomics.wait unavailable
+    }
+  }
+}
+
+function emptySecurityState(): PersistedSecurityState {
+  return {
+    version: 2,
+    sessions: {},
+    revocations: {},
+    user_overrides: {},
+    deleted_users: {},
+    login_attempts: {},
+  };
+}
+
+export class DurableRevocationStore {
+  private resolveFilePath(): string {
     const configured = (process.env.SESSION_REVOCATION_PATH || "").trim();
     if (configured) {
       return path.resolve(configured);
     }
-    const tmp = process.env.TMPDIR || process.env.TEMP || process.env.TMP || "/tmp";
+    const tmp =
+      process.env.TMPDIR || process.env.TEMP || process.env.TMP || "/tmp";
     return path.join(tmp, "crosswalk_revocations.json");
   }
 
-  private ensureLoaded(): void {
-    if (this.initialized) return;
-    this.initialized = true;
-    this.filePath = this.resolveFilePath();
-    if (!this.filePath) return;
+  private withFileLock<T>(fn: (filePath: string) => T): T {
+    const filePath = this.resolveFilePath();
+    const dir = path.dirname(filePath);
     try {
-      if (fs.existsSync(this.filePath)) {
-        const raw = fs.readFileSync(this.filePath, "utf8");
-        const parsed: RevocationEntry[] = JSON.parse(raw);
-        const now = Math.floor(Date.now() / 1000);
-        for (const entry of parsed) {
-          if (entry && entry.sid && entry.expiresAt > now) {
-            this.memory.set(entry.sid, entry.expiresAt);
-          }
-        }
-      }
-    } catch {
-      // In-memory fallback if file unreadable
-    }
-  }
-
-  private persist(): void {
-    this.filePath = this.resolveFilePath();
-    if (!this.filePath) return;
-    try {
-      const now = Math.floor(Date.now() / 1000);
-      const entries: RevocationEntry[] = [];
-      for (const [sid, exp] of this.memory.entries()) {
-        if (exp > now) {
-          entries.push({ sid, revokedAt: now, expiresAt: exp });
-        }
-      }
-      const dir = path.dirname(this.filePath);
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+        fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
       }
-      const tmp = `${this.filePath}.${process.pid}.${Date.now()}.tmp`;
-      fs.writeFileSync(tmp, JSON.stringify(entries), "utf8");
-      fs.renameSync(tmp, this.filePath);
-    } catch {
-      // In-memory fallback if file write fails
+    } catch (err) {
+      throw new SecurityStateStorageError(
+        `Failed to create security state directory: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    }
+
+    const lockPath = `${filePath}.lock`;
+    const maxAttempts = 250;
+    const staleThresholdMs = 8000;
+    let acquired = false;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        const fd = fs.openSync(lockPath, "wx", 0o600);
+        try {
+          fs.writeFileSync(fd, `${process.pid}:${Date.now()}`, "utf8");
+        } finally {
+          fs.closeSync(fd);
+        }
+        acquired = true;
+        break;
+      } catch (err: any) {
+        const code = err && err.code;
+        if (code === "EEXIST" || code === "EPERM" || code === "EACCES") {
+          try {
+            const stat = fs.statSync(lockPath);
+            if (Date.now() - stat.mtimeMs > staleThresholdMs) {
+              fs.unlinkSync(lockPath);
+              continue;
+            }
+          } catch {
+            // Lock may have been released concurrently
+          }
+          sleepSyncMs(2 + (attempt % 4));
+          continue;
+        }
+        throw new SecurityStateStorageError(
+          `Failed to acquire security state lock: ${
+            err instanceof Error ? err.message : String(err)
+          }`
+        );
+      }
+    }
+
+    if (!acquired) {
+      throw new SecurityStateStorageError(
+        "Timed out waiting for cross-process security state lock"
+      );
+    }
+
+    try {
+      return fn(filePath);
+    } finally {
+      try {
+        if (fs.existsSync(lockPath)) {
+          fs.unlinkSync(lockPath);
+        }
+      } catch {
+        // Ignore cleanup race if already removed
+      }
     }
   }
 
-  revoke(sid: string, expiresAt: number = Math.floor(Date.now() / 1000) + DEFAULT_SESSION_TTL_SECONDS): void {
+  private readStateUnlocked(filePath: string): PersistedSecurityState {
+    if (!fs.existsSync(filePath)) {
+      return emptySecurityState();
+    }
+    let raw: string;
+    try {
+      raw = fs.readFileSync(filePath, "utf8");
+    } catch (err) {
+      throw new SecurityStateStorageError(
+        `Unable to read security state file: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    }
+
+    if (!raw.trim()) {
+      throw new SecurityStateStorageError(
+        "Security state file is empty or truncated"
+      );
+    }
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (err) {
+      throw new SecurityStateStorageError(
+        `Corrupted security state JSON: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    }
+
+    const nowSec = Math.floor(Date.now() / 1000);
+    const state = emptySecurityState();
+
+    // Backward-compatible migration from v1 array format
+    if (Array.isArray(parsed)) {
+      for (const item of parsed as LegacyRevocationEntry[]) {
+        if (!item || typeof item !== "object") continue;
+        const rawSid = item.sid_digest || item.sid;
+        const exp = Number(item.expiresAt);
+        if (rawSid && Number.isFinite(exp) && exp > nowSec) {
+          const digest = hashSessionId(String(rawSid));
+          state.revocations[digest] = {
+            sid_digest: digest,
+            revoked_at: Number(item.revokedAt) || nowSec,
+            expires_at: exp,
+            reason: "migrated_v1",
+          };
+        }
+      }
+      return state;
+    }
+
+    if (
+      !parsed ||
+      typeof parsed !== "object" ||
+      (parsed as Record<string, unknown>).version !== 2
+    ) {
+      throw new SecurityStateStorageError(
+        "Unrecognised security state schema version"
+      );
+    }
+
+    const obj = parsed as Partial<PersistedSecurityState>;
+    if (obj.sessions && typeof obj.sessions === "object") {
+      for (const [k, rec] of Object.entries(obj.sessions)) {
+        if (rec && typeof rec === "object" && Number(rec.expires_at) > nowSec) {
+          const digest = hashSessionId(rec.sid_digest || k);
+          state.sessions[digest] = {
+            sid_digest: digest,
+            user_id: String(rec.user_id || ""),
+            tenant_id: String(rec.tenant_id || ""),
+            roles: Array.isArray(rec.roles) ? rec.roles : [],
+            issued_at: Number(rec.issued_at || nowSec),
+            expires_at: Number(rec.expires_at),
+          };
+        }
+      }
+    }
+
+    if (obj.revocations && typeof obj.revocations === "object") {
+      for (const [k, rec] of Object.entries(obj.revocations)) {
+        if (rec && typeof rec === "object" && Number(rec.expires_at) > nowSec) {
+          const digest = hashSessionId(rec.sid_digest || k);
+          state.revocations[digest] = {
+            sid_digest: digest,
+            user_id: rec.user_id ? String(rec.user_id) : undefined,
+            tenant_id: rec.tenant_id ? String(rec.tenant_id) : undefined,
+            revoked_at: Number(rec.revoked_at || nowSec),
+            expires_at: Number(rec.expires_at),
+            reason: rec.reason ? String(rec.reason) : undefined,
+          };
+        }
+      }
+    }
+
+    if (obj.user_overrides && typeof obj.user_overrides === "object") {
+      for (const [uid, urec] of Object.entries(obj.user_overrides)) {
+        if (urec && typeof urec === "object" && urec.user_id) {
+          state.user_overrides[uid] = urec;
+        }
+      }
+    }
+
+    if (obj.deleted_users && typeof obj.deleted_users === "object") {
+      for (const [uid, ts] of Object.entries(obj.deleted_users)) {
+        if (uid && Number.isFinite(Number(ts))) {
+          state.deleted_users[uid] = Number(ts);
+        }
+      }
+    }
+
+    const nowMs = Date.now();
+    if (obj.login_attempts && typeof obj.login_attempts === "object") {
+      for (const [key, arec] of Object.entries(obj.login_attempts)) {
+        if (
+          arec &&
+          typeof arec === "object" &&
+          Number.isFinite(Number(arec.count)) &&
+          Number.isFinite(Number(arec.firstAttempt)) &&
+          nowMs - Number(arec.firstAttempt) <= 60_000
+        ) {
+          state.login_attempts[key] = {
+            count: Number(arec.count),
+            firstAttempt: Number(arec.firstAttempt),
+          };
+        }
+      }
+    }
+
+    return state;
+  }
+
+  private writeStateUnlocked(
+    filePath: string,
+    state: PersistedSecurityState
+  ): void {
+    const serialized = JSON.stringify(state);
+    const tmp = `${filePath}.${process.pid}.${Date.now()}.${crypto
+      .randomBytes(4)
+      .toString("hex")}.tmp`;
+    try {
+      const fd = fs.openSync(tmp, "w", 0o600);
+      try {
+        fs.writeFileSync(fd, serialized, "utf8");
+        fs.fsyncSync(fd);
+      } finally {
+        fs.closeSync(fd);
+      }
+
+      let renamed = false;
+      for (let i = 0; i < 10; i++) {
+        try {
+          fs.renameSync(tmp, filePath);
+          renamed = true;
+          break;
+        } catch (err: any) {
+          if (
+            err &&
+            (err.code === "EPERM" ||
+              err.code === "EACCES" ||
+              err.code === "EBUSY")
+          ) {
+            sleepSyncMs(5);
+            continue;
+          }
+          throw err;
+        }
+      }
+      if (!renamed) {
+        fs.copyFileSync(tmp, filePath);
+        fs.unlinkSync(tmp);
+      }
+      try {
+        fs.chmodSync(filePath, 0o600);
+      } catch {
+        // Ignore chmod no-op on Windows
+      }
+    } catch (err) {
+      try {
+        if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
+      } catch {}
+      throw new SecurityStateStorageError(
+        `Failed to persist security state: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+    }
+  }
+
+  private mutateState<T>(mutator: (state: PersistedSecurityState) => T): T {
+    return this.withFileLock((filePath) => {
+      const state = this.readStateUnlocked(filePath);
+      const result = mutator(state);
+      this.writeStateUnlocked(filePath, state);
+      return result;
+    });
+  }
+
+  private readState(): PersistedSecurityState {
+    return this.withFileLock((filePath) => this.readStateUnlocked(filePath));
+  }
+
+  assertStorageHealthy(): void {
+    this.readState();
+  }
+
+  registerSession(params: {
+    sid: string;
+    user_id: string;
+    tenant_id: string;
+    roles: Role[];
+    issuedAt?: number;
+    expiresAt?: number;
+  }): void {
+    if (!params.sid) return;
+    const now = Math.floor(Date.now() / 1000);
+    const exp = params.expiresAt ?? now + DEFAULT_SESSION_TTL_SECONDS;
+    if (exp <= now) return;
+    const digest = hashSessionId(params.sid);
+    this.mutateState((state) => {
+      state.sessions[digest] = {
+        sid_digest: digest,
+        user_id: params.user_id,
+        tenant_id: params.tenant_id,
+        roles: params.roles,
+        issued_at: params.issuedAt ?? now,
+        expires_at: exp,
+      };
+    });
+  }
+
+  checkSessionValidity(sid: string): {
+    valid: boolean;
+    reason?: string;
+    session?: ActiveSessionRecord;
+  } {
+    if (!sid) {
+      return { valid: false, reason: "Missing session identifier" };
+    }
+    try {
+      const state = this.readState();
+      const digest = hashSessionId(sid);
+      const now = Math.floor(Date.now() / 1000);
+      const rev = state.revocations[digest];
+      if (rev && rev.expires_at > now) {
+        return { valid: false, reason: "Session has been logged out or revoked" };
+      }
+      const active = state.sessions[digest];
+      if (active) {
+        if (active.expires_at <= now) {
+          return { valid: false, reason: "Session token has expired" };
+        }
+        if (state.deleted_users[active.user_id]) {
+          return {
+            valid: false,
+            reason: "User account no longer exists in workspace registry",
+          };
+        }
+        const override = state.user_overrides[active.user_id];
+        if (override && override.disabled) {
+          return { valid: false, reason: "User account access has been revoked" };
+        }
+      }
+      return { valid: true, session: active };
+    } catch {
+      return {
+        valid: false,
+        reason: "Security state storage error; failing closed",
+      };
+    }
+  }
+
+  revoke(
+    sid: string,
+    expiresAt: number = Math.floor(Date.now() / 1000) +
+      DEFAULT_SESSION_TTL_SECONDS,
+    metadata?: { user_id?: string; tenant_id?: string; reason?: string }
+  ): void {
     if (!sid) return;
-    this.ensureLoaded();
-    this.memory.set(sid, expiresAt);
-    this.persist();
+    const digest = hashSessionId(sid);
+    const now = Math.floor(Date.now() / 1000);
+    this.mutateState((state) => {
+      const existingSession = state.sessions[digest];
+      delete state.sessions[digest];
+      if (expiresAt > now) {
+        state.revocations[digest] = {
+          sid_digest: digest,
+          user_id: metadata?.user_id ?? existingSession?.user_id,
+          tenant_id: metadata?.tenant_id ?? existingSession?.tenant_id,
+          revoked_at: now,
+          expires_at: expiresAt,
+          reason: metadata?.reason ?? "explicit_logout_or_revoke",
+        };
+      } else {
+        delete state.revocations[digest];
+      }
+    });
   }
 
   isRevoked(sid: string): boolean {
     if (!sid) return false;
-    this.ensureLoaded();
-    const exp = this.memory.get(sid);
-    if (!exp) return false;
+    try {
+      const state = this.readState();
+      const digest = hashSessionId(sid);
+      const now = Math.floor(Date.now() / 1000);
+      const rev = state.revocations[digest];
+      if (!rev) return false;
+      return rev.expires_at > now;
+    } catch {
+      // Fail-closed: if security state file is corrupted or unreadable, treat session as revoked
+      return true;
+    }
+  }
+
+  invalidateUserSessions(
+    userId: string,
+    options?: { tenantId?: string; reason?: string }
+  ): number {
+    if (!userId) return 0;
     const now = Math.floor(Date.now() / 1000);
-    if (exp <= now) {
-      this.memory.delete(sid);
+    return this.mutateState((state) => {
+      let count = 0;
+      for (const [digest, sess] of Object.entries(state.sessions)) {
+        if (
+          sess.user_id === userId &&
+          (!options?.tenantId || sess.tenant_id === options.tenantId)
+        ) {
+          delete state.sessions[digest];
+          state.revocations[digest] = {
+            sid_digest: digest,
+            user_id: sess.user_id,
+            tenant_id: sess.tenant_id,
+            revoked_at: now,
+            expires_at: Math.max(
+              sess.expires_at,
+              now + DEFAULT_SESSION_TTL_SECONDS
+            ),
+            reason: options?.reason ?? "user_or_membership_change",
+          };
+          count += 1;
+        }
+      }
+      return count;
+    });
+  }
+
+  pruneExpired(): void {
+    this.mutateState(() => {
+      // readStateUnlocked automatically filters expired sessions, revocations, and rate-limit records
+    });
+  }
+
+  getUserOverrides(): {
+    overrides: Record<string, WorkspaceUserRecord>;
+    deletedUsers: Record<string, number>;
+  } {
+    const state = this.readState();
+    return {
+      overrides: state.user_overrides,
+      deletedUsers: state.deleted_users,
+    };
+  }
+
+  upsertUserOverride(user: WorkspaceUserRecord): void {
+    this.mutateState((state) => {
+      delete state.deleted_users[user.user_id];
+      state.user_overrides[user.user_id] = user;
+    });
+  }
+
+  setUserDisabled(
+    userId: string,
+    baseUser: WorkspaceUserRecord | undefined,
+    disabled: boolean
+  ): void {
+    const now = Math.floor(Date.now() / 1000);
+    this.mutateState((state) => {
+      const current = state.user_overrides[userId] ?? baseUser;
+      if (current) {
+        state.user_overrides[userId] = { ...current, disabled };
+      }
+      if (disabled) {
+        for (const [digest, sess] of Object.entries(state.sessions)) {
+          if (sess.user_id === userId) {
+            delete state.sessions[digest];
+            state.revocations[digest] = {
+              sid_digest: digest,
+              user_id: sess.user_id,
+              tenant_id: sess.tenant_id,
+              revoked_at: now,
+              expires_at: Math.max(
+                sess.expires_at,
+                now + DEFAULT_SESSION_TTL_SECONDS
+              ),
+              reason: "user_disabled",
+            };
+          }
+        }
+      }
+    });
+  }
+
+  deleteUser(userId: string): void {
+    const now = Math.floor(Date.now() / 1000);
+    this.mutateState((state) => {
+      delete state.user_overrides[userId];
+      state.deleted_users[userId] = now;
+      for (const [digest, sess] of Object.entries(state.sessions)) {
+        if (sess.user_id === userId) {
+          delete state.sessions[digest];
+          state.revocations[digest] = {
+            sid_digest: digest,
+            user_id: sess.user_id,
+            tenant_id: sess.tenant_id,
+            revoked_at: now,
+            expires_at: Math.max(
+              sess.expires_at,
+              now + DEFAULT_SESSION_TTL_SECONDS
+            ),
+            reason: "user_deleted",
+          };
+        }
+      }
+    });
+  }
+
+  setUserTenantRoles(
+    userId: string,
+    baseUser: WorkspaceUserRecord | undefined,
+    tenantId: string,
+    roles: Role[] | null
+  ): void {
+    this.mutateState((state) => {
+      const current = state.user_overrides[userId] ?? baseUser;
+      if (current) {
+        const nextTenants = { ...current.tenants };
+        if (roles === null || roles.length === 0) {
+          delete nextTenants[tenantId];
+        } else {
+          nextTenants[tenantId] = roles;
+        }
+        state.user_overrides[userId] = { ...current, tenants: nextTenants };
+      }
+      for (const sess of Object.values(state.sessions)) {
+        if (sess.user_id === userId && sess.tenant_id === tenantId) {
+          sess.roles = roles ?? [];
+        }
+      }
+    });
+  }
+
+  checkRateLimit(
+    keys: string[],
+    maxAttempts = 5,
+    windowMs = 60_000
+  ): boolean {
+    try {
+      const state = this.readState();
+      const now = Date.now();
+      for (const key of keys) {
+        const rec = state.login_attempts[key];
+        if (rec && now - rec.firstAttempt <= windowMs && rec.count >= maxAttempts) {
+          return false;
+        }
+      }
+      return true;
+    } catch {
+      // Fail-closed on storage corruption
       return false;
     }
-    return true;
+  }
+
+  recordFailedLoginAttempt(keys: string[], windowMs = 60_000): void {
+    const now = Date.now();
+    this.mutateState((state) => {
+      for (const key of keys) {
+        const rec = state.login_attempts[key];
+        if (!rec || now - rec.firstAttempt > windowMs) {
+          state.login_attempts[key] = { count: 1, firstAttempt: now };
+        } else {
+          rec.count += 1;
+        }
+      }
+    });
+  }
+
+  clearRateLimit(keys: string[]): void {
+    this.mutateState((state) => {
+      for (const key of keys) {
+        delete state.login_attempts[key];
+      }
+    });
+  }
+
+  clearRateLimitsOnly(): void {
+    try {
+      const fp = this.resolveFilePath();
+      if (!fs.existsSync(fp)) return;
+      this.mutateState((state) => {
+        state.login_attempts = {};
+      });
+    } catch {
+      // Ignore if test already removed file
+    }
   }
 
   clear(): void {
-    this.memory.clear();
-    this.initialized = false;
     const fp = this.resolveFilePath();
-    if (fp && fs.existsSync(fp)) {
-      try {
-        fs.unlinkSync(fp);
-      } catch {}
+    const lockPath = `${fp}.lock`;
+    for (const target of [fp, lockPath]) {
+      if (target && fs.existsSync(target)) {
+        try {
+          fs.unlinkSync(target);
+        } catch {}
+      }
     }
   }
 }
 
-const revocationStore = new DurableRevocationStore();
-const runtimeUserOverrides = new Map<string, WorkspaceUserRecord>();
+export { DurableRevocationStore as SessionSecurityStore };
 
-type AttemptRecord = { count: number; firstAttempt: number };
-const failedLoginAttempts = new Map<string, AttemptRecord>();
+const revocationStore = new DurableRevocationStore();
 
 export function clearLoginRateLimitsForTests(): void {
-  failedLoginAttempts.clear();
+  revocationStore.clearRateLimitsOnly();
 }
 
-function getLoginRateLimitKey(request: Request, username: string): string {
-  const xff = (request.headers.get("x-forwarded-for") || "").split(",")[0].trim();
-  const ip = xff || "direct";
-  return `${ip}:${username.toLowerCase()}`;
+function getLoginRateLimitKeys(request: Request, username: string): string[] {
+  const normalizedUser = (username || "").trim().toLowerCase() || "anonymous";
+  const trustProxy =
+    (process.env.TRUST_PROXY_HEADERS || "").trim().toLowerCase() === "true" ||
+    (process.env.TRUST_PROXY_HEADERS || "").trim() === "1";
+
+  let clientNetKey = "direct";
+  if (trustProxy) {
+    const xff = (request.headers.get("x-forwarded-for") || "")
+      .split(",")[0]
+      .trim();
+    const xri = (request.headers.get("x-real-ip") || "").trim();
+    clientNetKey = xff || xri || "direct";
+  }
+
+  // Always enforce both per-network-client AND per-username rate limits so header spoofing
+  // or distributed worker requests cannot brute-force a user account.
+  return [
+    `ip:${clientNetKey}:${normalizedUser}`,
+    `acct:${normalizedUser}`,
+  ];
 }
 
 export function checkLoginRateLimit(request: Request, username: string): boolean {
-  const key = getLoginRateLimitKey(request, username);
-  const record = failedLoginAttempts.get(key);
-  if (!record) return true;
-  const now = Date.now();
-  if (now - record.firstAttempt > 60_000) {
-    failedLoginAttempts.delete(key);
-    return true;
-  }
-  return record.count < 5;
+  const keys = getLoginRateLimitKeys(request, username);
+  return revocationStore.checkRateLimit(keys, 5, 60_000);
 }
 
 export function recordLoginFailedAttempt(request: Request, username: string): void {
-  const key = getLoginRateLimitKey(request, username);
-  const now = Date.now();
-  const record = failedLoginAttempts.get(key);
-  if (!record || now - record.firstAttempt > 60_000) {
-    failedLoginAttempts.set(key, { count: 1, firstAttempt: now });
-  } else {
-    record.count += 1;
-  }
+  const keys = getLoginRateLimitKeys(request, username);
+  revocationStore.recordFailedLoginAttempt(keys, 60_000);
 }
 
 export function clearLoginRateLimit(request: Request, username: string): void {
-  const key = getLoginRateLimitKey(request, username);
-  failedLoginAttempts.delete(key);
+  const keys = getLoginRateLimitKeys(request, username);
+  revocationStore.clearRateLimit(keys);
 }
 
 export function clearSecurityStateForTests(): void {
   revocationStore.clear();
-  runtimeUserOverrides.clear();
-  failedLoginAttempts.clear();
+}
+
+export function registerActiveSession(params: {
+  sid: string;
+  user_id: string;
+  tenant_id: string;
+  roles: Role[];
+  issuedAt?: number;
+  expiresAt?: number;
+}): void {
+  revocationStore.registerSession(params);
+}
+
+export function checkSessionValidity(sid: string): {
+  valid: boolean;
+  reason?: string;
+  session?: ActiveSessionRecord;
+} {
+  return revocationStore.checkSessionValidity(sid);
+}
+
+export function invalidateUserSessions(
+  userId: string,
+  options?: { tenantId?: string; reason?: string }
+): number {
+  return revocationStore.invalidateUserSessions(userId, options);
 }
 
 export function revokeSession(sessionId: string, expiresAt?: number): void {
@@ -289,6 +902,10 @@ export function revokeSession(sessionId: string, expiresAt?: number): void {
 
 export function isSessionRevoked(sessionId: string): boolean {
   return revocationStore.isRevoked(sessionId);
+}
+
+export function assertSecurityStoreHealthy(): void {
+  revocationStore.assertStorageHealthy();
 }
 
 export function isProductionEnv(): boolean {
@@ -535,22 +1152,39 @@ export function loadWorkspaceUsers(): Map<string, WorkspaceUserRecord> {
     }
   }
 
-  for (const [uid, override] of runtimeUserOverrides.entries()) {
+  let persistedOverrides: {
+    overrides: Record<string, WorkspaceUserRecord>;
+    deletedUsers: Record<string, number>;
+  };
+  try {
+    persistedOverrides = revocationStore.getUserOverrides();
+  } catch {
+    // Fail-closed: if the security state file on disk is corrupted, do not allow
+    // base users to bypass persisted account disablements/deletions or role downgrades.
+    return new Map<string, WorkspaceUserRecord>();
+  }
+
+  for (const [uid, override] of Object.entries(persistedOverrides.overrides)) {
     map.set(uid, override);
+  }
+  for (const deletedUid of Object.keys(persistedOverrides.deletedUsers)) {
+    map.delete(deletedUid);
   }
   return map;
 }
 
 export function upsertRuntimeWorkspaceUser(user: WorkspaceUserRecord): void {
-  runtimeUserOverrides.set(user.user_id, user);
+  revocationStore.upsertUserOverride(user);
 }
 
 export function setRuntimeUserDisabled(userId: string, disabled: boolean): void {
   const users = loadWorkspaceUsers();
   const existing = users.get(userId);
-  if (existing) {
-    runtimeUserOverrides.set(userId, { ...existing, disabled });
-  }
+  revocationStore.setUserDisabled(userId, existing, disabled);
+}
+
+export function deleteRuntimeWorkspaceUser(userId: string): void {
+  revocationStore.deleteUser(userId);
 }
 
 export function setRuntimeUserTenantRoles(
@@ -560,15 +1194,7 @@ export function setRuntimeUserTenantRoles(
 ): void {
   const users = loadWorkspaceUsers();
   const existing = users.get(userId);
-  if (existing) {
-    const nextTenants = { ...existing.tenants };
-    if (roles === null || roles.length === 0) {
-      delete nextTenants[tenantId];
-    } else {
-      nextTenants[tenantId] = roles;
-    }
-    runtimeUserOverrides.set(userId, { ...existing, tenants: nextTenants });
-  }
+  revocationStore.setUserTenantRoles(userId, existing, tenantId, roles);
 }
 
 export function detectDeploymentSecurityMode(): {
@@ -576,6 +1202,27 @@ export function detectDeploymentSecurityMode(): {
   ready: boolean;
   reason?: string;
 } {
+  const topology = (process.env.DEPLOYMENT_TOPOLOGY || "").trim().toLowerCase();
+  const multiInstanceFlag = (process.env.WORKSPACE_MULTI_INSTANCE || "")
+    .trim()
+    .toLowerCase();
+  if (
+    topology === "multi_instance" ||
+    topology === "multi-instance" ||
+    topology === "clustered" ||
+    topology === "multi_node" ||
+    topology === "multi-node" ||
+    multiInstanceFlag === "true" ||
+    multiInstanceFlag === "1"
+  ) {
+    return {
+      mode: "misconfigured_production",
+      ready: false,
+      reason:
+        "Unsupported deployment topology: multi-instance horizontal clustering is disabled because the file-backed security state store only guarantees consistency across worker processes on a single host.",
+    };
+  }
+
   const prod = isProductionEnv();
   const sessionSecret = (process.env.WORKSPACE_SESSION_SECRET || "").trim();
   const apiKey = (process.env.CROSSWALK_API_KEY || "").trim();
@@ -694,6 +1341,20 @@ export function createSessionToken(params: {
   const sig = base64UrlEncode(
     crypto.createHmac("sha256", secret).update(signingInput).digest()
   );
+  if (claims.exp > now) {
+    try {
+      revocationStore.registerSession({
+        sid: claims.sid,
+        user_id: claims.sub,
+        tenant_id: claims.tenant_id,
+        roles: claims.roles,
+        issuedAt: claims.iat,
+        expiresAt: claims.exp,
+      });
+    } catch {
+      // If storage is corrupted, subsequent verification/resolution will fail closed
+    }
+  }
   return {
     token: `${signingInput}.${sig}`,
     claims,
@@ -975,6 +1636,19 @@ export function resolveSecurityContext(
       ok: false,
       status: 503,
       error: modeStatus.reason || "Document workspace authentication is not configured.",
+    };
+  }
+
+  try {
+    revocationStore.assertStorageHealthy();
+  } catch (err) {
+    return {
+      ok: false,
+      status: 503,
+      error:
+        err instanceof Error
+          ? `Security state storage error: ${err.message}`
+          : "Security state storage error; failing closed.",
     };
   }
 
