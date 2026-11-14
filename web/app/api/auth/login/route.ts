@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import {
   SESSION_COOKIE_NAME,
   authenticateUserCredentials,
+  checkLoginRateLimit,
+  clearLoginRateLimit,
   createSessionToken,
   detectDeploymentSecurityMode,
   formatSessionCookie,
   parseCookies,
   permissionsForRoles,
+  recordLoginFailedAttempt,
   revokeSession,
   verifySessionToken,
 } from "../../../security";
@@ -41,6 +44,13 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
+  if (!checkLoginRateLimit(request, username)) {
+    return NextResponse.json(
+      { detail: "Too many failed login attempts. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   // Rotate / invalidate any existing session token in cookies to prevent session fixation
   const cookies = parseCookies(request.headers.get("cookie"));
   const oldToken = cookies[SESSION_COOKIE_NAME];
@@ -58,11 +68,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   });
 
   if (!authResult.ok) {
+    recordLoginFailedAttempt(request, username);
     return NextResponse.json(
       { detail: authResult.error },
       { status: authResult.status }
     );
   }
+
+  clearLoginRateLimit(request, username);
 
   const { token, claims } = createSessionToken({
     user_id: authResult.user.user_id,
@@ -89,4 +102,3 @@ export async function POST(request: Request): Promise<NextResponse> {
   response.headers.set("Set-Cookie", formatSessionCookie(token));
   return response;
 }
-

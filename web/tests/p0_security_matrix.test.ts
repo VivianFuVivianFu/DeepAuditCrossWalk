@@ -1,4 +1,6 @@
 import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { POST as analysisPOST } from "../app/api/analysis/route";
 import { POST as loginPOST } from "../app/api/auth/login/route";
@@ -8,16 +10,23 @@ import { GET as workspaceGET, POST as workspacePOST } from "../app/api/workspace
 import {
   Role,
   clearSecurityStateForTests,
+  clearLoginRateLimitsForTests,
   createSessionToken,
   formatSessionCookie,
   revokeSession,
   setRuntimeUserDisabled,
   setRuntimeUserTenantRoles,
   upsertRuntimeWorkspaceUser,
+  hashPassword,
+  verifyPassword,
+  loadWorkspaceUsers,
+  DurableRevocationStore,
+  WorkspaceUserRecord,
 } from "../app/security";
 
 afterEach(() => {
   clearSecurityStateForTests();
+  clearLoginRateLimitsForTests();
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
 });
@@ -865,5 +874,433 @@ describe("P0 Security Acceptance Matrix — Group G: Production Misconfiguration
     expect(text).not.toContain("ultra-secret-crosswalk-key-999");
     expect(text).not.toContain("ultra-secret-session-signing-key-32bytes!!");
     expect(text).not.toContain("Traceback");
+  });
+});
+
+describe("P0.5 Security Hardening — Group H: Password Storage & Authentication Hardening (H1–H4)", () => {
+  it("H1: hashPassword produces scrypt hash and verifyPassword validates correct credentials", () => {
+    const rawPass = "SecretCompliancePass2026!";
+    const hashed = hashPassword(rawPass);
+    expect(hashed).toMatch(/^scrypt\$[0-9a-f]{32}\$[0-9a-f]{128}$/);
+
+    const userRecord: WorkspaceUserRecord = {
+      user_id: "usr-h1",
+      username: "user_h1",
+      display_name: "User H1",
+      password_hash: hashed,
+      tenants: { "bank-tenant": ["analyst"] },
+    };
+
+    // Valid candidate in production
+    expect(verifyPassword(rawPass, userRecord, true)).toBe(true);
+    // Invalid candidate
+    expect(verifyPassword("WrongPassword123", userRecord, true)).toBe(false);
+  });
+
+  it("H2: PBKDF2 formatted hash is verified correctly and invalid iteration count is rejected", () => {
+    const salt = "0123456789abcdef";
+    const derived = crypto.pbkdf2Sync("testpass", salt, 10000, 64, "sha256").toString("hex");
+    const validHash = `pbkdf2$10000$${salt}$${derived}`;
+
+    const userRecord: WorkspaceUserRecord = {
+      user_id: "usr-h2",
+      username: "user_h2",
+      display_name: "User H2",
+      password_hash: validHash,
+      tenants: { "bank-tenant": ["analyst"] },
+    };
+
+    expect(verifyPassword("testpass", userRecord, true)).toBe(true);
+    expect(verifyPassword("wrongpass", userRecord, true)).toBe(false);
+
+    // Reject PBKDF2 with insecure iteration count (< 10000)
+    const weakHash = `pbkdf2$1000$${salt}$${derived}`;
+    const weakUser: WorkspaceUserRecord = {
+      ...userRecord,
+      password_hash: weakHash,
+    };
+    expect(verifyPassword("testpass", weakUser, true)).toBe(false);
+  });
+
+  it("H3: In production (ENV=production), plaintext passwords and unsalted sha256 are rejected", () => {
+    const plaintextUser: WorkspaceUserRecord = {
+      user_id: "usr-h3-plain",
+      username: "plain_user",
+      display_name: "Plain User",
+      password: "insecure-plain-password",
+      tenants: { "bank-tenant": ["analyst"] },
+    };
+    // In production, plaintext is strictly rejected
+    expect(verifyPassword("insecure-plain-password", plaintextUser, true)).toBe(false);
+
+    const sha256Hash = crypto.createHash("sha256").update("insecure-sha", "utf8").digest("hex");
+    const sha256User: WorkspaceUserRecord = {
+      user_id: "usr-h3-sha",
+      username: "sha_user",
+      display_name: "SHA User",
+      password_sha256: sha256Hash,
+      tenants: { "bank-tenant": ["analyst"] },
+    };
+    // In production, unsalted sha256 is strictly rejected
+    expect(verifyPassword("insecure-sha", sha256User, true)).toBe(false);
+
+    // In non-production, legacy formats are permitted for local dev fixtures
+    expect(verifyPassword("insecure-plain-password", plaintextUser, false)).toBe(true);
+    expect(verifyPassword("insecure-sha", sha256User, false)).toBe(true);
+
+    // Furthermore, loadWorkspaceUsers() in production drops any user without password_hash
+    vi.stubEnv("ENV", "production");
+    vi.stubEnv(
+      "WORKSPACE_USERS_JSON",
+      JSON.stringify([
+        {
+          user_id: "usr-plain-only",
+          username: "plainonly",
+          password: "my-plain-password",
+          tenants: { "bank-tenant": ["analyst"] },
+        },
+      ])
+    );
+    const loaded = loadWorkspaceUsers();
+    expect(loaded.has("usr-plain-only")).toBe(false);
+  });
+
+  it("H4: Repeated failed login attempts trigger 429 rate limit", async () => {
+    vi.stubEnv(
+      "WORKSPACE_USERS_JSON",
+      JSON.stringify([
+        {
+          user_id: "usr-rate-test",
+          username: "rate_test_user",
+          password_hash: hashPassword("CorrectPassword123!"),
+          tenants: { "local-workspace": ["analyst"] },
+        },
+      ])
+    );
+
+    const makeFailedLogin = () =>
+      loginPOST(
+        new Request("http://localhost/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Forwarded-For": "198.51.100.42",
+          },
+          body: JSON.stringify({
+            username: "rate_test_user",
+            password: "IncorrectPassword",
+          }),
+        })
+      );
+
+    // 5 failed attempts
+    for (let i = 0; i < 5; i++) {
+      const res = await makeFailedLogin();
+      expect(res.status).toBe(401);
+    }
+
+    // 6th attempt should be blocked by rate limiting (429)
+    const rateLimitedRes = await makeFailedLogin();
+    expect(rateLimitedRes.status).toBe(429);
+    const body = await rateLimitedRes.json();
+    expect(body.detail).toMatch(/too many failed login attempts/i);
+  });
+});
+
+describe("P0.5 Security Hardening — Group I: Production Defaults & Dev Bypass Protection (I1–I2)", () => {
+  it("I1: In production without WORKSPACE_USERS_JSON, no default fixture accounts exist", () => {
+    vi.stubEnv("ENV", "production");
+    vi.stubEnv("WORKSPACE_USERS_JSON", "");
+
+    const users = loadWorkspaceUsers();
+    expect(users.size).toBe(0);
+    expect(users.has("usr-local-analyst")).toBe(false);
+    expect(users.has("usr-local-reviewer")).toBe(false);
+  });
+
+  it("I2: Dev bypass is denied when external proxy headers are present on loopback requests", async () => {
+    vi.stubEnv("ENV", "development");
+    vi.stubEnv("NODE_ENV", "development");
+    vi.stubEnv("ALLOW_LOCAL_DEV_AUTH_BYPASS", "true");
+
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify([]), { status: 200 })
+    );
+    vi.stubGlobal("fetch", fetcher);
+
+    // Direct loopback without proxy headers works under bypass
+    const okRes = await workspacePOST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "list_questionnaires" }),
+      })
+    );
+    expect(okRes.status).toBe(200);
+
+    // Loopback with spoofed X-Forwarded-For header is denied bypass -> 401
+    const spoofedRes = await workspacePOST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Forwarded-For": "203.0.113.195",
+        },
+        body: JSON.stringify({ action: "list_questionnaires" }),
+      })
+    );
+    expect(spoofedRes.status).toBe(401);
+  });
+});
+
+describe("P0.5 Security Hardening — Group J: Multi-process Revocation & Live User Invariants (J1–J4)", () => {
+  it("J1: DurableRevocationStore persists revocations across store instances via disk", () => {
+    const tmpRevocationFile = path.join(
+      process.env.TEMP || process.env.TMP || "/tmp",
+      `revocations_test_${Date.now()}_${Math.random().toString(36).slice(2)}.json`
+    );
+    vi.stubEnv("SESSION_REVOCATION_PATH", tmpRevocationFile);
+
+    try {
+      const storeA = new DurableRevocationStore();
+      const testSid = "sid-cross-process-test-12345";
+      expect(storeA.isRevoked(testSid)).toBe(false);
+
+      // Revoke in store A
+      storeA.revoke(testSid);
+      expect(storeA.isRevoked(testSid)).toBe(true);
+
+      // Store B simulates a separate server worker process reading the same shared storage
+      const storeB = new DurableRevocationStore();
+      expect(storeB.isRevoked(testSid)).toBe(true);
+    } finally {
+      if (fs.existsSync(tmpRevocationFile)) {
+        try {
+          fs.unlinkSync(tmpRevocationFile);
+        } catch {}
+      }
+    }
+  });
+
+  it("J2: Deleted user is immediately rejected (401) despite valid unexpired session token", async () => {
+    upsertRuntimeWorkspaceUser({
+      user_id: "usr-ephemeral",
+      username: "ephemeral",
+      display_name: "Ephemeral User",
+      password_hash: hashPassword("pass"),
+      tenants: { "local-workspace": ["reviewer"] },
+    });
+
+    const { request } = createSignedCookieRequest(
+      { action: "list_questionnaires" },
+      {
+        user_id: "usr-ephemeral",
+        roles: ["reviewer"],
+      }
+    );
+
+    // Initial request succeeds
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify([]), { status: 200 })
+    );
+    vi.stubGlobal("fetch", fetcher);
+    const res1 = await workspacePOST(request);
+    expect(res1.status).toBe(200);
+
+    // User is deleted from workspace registry
+    setRuntimeUserDisabled("usr-ephemeral", true);
+
+    const { request: request2 } = createSignedCookieRequest(
+      { action: "list_questionnaires" },
+      {
+        user_id: "usr-ephemeral",
+        roles: ["reviewer"],
+      }
+    );
+    const res2 = await workspacePOST(request2);
+    expect(res2.status).toBe(401);
+  });
+
+  it("J3: User removed from tenant membership is immediately rejected (403)", async () => {
+    upsertRuntimeWorkspaceUser({
+      user_id: "usr-multi-tenant",
+      username: "multitenant",
+      display_name: "Multi Tenant User",
+      password_hash: hashPassword("pass"),
+      tenants: {
+        "tenant-primary": ["analyst"],
+        "tenant-secondary": ["reviewer"],
+      },
+    });
+
+    const { request } = createSignedCookieRequest(
+      { action: "list_questionnaires" },
+      {
+        user_id: "usr-multi-tenant",
+        tenant_id: "tenant-secondary",
+        roles: ["reviewer"],
+      }
+    );
+
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify([]), { status: 200 })
+    );
+    vi.stubGlobal("fetch", fetcher);
+    const okRes = await workspacePOST(request);
+    expect(okRes.status).toBe(200);
+
+    // Revoke tenant-secondary membership
+    setRuntimeUserTenantRoles("usr-multi-tenant", "tenant-secondary", null);
+
+    const { request: revokedReq } = createSignedCookieRequest(
+      { action: "list_questionnaires" },
+      {
+        user_id: "usr-multi-tenant",
+        tenant_id: "tenant-secondary",
+        roles: ["reviewer"],
+      }
+    );
+    const deniedRes = await workspacePOST(revokedReq);
+    expect(deniedRes.status).toBe(403);
+  });
+
+  it("J4: Role downgrade from reviewer to analyst immediately revokes clause approval rights (403)", async () => {
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ review_status: "approved" }), { status: 200 })
+    );
+    vi.stubGlobal("fetch", fetcher);
+
+    // Token claims "reviewer", but live user is downgraded to "analyst"
+    setRuntimeUserTenantRoles("usr-local-reviewer", "local-workspace", ["analyst"]);
+
+    const { request } = createSignedCookieRequest(
+      {
+        action: "review_clause",
+        clause_id: "CL-500",
+        status: "approved",
+      },
+      {
+        user_id: "usr-local-reviewer",
+        roles: ["reviewer"], // token still claims reviewer
+      }
+    );
+
+    const res = await workspacePOST(request);
+    expect(res.status).toBe(403);
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+});
+
+describe("P0.5 Security Hardening — Group K: Static Token Privilege Boundary (K1–K2)", () => {
+  it("K1 & K2: Static WORKSPACE_AUTH_TOKEN is restricted to viewer permissions and cannot review clauses or mappings", async () => {
+    vi.stubEnv("WORKSPACE_AUTH_TOKEN", "static-automation-ci-token-xyz");
+
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify([]), { status: 200 })
+    );
+    vi.stubGlobal("fetch", fetcher);
+
+    // K1: Read action succeeds with static token
+    const readRes = await workspacePOST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer static-automation-ci-token-xyz",
+        },
+        body: JSON.stringify({ action: "list_questionnaires" }),
+      })
+    );
+    expect(readRes.status).toBe(200);
+
+    // K2: Review actions fail with 403 Forbidden
+    const clauseReviewRes = await workspacePOST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer static-automation-ci-token-xyz",
+        },
+        body: JSON.stringify({
+          action: "review_clause",
+          clause_id: "CL-10",
+          status: "approved",
+        }),
+      })
+    );
+    expect(clauseReviewRes.status).toBe(403);
+
+    const mapReviewRes = await workspacePOST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer static-automation-ci-token-xyz",
+        },
+        body: JSON.stringify({
+          action: "review_clause_mapping",
+          clause_id: "CL-10",
+          mapping_id: "MAP-10",
+          status: "approved",
+        }),
+      })
+    );
+    expect(mapReviewRes.status).toBe(403);
+
+    const baselineRes = await workspacePOST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer static-automation-ci-token-xyz",
+        },
+        body: JSON.stringify({
+          action: "create_baseline",
+          name: "Automation Baseline",
+        }),
+      })
+    );
+    expect(baselineRes.status).toBe(403);
+  });
+});
+
+describe("P0.5 Security Hardening — Group L: OIDC Production Safety & IDP Gate (L1–L2)", () => {
+  it("L1: Calling /api/auth/oidc in ENV=production returns 501 Not Implemented", async () => {
+    vi.stubEnv("ENV", "production");
+    vi.stubEnv("CROSSWALK_API_KEY", "prod-crosswalk-key-12345");
+    vi.stubEnv(
+      "WORKSPACE_SESSION_SECRET",
+      "prod-workspace-session-signing-secret-32chars!!"
+    );
+
+    const getRes = await oidcGET(new Request("http://localhost/api/auth/oidc"));
+    expect(getRes.status).toBe(501);
+    const getBody = await getRes.json();
+    expect(getBody.detail).toMatch(/disabled for hosted production/i);
+
+    const postRes = await oidcPOST(
+      new Request("http://localhost/api/auth/oidc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: "xyz", id_token: "abc" }),
+      })
+    );
+    expect(postRes.status).toBe(501);
+  });
+
+  it("L2: In ENV=production, OIDC_ISSUER_URL without WORKSPACE_USERS_JSON fails readiness check (503)", async () => {
+    vi.stubEnv("ENV", "production");
+    vi.stubEnv("CROSSWALK_API_KEY", "prod-crosswalk-key-12345");
+    vi.stubEnv(
+      "WORKSPACE_SESSION_SECRET",
+      "prod-workspace-session-signing-secret-32chars!!"
+    );
+    vi.stubEnv("OIDC_ISSUER_URL", "https://auth.bank.au");
+    vi.stubEnv("WORKSPACE_USERS_JSON", ""); // missing users json
+
+    const res = await workspaceGET(new Request("http://localhost/api/workspace"));
+    expect(res.status).toBe(503);
+    const data = await res.json();
+    expect(data.error).toMatch(/WORKSPACE_USERS_JSON/i);
   });
 });

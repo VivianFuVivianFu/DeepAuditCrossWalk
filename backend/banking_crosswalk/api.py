@@ -174,20 +174,31 @@ def _verify_signed_workspace_context(
     header_actor: Optional[str] = None,
     header_role: Optional[str] = None,
 ) -> Optional[Dict[str, Any]]:
-    """Verify HMAC-SHA256 signed X-Workspace-Context from the web gateway when configured."""
+    """Verify HMAC-SHA256 signed X-Workspace-Context assertion from trusted gateway."""
+    is_public_demo = expected_tenant.strip().lower() == "public-demo"
+    if is_public_demo and not raw_context:
+        return None
+
     secret = (
-        os.getenv("WORKSPACE_SESSION_SECRET", "").strip()
-        or os.getenv("CROSSWALK_CONTEXT_SECRET", "").strip()
+        os.getenv("CROSSWALK_CONTEXT_SECRET", "").strip()
+        or os.getenv("WORKSPACE_SESSION_SECRET", "").strip()
     )
+
     if not secret:
         return None
-    if expected_tenant == "public-demo" and not raw_context:
-        return None
+
+    if _production() and len(secret) < 32:
+        raise HTTPException(
+            status_code=503,
+            detail="Backend configuration error: WORKSPACE_SESSION_SECRET (>= 32 chars) is required for private tenant access",
+        )
+
     if not raw_context or "." not in raw_context:
         raise HTTPException(
             status_code=401,
             detail="Missing or malformed signed X-Workspace-Context assertion",
         )
+
     body_b64, provided_sig = raw_context.rsplit(".", 1)
     expected_sig = hmac.new(
         secret.encode("utf-8"), body_b64.encode("ascii"), hashlib.sha256
@@ -197,6 +208,7 @@ def _verify_signed_workspace_context(
             status_code=401,
             detail="Invalid X-Workspace-Context signature",
         )
+
     padding = "=" * (-len(body_b64) % 4)
     try:
         payload = json.loads(
@@ -214,22 +226,25 @@ def _verify_signed_workspace_context(
         raise HTTPException(
             status_code=401, detail="Expired X-Workspace-Context assertion"
         )
+
     ctx_tenant = str(payload.get("tenant_id") or "").strip()
     if not ctx_tenant or not _constant_match(ctx_tenant, expected_tenant):
         raise HTTPException(
             status_code=403,
             detail="X-Tenant-ID does not match signed workspace context tenant",
         )
+
     ctx_user = str(payload.get("user_id") or "").strip()
     if not ctx_user:
         raise HTTPException(
             status_code=401, detail="Signed workspace context is missing user_id"
         )
-    if header_actor and not _constant_match(header_actor.strip(), ctx_user):
+    if header_actor and not _actors_match(header_actor.strip(), ctx_user):
         raise HTTPException(
             status_code=403,
             detail="X-Actor header does not match signed workspace context user_id",
         )
+
     ctx_roles = {
         str(r).strip().lower()
         for r in (payload.get("roles") or [])
@@ -240,6 +255,7 @@ def _verify_signed_workspace_context(
             status_code=403,
             detail="X-Role header is not authorised in signed workspace context",
         )
+
     return payload
 
 

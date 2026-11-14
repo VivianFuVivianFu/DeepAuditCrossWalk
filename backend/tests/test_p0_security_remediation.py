@@ -17,6 +17,7 @@ import hashlib
 import hmac
 import io
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -529,4 +530,131 @@ def test_viewer_cannot_run_assessments_in_private_tenant():
         },
     )
     assert viewer_cov.status_code == 403
+
+
+def test_backend_private_tenant_requires_signed_workspace_context(monkeypatch):
+    """When WORKSPACE_SESSION_SECRET is set, requests to a private tenant without
+    X-Workspace-Context must return 401."""
+    secret = "test-backend-signing-secret-at-least-32-characters!!"
+    monkeypatch.setenv("WORKSPACE_SESSION_SECRET", secret)
+    tenant = "tenant-requires-context"
+
+    # Missing X-Workspace-Context
+    res = client.get(
+        "/v1/questionnaires",
+        headers={"X-Tenant-ID": tenant, "X-Actor": "usr-reviewer", "X-Role": "reviewer"},
+    )
+    assert res.status_code == 401
+    assert "X-Workspace-Context" in res.json()["detail"]
+
+
+def test_backend_production_rejects_short_secret_with_503(monkeypatch):
+    """In production, a short WORKSPACE_SESSION_SECRET (< 32 chars) fails closed with 503."""
+    monkeypatch.setenv("ENV", "production")
+    monkeypatch.setenv("CROSSWALK_API_KEY", "prod-api-key-at-least-32-chars-long!!")
+    monkeypatch.setenv("WORKSPACE_SESSION_SECRET", "short-secret")
+    tenant = "tenant-prod-test"
+
+    res = client.get(
+        "/v1/questionnaires",
+        headers={
+            "X-API-Key": "prod-api-key-at-least-32-chars-long!!",
+            "X-Tenant-ID": tenant,
+            "X-Actor": "usr-reviewer",
+            "X-Role": "reviewer",
+        },
+    )
+    assert res.status_code == 503
+    assert "32 chars" in res.json()["detail"]
+
+
+def test_backend_rejects_expired_and_tampered_workspace_context(monkeypatch):
+    """Backend validates expiration and HMAC signature of X-Workspace-Context."""
+    secret = "test-backend-signing-secret-at-least-32-characters!!"
+    monkeypatch.setenv("WORKSPACE_SESSION_SECRET", secret)
+    tenant = "tenant-tamper-test"
+
+    # Expired context
+    expired_payload = {
+        "user_id": "usr-rev",
+        "tenant_id": tenant,
+        "roles": ["reviewer"],
+        "session_id": "sid-expired",
+        "exp": time.time() - 60,
+    }
+    expired_ctx = _sign_context(expired_payload, secret)
+    res_exp = client.get(
+        "/v1/questionnaires",
+        headers={
+            "X-Tenant-ID": tenant,
+            "X-Actor": "usr-rev",
+            "X-Role": "reviewer",
+            "X-Workspace-Context": expired_ctx,
+        },
+    )
+    assert res_exp.status_code == 401
+    assert "Expired" in res_exp.json()["detail"]
+
+    # Tampered signature
+    valid_payload = {
+        "user_id": "usr-rev",
+        "tenant_id": tenant,
+        "roles": ["reviewer"],
+        "session_id": "sid-valid",
+        "exp": time.time() + 300,
+    }
+    valid_ctx = _sign_context(valid_payload, secret)
+    tampered_ctx = valid_ctx[:-4] + "dead"
+    res_tamp = client.get(
+        "/v1/questionnaires",
+        headers={
+            "X-Tenant-ID": tenant,
+            "X-Actor": "usr-rev",
+            "X-Role": "reviewer",
+            "X-Workspace-Context": tampered_ctx,
+        },
+    )
+    assert res_tamp.status_code == 401
+    assert "signature" in res_tamp.json()["detail"].lower()
+
+
+def test_backend_rejects_tenant_and_actor_mismatch_with_context(monkeypatch):
+    """Backend ensures X-Tenant-ID and X-Actor match the signed claims in X-Workspace-Context."""
+    secret = "test-backend-signing-secret-at-least-32-characters!!"
+    monkeypatch.setenv("WORKSPACE_SESSION_SECRET", secret)
+
+    valid_payload = {
+        "user_id": "usr-rev",
+        "tenant_id": "tenant-correct",
+        "roles": ["reviewer"],
+        "session_id": "sid-match",
+        "exp": time.time() + 300,
+    }
+    ctx = _sign_context(valid_payload, secret)
+
+    # Tenant mismatch
+    res_ten = client.get(
+        "/v1/questionnaires",
+        headers={
+            "X-Tenant-ID": "tenant-spoofed",
+            "X-Actor": "usr-rev",
+            "X-Role": "reviewer",
+            "X-Workspace-Context": ctx,
+        },
+    )
+    assert res_ten.status_code == 403
+    assert "does not match" in res_ten.json()["detail"]
+
+    # Actor mismatch
+    res_act = client.get(
+        "/v1/questionnaires",
+        headers={
+            "X-Tenant-ID": "tenant-correct",
+            "X-Actor": "usr-spoofed-other",
+            "X-Role": "reviewer",
+            "X-Workspace-Context": ctx,
+        },
+    )
+    assert res_act.status_code == 403
+    assert "does not match" in res_act.json()["detail"]
 
