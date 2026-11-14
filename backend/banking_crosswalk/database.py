@@ -12,7 +12,7 @@ from alembic.config import Config
 from alembic.runtime.migration import MigrationContext
 from sqlalchemy.engine import make_url
 
-SCHEMA_REVISION = "0002_enterprise_policy_layer"
+SCHEMA_REVISION = "0003_enterprise_reconciliation"
 
 
 def create_database_engine(url: str):

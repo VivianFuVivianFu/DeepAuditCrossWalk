@@ -23,6 +23,7 @@ from .importer import MAX_WORKBOOK_BYTES, import_aiaf_workbook, import_questionn
 from .models import (
     ClauseControlMapping,
     ClauseReviewStatus,
+    EffectiveAssessmentBaseline,
     EnterpriseAuthorityLevel,
     EnterpriseBaseline,
     EnterpriseClause,
@@ -36,6 +37,9 @@ from .models import (
     PolicyPack,
     QuestionBank,
     QuestionRoutingSnapshot,
+    ReconciliationDecision,
+    ReconciliationDecisionStatus,
+    ReconciliationRelationship,
     ReviewStatus,
 )
 from .policy import (
@@ -45,6 +49,12 @@ from .policy import (
     extract_enterprise_policy,
     extract_policy_pack,
     verify_baseline_integrity,
+)
+from .reconciliation import (
+    compose_effective_assessment_baseline,
+    evaluate_reconciliation_staleness,
+    generate_reconciliation_candidates,
+    review_reconciliation_decision,
 )
 from .store import ConflictError, NotFoundError, store
 
@@ -1009,6 +1019,18 @@ def create_coverage_assessment(
         assessment_mode=mode,
         assessment_target_type=target_type,
     )
+    if enterprise_baseline is not None:
+        eff_baselines = store.list_effective_baselines(
+            x_tenant_id, baseline_id=enterprise_baseline.baseline_id
+        )
+        if eff_baselines:
+            latest_eff = eff_baselines[-1]
+            assessment = assessment.model_copy(
+                update={
+                    "effective_baseline_id": latest_eff.effective_baseline_id,
+                    "effective_baseline_sha256": latest_eff.effective_baseline_sha256,
+                }
+            )
     if req.persist:
         store.save_assessment(x_tenant_id, assessment)
     return assessment
@@ -1638,3 +1660,369 @@ def get_enterprise_baseline_endpoint(
         return store.get_enterprise_baseline(x_tenant_id, baseline_id)
     except NotFoundError as exc:
         raise _not_found(exc) from exc
+
+
+class ReconcileBaselineRequest(BaseModel):
+    use_case_id: Optional[str] = None
+    use_case: Optional[BankingUseCase] = None
+    include_non_applicable: bool = False
+    force_regenerate: bool = False
+
+
+class ReconciliationReviewRequest(BaseModel):
+    decision_status: ReconciliationDecisionStatus
+    approved_relationship: Optional[ReconciliationRelationship] = None
+    actor: str = Field(min_length=1, max_length=128)
+    role: str = Field(min_length=1, max_length=64)
+    comment: Optional[str] = None
+    expected_revision: Optional[int] = None
+
+
+class ComposeEffectiveBaselineRequest(BaseModel):
+    use_case_id: Optional[str] = None
+    use_case: Optional[BankingUseCase] = None
+    as_of_date: Optional[str] = None
+
+
+def _resolve_baseline_and_policies(
+    tenant_id: str, baseline_id: str
+) -> tuple[EnterpriseBaseline, List[EnterprisePolicy]]:
+    try:
+        baseline = store.get_enterprise_baseline(tenant_id, baseline_id)
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc
+    if not verify_baseline_integrity(baseline):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Baseline integrity error: cryptographic fingerprint mismatch",
+        )
+    policies: List[EnterprisePolicy] = []
+    for pid in baseline.policy_ids:
+        try:
+            policies.append(store.get_enterprise_policy(tenant_id, pid))
+        except NotFoundError:
+            pass
+    return baseline, policies
+
+
+@router.post(
+    "/enterprise/baselines/{baseline_id}/reconcile",
+    response_model=List[ReconciliationDecision],
+    status_code=201,
+)
+@router.post(
+    "/enterprise-baselines/{baseline_id}/reconcile",
+    response_model=List[ReconciliationDecision],
+    status_code=201,
+)
+def reconcile_enterprise_baseline_endpoint(
+    baseline_id: str,
+    x_tenant_id: TenantHeader,
+    req: Optional[ReconcileBaselineRequest] = None,
+    x_actor: OptionalActorHeader = None,
+    x_role: OptionalRoleHeader = None,
+) -> List[ReconciliationDecision]:
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, CONTRIBUTOR_ROLES, "generating requirement reconciliation candidates"
+    )
+    baseline, policies = _resolve_baseline_and_policies(x_tenant_id, baseline_id)
+    body = req or ReconcileBaselineRequest()
+
+    use_case: Optional[BankingUseCase] = None
+    if body.use_case is not None:
+        use_case = body.use_case
+    elif body.use_case_id:
+        try:
+            use_case = store.get_use_case(x_tenant_id, body.use_case_id)
+        except NotFoundError as exc:
+            raise _not_found(exc) from exc
+
+    candidates = generate_reconciliation_candidates(
+        tenant_id=x_tenant_id,
+        enterprise_baseline=baseline,
+        regulatory_pack=regulatory_pack,
+        policies=policies,
+        use_case=use_case,
+        include_non_applicable=body.include_non_applicable,
+    )
+
+    existing = {
+        d.reconciliation_id: evaluate_reconciliation_staleness(
+            d,
+            enterprise_baseline=baseline,
+            regulatory_pack=regulatory_pack,
+            policies=policies,
+        )
+        for d in store.list_reconciliation_decisions(
+            x_tenant_id, baseline_id=baseline_id
+        )
+    }
+
+    to_save: List[ReconciliationDecision] = []
+    for cand in candidates:
+        prev = existing.get(cand.reconciliation_id)
+        if (
+            prev is not None
+            and not body.force_regenerate
+            and not prev.is_stale
+            and prev.decision_status
+            in {
+                ReconciliationDecisionStatus.APPROVED,
+                ReconciliationDecisionStatus.REJECTED,
+            }
+        ):
+            to_save.append(prev)
+        else:
+            to_save.append(cand)
+
+    return store.save_reconciliation_decisions(
+        x_tenant_id, to_save, actor=x_actor or "system"
+    )
+
+
+@router.get(
+    "/enterprise/baselines/{baseline_id}/reconciliations",
+    response_model=List[ReconciliationDecision],
+)
+@router.get(
+    "/enterprise-baselines/{baseline_id}/reconciliations",
+    response_model=List[ReconciliationDecision],
+)
+def list_baseline_reconciliations_endpoint(
+    baseline_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> List[ReconciliationDecision]:
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, READER_ROLES, "listing requirement reconciliations"
+    )
+    baseline, policies = _resolve_baseline_and_policies(x_tenant_id, baseline_id)
+    decisions = store.list_reconciliation_decisions(
+        x_tenant_id, baseline_id=baseline_id
+    )
+    return [
+        evaluate_reconciliation_staleness(
+            d,
+            enterprise_baseline=baseline,
+            regulatory_pack=regulatory_pack,
+            policies=policies,
+        )
+        for d in decisions
+    ]
+
+
+@router.get(
+    "/enterprise/baselines/{baseline_id}/reconciliations/unresolved",
+    response_model=List[ReconciliationDecision],
+)
+@router.get(
+    "/enterprise-baselines/{baseline_id}/reconciliations/unresolved",
+    response_model=List[ReconciliationDecision],
+)
+def list_unresolved_reconciliations_endpoint(
+    baseline_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> List[ReconciliationDecision]:
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, READER_ROLES, "listing unresolved requirement reconciliations"
+    )
+    all_decisions = list_baseline_reconciliations_endpoint(
+        baseline_id=baseline_id, x_tenant_id=x_tenant_id, x_role=x_role
+    )
+    unresolved: List[ReconciliationDecision] = []
+    for d in all_decisions:
+        effective_rel = d.approved_relationship or d.validated_relationship
+        if (
+            d.is_stale
+            or d.decision_status
+            in {
+                ReconciliationDecisionStatus.PROPOSED,
+                ReconciliationDecisionStatus.NEEDS_REVIEW,
+            }
+            or effective_rel
+            in {
+                ReconciliationRelationship.POTENTIAL_CONFLICT,
+                ReconciliationRelationship.WEAKER_OR_POTENTIALLY_INSUFFICIENT,
+                ReconciliationRelationship.UNDETERMINED,
+            }
+        ):
+            unresolved.append(d)
+    return unresolved
+
+
+@router.put(
+    "/enterprise/reconciliations/{reconciliation_id}/review",
+    response_model=ReconciliationDecision,
+)
+@router.post(
+    "/enterprise/reconciliations/{reconciliation_id}/review",
+    response_model=ReconciliationDecision,
+)
+@router.post(
+    "/reconciliations/{reconciliation_id}/review",
+    response_model=ReconciliationDecision,
+)
+def review_reconciliation_endpoint(
+    reconciliation_id: str,
+    req: ReconciliationReviewRequest,
+    x_tenant_id: TenantHeader,
+    x_actor: OptionalActorHeader = None,
+    x_role: OptionalRoleHeader = None,
+    x_workspace_context: WorkspaceContextHeader = None,
+) -> ReconciliationDecision:
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _validate_reviewer_identity(
+        req.actor,
+        req.role,
+        header_actor=x_actor,
+        header_role=x_role,
+        x_workspace_context=x_workspace_context,
+        tenant_id=x_tenant_id,
+    )
+    try:
+        existing = store.get_reconciliation_decision(x_tenant_id, reconciliation_id)
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc
+
+    baseline, policies = _resolve_baseline_and_policies(
+        x_tenant_id, existing.enterprise_baseline_id
+    )
+    checked = evaluate_reconciliation_staleness(
+        existing,
+        enterprise_baseline=baseline,
+        regulatory_pack=regulatory_pack,
+        policies=policies,
+    )
+    try:
+        reviewed = review_reconciliation_decision(
+            checked,
+            decision_status=req.decision_status,
+            actor=req.actor,
+            role=req.role,
+            approved_relationship=req.approved_relationship,
+            comment=req.comment,
+            expected_revision=req.expected_revision,
+        )
+    except PermissionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)
+        ) from exc
+    except ValueError as exc:
+        if "Stale revision" in str(exc):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT, detail=str(exc)
+            ) from exc
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
+        ) from exc
+
+    return store.save_reconciliation_decision(
+        x_tenant_id, reviewed, actor=req.actor
+    )
+
+
+@router.post(
+    "/enterprise/baselines/{baseline_id}/effective-baseline",
+    response_model=EffectiveAssessmentBaseline,
+    status_code=201,
+)
+@router.post(
+    "/enterprise-baselines/{baseline_id}/effective-baseline",
+    response_model=EffectiveAssessmentBaseline,
+    status_code=201,
+)
+def compose_effective_baseline_endpoint(
+    baseline_id: str,
+    x_tenant_id: TenantHeader,
+    req: Optional[ComposeEffectiveBaselineRequest] = None,
+    x_actor: OptionalActorHeader = None,
+    x_role: OptionalRoleHeader = None,
+) -> EffectiveAssessmentBaseline:
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, CONTRIBUTOR_ROLES, "composing an effective assessment baseline"
+    )
+    baseline, policies = _resolve_baseline_and_policies(x_tenant_id, baseline_id)
+    body = req or ComposeEffectiveBaselineRequest()
+
+    use_case: Optional[BankingUseCase] = None
+    if body.use_case is not None:
+        use_case = body.use_case
+    elif body.use_case_id:
+        try:
+            use_case = store.get_use_case(x_tenant_id, body.use_case_id)
+        except NotFoundError as exc:
+            raise _not_found(exc) from exc
+
+    decisions = store.list_reconciliation_decisions(
+        x_tenant_id, baseline_id=baseline_id
+    )
+    try:
+        effective = compose_effective_assessment_baseline(
+            tenant_id=x_tenant_id,
+            regulatory_pack=regulatory_pack,
+            use_case=use_case,
+            enterprise_baseline=baseline,
+            reconciliation_decisions=decisions,
+            policies=policies,
+            as_of_date=body.as_of_date,
+        )
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(exc)
+        ) from exc
+
+    return store.save_effective_baseline(
+        x_tenant_id, effective, actor=x_actor or "system"
+    )
+
+
+@router.get(
+    "/enterprise/effective-baselines/{effective_baseline_id}",
+    response_model=EffectiveAssessmentBaseline,
+)
+@router.get(
+    "/effective-baselines/{effective_baseline_id}",
+    response_model=EffectiveAssessmentBaseline,
+)
+def get_effective_baseline_endpoint(
+    effective_baseline_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> EffectiveAssessmentBaseline:
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, READER_ROLES, "reading effective assessment baselines"
+    )
+    try:
+        return store.get_effective_baseline(x_tenant_id, effective_baseline_id)
+    except NotFoundError as exc:
+        raise _not_found(exc) from exc
+
+
+@router.get(
+    "/enterprise/baselines/{baseline_id}/effective-baselines",
+    response_model=List[EffectiveAssessmentBaseline],
+)
+def list_effective_baselines_endpoint(
+    baseline_id: str,
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> List[EffectiveAssessmentBaseline]:
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, READER_ROLES, "listing effective assessment baselines"
+    )
+    _resolve_baseline_and_policies(x_tenant_id, baseline_id)
+    return store.list_effective_baselines(x_tenant_id, baseline_id=baseline_id)

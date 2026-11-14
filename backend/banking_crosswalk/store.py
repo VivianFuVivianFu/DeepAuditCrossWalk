@@ -15,6 +15,7 @@ from .catalog import load_demo_questionnaire
 from .models import (
     ClauseControlMapping,
     ClauseReviewStatus,
+    EffectiveAssessmentBaseline,
     EnterpriseAuthorityLevel,
     EnterpriseBaseline,
     EnterpriseClause,
@@ -27,6 +28,7 @@ from .models import (
     PolicyPack,
     QuestionBank,
     QuestionRoutingSnapshot,
+    ReconciliationDecision,
 )
 
 
@@ -62,6 +64,8 @@ class TenantStore:
         self._enterprise_clauses: Dict[str, Dict[str, EnterpriseClause]] = {}
         self._clause_mappings: Dict[str, Dict[str, ClauseControlMapping]] = {}
         self._enterprise_baselines: Dict[str, Dict[str, EnterpriseBaseline]] = {}
+        self._reconciliation_decisions: Dict[str, Dict[str, ReconciliationDecision]] = {}
+        self._effective_baselines: Dict[str, Dict[str, EffectiveAssessmentBaseline]] = {}
         self._assessments: Dict[
             str, Dict[str, CoverageAssessment | PolicyGapAssessment]
         ] = {}
@@ -503,6 +507,116 @@ class TenantStore:
 
     def list_enterprise_baselines(self, tenant_id: str) -> List[EnterpriseBaseline]:
         return list(self._enterprise_baselines.get(tenant_id, {}).values())
+
+    def save_reconciliation_decision(
+        self,
+        tenant_id: str,
+        decision: ReconciliationDecision,
+        actor: str = "system",
+    ) -> ReconciliationDecision:
+        if decision.tenant_id != tenant_id:
+            raise ValueError("Reconciliation decision tenant mismatch")
+        self._bucket(self._reconciliation_decisions, tenant_id)[
+            decision.reconciliation_id
+        ] = decision
+        self._record(
+            tenant_id,
+            "reconciliation.saved",
+            decision.reconciliation_id,
+            actor=actor,
+            detail={
+                "baseline_id": decision.enterprise_baseline_id,
+                "clause_id": decision.enterprise_clause_id,
+                "obligation_id": decision.external_obligation_id,
+                "status": decision.decision_status.value,
+                "relationship": (
+                    decision.approved_relationship.value
+                    if decision.approved_relationship
+                    else decision.validated_relationship.value
+                ),
+            },
+        )
+        return decision
+
+    def save_reconciliation_decisions(
+        self,
+        tenant_id: str,
+        decisions: Sequence[ReconciliationDecision],
+        actor: str = "system",
+    ) -> List[ReconciliationDecision]:
+        saved: List[ReconciliationDecision] = []
+        for d in decisions:
+            saved.append(self.save_reconciliation_decision(tenant_id, d, actor=actor))
+        return saved
+
+    def get_reconciliation_decision(
+        self, tenant_id: str, reconciliation_id: str
+    ) -> ReconciliationDecision:
+        try:
+            return self._reconciliation_decisions[tenant_id][reconciliation_id]
+        except KeyError as exc:
+            raise NotFoundError(
+                "Reconciliation decision not found for this tenant"
+            ) from exc
+
+    def list_reconciliation_decisions(
+        self,
+        tenant_id: str,
+        baseline_id: Optional[str] = None,
+        clause_id: Optional[str] = None,
+        obligation_id: Optional[str] = None,
+    ) -> List[ReconciliationDecision]:
+        items = list(self._reconciliation_decisions.get(tenant_id, {}).values())
+        if baseline_id is not None:
+            items = [d for d in items if d.enterprise_baseline_id == baseline_id]
+        if clause_id is not None:
+            items = [d for d in items if d.enterprise_clause_id == clause_id]
+        if obligation_id is not None:
+            items = [d for d in items if d.external_obligation_id == obligation_id]
+        return sorted(items, key=lambda x: x.reconciliation_id)
+
+    def save_effective_baseline(
+        self,
+        tenant_id: str,
+        effective_baseline: EffectiveAssessmentBaseline,
+        actor: str = "system",
+    ) -> EffectiveAssessmentBaseline:
+        if effective_baseline.tenant_id != tenant_id:
+            raise ValueError("Effective baseline tenant mismatch")
+        self._bucket(self._effective_baselines, tenant_id)[
+            effective_baseline.effective_baseline_id
+        ] = effective_baseline
+        self._record(
+            tenant_id,
+            "effective_baseline.saved",
+            effective_baseline.effective_baseline_id,
+            actor=actor,
+            detail={
+                "enterprise_baseline_id": effective_baseline.enterprise_baseline_id,
+                "effective_baseline_sha256": effective_baseline.effective_baseline_sha256,
+            },
+        )
+        return effective_baseline
+
+    def get_effective_baseline(
+        self, tenant_id: str, effective_baseline_id: str
+    ) -> EffectiveAssessmentBaseline:
+        try:
+            return self._effective_baselines[tenant_id][effective_baseline_id]
+        except KeyError as exc:
+            raise NotFoundError(
+                "Effective baseline not found for this tenant"
+            ) from exc
+
+    def list_effective_baselines(
+        self, tenant_id: str, baseline_id: Optional[str] = None
+    ) -> List[EffectiveAssessmentBaseline]:
+        items = list(self._effective_baselines.get(tenant_id, {}).values())
+        if baseline_id is not None:
+            items = [
+                b for b in items if b.enterprise_baseline_id == baseline_id
+            ]
+        return sorted(items, key=lambda x: x.effective_baseline_id)
 
 
 class RepositoryHandle:

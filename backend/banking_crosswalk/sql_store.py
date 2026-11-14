@@ -22,6 +22,7 @@ from .database import check_schema, create_database_engine
 from .models import (
     ClauseControlMapping,
     ClauseReviewStatus,
+    EffectiveAssessmentBaseline,
     EnterpriseAuthorityLevel,
     EnterpriseBaseline,
     EnterpriseClause,
@@ -34,6 +35,7 @@ from .models import (
     PolicyPack,
     QuestionBank,
     QuestionRoutingSnapshot,
+    ReconciliationDecision,
 )
 from .store import ConflictError, NotFoundError, StorageUnavailable
 
@@ -672,3 +674,157 @@ class SQLTenantStore:
                 )
             ).scalars().all()
             return [EnterpriseBaseline.model_validate(r) for r in rows]
+
+    def save_reconciliation_decision(
+        self, tenant_id, decision, actor="system"
+    ):
+        self._check_tenant(tenant_id, decision)
+        with self._transaction(tenant_id) as connection:
+            self._upsert(
+                connection,
+                schema.reconciliation_decisions,
+                tenant_id,
+                decision.reconciliation_id,
+                decision.model_dump(mode="json"),
+                baseline_id=decision.enterprise_baseline_id,
+                clause_id=decision.enterprise_clause_id,
+                obligation_id=decision.external_obligation_id,
+            )
+            self._record(
+                connection,
+                tenant_id,
+                "reconciliation.saved",
+                decision.reconciliation_id,
+                actor=actor,
+                detail={
+                    "baseline_id": decision.enterprise_baseline_id,
+                    "clause_id": decision.enterprise_clause_id,
+                    "obligation_id": decision.external_obligation_id,
+                    "status": decision.decision_status.value,
+                    "relationship": (
+                        decision.approved_relationship.value
+                        if decision.approved_relationship
+                        else decision.validated_relationship.value
+                    ),
+                },
+            )
+        return decision
+
+    def save_reconciliation_decisions(
+        self, tenant_id, decisions, actor="system"
+    ):
+        for d in decisions:
+            self._check_tenant(tenant_id, d)
+        with self._transaction(tenant_id) as connection:
+            for decision in decisions:
+                self._upsert(
+                    connection,
+                    schema.reconciliation_decisions,
+                    tenant_id,
+                    decision.reconciliation_id,
+                    decision.model_dump(mode="json"),
+                    baseline_id=decision.enterprise_baseline_id,
+                    clause_id=decision.enterprise_clause_id,
+                    obligation_id=decision.external_obligation_id,
+                )
+                self._record(
+                    connection,
+                    tenant_id,
+                    "reconciliation.saved",
+                    decision.reconciliation_id,
+                    actor=actor,
+                    detail={
+                        "baseline_id": decision.enterprise_baseline_id,
+                        "clause_id": decision.enterprise_clause_id,
+                        "obligation_id": decision.external_obligation_id,
+                        "status": decision.decision_status.value,
+                        "relationship": (
+                            decision.approved_relationship.value
+                            if decision.approved_relationship
+                            else decision.validated_relationship.value
+                        ),
+                    },
+                )
+        return list(decisions)
+
+    def get_reconciliation_decision(self, tenant_id, reconciliation_id):
+        return self._read(
+            schema.reconciliation_decisions,
+            tenant_id,
+            reconciliation_id,
+            ReconciliationDecision,
+        )
+
+    def list_reconciliation_decisions(
+        self,
+        tenant_id,
+        baseline_id=None,
+        clause_id=None,
+        obligation_id=None,
+    ):
+        with self._transaction(tenant_id) as connection:
+            query = sa.select(schema.reconciliation_decisions.c.payload).where(
+                schema.reconciliation_decisions.c.tenant_id == tenant_id
+            )
+            if baseline_id is not None:
+                query = query.where(
+                    schema.reconciliation_decisions.c.baseline_id == baseline_id
+                )
+            if clause_id is not None:
+                query = query.where(
+                    schema.reconciliation_decisions.c.clause_id == clause_id
+                )
+            if obligation_id is not None:
+                query = query.where(
+                    schema.reconciliation_decisions.c.obligation_id == obligation_id
+                )
+            rows = connection.execute(query).scalars().all()
+            items = [ReconciliationDecision.model_validate(r) for r in rows]
+            return sorted(items, key=lambda x: x.reconciliation_id)
+
+    def save_effective_baseline(
+        self, tenant_id, effective_baseline, actor="system"
+    ):
+        self._check_tenant(tenant_id, effective_baseline)
+        with self._transaction(tenant_id) as connection:
+            self._upsert(
+                connection,
+                schema.effective_baselines,
+                tenant_id,
+                effective_baseline.effective_baseline_id,
+                effective_baseline.model_dump(mode="json"),
+                baseline_id=effective_baseline.enterprise_baseline_id,
+            )
+            self._record(
+                connection,
+                tenant_id,
+                "effective_baseline.saved",
+                effective_baseline.effective_baseline_id,
+                actor=actor,
+                detail={
+                    "enterprise_baseline_id": effective_baseline.enterprise_baseline_id,
+                    "effective_baseline_sha256": effective_baseline.effective_baseline_sha256,
+                },
+            )
+        return effective_baseline
+
+    def get_effective_baseline(self, tenant_id, effective_baseline_id):
+        return self._read(
+            schema.effective_baselines,
+            tenant_id,
+            effective_baseline_id,
+            EffectiveAssessmentBaseline,
+        )
+
+    def list_effective_baselines(self, tenant_id, baseline_id=None):
+        with self._transaction(tenant_id) as connection:
+            query = sa.select(schema.effective_baselines.c.payload).where(
+                schema.effective_baselines.c.tenant_id == tenant_id
+            )
+            if baseline_id is not None:
+                query = query.where(
+                    schema.effective_baselines.c.baseline_id == baseline_id
+                )
+            rows = connection.execute(query).scalars().all()
+            items = [EffectiveAssessmentBaseline.model_validate(r) for r in rows]
+            return sorted(items, key=lambda x: x.effective_baseline_id)

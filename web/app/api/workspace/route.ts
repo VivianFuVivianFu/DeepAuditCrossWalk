@@ -551,6 +551,118 @@ export async function POST(request: Request) {
         break;
       }
 
+      case "reconcile_baseline": {
+        const baselineId = assertSafeId(input.baseline_id, "baseline_id");
+        targetPath = `/v1/enterprise/baselines/${encodeURIComponent(
+          baselineId
+        )}/reconcile`;
+        method = "POST";
+        bodyPayload = {
+          ...(input.use_case &&
+          typeof input.use_case === "object" &&
+          !Array.isArray(input.use_case)
+            ? { use_case: input.use_case }
+            : {}),
+          ...(typeof input.include_non_applicable === "boolean"
+            ? { include_non_applicable: input.include_non_applicable }
+            : {}),
+          ...(typeof input.force_regenerate === "boolean"
+            ? { force_regenerate: input.force_regenerate }
+            : {}),
+        };
+        break;
+      }
+
+      case "list_reconciliations": {
+        const baselineId = assertSafeId(input.baseline_id, "baseline_id");
+        targetPath = `/v1/enterprise/baselines/${encodeURIComponent(
+          baselineId
+        )}/reconciliations`;
+        method = "GET";
+        break;
+      }
+
+      case "list_unresolved_reconciliations": {
+        const baselineId = assertSafeId(input.baseline_id, "baseline_id");
+        targetPath = `/v1/enterprise/baselines/${encodeURIComponent(
+          baselineId
+        )}/reconciliations/unresolved`;
+        method = "GET";
+        break;
+      }
+
+      case "review_reconciliation": {
+        const reconciliationId = assertSafeId(
+          input.reconciliation_id,
+          "reconciliation_id"
+        );
+        const decisionStatus =
+          typeof input.decision_status === "string"
+            ? input.decision_status.trim()
+            : "";
+        if (
+          !["approved", "rejected", "needs_review", "proposed"].includes(
+            decisionStatus
+          )
+        ) {
+          return NextResponse.json(
+            { error: "Invalid reconciliation decision_status." },
+            { status: 400 }
+          );
+        }
+        targetPath = `/v1/enterprise/reconciliations/${encodeURIComponent(
+          reconciliationId
+        )}/review`;
+        method = "PUT";
+        bodyPayload = {
+          decision_status: decisionStatus,
+          actor: ctx.user_id,
+          role: primaryRole(ctx.roles),
+          ...(typeof input.approved_relationship === "string" &&
+          input.approved_relationship.trim()
+            ? { approved_relationship: input.approved_relationship.trim() }
+            : {}),
+          ...(typeof input.comment === "string" && input.comment.trim()
+            ? { comment: input.comment.trim() }
+            : {}),
+          ...(typeof input.expected_revision === "number"
+            ? { expected_revision: input.expected_revision }
+            : {}),
+        };
+        break;
+      }
+
+      case "compose_effective_baseline": {
+        const baselineId = assertSafeId(input.baseline_id, "baseline_id");
+        targetPath = `/v1/enterprise/baselines/${encodeURIComponent(
+          baselineId
+        )}/effective-baseline`;
+        method = "POST";
+        bodyPayload = {
+          ...(input.use_case &&
+          typeof input.use_case === "object" &&
+          !Array.isArray(input.use_case)
+            ? { use_case: input.use_case }
+            : {}),
+          ...(typeof input.as_of_date === "string" && input.as_of_date.trim()
+            ? { as_of_date: input.as_of_date.trim() }
+            : {}),
+        };
+        break;
+      }
+
+      case "get_effective_baseline": {
+        const effectiveBaselineId = assertSafeId(
+          input.effective_baseline_id,
+          "effective_baseline_id"
+        );
+        targetPath = `/v1/enterprise/effective-baselines/${encodeURIComponent(
+          effectiveBaselineId
+        )}`;
+        method = "GET";
+        break;
+      }
+
       case "get_report": {
         const assessmentId = assertSafeId(
           input.assessment_id,
