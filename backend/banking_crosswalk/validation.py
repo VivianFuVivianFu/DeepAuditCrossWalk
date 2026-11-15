@@ -477,6 +477,35 @@ def validate_regulatory_library(
     except Exception as exc:  # pragma: no cover - defensive diagnostic
         analysis_errors.append(f"Existing analysis engine raised exception: {exc}")
 
+    # 10. Pack vs catalogue and root-deliverable parity
+    parity_errors = _check_pack_catalogue_parity(
+        pack_supplied=pack is not None,
+        source_register_supplied=source_register is not None,
+        control_library_supplied=control_library is not None,
+        mapping_catalogue_supplied=mapping_catalogue is not None,
+        active_pack=active_pack,
+    )
+
+    # 11. Mapping facet partition & relationship consistency
+    mapping_consistency_errors = _check_mapping_facet_and_relationship_consistency(
+        active_mappings=active_mappings,
+        obligations=obligations,
+        active_controls=active_controls,
+    )
+
+    # 12. Source register metadata & authority-mapping integrity
+    source_integrity_errors = _check_source_register_integrity(
+        sources=source_register if source_register is not None else active_pack.sources
+    )
+
+    # Non-failing E4 content-assurance diagnostics for human legal review
+    content_assurance_diagnostics = _collect_content_assurance_diagnostics(
+        active_pack=active_pack,
+        obligations=obligations,
+        active_controls=active_controls,
+        active_mappings=active_mappings,
+    )
+
     checks = {
         "missing_source_references": {
             "passed": len(missing_source_errors) == 0,
@@ -527,6 +556,21 @@ def validate_regulatory_library(
             "error_count": len(analysis_errors),
             "errors": analysis_errors,
         },
+        "pack_catalogue_parity": {
+            "passed": len(parity_errors) == 0,
+            "error_count": len(parity_errors),
+            "errors": parity_errors,
+        },
+        "mapping_facet_and_relationship_consistency": {
+            "passed": len(mapping_consistency_errors) == 0,
+            "error_count": len(mapping_consistency_errors),
+            "errors": mapping_consistency_errors,
+        },
+        "source_register_metadata_integrity": {
+            "passed": len(source_integrity_errors) == 0,
+            "error_count": len(source_integrity_errors),
+            "errors": source_integrity_errors,
+        },
     }
 
     all_passed = all(c["passed"] for c in checks.values())
@@ -553,6 +597,7 @@ def validate_regulatory_library(
             "approved_mappings_count": len(approved_mappings),
         },
         "checks": checks,
+        "content_assurance_diagnostics": content_assurance_diagnostics,
     }
 
 
@@ -822,4 +867,245 @@ def run_synthetic_evaluation_suite(
         "all_passed": all(s["passed"] for s in scenarios.values()),
         "scenario_count": len(scenarios),
         "scenarios": scenarios,
+    }
+
+
+def _check_pack_catalogue_parity(
+    *,
+    pack_supplied: bool,
+    source_register_supplied: bool,
+    control_library_supplied: bool,
+    mapping_catalogue_supplied: bool,
+    active_pack: Any,
+) -> List[str]:
+    """Verify pack, package data files, and repo-root deliverables stay aligned."""
+    from pathlib import Path
+
+    from .catalog import load_atomic_obligation_catalogue, load_source_register
+
+    errors: List[str] = []
+    if pack_supplied or source_register_supplied or control_library_supplied or mapping_catalogue_supplied:
+        return errors
+
+    data_dir = Path(__file__).resolve().parent / "data"
+    repo_root = Path(__file__).resolve().parents[2]
+
+    catalogue_obligations = load_atomic_obligation_catalogue()
+    pack_dumps = {
+        ob.obligation_id: ob.model_dump(mode="json") for ob in active_pack.obligations
+    }
+    cat_dumps = {
+        ob.obligation_id: ob.model_dump(mode="json") for ob in catalogue_obligations
+    }
+    if list(pack_dumps.keys()) != list(cat_dumps.keys()):
+        errors.append(
+            "regulatory_pack.v0.1.json obligation IDs differ from atomic_obligation_catalogue.json"
+        )
+    else:
+        for ob_id, payload in pack_dumps.items():
+            if payload != cat_dumps[ob_id]:
+                errors.append(
+                    f"Obligation {ob_id} differs between regulatory_pack.v0.1.json and atomic_obligation_catalogue.json"
+                )
+
+    csv_sources = load_source_register()
+    if [s.source_id for s in csv_sources] != [s.source_id for s in active_pack.sources]:
+        errors.append(
+            "regulatory_source_register.csv source_ids differ from regulatory_pack.v0.1.json sources"
+        )
+
+    parity_pairs = [
+        ("REGULATORY_SOURCE_REGISTER.csv", "regulatory_source_register.csv"),
+        ("ATOMIC_OBLIGATION_CATALOGUE.json", "atomic_obligation_catalogue.json"),
+        ("UNIFIED_CONTROL_LIBRARY.json", "unified_control_library.json"),
+        ("OBLIGATION_CONTROL_MAPPINGS.json", "obligation_control_mappings.json"),
+    ]
+    for root_name, data_name in parity_pairs:
+        root_file = repo_root / root_name
+        data_file = data_dir / data_name
+        if not root_file.exists():
+            errors.append(f"Missing root deliverable parity file: {root_name}")
+            continue
+        if not data_file.exists():
+            errors.append(f"Missing package data file: {data_name}")
+            continue
+        if root_file.read_text(encoding="utf-8") != data_file.read_text(encoding="utf-8"):
+            errors.append(
+                f"Root file {root_name} has drifted from backend/banking_crosswalk/data/{data_name}"
+            )
+    return errors
+
+
+def _check_mapping_facet_and_relationship_consistency(
+    *,
+    active_mappings: Any,
+    obligations: List[Any],
+    active_controls: Any,
+) -> List[str]:
+    """Verify mapping facet partitioning, enum validity, and full-relationship invariants."""
+    errors: List[str] = []
+    obligations_by_id = {ob.obligation_id: ob for ob in obligations}
+    controls_by_id = {ctrl.control_id: ctrl for ctrl in active_controls.controls}
+    valid_rels = set(MappingRelationship)
+
+    for mapping in active_mappings.mappings:
+        if mapping.mapping_relationship not in valid_rels:
+            errors.append(
+                f"Mapping {mapping.mapping_id} has invalid mapping_relationship '{mapping.mapping_relationship}'"
+            )
+            continue
+
+        mapped_set = set(mapping.mapped_facets)
+        unmapped_set = set(mapping.unmapped_obligation_facets)
+        overlap = mapped_set & unmapped_set
+        if overlap:
+            errors.append(
+                f"Mapping {mapping.mapping_id} lists facets in both mapped and unmapped sets: {sorted(overlap)}"
+            )
+
+        if len(mapping.mapped_facets) != len(mapped_set):
+            errors.append(
+                f"Mapping {mapping.mapping_id} contains duplicate entries in mapped_facets"
+            )
+
+        target_ob = obligations_by_id.get(mapping.obligation_id)
+        if target_ob is not None:
+            ob_facets = set(target_ob.coverage_facets)
+            if (mapped_set | unmapped_set) != ob_facets:
+                errors.append(
+                    f"Mapping {mapping.mapping_id} mapped+unmapped facets do not partition {mapping.obligation_id}.coverage_facets"
+                )
+            if mapping.mapping_relationship is MappingRelationship.FULL:
+                if mapping.unmapped_obligation_facets:
+                    errors.append(
+                        f"Mapping {mapping.mapping_id} is marked 'full' but retains unmapped facets: {mapping.unmapped_obligation_facets}"
+                    )
+                if mapped_set != ob_facets:
+                    errors.append(
+                        f"Mapping {mapping.mapping_id} is marked 'full' without covering all {mapping.obligation_id} facets"
+                    )
+
+        target_ctrl = controls_by_id.get(mapping.control_id)
+        if target_ctrl is not None and mapping.mapping_id.startswith("MAP-PRIMARY-"):
+            ctrl_facets = set(target_ctrl.control_facets)
+            missing_from_ctrl = mapped_set - ctrl_facets
+            if missing_from_ctrl:
+                errors.append(
+                    f"Primary mapping {mapping.mapping_id} references facets missing on control {mapping.control_id}: {sorted(missing_from_ctrl)}"
+                )
+
+    return errors
+
+
+def _check_source_register_integrity(sources: List[Any]) -> List[str]:
+    """Verify source register URLs, versions, effective dates, and authority classifications."""
+    from .models import AUTHORITY_TO_LEGAL_CLASSIFICATION
+
+    errors: List[str] = []
+    seen_ids = set()
+    for src in sources:
+        if src.source_id in seen_ids:
+            errors.append(f"Duplicate source_id '{src.source_id}' in source register")
+        seen_ids.add(src.source_id)
+
+        if not str(src.source_url).startswith("https://"):
+            errors.append(
+                f"Source {src.source_id} must use an official https:// URL (found '{src.source_url}')"
+            )
+        if not str(src.version).strip():
+            errors.append(f"Source {src.source_id} is missing version metadata")
+        if not str(src.jurisdiction).strip():
+            errors.append(f"Source {src.source_id} is missing jurisdiction")
+        if src.effective_from is None:
+            errors.append(f"Source {src.source_id} is missing effective_from date")
+        if src.legal_authority_type is not None:
+            expected_type = AUTHORITY_TO_LEGAL_CLASSIFICATION[src.authority]
+            if src.legal_authority_type != expected_type:
+                errors.append(
+                    f"Source {src.source_id} authority '{src.authority.value}' conflicts with legal_authority_type '{src.legal_authority_type.value}'"
+                )
+    return errors
+
+
+def _collect_content_assurance_diagnostics(
+    *,
+    active_pack: Any,
+    obligations: List[Any],
+    active_controls: Any,
+    active_mappings: Any,
+) -> Dict[str, Any]:
+    """Collect non-failing E4 audit advisories distinguishing verified structure from legal review risks."""
+    from collections import Counter, defaultdict
+
+    pair_counts = Counter(
+        (m.obligation_id, m.control_id) for m in active_mappings.mappings
+    )
+    duplicate_pairs = [
+        {"obligation_id": ob_id, "control_id": ctrl_id, "count": count}
+        for (ob_id, ctrl_id), count in sorted(pair_counts.items())
+        if count > 1
+    ]
+
+    ctrl_links: Dict[str, List[Dict[str, str]]] = defaultdict(list)
+    for m in active_mappings.mappings:
+        ctrl_links[m.control_id].append(
+            {
+                "mapping_id": m.mapping_id,
+                "obligation_id": m.obligation_id,
+                "relationship": m.mapping_relationship.value,
+                "authority": m.authority.value,
+            }
+        )
+
+    shared_controls = {
+        ctrl_id: items
+        for ctrl_id, items in sorted(ctrl_links.items())
+        if len(items) >= 2
+    }
+
+    broad_full_mappings: List[Dict[str, Any]] = []
+    for m in active_mappings.mappings:
+        if m.mapping_relationship is MappingRelationship.FULL:
+            distinct_obs = {item["obligation_id"] for item in ctrl_links[m.control_id]}
+            if m.authority is Authority.GUIDANCE or len(distinct_obs) >= 3:
+                broad_full_mappings.append(
+                    {
+                        "mapping_id": m.mapping_id,
+                        "obligation_id": m.obligation_id,
+                        "control_id": m.control_id,
+                        "authority": m.authority.value,
+                        "shared_by_distinct_obligations": len(distinct_obs),
+                    }
+                )
+
+    non_equivalent_with_mapped_facets = [
+        {
+            "mapping_id": m.mapping_id,
+            "obligation_id": m.obligation_id,
+            "control_id": m.control_id,
+            "mapped_facets": m.mapped_facets,
+        }
+        for m in active_mappings.mappings
+        if m.mapping_relationship is MappingRelationship.NON_EQUIVALENT and m.mapped_facets
+    ]
+
+    proprietary_unavailable_sources = [
+        s.source_id
+        for s in active_pack.sources
+        if "PROPRIETARY" in str(s.source_sha256).upper()
+    ]
+    url_referenced_only_sources = [
+        s.source_id
+        for s in active_pack.sources
+        if str(s.source_sha256) == "NOT_DOWNLOADED_URL_REFERENCED"
+    ]
+
+    return {
+        "duplicate_obligation_control_pairs": duplicate_pairs,
+        "shared_controls": shared_controls,
+        "broad_or_guidance_full_mappings": broad_full_mappings,
+        "non_equivalent_with_mapped_facets": non_equivalent_with_mapped_facets,
+        "proprietary_unavailable_sources": proprietary_unavailable_sources,
+        "url_referenced_only_sources": url_referenced_only_sources,
+        "human_legal_review_required": True,
     }
