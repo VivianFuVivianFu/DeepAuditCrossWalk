@@ -283,4 +283,56 @@ describe("private document-first workspace gateway (/api/workspace)", () => {
     expect(res.status).toBe(413);
     expect(fetcher).not.toHaveBeenCalled();
   });
+
+  it("forwards explicit effective_baseline_id/sha256/as_of_date in enterprise_enhanced mode and blocks in regulatory_only", async () => {
+    const fetcher = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          assessment_id: "ASSESS-1",
+          assessment_basis: "effective_assessment_baseline",
+        }),
+        { status: 201 }
+      )
+    );
+    vi.stubGlobal("fetch", fetcher);
+    const headers = buildAuthenticatedHeaders();
+
+    const blockedRegOnly = await POST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          action: "assess_coverage",
+          questionnaire_id: "QBANK-REAL123",
+          assessment_mode: "regulatory_only",
+          effective_baseline_id: "EBL-1234567890ABCDEF",
+        }),
+      })
+    );
+    expect(blockedRegOnly.status).toBe(400);
+    expect(fetcher).not.toHaveBeenCalled();
+
+    const okRes = await POST(
+      new Request("http://localhost/api/workspace", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          action: "assess_coverage",
+          questionnaire_id: "QBANK-REAL123",
+          assessment_mode: "enterprise_enhanced",
+          enterprise_baseline_id: "BL-123",
+          effective_baseline_id: "EBL-1234567890ABCDEF",
+          effective_baseline_sha256: "a".repeat(64),
+          as_of_date: "2026-11-02",
+        }),
+      })
+    );
+    expect(okRes.status).toBe(200);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    const [, init] = fetcher.mock.calls[0];
+    const forwarded = JSON.parse(init.body);
+    expect(forwarded.effective_baseline_id).toBe("EBL-1234567890ABCDEF");
+    expect(forwarded.effective_baseline_sha256).toBe("a".repeat(64));
+    expect(forwarded.as_of_date).toBe("2026-11-02");
+  });
 });

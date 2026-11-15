@@ -543,6 +543,16 @@ class CoverageAssessment(BaseModel):
     tenant_id: str
     created_at: datetime = Field(default_factory=utc_now)
     assessment_mode: Literal["regulatory_only", "enterprise_enhanced", "provisional"] = "regulatory_only"
+    assessment_basis: Literal[
+        "regulatory_pack_only",
+        "regulatory_pack_plus_enterprise_baseline",
+        "effective_assessment_baseline",
+    ] = "regulatory_pack_only"
+    effective_baseline_binding_mode: Literal[
+        "not_bound",
+        "explicit_validated_effective_baseline",
+        "reference_only_unbound",
+    ] = "not_bound"
     assessment_target_type: Literal["questionnaire", "strategy", "use_case"] = "questionnaire"
     questionnaire_id: str
     questionnaire_sha256: str
@@ -560,6 +570,9 @@ class CoverageAssessment(BaseModel):
     enterprise_baseline_revision: Optional[int] = None
     effective_baseline_id: Optional[str] = None
     effective_baseline_sha256: Optional[str] = None
+    reconciled_equivalence_group_ids: List[str] = Field(default_factory=list)
+    unresolved_reconciliation_ids: List[str] = Field(default_factory=list)
+    reconciliation_conflict_gaps: List["GapRecord"] = Field(default_factory=list)
     enterprise_gaps: List["GapRecord"] = Field(default_factory=list)
     enterprise_clause_coverage: List["EnterpriseClauseCoverage"] = Field(default_factory=list)
     applicable_obligation_ids: List[str] = Field(default_factory=list)
@@ -756,7 +769,14 @@ class GapRecord(BaseModel):
     closure_scope_rechecked: bool = False
     closure_approved: bool = False
     closure_evidence_artifact_ids: List[str] = Field(default_factory=list)
-    source_type: Optional[Literal["regulatory", "enterprise_policy", "internal_conflict"]] = None
+    source_type: Optional[
+        Literal[
+            "regulatory",
+            "enterprise_policy",
+            "internal_conflict",
+            "reconciliation_conflict",
+        ]
+    ] = None
     closure_retest_record_id: Optional[str] = None
     required_threshold: Optional[float] = None
     use_case_threshold: Optional[float] = None
@@ -994,6 +1014,7 @@ class EffectiveAssessmentBaseline(BaseModel):
     enterprise_baseline_sha256: Optional[str] = None
     use_case_id: Optional[str] = None
     use_case_name: Optional[str] = None
+    use_case_snapshot: Dict[str, Any] = Field(default_factory=dict)
     applicability_summary: Dict[str, Any] = Field(default_factory=dict)
     applicable_external_obligation_ids: List[str] = Field(default_factory=list)
     included_enterprise_clause_ids: List[str] = Field(default_factory=list)

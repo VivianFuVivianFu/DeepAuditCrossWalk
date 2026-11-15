@@ -504,6 +504,9 @@ class CoverageAssessmentRequest(BaseModel):
     ] = None
     enterprise_baseline_id: Optional[str] = None
     enterprise_baseline_version: Optional[str] = None
+    effective_baseline_id: Optional[str] = None
+    effective_baseline_sha256: Optional[str] = None
+    as_of_date: Optional[str] = None
     persist: bool = True
 
     @model_validator(mode="after")
@@ -844,6 +847,7 @@ def create_coverage_assessment(
         or req.questionnaire_id
         or req.routing_snapshot_id
         or req.enterprise_baseline_id
+        or req.effective_baseline_id
     ):
         _reject_public_demo_tenant(x_tenant_id)
         _require_crosswalk_state()
@@ -915,6 +919,11 @@ def create_coverage_assessment(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="enterprise_baseline_version cannot be provided when assessment_mode is 'regulatory_only'",
+            )
+        if req.effective_baseline_id or req.effective_baseline_sha256:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="effective_baseline_id cannot be provided when assessment_mode is 'regulatory_only'",
             )
         enterprise_baseline = None
         enterprise_clauses = []
@@ -1008,29 +1017,60 @@ def create_coverage_assessment(
             detail=f"Unsupported assessment mode '{mode}'",
         )
 
-    assessment = evaluate_questionnaire_coverage(
-        tenant_id=x_tenant_id,
-        use_case=use_case,
-        question_bank=question_bank,
-        regulatory_pack=regulatory_pack,
-        review_mappings=mappings,
-        enterprise_baseline=enterprise_baseline,
-        enterprise_clauses=enterprise_clauses,
-        assessment_mode=mode,
-        assessment_target_type=target_type,
-    )
-    if enterprise_baseline is not None:
-        eff_baselines = store.list_effective_baselines(
-            x_tenant_id, baseline_id=enterprise_baseline.baseline_id
-        )
-        if eff_baselines:
-            latest_eff = eff_baselines[-1]
-            assessment = assessment.model_copy(
-                update={
-                    "effective_baseline_id": latest_eff.effective_baseline_id,
-                    "effective_baseline_sha256": latest_eff.effective_baseline_sha256,
-                }
+    effective_baseline = None
+    reconciliation_decisions = None
+    enterprise_policies = None
+
+    if req.effective_baseline_id:
+        try:
+            effective_baseline = store.get_effective_baseline(
+                x_tenant_id, req.effective_baseline_id
             )
+        except NotFoundError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Effective baseline '{req.effective_baseline_id}' not found for this tenant",
+            ) from exc
+
+        if enterprise_baseline is not None:
+            reconciliation_decisions = store.list_reconciliation_decisions(
+                x_tenant_id, baseline_id=enterprise_baseline.baseline_id
+            )
+            enterprise_policies = []
+            for pid in enterprise_baseline.policy_ids:
+                try:
+                    enterprise_policies.append(
+                        store.get_enterprise_policy(x_tenant_id, pid)
+                    )
+                except NotFoundError:
+                    pass
+
+    try:
+        assessment = evaluate_questionnaire_coverage(
+            tenant_id=x_tenant_id,
+            use_case=use_case,
+            question_bank=question_bank,
+            regulatory_pack=regulatory_pack,
+            review_mappings=mappings,
+            enterprise_baseline=enterprise_baseline,
+            enterprise_clauses=enterprise_clauses,
+            effective_baseline=effective_baseline,
+            reconciliation_decisions=reconciliation_decisions,
+            enterprise_policies=enterprise_policies,
+            expected_effective_baseline_sha256=req.effective_baseline_sha256,
+            as_of_date=req.as_of_date,
+            assessment_mode=mode,
+            assessment_target_type=target_type,
+        )
+    except ValueError as exc:
+        err_msg = str(exc)
+        err_code = (
+            status.HTTP_422_UNPROCESSABLE_ENTITY
+            if "integrity error" in err_msg.lower()
+            else status.HTTP_409_CONFLICT
+        )
+        raise HTTPException(status_code=err_code, detail=err_msg) from exc
+
     if req.persist:
         store.save_assessment(x_tenant_id, assessment)
     return assessment

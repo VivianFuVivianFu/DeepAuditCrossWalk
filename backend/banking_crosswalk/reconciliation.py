@@ -367,6 +367,75 @@ def _expand_control_ids(control_ids: Iterable[str]) -> Set[str]:
     return expanded
 
 
+ENTERPRISE_GENERIC_FACETS: Set[str] = {
+    "human_approval_required",
+    "approval_threshold_defined",
+    "pre_execution_block",
+    "zero_data_retention",
+    "prompt_logging",
+    "data_sovereignty",
+    "bias_testing",
+    "model_inventory",
+}
+
+GENERIC_TO_CANONICAL_FACET_BRIDGES: Dict[str, Tuple[str, ...]] = {
+    "human_approval_required": (
+        "human_oversight_and_override_defined",
+        "human_oversight_for_high_risk",
+    ),
+    "pre_execution_block": (
+        "adverse_impact_intervention_mechanism",
+        "human_oversight_and_override_defined",
+    ),
+    "zero_data_retention": (
+        "destruction_or_deidentification_verified",
+        "retention_schedule_applied",
+    ),
+    "data_sovereignty": (
+        "overseas_recipients_and_regions_mapped",
+    ),
+    "bias_testing": (
+        "bias_and_fairness_testing",
+    ),
+    "model_inventory": (
+        "ai_inventory_and_classification",
+        "ai_use_case_register_maintained",
+    ),
+}
+
+
+def _infer_canonical_obligation_facets_for_clause(
+    clause: EnterpriseClause,
+    obligation: AtomicObligation,
+) -> Set[str]:
+    """Deterministically infer canonical obligation coverage_facets from clause text and generic facets."""
+    text_lower = (clause.text or "").lower()
+    inferred: Set[str] = set()
+    ob_facets = set(obligation.coverage_facets or [])
+
+    # 1. Direct intersection
+    for f in clause.control_facets or []:
+        if f in ob_facets:
+            inferred.add(f)
+        for bridged in GENERIC_TO_CANONICAL_FACET_BRIDGES.get(f, ()):
+            if bridged in ob_facets:
+                inferred.add(bridged)
+
+    # 2. Obligation facet_keywords phrase matching
+    facet_kw_map = obligation.facet_keywords or {}
+    for facet in obligation.coverage_facets or []:
+        keywords = facet_kw_map.get(facet, [])
+        if any(kw.lower() in text_lower for kw in keywords if kw):
+            inferred.add(facet)
+            continue
+        facet_phrase = facet.replace("_", " ").lower()
+        if facet_phrase in text_lower:
+            inferred.add(facet)
+
+    return inferred
+
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Stage B: Multi-Dimension Relationship Validation
 # ─────────────────────────────────────────────────────────────────────────────
@@ -563,13 +632,38 @@ def validate_candidate_relationship(
             candidate_facets.update(m.mapped_facets or [])
 
     ob_facets = set(obligation.coverage_facets or [])
+    has_manual_canonical_facets = any(
+        f not in ENTERPRISE_GENERIC_FACETS for f in (clause.control_facets or [])
+    )
+    inferred_lexical_facets: Set[str] = set()
+    if (
+        not (candidate_facets & ob_facets)
+        and not has_manual_canonical_facets
+        and polarity != "absence_of_control"
+        and not _is_ambiguous_clause(clause)
+    ):
+        inferred_lexical_facets = _infer_canonical_obligation_facets_for_clause(
+            clause, obligation
+        )
+        candidate_facets.update(inferred_lexical_facets)
+        if inferred_lexical_facets and not shared_controls and obligation.control_id:
+            shared_controls = [obligation.control_id]
+
     shared_facets = sorted(candidate_facets & ob_facets)
     enterprise_only_facets = sorted(candidate_facets - ob_facets)
     external_unaddressed_facets = sorted(ob_facets - candidate_facets)
 
     # Check whether the linking control mapping is approved vs only proposed
-    has_approved_control_link = bool(approved_expanded_controls & ob_controls)
-    has_only_proposed_control_link = bool(shared_controls) and not has_approved_control_link
+    has_approved_control_link = bool(approved_expanded_controls & ob_controls) or (
+        bool(inferred_lexical_facets)
+        and not non_rejected_mappings
+        and clause.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+    )
+    has_only_proposed_control_link = (
+        bool(shared_controls)
+        and not has_approved_control_link
+        and bool(proposed_mappings)
+    )
     if has_only_proposed_control_link:
         uncertainties.append(
             f"Control mapping linking clause '{clause.clause_id}' to '{obligation.control_id}' is in 'proposed' status and has not been human-approved."
@@ -1061,6 +1155,177 @@ def _match_topic_obligations_for_unmapped_or_negative_clause(
     return matches
 
 
+_RECON_STOP_WORDS: Set[str] = {
+    "about", "after", "against", "being", "does", "from", "have", "into", "must",
+    "shall", "should", "that", "their", "these", "this", "those", "through", "what",
+    "when", "where", "which", "with", "within", "system", "systems", "control",
+    "controls", "defined", "required", "relevant", "bank", "banking", "organisation",
+    "organization", "enterprise", "policy", "standard", "ensure", "all", "any",
+}
+
+
+def _lexical_tokens(text: str) -> Set[str]:
+    return {
+        tok
+        for tok in re.findall(r"[a-z0-9]+", (text or "").lower().replace("_", " "))
+        if len(tok) >= 3 and tok not in _RECON_STOP_WORDS
+    }
+
+
+def rank_reconciliation_candidates_for_clause(
+    clause: EnterpriseClause,
+    *,
+    regulatory_pack: Optional[RegulatoryPack] = None,
+    control_library: Optional[UnifiedControlLibrary] = None,
+    obligation_mappings: Optional[ObligationControlMappingCatalogue] = None,
+    use_case: Optional[BankingUseCase] = None,
+    include_non_applicable: bool = False,
+    top_k: int = 5,
+) -> List[Dict[str, Any]]:
+    """Deterministically rank candidate external obligations for an EnterpriseClause
+    without requiring a preassigned target obligation ID or manually pre-populated
+    canonical control_facets.
+
+    Supports Recall@1 and Recall@5 evaluation on raw document-extracted clauses.
+    """
+    reg_pack = regulatory_pack or load_regulatory_pack()
+    ctrl_lib = control_library or load_unified_control_library()
+    ob_map_cat = obligation_mappings or load_obligation_control_mappings()
+
+    applicable_ob_ids: Optional[Set[str]] = None
+    if use_case is not None and not include_non_applicable:
+        app_decisions = select_applicable_obligations(reg_pack.obligations, use_case)
+        applicable_ob_ids = {
+            d.obligation_id
+            for d in app_decisions
+            if d.status
+            in {
+                ApplicabilityStatus.APPLICABLE,
+                ApplicabilityStatus.CONDITIONAL,
+                ApplicabilityStatus.UNDETERMINED,
+            }
+        }
+
+    candidate_obligations = [
+        ob
+        for ob in reg_pack.obligations
+        if applicable_ob_ids is None or ob.obligation_id in applicable_ob_ids
+    ]
+
+    control_to_ob_ids: Dict[str, Set[str]] = {}
+    for ob in candidate_obligations:
+        if ob.control_id:
+            control_to_ob_ids.setdefault(ob.control_id, set()).add(ob.obligation_id)
+    for ctrl in ctrl_lib.controls:
+        for oid in ctrl.associated_obligation_ids:
+            control_to_ob_ids.setdefault(ctrl.control_id, set()).add(oid)
+    for m in ob_map_cat.mappings:
+        control_to_ob_ids.setdefault(m.control_id, set()).add(m.obligation_id)
+
+    clause_controls = _expand_control_ids(
+        m.control_id
+        for m in (clause.control_mappings or [])
+        if m.review_status != ClauseReviewStatus.REJECTED
+    )
+    control_linked_ob_ids: Set[str] = set()
+    for cid in clause_controls:
+        control_linked_ob_ids.update(control_to_ob_ids.get(cid, set()))
+
+    topic_matches = {
+        ob.obligation_id: reason
+        for ob, reason in _match_topic_obligations_for_unmapped_or_negative_clause(
+            clause, candidate_obligations
+        )
+    }
+
+    text_lower = (clause.text or "").lower()
+    clause_toks = _lexical_tokens(clause.text)
+    clause_facets = set(clause.control_facets or [])
+
+    scored_candidates: List[Dict[str, Any]] = []
+    for ob in candidate_obligations:
+        score = 0.0
+        reasons: List[str] = []
+        topic_matched = False
+
+        if ob.obligation_id in control_linked_ob_ids:
+            score += 0.36
+            reasons.append(f"Control mapping link to '{ob.control_id}'")
+
+        ob_facets = set(ob.coverage_facets or [])
+        direct_overlap = sorted(clause_facets & ob_facets)
+        if direct_overlap and ob_facets:
+            score += 0.38 * (len(direct_overlap) / len(ob_facets))
+            reasons.append(f"Direct facet overlap {direct_overlap}")
+
+        inferred_facets = sorted(_infer_canonical_obligation_facets_for_clause(clause, ob))
+        if inferred_facets and ob_facets:
+            score += 0.48 * (len(inferred_facets) / len(ob_facets))
+            reasons.append(f"Lexical facet keyword match {inferred_facets}")
+
+        if ob.obligation_id in topic_matches:
+            score += 0.34
+            topic_matched = True
+            reasons.append(topic_matches[ob.obligation_id])
+
+        # Check explicit statutory/prudential instrument or provision citation in clause text
+        instrument_cues: List[str] = []
+        if ob.obligation_id == "AU-PRIV-APP1-GOV" and ("app 1" in text_lower or "privacy policy" in text_lower):
+            instrument_cues.append("APP 1")
+        elif ob.obligation_id == "AU-PRIV-APP3-COLLECT" and ("app 3" in text_lower or "sensitive information" in text_lower):
+            instrument_cues.append("APP 3")
+        elif ob.obligation_id == "AU-PRIV-APP5-NOTICE" and ("app 5" in text_lower or "collection notice" in text_lower):
+            instrument_cues.append("APP 5")
+        elif ob.obligation_id == "AU-PRIV-APP6-USE" and ("app 6" in text_lower or "secondary purpose" in text_lower):
+            instrument_cues.append("APP 6")
+        elif ob.obligation_id == "AU-PRIV-APP8-CROSSBORDER" and ("app 8" in text_lower or "16c" in text_lower or "overseas recipient" in text_lower):
+            instrument_cues.append("APP 8 / s 16C")
+        elif ob.obligation_id == "AU-PRIV-APP11-SECURITY" and ("app 11" in text_lower or "de-identify" in text_lower):
+            instrument_cues.append("APP 11")
+        elif ob.obligation_id == "AU-PRIV-APP12-13-RIGHTS" and ("app 12" in text_lower or "app 13" in text_lower):
+            instrument_cues.append("APP 12/13")
+        elif "cps 234" in text_lower and ob.source_id == "APRA-CPS234":
+            instrument_cues.append("CPS 234")
+        elif "cps 230" in text_lower and ob.source_id == "APRA-CPS230":
+            instrument_cues.append("CPS 230")
+        elif "cps 220" in text_lower and ob.source_id == "APRA-CPS220":
+            instrument_cues.append("CPS 220")
+        elif ("rg 271" in text_lower or "internal dispute resolution" in text_lower) and ob.source_id == "ASIC-RG271":
+            instrument_cues.append("ASIC RG 271")
+        elif ("nccp" in text_lower or "s 128" in text_lower or "not unsuitable" in text_lower or "unsuitability" in text_lower) and ob.source_id == "AU-NCCP-ACT":
+            instrument_cues.append("NCCP Act")
+
+        if instrument_cues:
+            score += 0.35
+            topic_matched = True
+            reasons.append(f"Instrument/provision reference ({', '.join(instrument_cues)})")
+
+        ob_target_toks = _lexical_tokens(
+            f"{ob.title} {ob.concise_obligation_summary} {ob.control_objective or ''}"
+        )
+        if clause_toks and ob_target_toks:
+            tok_overlap = len(clause_toks & ob_target_toks) / max(len(ob_target_toks), 1)
+            if tok_overlap > 0:
+                score += min(0.28, tok_overlap * 1.1)
+                if tok_overlap >= 0.08:
+                    reasons.append(f"Token overlap ({tok_overlap:.0%})")
+
+        if score > 0.05:
+            scored_candidates.append(
+                {
+                    "obligation_id": ob.obligation_id,
+                    "obligation": ob,
+                    "score": round(min(score, 0.99), 3),
+                    "inferred_facets": inferred_facets,
+                    "topic_matched": topic_matched,
+                    "reasons": reasons or ["Lexical token similarity"],
+                }
+            )
+
+    scored_candidates.sort(key=lambda item: (-item["score"], item["obligation_id"]))
+    return scored_candidates[:top_k]
+
+
 def _detect_internal_enterprise_conflicts(
     clauses: Sequence[EnterpriseClause],
     enterprise_baseline: EnterpriseBaseline,
@@ -1341,6 +1606,31 @@ def generate_reconciliation_candidates(
             entry = matched_obligations.setdefault(ob.obligation_id, (ob, []))
             if topic_reason not in entry[1]:
                 entry[1].append(topic_reason)
+
+        # Signal 4 (Lexical Facet Keyword & Provision Inference for Raw Extracted Clauses):
+        # When a clause was extracted directly from a policy document (PDF/DOCX/TXT) without
+        # manually preassigned canonical obligation facets or control mappings, infer candidate
+        # obligations whose facet_keywords or statutory provisions match the clause text.
+        has_manual_canonical = any(
+            f not in ENTERPRISE_GENERIC_FACETS for f in (clause.control_facets or [])
+        )
+        if not matched_obligations and not has_manual_canonical and not _is_ambiguous_clause(clause):
+            ranked = rank_reconciliation_candidates_for_clause(
+                clause=clause,
+                regulatory_pack=reg_pack,
+                control_library=ctrl_lib,
+                obligation_mappings=ob_map_cat,
+                use_case=use_case,
+                include_non_applicable=include_non_applicable,
+                top_k=3,
+            )
+            for cand in ranked:
+                if cand["score"] >= 0.30 and (cand["inferred_facets"] or cand["topic_matched"]):
+                    ob_cand = cand["obligation"]
+                    entry = matched_obligations.setdefault(ob_cand.obligation_id, (ob_cand, []))
+                    for r_str in cand["reasons"]:
+                        if r_str not in entry[1]:
+                            entry[1].append(r_str)
 
         # If no external obligations matched, validate as standalone (additional or unmapped)
         if not matched_obligations:
@@ -2181,6 +2471,8 @@ def compose_effective_assessment_baseline(
         "human_confirmation_required_obligation_ids": sorted(human_confirm_ids),
     }
 
+    use_case_snapshot = uc.model_dump(mode="json", exclude={"use_case_id"})
+
     fingerprint_payload = {
         "tenant_id": tenant_id,
         "as_of_date": effective_date_str,
@@ -2190,7 +2482,7 @@ def compose_effective_assessment_baseline(
         "enterprise_baseline_version": enterprise_baseline.version if enterprise_baseline else None,
         "enterprise_baseline_revision": enterprise_baseline.revision if enterprise_baseline else None,
         "enterprise_baseline_sha256": enterprise_baseline.baseline_sha256 if enterprise_baseline else None,
-        "use_case": uc.model_dump(mode="json", exclude={"use_case_id"}),
+        "use_case": use_case_snapshot,
         "applicable_external_obligation_ids": applicable_external_ids,
         "included_enterprise_clause_ids": sorted(included_clause_ids),
         "excluded_enterprise_clause_ids": sorted(excluded_clause_ids),
@@ -2219,6 +2511,7 @@ def compose_effective_assessment_baseline(
         enterprise_baseline_sha256=enterprise_baseline.baseline_sha256 if enterprise_baseline else None,
         use_case_id=uc.use_case_id,
         use_case_name=uc.name,
+        use_case_snapshot=use_case_snapshot,
         applicability_summary=applicability_summary,
         applicable_external_obligation_ids=applicable_external_ids,
         included_enterprise_clause_ids=sorted(included_clause_ids),
@@ -2232,3 +2525,316 @@ def compose_effective_assessment_baseline(
         warnings=list(dict.fromkeys(warnings)),
         effective_baseline_sha256=effective_sha256,
     )
+
+
+APPLICABILITY_PROFILE_FIELDS: Tuple[str, ...] = (
+    "entity_type",
+    "apra_regulated",
+    "handles_personal_information",
+    "handles_sensitive_information",
+    "cross_border_disclosure",
+    "makes_or_assists_significant_decisions",
+    "handles_regulated_complaints",
+    "idr_obligations",
+    "afs_licensee",
+    "credit_licensee_or_credit_activity",
+    "assists_consumer_credit_decision",
+    "third_party_ai_service",
+    "supports_critical_operation",
+    "material_service_provider",
+    "eu_establishment_or_market",
+    "eu_output_used",
+    "eu_deployer_or_provider_role",
+    "eu_operator_role",
+    "nist_ai_rmf_adopted",
+    "au_ai_guidance_adopted",
+    "iso_42001_adopted",
+    "iso_23894_adopted",
+    "iso_27001_adopted",
+    "enterprise_controls_enabled",
+    "assessment_scope",
+)
+
+
+def verify_effective_baseline_integrity(
+    effective_baseline: EffectiveAssessmentBaseline,
+    fallback_use_case: Optional[BankingUseCase] = None,
+) -> bool:
+    """Verify the cryptographic SHA-256 fingerprint of an EffectiveAssessmentBaseline."""
+    if not effective_baseline.effective_baseline_sha256:
+        return False
+
+    uc_payload = effective_baseline.use_case_snapshot
+    if not uc_payload and fallback_use_case is not None:
+        uc_payload = fallback_use_case.model_dump(mode="json", exclude={"use_case_id"})
+    if not uc_payload:
+        uc_payload = BankingUseCase.enterprise_baseline().model_dump(
+            mode="json", exclude={"use_case_id"}
+        )
+
+    fingerprint_payload = {
+        "tenant_id": effective_baseline.tenant_id,
+        "as_of_date": effective_baseline.as_of_date,
+        "regulatory_pack_id": effective_baseline.regulatory_pack_id,
+        "regulatory_pack_version": effective_baseline.regulatory_pack_version,
+        "enterprise_baseline_id": effective_baseline.enterprise_baseline_id,
+        "enterprise_baseline_version": effective_baseline.enterprise_baseline_version,
+        "enterprise_baseline_revision": effective_baseline.enterprise_baseline_revision,
+        "enterprise_baseline_sha256": effective_baseline.enterprise_baseline_sha256,
+        "use_case": uc_payload,
+        "applicable_external_obligation_ids": list(
+            effective_baseline.applicable_external_obligation_ids
+        ),
+        "included_enterprise_clause_ids": sorted(
+            effective_baseline.included_enterprise_clause_ids
+        ),
+        "excluded_enterprise_clause_ids": sorted(
+            effective_baseline.excluded_enterprise_clause_ids
+        ),
+        "approved_reconciliation_ids": sorted(
+            effective_baseline.approved_reconciliation_ids
+        ),
+        "stale_reconciliation_ids": sorted(
+            effective_baseline.stale_reconciliation_ids
+        ),
+        "requirements": [
+            r.model_dump(mode="json") for r in effective_baseline.requirements
+        ],
+        "presentation_groups": [
+            g.model_dump(mode="json") for g in effective_baseline.presentation_groups
+        ],
+        "unresolved_items": [
+            u.model_dump(mode="json") for u in effective_baseline.unresolved_items
+        ],
+        "potential_conflicts": [
+            c.model_dump(mode="json") for c in effective_baseline.potential_conflicts
+        ],
+    }
+    canonical_bytes = json.dumps(
+        fingerprint_payload, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    expected_sha = hashlib.sha256(canonical_bytes).hexdigest()
+    return expected_sha == effective_baseline.effective_baseline_sha256
+
+
+def validate_effective_baseline_for_assessment(
+    *,
+    effective_baseline: EffectiveAssessmentBaseline,
+    tenant_id: str,
+    use_case: BankingUseCase,
+    regulatory_pack: RegulatoryPack,
+    enterprise_baseline: Optional[EnterpriseBaseline] = None,
+    reconciliation_decisions: Optional[Sequence[ReconciliationDecision]] = None,
+    policies: Optional[Sequence[EnterprisePolicy]] = None,
+    expected_effective_baseline_sha256: Optional[str] = None,
+    as_of_date: Optional[str] = None,
+) -> None:
+    """Deterministically validate all 8 required binding properties before attaching
+    or evaluating an EffectiveAssessmentBaseline in a CoverageAssessment.
+
+    Raises ValueError with an explicit audit reason if any property does not match
+    or if any underlying reconciliation decision is stale or out of sync.
+    """
+    # 1. Tenant ID
+    if effective_baseline.tenant_id != tenant_id:
+        raise ValueError(
+            f"Effective baseline tenant mismatch: effective baseline belongs to '{effective_baseline.tenant_id}', "
+            f"assessment tenant is '{tenant_id}'."
+        )
+
+    # 2. Enterprise Baseline ID
+    if enterprise_baseline is not None:
+        if effective_baseline.enterprise_baseline_id != enterprise_baseline.baseline_id:
+            raise ValueError(
+                f"Effective baseline enterprise_baseline_id mismatch: effective baseline was composed for "
+                f"'{effective_baseline.enterprise_baseline_id}', but assessment selected '{enterprise_baseline.baseline_id}'."
+            )
+    elif effective_baseline.enterprise_baseline_id is not None:
+        raise ValueError(
+            f"Effective baseline '{effective_baseline.effective_baseline_id}' requires enterprise_baseline_id "
+            f"'{effective_baseline.enterprise_baseline_id}', which was not provided for this assessment."
+        )
+
+    # 3. Enterprise Baseline Version & Revision
+    if enterprise_baseline is not None:
+        if effective_baseline.enterprise_baseline_version != enterprise_baseline.version:
+            raise ValueError(
+                f"Effective baseline enterprise_baseline_version mismatch: effective baseline has version "
+                f"'{effective_baseline.enterprise_baseline_version}', but selected enterprise baseline has version '{enterprise_baseline.version}'."
+            )
+        if effective_baseline.enterprise_baseline_revision != enterprise_baseline.revision:
+            raise ValueError(
+                f"Effective baseline enterprise_baseline_revision mismatch: effective baseline has revision "
+                f"{effective_baseline.enterprise_baseline_revision}, but selected enterprise baseline has revision {enterprise_baseline.revision}."
+            )
+
+    # 4. SHA-256 Fingerprints (Enterprise Baseline + Effective Baseline Integrity + Caller Pin)
+    if enterprise_baseline is not None:
+        if (
+            effective_baseline.enterprise_baseline_sha256
+            and enterprise_baseline.baseline_sha256
+            and effective_baseline.enterprise_baseline_sha256
+            != enterprise_baseline.baseline_sha256
+        ):
+            raise ValueError(
+                "Effective baseline enterprise_baseline_sha256 mismatch: underlying enterprise baseline fingerprint changed."
+            )
+    if (
+        expected_effective_baseline_sha256
+        and effective_baseline.effective_baseline_sha256
+        != expected_effective_baseline_sha256
+    ):
+        raise ValueError(
+            f"Effective baseline SHA-256 mismatch: expected '{expected_effective_baseline_sha256}', "
+            f"found '{effective_baseline.effective_baseline_sha256}'."
+        )
+    if not verify_effective_baseline_integrity(
+        effective_baseline, fallback_use_case=use_case
+    ):
+        raise ValueError(
+            f"Effective baseline integrity error: cryptographic SHA-256 fingerprint verification failed for "
+            f"'{effective_baseline.effective_baseline_id}'."
+        )
+
+    # 5. Regulatory Pack ID & Version
+    if effective_baseline.regulatory_pack_id != regulatory_pack.pack_id:
+        raise ValueError(
+            f"Effective baseline regulatory_pack_id mismatch: effective baseline uses '{effective_baseline.regulatory_pack_id}', "
+            f"active regulatory pack is '{regulatory_pack.pack_id}'."
+        )
+    if effective_baseline.regulatory_pack_version != regulatory_pack.version:
+        raise ValueError(
+            f"Effective baseline regulatory_pack_version mismatch: effective baseline was composed against "
+            f"regulatory pack version '{effective_baseline.regulatory_pack_version}', active version is '{regulatory_pack.version}'."
+        )
+
+    # 6. Applicability Context (use_case profile + applicable external obligations)
+    if (
+        effective_baseline.use_case_id
+        and use_case.use_case_id
+        and effective_baseline.use_case_id != use_case.use_case_id
+    ):
+        raise ValueError(
+            f"Effective baseline use_case_id mismatch: effective baseline was composed for use_case_id "
+            f"'{effective_baseline.use_case_id}', assessment use_case_id is '{use_case.use_case_id}'."
+        )
+
+    if effective_baseline.use_case_snapshot:
+        current_uc_dump = use_case.model_dump(mode="json", exclude={"use_case_id"})
+        mismatched_fields: List[str] = []
+        for field_name in APPLICABILITY_PROFILE_FIELDS:
+            if field_name in effective_baseline.use_case_snapshot:
+                snap_val = effective_baseline.use_case_snapshot.get(field_name)
+                curr_val = current_uc_dump.get(field_name)
+                if snap_val != curr_val:
+                    mismatched_fields.append(
+                        f"{field_name} (effective_baseline={snap_val!r}, assessment={curr_val!r})"
+                    )
+        if mismatched_fields:
+            raise ValueError(
+                "Effective baseline applicability context mismatch: use_case applicability profile differs on "
+                + ", ".join(mismatched_fields)
+                + "."
+            )
+
+    app_decisions = select_applicable_obligations(regulatory_pack.obligations, use_case)
+    app_by_id = {d.obligation_id: d for d in app_decisions}
+    expected_applicable_ids: List[str] = []
+    expected_non_applicable_ids: List[str] = []
+    expected_human_confirm_ids: List[str] = []
+    for ob in regulatory_pack.obligations:
+        d = app_by_id.get(ob.obligation_id)
+        if d is None or d.status == ApplicabilityStatus.NOT_APPLICABLE:
+            expected_non_applicable_ids.append(ob.obligation_id)
+            continue
+        if d.status in {ApplicabilityStatus.CONDITIONAL, ApplicabilityStatus.UNDETERMINED}:
+            expected_human_confirm_ids.append(ob.obligation_id)
+        expected_applicable_ids.append(ob.obligation_id)
+
+    if list(effective_baseline.applicable_external_obligation_ids) != expected_applicable_ids:
+        raise ValueError(
+            "Effective baseline applicability context mismatch: applicable_external_obligation_ids in "
+            f"'{effective_baseline.effective_baseline_id}' do not match the applicable obligations for the assessment use_case."
+        )
+
+    expected_app_summary = {
+        "applicable_count": len(expected_applicable_ids),
+        "non_applicable_count": len(expected_non_applicable_ids),
+        "human_confirmation_required_count": len(expected_human_confirm_ids),
+        "non_applicable_obligation_ids": sorted(expected_non_applicable_ids),
+        "human_confirmation_required_obligation_ids": sorted(expected_human_confirm_ids),
+    }
+    if (
+        effective_baseline.applicability_summary
+        and effective_baseline.applicability_summary != expected_app_summary
+    ):
+        raise ValueError(
+            "Effective baseline applicability_summary mismatch for the assessment use_case."
+        )
+
+    # 7. Assessment Date (as_of_date)
+    if as_of_date is not None and str(effective_baseline.as_of_date) != str(as_of_date):
+        raise ValueError(
+            f"Effective baseline as_of_date mismatch: effective baseline was composed for as_of_date "
+            f"'{effective_baseline.as_of_date}', assessment requested as_of_date '{as_of_date}'."
+        )
+
+    # 8. Reconciliation Decisions & Staleness / Review Status
+    if effective_baseline.stale_reconciliation_ids:
+        raise ValueError(
+            f"Effective baseline '{effective_baseline.effective_baseline_id}' contains stale reconciliation decisions "
+            f"({effective_baseline.stale_reconciliation_ids}) and cannot be bound to an assessment."
+        )
+
+    if reconciliation_decisions is not None and enterprise_baseline is not None:
+        evaluated_decisions = [
+            evaluate_reconciliation_staleness(
+                d,
+                enterprise_baseline=enterprise_baseline,
+                regulatory_pack=regulatory_pack,
+                policies=policies,
+            )
+            for d in reconciliation_decisions
+            if d.tenant_id == tenant_id
+            and d.enterprise_baseline_id == enterprise_baseline.baseline_id
+        ]
+        stale_now = [d.reconciliation_id for d in evaluated_decisions if d.is_stale]
+        if stale_now:
+            raise ValueError(
+                f"Effective baseline '{effective_baseline.effective_baseline_id}' is stale because reconciliation "
+                f"decisions {sorted(stale_now)} have become stale since composition."
+            )
+
+        by_rec_id = {d.reconciliation_id: d for d in evaluated_decisions}
+        for app_id in effective_baseline.approved_reconciliation_ids:
+            curr_dec = by_rec_id.get(app_id)
+            if curr_dec is None:
+                raise ValueError(
+                    f"Effective baseline references approved reconciliation '{app_id}' which no longer exists for baseline '{enterprise_baseline.baseline_id}'."
+                )
+            if curr_dec.decision_status != ReconciliationDecisionStatus.APPROVED:
+                raise ValueError(
+                    f"Effective baseline is out of sync with reconciliation review state: reconciliation '{app_id}' "
+                    f"now has decision_status='{curr_dec.decision_status.value}' instead of 'approved'."
+                )
+
+        current_approved_ids = sorted(
+            d.reconciliation_id
+            for d in evaluated_decisions
+            if d.decision_status == ReconciliationDecisionStatus.APPROVED
+            and not d.is_stale
+            and (
+                (d.approved_relationship or d.validated_relationship)
+                not in {
+                    ReconciliationRelationship.POTENTIAL_CONFLICT,
+                    ReconciliationRelationship.WEAKER_OR_POTENTIALLY_INSUFFICIENT,
+                }
+            )
+        )
+        if sorted(effective_baseline.approved_reconciliation_ids) != current_approved_ids:
+            raise ValueError(
+                f"Effective baseline '{effective_baseline.effective_baseline_id}' is stale relative to current "
+                f"approved reconciliation decisions (baseline has {sorted(effective_baseline.approved_reconciliation_ids)}, "
+                f"current store has {current_approved_ids}). Re-compose the Effective Assessment Baseline."
+            )
+
