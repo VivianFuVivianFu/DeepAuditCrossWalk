@@ -56,6 +56,17 @@ from .reconciliation import (
     generate_reconciliation_candidates,
     review_reconciliation_decision,
 )
+from .llm import (
+    ConfidentialityPolicyError,
+    DataClassification,
+    LLMProviderKind,
+    LLMRuntimeConfig,
+    ProviderConfigurationError,
+    SemanticMatchingMode,
+    check_gemini_model_lifecycle,
+    scrub_secrets,
+)
+from .semantic_reconciliation import generate_hybrid_reconciliation_candidates
 from .store import ConflictError, NotFoundError, store
 
 
@@ -1707,6 +1718,9 @@ class ReconcileBaselineRequest(BaseModel):
     use_case: Optional[BankingUseCase] = None
     include_non_applicable: bool = False
     force_regenerate: bool = False
+    matching_mode: Optional[
+        Literal["deterministic_only", "embedding_only", "hybrid"]
+    ] = None
 
 
 class ReconciliationReviewRequest(BaseModel):
@@ -1779,14 +1793,61 @@ def reconcile_enterprise_baseline_endpoint(
         except NotFoundError as exc:
             raise _not_found(exc) from exc
 
-    candidates = generate_reconciliation_candidates(
-        tenant_id=x_tenant_id,
-        enterprise_baseline=baseline,
-        regulatory_pack=regulatory_pack,
-        policies=policies,
-        use_case=use_case,
-        include_non_applicable=body.include_non_applicable,
-    )
+    llm_cfg = LLMRuntimeConfig.from_env()
+    if body.matching_mode == "deterministic_only":
+        llm_cfg = llm_cfg.model_copy(
+            update={
+                "semantic_matching_enabled": False,
+                "matching_mode": SemanticMatchingMode.DISABLED,
+            }
+        )
+    elif body.matching_mode in {"embedding_only", "hybrid"}:
+        if not llm_cfg.semantic_matching_enabled:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail=(
+                    "Semantic matching is disabled by server configuration. "
+                    "Set SEMANTIC_MATCHING_ENABLED=true with server-side credentials or use deterministic_only."
+                ),
+            )
+        target_mode = (
+            SemanticMatchingMode.EMBEDDING_ONLY
+            if body.matching_mode == "embedding_only"
+            else SemanticMatchingMode.HYBRID
+        )
+        llm_cfg = llm_cfg.model_copy(update={"matching_mode": target_mode})
+
+    try:
+        if llm_cfg.semantic_matching_enabled and llm_cfg.matching_mode != SemanticMatchingMode.DISABLED:
+            candidates, _meta = generate_hybrid_reconciliation_candidates(
+                tenant_id=x_tenant_id,
+                enterprise_baseline=baseline,
+                regulatory_pack=regulatory_pack,
+                policies=policies,
+                use_case=use_case,
+                include_non_applicable=body.include_non_applicable,
+                config=llm_cfg,
+                data_classification=DataClassification.CONFIDENTIAL_ENTERPRISE,
+            )
+        else:
+            candidates = generate_reconciliation_candidates(
+                tenant_id=x_tenant_id,
+                enterprise_baseline=baseline,
+                regulatory_pack=regulatory_pack,
+                policies=policies,
+                use_case=use_case,
+                include_non_applicable=body.include_non_applicable,
+            )
+    except ConfidentialityPolicyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=scrub_secrets(str(exc)),
+        ) from exc
+    except ProviderConfigurationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=scrub_secrets(str(exc)),
+        ) from exc
 
     existing = {
         d.reconciliation_id: evaluate_reconciliation_staleness(
@@ -2066,3 +2127,57 @@ def list_effective_baselines_endpoint(
     )
     _resolve_baseline_and_policies(x_tenant_id, baseline_id)
     return store.list_effective_baselines(x_tenant_id, baseline_id=baseline_id)
+
+
+@router.get("/enterprise/llm-status")
+def get_semantic_matching_status_endpoint(
+    x_tenant_id: TenantHeader,
+    x_role: OptionalRoleHeader = None,
+) -> Dict[str, Any]:
+    """Return non-sensitive runtime status of optional semantic matching configuration."""
+    _reject_public_demo_tenant(x_tenant_id)
+    _require_crosswalk_state()
+    _enforce_role_if_present(
+        x_role, READER_ROLES, "viewing semantic matching configuration status"
+    )
+    cfg = LLMRuntimeConfig.from_env()
+    warnings: List[Dict[str, Any]] = []
+    if (
+        cfg.embedding_provider == LLMProviderKind.GEMINI
+        or cfg.reasoning_provider == LLMProviderKind.GEMINI
+    ):
+        for m in (cfg.gemini_embedding_model, cfg.gemini_reasoning_model):
+            w = check_gemini_model_lifecycle(m)
+            if w is not None:
+                warnings.append(w.model_dump(mode="json"))
+
+    return {
+        "edition": cfg.edition.value,
+        "semantic_matching_enabled": cfg.semantic_matching_enabled,
+        "matching_mode": cfg.matching_mode.value,
+        "embedding_provider": cfg.embedding_provider.value,
+        "reasoning_provider": cfg.reasoning_provider.value,
+        "gemini_billing_tier": cfg.gemini_billing_tier,
+        "free_tier_confidential_blocked": (
+            cfg.gemini_billing_tier == "free" and not cfg.allow_confidential_on_free_tier
+        ),
+        "embedding_model": (
+            cfg.gemini_embedding_model
+            if cfg.embedding_provider == LLMProviderKind.GEMINI
+            else (
+                cfg.openai_embedding_model
+                if cfg.embedding_provider == LLMProviderKind.OPENAI_COMPATIBLE
+                else ("deterministic-semantic-sim-v1" if cfg.embedding_provider == LLMProviderKind.MOCK else None)
+            )
+        ),
+        "reasoning_model": (
+            cfg.gemini_reasoning_model
+            if cfg.reasoning_provider == LLMProviderKind.GEMINI
+            else (
+                cfg.openai_reasoning_model
+                if cfg.reasoning_provider == LLMProviderKind.OPENAI_COMPATIBLE
+                else ("deterministic-semantic-sim-v1" if cfg.reasoning_provider == LLMProviderKind.MOCK else None)
+            )
+        ),
+        "lifecycle_warnings": warnings,
+    }

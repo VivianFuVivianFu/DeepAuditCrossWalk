@@ -913,6 +913,15 @@ class ReconciliationDecision(BaseModel):
         default_factory=ReconciliationDimensionComparison
     )
     uncertainties: List[str] = Field(default_factory=list)
+    matching_mode: Literal[
+        "deterministic_only",
+        "embedding_plus_deterministic",
+        "hybrid_embedding_llm_deterministic",
+        "deterministic_fallback",
+    ] = "deterministic_only"
+    embedding_similarity: Optional[float] = Field(default=None, ge=-1.0, le=1.0)
+    semantic_analysis: Optional[Dict[str, Any]] = None
+    semantic_provider_meta: Optional[Dict[str, Any]] = None
     reviewer_id: Optional[str] = None
     reviewer_role: Optional[str] = None
     reviewed_at: Optional[datetime] = None
