@@ -97,11 +97,19 @@ ENTERPRISE_ONLY_CONTROL_IDS: Set[str] = {
 
 AMBIGUOUS_CLAUSE_PATTERNS: Tuple[re.Pattern[str], ...] = (
     re.compile(r"\bas\s+determined\s+from\s+time\s+to\s+time\b", re.IGNORECASE),
-    re.compile(r"\bin\s+accordance\s+with\s+schedule\s+[a-z0-9]+\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:in\s+accordance\s+with|follow(?:ing)?|specified\s+in|under|per)\s+(?:schedule|appendix|annex|exhibit)\s+[a-z0-9]+\b",
+        re.IGNORECASE,
+    ),
     re.compile(r"\bappropriate\s+governance\s+arrangements\s+shall\s+be\s+applied\b", re.IGNORECASE),
     re.compile(r"\bwhere\s+deemed\s+appropriate\s+by\s+management\b", re.IGNORECASE),
     re.compile(r"\bsubject\s+to\s+unquantified\s+discretion\b", re.IGNORECASE),
     re.compile(r"\bas\s+reasonably\s+practicable\s+without\s+defined\s+criteria\b", re.IGNORECASE),
+)
+
+CUSTOMER_RIGHT_GRANT_PATTERN = re.compile(
+    r"\b(?:people|customers?|consumers?|borrowers?|applicants?|individuals?|users?)\b[^.]{0,80}\b(?:have\s+the\s+right\s+to|entitled\s+to|right\s+to\s+(?:ask|access|request|challenge|correct|inspect))\b",
+    re.IGNORECASE,
 )
 
 CURRENCY_AMOUNT_PATTERN = re.compile(
@@ -690,16 +698,24 @@ def validate_candidate_relationship(
     elif ext_auth_str == "regulatory_guidance_and_expectation" or obligation.authority.value == "guidance":
         authority_comp = f"external_regulatory_guidance_vs_{clause.authority_level.value}"
         modality_comp = (
-            "enterprise_discretionary_vs_mandatory"
-            if not clause.mandatory
-            else "aligned"
+            "customer_right_grant_aligned"
+            if (not clause.mandatory and CUSTOMER_RIGHT_GRANT_PATTERN.search(clause.text or ""))
+            else (
+                "enterprise_discretionary_vs_mandatory"
+                if not clause.mandatory
+                else "aligned"
+            )
         )
     else:
         authority_comp = f"external_binding_obligation_vs_{clause.authority_level.value}"
         modality_comp = (
-            "enterprise_discretionary_vs_mandatory"
-            if not clause.mandatory
-            else "aligned"
+            "customer_right_grant_aligned"
+            if (not clause.mandatory and CUSTOMER_RIGHT_GRANT_PATTERN.search(clause.text or ""))
+            else (
+                "enterprise_discretionary_vs_mandatory"
+                if not clause.mandatory
+                else "aligned"
+            )
         )
 
     # Scope comparison

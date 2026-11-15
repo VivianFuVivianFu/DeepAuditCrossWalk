@@ -52,6 +52,33 @@ from .types import (
 
 # Transport signature: (url, headers, json_body, timeout_seconds) -> (status_code, response_body_str)
 HttpJsonTransport = Callable[[str, Dict[str, str], Dict[str, Any], float], Tuple[int, str]]
+HttpGetTransport = Callable[[str, Dict[str, str], float], Tuple[int, str]]
+
+
+def default_urllib_json_get_transport(
+    url: str,
+    headers: Dict[str, str],
+    timeout_seconds: float,
+) -> Tuple[int, str]:
+    """Zero-dependency HTTPS JSON GET transport with redacted error surfaces."""
+    req = urllib.request.Request(url, headers=headers, method="GET")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
+            return int(resp.status), resp.read().decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as exc:
+        body = ""
+        try:
+            body = exc.read().decode("utf-8", errors="replace")
+        except Exception:
+            body = ""
+        return int(exc.code), scrub_secrets(body)
+    except TimeoutError as exc:
+        raise ProviderTimeoutError(f"LLM API GET request timed out after {timeout_seconds}s.") from exc
+    except urllib.error.URLError as exc:
+        reason = scrub_secrets(str(exc.reason))
+        if "timed out" in reason.lower():
+            raise ProviderTimeoutError(f"LLM API GET request timed out: {reason}") from exc
+        raise ProviderUnavailableError(f"LLM API network error: {reason}") from exc
 
 
 def default_urllib_json_transport(
@@ -135,6 +162,74 @@ def check_gemini_model_lifecycle(model_name: str) -> Optional[ProviderLifecycleW
             message=entry["notice"],
         )
     return None
+
+
+def probe_gemini_model_availability(
+    config: LLMRuntimeConfig,
+    *,
+    get_transport: HttpGetTransport = default_urllib_json_get_transport,
+) -> Dict[str, Any]:
+    """Probe the configured Gemini API project for model accessibility & supported methods.
+
+    Uses `x-goog-api-key` headers (never URL query strings) and scrubs secrets on errors.
+    """
+    base_url = validate_endpoint_url(config.gemini_base_url, label="Gemini API")
+    api_key = resolve_provider_api_key(config, provider=LLMProviderKind.GEMINI, purpose="probe")
+    headers = {"x-goog-api-key": api_key or ""}
+
+    def _probe_single(model_id: str) -> Dict[str, Any]:
+        url = f"{base_url}/models/{model_id}"
+        status, body = get_transport(url, headers, config.request_timeout_seconds)
+        if status == 200:
+            try:
+                parsed = json.loads(body)
+            except json.JSONDecodeError:
+                return {"model": model_id, "available": False, "status_code": 200, "error": "invalid_json"}
+            return {
+                "model": model_id,
+                "available": True,
+                "status_code": 200,
+                "name": parsed.get("name"),
+                "supported_generation_methods": parsed.get("supportedGenerationMethods") or [],
+                "input_token_limit": parsed.get("inputTokenLimit"),
+                "output_token_limit": parsed.get("outputTokenLimit"),
+            }
+        return {
+            "model": model_id,
+            "available": False,
+            "status_code": status,
+            "error": scrub_secrets(body)[:240],
+        }
+
+    emb_info = _probe_single(config.gemini_embedding_model)
+    rsn_info = _probe_single(config.gemini_reasoning_model)
+
+    available_models: List[str] = []
+    list_status, list_body = get_transport(f"{base_url}/models?pageSize=100", headers, config.request_timeout_seconds)
+    if list_status == 200:
+        try:
+            list_json = json.loads(list_body)
+            for item in list_json.get("models") or []:
+                m_name = str(item.get("name") or "").replace("models/", "")
+                methods = item.get("supportedGenerationMethods") or []
+                if m_name and ("generateContent" in methods or "embedContent" in methods):
+                    available_models.append(m_name)
+        except json.JSONDecodeError:
+            pass
+
+    return {
+        "embedding_model": emb_info,
+        "reasoning_model": rsn_info,
+        "available_models_sample": available_models[:30],
+        "lifecycle_warnings": [
+            w.model_dump(mode="json")
+            for w in (
+                check_gemini_model_lifecycle(config.gemini_embedding_model),
+                check_gemini_model_lifecycle(config.gemini_reasoning_model),
+            )
+            if w is not None
+        ],
+    }
 
 
 def _build_reconciliation_prompt(
@@ -354,6 +449,15 @@ class GoogleGeminiProvider:
             warn = check_gemini_model_lifecycle(m)
             if warn and all(w.model != warn.model for w in self.telemetry.lifecycle_warnings):
                 self.telemetry.lifecycle_warnings.append(warn)
+        self._last_request_monotonic: Optional[float] = None
+
+    def _pace_rpm(self) -> None:
+        min_gap = float(getattr(self.config, "rpm_min_interval_seconds", 0.0) or 0.0)
+        if min_gap <= 0.0 or self._last_request_monotonic is None:
+            return
+        elapsed = time.monotonic() - self._last_request_monotonic
+        if elapsed < min_gap:
+            time.sleep(min_gap - elapsed)
 
     def _post_with_retry(self, url: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         headers = {
@@ -363,11 +467,14 @@ class GoogleGeminiProvider:
         last_exc: Optional[Exception] = None
         for attempt in range(self.config.max_retries + 1):
             try:
+                self._pace_rpm()
                 with self.budget.slot():
+                    self.telemetry.api_attempts += 1
                     t0 = time.perf_counter()
                     status_code, body = self.transport(
                         url, headers, payload, self.config.request_timeout_seconds
                     )
+                    self._last_request_monotonic = time.monotonic()
                     self.telemetry.total_latency_ms += (time.perf_counter() - t0) * 1000.0
             except ProviderQuotaError:
                 self.telemetry.quota_or_rate_limit_errors += 1
@@ -487,12 +594,18 @@ class GoogleGeminiProvider:
             tenant_id=tenant_id,
         )
         url = f"{self.base_url}/models/{self.model_name}:generateContent"
+        # Gemini 2.5 reasoning models count thinking tokens toward maxOutputTokens; guarantee >= 2048 headroom.
+        effective_max_tokens = (
+            max(self.config.max_output_tokens, 2048)
+            if "2.5" in (self.model_name or "")
+            else self.config.max_output_tokens
+        )
         payload = {
             "systemInstruction": {"parts": [{"text": system_prompt}]},
             "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
             "generationConfig": {
                 "temperature": 0.0,
-                "maxOutputTokens": self.config.max_output_tokens,
+                "maxOutputTokens": effective_max_tokens,
                 "responseMimeType": "application/json",
                 "responseSchema": response_schema,
             },
@@ -500,15 +613,34 @@ class GoogleGeminiProvider:
         data = self._post_with_retry(url, payload)
         self.telemetry.reasoning_calls += 1
         usage = data.get("usageMetadata") or {}
-        self.telemetry.prompt_tokens += int(usage.get("promptTokenCount") or 0)
-        self.telemetry.completion_tokens += int(usage.get("candidatesTokenCount") or 0)
+        p_toks = int(usage.get("promptTokenCount") or 0)
+        c_toks = int(usage.get("candidatesTokenCount") or 0)
+        th_toks = int(usage.get("thoughtsTokenCount") or 0)
+        tot_toks = int(usage.get("totalTokenCount") or (p_toks + c_toks + th_toks))
+        self.telemetry.prompt_tokens += p_toks
+        self.telemetry.completion_tokens += c_toks
+        self.telemetry.thoughts_tokens += th_toks
+        self.telemetry.total_tokens += tot_toks
 
         candidates = data.get("candidates") or []
         if not candidates:
             raise ProviderOutputError("Gemini generateContent returned no candidates.")
-        parts = ((candidates[0].get("content") or {}).get("parts")) or []
-        text = "".join(str(p.get("text") or "") for p in parts)
-        return _extract_json_object(text)
+        cand0 = candidates[0]
+        finish_reason = str(cand0.get("finishReason") or "")
+        parts = ((cand0.get("content") or {}).get("parts")) or []
+        text = "".join(str(p.get("text") or "") for p in parts if not p.get("thought"))
+        if not text.strip():
+            text = "".join(str(p.get("text") or "") for p in parts)
+        if finish_reason in {"SAFETY", "RECITATION", "BLOCKLIST", "PROHIBITED_CONTENT"} and not text.strip():
+            raise ProviderOutputError(f"Gemini blocked or withheld structured output (finishReason={finish_reason}).")
+        try:
+            return _extract_json_object(text)
+        except ProviderOutputError as exc:
+            if finish_reason == "MAX_TOKENS":
+                raise ProviderOutputError(
+                    f"Gemini structured JSON output truncated (finishReason=MAX_TOKENS, thoughts_tokens={th_toks})."
+                ) from exc
+            raise
 
     def analyze_reconciliation(
         self,
@@ -802,10 +934,10 @@ _SEMANTIC_CONCEPT_AXES: List[Tuple[str, Tuple[str, ...]]] = [
     ("naic_accountability", ("naic", "board accountability", "board-level accountability", "ai inventory", "compliance assurance plan", "bias mitigation", "explainability controls")),
     ("asic_afsl_competence", ("rg 104", "rg 105", "afsl", "technological resources", "responsible manager", "supervisory quality")),
     ("asic_disclosure_greenwashing", ("misleading", "deceptive", "explainable", "adverse notice", "customer disclosure", "accurate representation")),
-    ("naic_human_oversight", ("human oversight", "human-in-the-loop", "human review", "eyeballed", "manual review", "authorised officer", "pre-execution", "refund", "overturned")),
+    ("naic_human_oversight", ("human oversight", "human-in-the-loop", "human review", "eyeballed", "manual review", "authorised officer", "signed off", "pre-execution", "refund", "overturned", "double-check")),
     ("naic_drift_observability", ("model drift", "post-deployment monitoring", "degradation", "kill switch", "circuit breaker")),
-    ("enterprise_prompt_vault", ("prompt logging", "telemetry vault", "llm prompts and model outputs", "delegated financial authority", "treasury ledger", "7 years", "10-year", "artifact vault", "provenance manifest", "engineering registry", "worm storage", "watermark")),
-    ("out_of_domain_ops", ("carbon-intensity", "megawatt", "wcag", "colour contrast", "contrast ratios", "first nations acoustic dialect", "dialects in rural branches", "payroll", "physical keycard", "visitor swipe", "visitor contractor", "cafeteria", "office plant", "cooling metrics", "scope 2 esg")),
+    ("enterprise_prompt_vault", ("prompt logging", "telemetry vault", "llm prompts and model outputs", "delegated financial authority", "treasury ledger", "7 years", "10-year", "artifact vault", "provenance manifest", "build provenance", "engineering registry", "worm storage", "watermark")),
+    ("out_of_domain_ops", ("carbon-intensity", "megawatt", "wcag", "colour contrast", "contrast ratios", "first nations acoustic dialect", "dialects in rural branches", "payroll", "executive remuneration", "bonus vesting", "physical keycard", "visitor swipe", "visitor contractor", "cafeteria", "office plant", "cooling metrics", "scope 2 esg")),
 ]
 
 

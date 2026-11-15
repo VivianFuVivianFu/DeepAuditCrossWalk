@@ -207,6 +207,16 @@ def retrieve_reconciliation_candidates_hybrid(
             if fallback_reason not in bundle.telemetry.notes:
                 bundle.telemetry.notes.append(f"Stage A embedding fallback: {fallback_reason}")
 
+    c_lower = (clause.text or "").lower()
+    has_eu_cue = any(
+        w in c_lower
+        for w in ("eu ai act", "article 26", "article 27", "article 50", "annex iii", "fria", "eur ", "eur$")
+    )
+    has_au_cue = any(
+        w in c_lower
+        for w in ("aud", "apra", "oaic", "asic", "nccp", "app ", "cps ", "cpg ", "rg 271", "rep 798", "authorised officer", "australia")
+    )
+
     fused: List[Dict[str, Any]] = []
     for ob in applicable_obs:
         oid = ob.obligation_id
@@ -224,6 +234,14 @@ def retrieve_reconciliation_candidates_hybrid(
                 reasons.append(f"Semantic embedding cosine={emb_score:.3f}")
         else:
             hybrid_score = det_score
+
+        if has_au_cue and not has_eu_cue:
+            if ob.jurisdiction == "AU":
+                hybrid_score += 0.06
+            elif ob.jurisdiction == "EU":
+                hybrid_score = max(0.0, hybrid_score - 0.14)
+        elif has_eu_cue and ob.jurisdiction == "EU":
+            hybrid_score += 0.10
 
         if hybrid_score <= 0.08:
             continue
@@ -254,6 +272,7 @@ def retrieve_reconciliation_candidates_hybrid(
     fused.sort(key=lambda item: (-item["hybrid_score"], item["obligation_id"]))
     return {
         "candidates": fused[:top_k],
+        "all_emb_scores": emb_scores,
         "retrieval_mode": retrieval_mode,
         "fallback_reason": fallback_reason,
     }
@@ -641,9 +660,49 @@ def generate_hybrid_reconciliation_candidates(
     )
     decisions: List[ReconciliationDecision] = []
 
+    def _is_internal_enterprise_control(c: EnterpriseClause) -> bool:
+        low = (c.text or "").lower()
+        return bool(c.mandatory) and any(
+            cue in low
+            for cue in (
+                "delegated financial authority",
+                "treasury ledger",
+                "prompt logging",
+                "telemetry vault",
+                "worm storage",
+                "provenance manifest",
+                "build provenance",
+                "artifact vault",
+                "watermark provenance",
+                "internal approval limit",
+            )
+        )
+
     for clause in active_clauses:
         pol_version = policy_versions.get(clause.policy_id, enterprise_baseline.version)
         pol_name = policy_names.get(clause.policy_id, clause.source_name)
+
+        # Indeterminate/vague clauses MUST resolve safely to UNDETERMINED regardless of Stage A hits
+        if _is_ambiguous_clause(clause):
+            mode_label = (
+                "hybrid_embedding_llm_deterministic"
+                if use_llm
+                else "embedding_plus_deterministic"
+            )
+            decisions.append(
+                validate_hybrid_candidate_relationship(
+                    clause=clause,
+                    obligation=None,
+                    regulatory_pack=reg_pack,
+                    enterprise_baseline=enterprise_baseline,
+                    policy_version=pol_version,
+                    policy_name=pol_name,
+                    stage_a_reason="Clause contains indeterminate/vague schedule or discretionary reference.",
+                    matching_mode=mode_label,
+                    provider_meta={"retrieval_mode": "ambiguous_guardrail"},
+                )
+            )
+            continue
 
         non_rejected_mappings = [
             m for m in (clause.control_mappings or []) if m.review_status != ClauseReviewStatus.REJECTED
@@ -661,18 +720,19 @@ def generate_hybrid_reconciliation_candidates(
         )
         explicit_citation = _has_explicit_citation(clause.text)
 
-        matched: Dict[str, Tuple[AtomicObligation, List[str], Optional[float], bool]] = {}
+        # Map obligation_id -> (obligation, reasons, emb_score, is_strong, hybrid_score)
+        matched: Dict[str, Tuple[AtomicObligation, List[str], Optional[float], bool, float]] = {}
 
         # Explicit Signal 1 (control mappings)
         for m in non_rejected_mappings:
             is_strong = m.control_id in explicit_human_controls
             for expanded_cid in _expand_control_ids([m.control_id]):
                 for ob in control_to_obligations.get(expanded_cid, []):
-                    entry = matched.setdefault(ob.obligation_id, (ob, [], None, False))
+                    entry = matched.setdefault(ob.obligation_id, (ob, [], None, False, 0.35 if is_strong else 0.18))
                     r = f"Control mapping '{m.control_id}' ({m.review_status.value})"
                     if r not in entry[1]:
                         entry[1].append(r)
-                    matched[ob.obligation_id] = (ob, entry[1], entry[2], entry[3] or is_strong)
+                    matched[ob.obligation_id] = (ob, entry[1], entry[2], entry[3] or is_strong, max(entry[4], 0.35 if is_strong else 0.18))
 
         # Explicit Signal 2 (direct facets)
         clause_facets = set(clause.control_facets or [])
@@ -680,20 +740,20 @@ def generate_hybrid_reconciliation_candidates(
             for ob in candidate_obligations:
                 overlap = sorted(clause_facets & set(ob.coverage_facets or []))
                 if overlap:
-                    entry = matched.setdefault(ob.obligation_id, (ob, [], None, False))
+                    entry = matched.setdefault(ob.obligation_id, (ob, [], None, False, 0.40 if has_manual_canonical else 0.25))
                     r = f"Shared coverage facets {overlap}"
                     if r not in entry[1]:
                         entry[1].append(r)
-                    matched[ob.obligation_id] = (ob, entry[1], entry[2], entry[3] or has_manual_canonical)
+                    matched[ob.obligation_id] = (ob, entry[1], entry[2], entry[3] or has_manual_canonical, max(entry[4], 0.40 if has_manual_canonical else 0.25))
 
         # Explicit Signal 3 (topic / negative exemption)
         for ob, topic_reason in _match_topic_obligations_for_unmapped_or_negative_clause(
             clause, candidate_obligations
         ):
-            entry = matched.setdefault(ob.obligation_id, (ob, [], None, False))
+            entry = matched.setdefault(ob.obligation_id, (ob, [], None, False, 0.35))
             if topic_reason not in entry[1]:
                 entry[1].append(topic_reason)
-            matched[ob.obligation_id] = (ob, entry[1], entry[2], entry[3] or explicit_citation)
+            matched[ob.obligation_id] = (ob, entry[1], entry[2], entry[3] or explicit_citation, max(entry[4], 0.35))
 
         # Hybrid Stage A retrieval (fuses deterministic ranker + embedding cosine)
         retrieval = retrieve_reconciliation_candidates_hybrid(
@@ -707,38 +767,52 @@ def generate_hybrid_reconciliation_candidates(
             data_classification=data_classification,
             top_k=cfg.top_k_candidates,
         )
+        all_emb_scores = retrieval.get("all_emb_scores") or {}
         emb_by_ob = {
             c["obligation_id"]: c.get("embedding_score") for c in retrieval["candidates"]
         }
+        for oid_existing, entry in list(matched.items()):
+            if entry[2] is None and oid_existing in all_emb_scores:
+                matched[oid_existing] = (entry[0], entry[1], all_emb_scores[oid_existing], entry[3], entry[4])
 
-        if not _is_ambiguous_clause(clause):
-            for cand in retrieval["candidates"]:
-                oid = cand["obligation_id"]
-                emb_sc = cand.get("embedding_score")
-                hyb_sc = cand["hybrid_score"]
-                if (
-                    oid in matched
-                    or (emb_sc is not None and (emb_sc >= 0.36 or hyb_sc >= 0.36))
-                    or (emb_sc is None and cand["deterministic_score"] >= 0.30 and (cand["inferred_facets"] or cand["topic_matched"]))
-                ):
-                    ob_cand = cand["obligation"]
-                    entry = matched.setdefault(ob_cand.obligation_id, (ob_cand, [], emb_sc, False))
-                    for r in cand["reasons"]:
-                        if r not in entry[1]:
-                            entry[1].append(r)
-                    matched[oid] = (ob_cand, entry[1], emb_sc if emb_sc is not None else entry[2], entry[3])
+        for cand in retrieval["candidates"]:
+            oid = cand["obligation_id"]
+            emb_sc = cand.get("embedding_score")
+            hyb_sc = cand["hybrid_score"]
+            if (
+                oid in matched
+                or (emb_sc is not None and (emb_sc >= 0.36 or hyb_sc >= 0.36))
+                or (emb_sc is None and cand["deterministic_score"] >= 0.30 and (cand["inferred_facets"] or cand["topic_matched"]))
+            ):
+                ob_cand = cand["obligation"]
+                entry = matched.setdefault(ob_cand.obligation_id, (ob_cand, [], emb_sc, False, hyb_sc))
+                for r in cand["reasons"]:
+                    if r not in entry[1]:
+                        entry[1].append(r)
+                matched[oid] = (
+                    ob_cand,
+                    entry[1],
+                    emb_sc if emb_sc is not None else entry[2],
+                    entry[3],
+                    max(entry[4], hyb_sc),
+                )
 
-        # Rank selected candidate obligations by hybrid/embedding score, keeping bounded top-N for LLM calls
+        # Rank selected candidate obligations by fused hybrid_score + strong provenance
         ranked_selected = sorted(
             matched.values(),
             key=lambda item: (
-                -(item[2] if item[2] is not None else 0.0),
+                -item[4],
                 -int(item[3]),
+                -(item[2] if item[2] is not None else 0.0),
                 item[0].obligation_id,
             ),
         )
-        # Keep top candidates within call budget (top 2 per clause unless direct mappings exist)
-        candidates_to_validate = ranked_selected[: max(2, len([x for x in ranked_selected if x[3]]))]
+        # Keep top candidates within call budget (top 3 for Stage B reranking & multi-obligation clauses)
+        max_cands = min(
+            max(cfg.top_k_candidates, 3),
+            max(3 if use_llm else 2, len([x for x in ranked_selected if x[3]])),
+        )
+        candidates_to_validate = ranked_selected[:max_cands]
 
         if not candidates_to_validate:
             mode_label = (
@@ -750,26 +824,32 @@ def generate_hybrid_reconciliation_candidates(
                     else "embedding_plus_deterministic"
                 )
             )
-            decisions.append(
-                validate_hybrid_candidate_relationship(
-                    clause=clause,
-                    obligation=None,
-                    regulatory_pack=reg_pack,
-                    enterprise_baseline=enterprise_baseline,
-                    policy_version=pol_version,
-                    policy_name=pol_name,
-                    stage_a_reason="No external obligation exceeded hybrid retrieval thresholds.",
-                    matching_mode=mode_label,
-                    provider_meta={"retrieval_mode": retrieval["retrieval_mode"]},
-                )
+            standalone = validate_hybrid_candidate_relationship(
+                clause=clause,
+                obligation=None,
+                regulatory_pack=reg_pack,
+                enterprise_baseline=enterprise_baseline,
+                policy_version=pol_version,
+                policy_name=pol_name,
+                stage_a_reason="No external obligation exceeded hybrid retrieval thresholds.",
+                matching_mode=mode_label,
+                provider_meta={"retrieval_mode": retrieval["retrieval_mode"]},
             )
+            if _is_internal_enterprise_control(clause):
+                standalone = standalone.model_copy(
+                    update={
+                        "proposed_relationship": ReconciliationRelationship.ADDITIONAL_ENTERPRISE_REQUIREMENT,
+                        "validated_relationship": ReconciliationRelationship.ADDITIONAL_ENTERPRISE_REQUIREMENT,
+                    }
+                )
+            decisions.append(standalone)
             continue
 
         # Run Stage B LLM Semantic Interpretation on candidates if enabled
         interpreted: List[
-            Tuple[AtomicObligation, List[str], Optional[float], bool, Optional[SemanticRelationshipAnalysis], Optional[str]]
+            Tuple[AtomicObligation, List[str], Optional[float], bool, Optional[SemanticRelationshipAnalysis], Optional[str], float]
         ] = []
-        for ob, reasons, emb_sc, is_strong in candidates_to_validate:
+        for ob, reasons, emb_sc, is_strong, hyb_sc in candidates_to_validate:
             sem_analysis: Optional[SemanticRelationshipAnalysis] = None
             llm_err: Optional[str] = None
             if use_llm and active_bundle.reasoning_provider is not None:
@@ -794,13 +874,13 @@ def generate_hybrid_reconciliation_candidates(
                 except LLMProviderError as exc:
                     active_bundle.telemetry.fallback_events += 1
                     llm_err = f"LLM fallback to deterministic Stage B: {scrub_secrets(str(exc))}"
-            interpreted.append((ob, reasons, emb_sc, is_strong, sem_analysis, llm_err))
+            interpreted.append((ob, reasons, emb_sc, is_strong, sem_analysis, llm_err, hyb_sc))
 
         # Suppress noisy false positives ONLY when LLM confirms ALL candidates have semantic_relevance="none"
         # AND deterministic validation itself does NOT find a substantive conflict/stricter/weaker/equivalent match!
         det_preserves_candidate = False
         if interpreted and not explicit_citation and not has_manual_canonical:
-            for item_ob, item_reasons, _emb_sc, item_strong, _sem, _err in interpreted:
+            for item_ob, item_reasons, _emb_sc, item_strong, _sem, _err, _hyb in interpreted:
                 if item_strong:
                     det_preserves_candidate = True
                     break
@@ -865,18 +945,53 @@ def generate_hybrid_reconciliation_candidates(
             decisions.append(standalone)
             continue
 
-        # Sort so highest-relevance / highest-similarity candidate appears first for the clause
+        # Sort so highest-relevance / confidence / hybrid score candidate appears first for the clause
         interpreted.sort(
             key=lambda item: (
                 {"high": 3, "medium": 2, "low": 1, "none": 0}.get(
                     item[4].semantic_relevance if item[4] else "low", 1
                 ),
+                item[4].confidence if item[4] else 0.0,
+                item[6],
                 item[2] if item[2] is not None else 0.0,
             ),
             reverse=True,
         )
 
-        for ob, reasons, emb_sc, _is_strong, sem_analysis, llm_err in interpreted:
+        # If at least one candidate has high/medium semantic relevance, drop unrelated `none` candidates
+        # unless deterministic checks hold a strong link OR deterministic Stage C validation finds
+        # a substantive statutory relationship (preventing Stage B from silently erasing a valid match).
+        has_substantive_sem = any(
+            item[4] is not None and item[4].semantic_relevance in {"high", "medium"}
+            for item in interpreted
+        )
+        if has_substantive_sem:
+            filtered = []
+            for item in interpreted:
+                keep = item[3] or item[4] is None or item[4].semantic_relevance != "none"
+                if not keep:
+                    det_chk = validate_candidate_relationship(
+                        clause=clause,
+                        obligation=item[0],
+                        regulatory_pack=reg_pack,
+                        enterprise_baseline=enterprise_baseline,
+                        policy_version=pol_version,
+                        policy_name=pol_name,
+                        stage_a_reason="; ".join(item[1]),
+                    )
+                    if det_chk.validated_relationship in {
+                        ReconciliationRelationship.EQUIVALENT,
+                        ReconciliationRelationship.STRICTER_ENTERPRISE_REQUIREMENT,
+                        ReconciliationRelationship.WEAKER_OR_POTENTIALLY_INSUFFICIENT,
+                        ReconciliationRelationship.POTENTIAL_CONFLICT,
+                    }:
+                        keep = True
+                if keep:
+                    filtered.append(item)
+            if filtered:
+                interpreted = filtered
+
+        for ob, reasons, emb_sc, _is_strong, sem_analysis, llm_err, _hyb in interpreted:
             if retrieval["retrieval_mode"] == "deterministic_fallback" or llm_err is not None:
                 mode_label = "deterministic_fallback"
             elif use_llm and sem_analysis is not None:

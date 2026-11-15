@@ -195,12 +195,28 @@ def validate_semantic_citation(
             f"Fabricated or mismatched obligation citation: model cited "
             f"'{analysis.cited_obligation_id}' instead of '{obligation.obligation_id}'."
         )
-    if (
-        _normalise_for_quote(analysis.cited_provision)
-        != _normalise_for_quote(obligation.provision)
-        and _normalise_for_quote(obligation.provision)
-        not in _normalise_for_quote(analysis.cited_provision)
-    ):
+    cited_prov_norm = _normalise_for_quote(analysis.cited_provision)
+    expected_prov_norm = _normalise_for_quote(obligation.provision)
+    # Strip English words 'section'/'sections'/'paragraph'/'article' -> 's'/'ss'/'para'/'art' for fair normalisation
+    cited_compact = re.sub(r"\bsections?\b", "ss", cited_prov_norm)
+    expected_compact = re.sub(r"\bsections?\b", "ss", expected_prov_norm)
+    cited_toks = {t for t in cited_compact.split() if len(t) >= 2}
+    expected_toks = {t for t in expected_compact.split() if len(t) >= 2}
+    has_shared_specific_tok = any(
+        t in expected_toks and (any(ch.isdigit() for ch in t) or t in {"app", "cps", "cpg", "rg", "rep", "nccp", "art", "oaic", "ndb", "naic"})
+        for t in cited_toks
+    )
+    prov_matches = (
+        cited_prov_norm == expected_prov_norm
+        or expected_prov_norm in cited_prov_norm
+        or (
+            len(cited_prov_norm) >= 4
+            and cited_prov_norm in expected_prov_norm
+            and has_shared_specific_tok
+        )
+        or (has_shared_specific_tok and len(cited_toks & expected_toks) >= 2 and all(t in expected_toks for t in cited_toks if any(ch.isdigit() for ch in t)))
+    )
+    if not prov_matches:
         raise CitationVerificationError(
             f"Fabricated provision citation: model cited '{analysis.cited_provision}' "
             f"for obligation '{obligation.obligation_id}' (expected '{obligation.provision}')."

@@ -17,7 +17,7 @@ DeepAudit Crosswalk defines two independent Python protocols rather than requiri
 
 `SemanticProviderBundle` (constructed via `build_provider_bundle(config)`) allows mixing providers independently — for example:
 - **Embeddings only** (`SEMANTIC_MATCHING_MODE=embedding_only`) with `LLM_REASONING_PROVIDER=disabled`
-- **Google Gemini** for embeddings (`gemini-embedding-001`) + **Self-hosted OpenAI-compatible** vLLM/Ollama/enterprise gateway for reasoning
+- **Google Gemini** for embeddings (`gemini-embedding-001`) + **Self-hosted OpenAI-compatible** vLLM / enterprise gateway for reasoning
 - **DeterministicMockSemanticProvider** (`LLM_EMBEDDING_PROVIDER=mock`, `LLM_REASONING_PROVIDER=mock`) for offline CI and fault-injection testing
 
 ---
