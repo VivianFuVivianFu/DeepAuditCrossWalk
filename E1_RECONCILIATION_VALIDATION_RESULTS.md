@@ -19,11 +19,14 @@ The **Enterprise Requirement Reconciliation Engine (E1)** and **Effective Assess
 
 Zero false equivalences (`0.0%`), zero false conflicts (`0.0%`), and `100.0%` source/version traceability were achieved on both the development and held-out benchmark splits.
 
+> [!NOTE]
+> **Evaluation Scope Clarification (E1.1 Audit Correction):** The `100.0%` (`16/16`) benchmark accuracy reported below reflects **isolated Stage B deterministic relationship validation** (`validate_candidate_relationship()`) on pre-segmented clauses supplied with predefined `control_facets`, pre-approved `ClauseControlMapping` objects, and the target `external_obligation_id`. It **must not** be interpreted as end-to-end production reconciliation accuracy across raw policy documents. End-to-end evaluation from raw PDF/DOCX/TXT upload through Stage A candidate retrieval and Stage B validation (without preassigned facets or target obligations) is documented in [E11_ACCURACY_AND_INTEGRATION_AUDIT.md](file:///C:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/E11_ACCURACY_AND_INTEGRATION_AUDIT.md) and [E11_ACCURACY_BENCHMARK_RESULTS.md](file:///C:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/E11_ACCURACY_BENCHMARK_RESULTS.md).
+
 ---
 
-## 2. Evaluation Benchmark Results (Section 11)
+## 2. Evaluation Benchmark Results (Section 11 — Isolated Stage B Validation Only)
 
-The evaluation benchmark in `backend/tests/test_e1_requirement_reconciliation.py::test_e1_evaluation_benchmark_dev_and_held_out_splits` tests two strictly separated synthetic Australian financial services policy sets (Development split and Held-Out test split).
+The evaluation benchmark in `backend/tests/test_e1_requirement_reconciliation.py::test_e1_evaluation_benchmark_dev_and_held_out_splits` tests Stage B validation in isolation across two synthetic Australian financial services policy sets (Development split and Held-Out test split). Each test case supplies preassigned canonical `control_facets`, `ClauseControlMapping` records, and the target `AtomicObligation`.
 
 ### 2.1 Quantitative Metrics
 

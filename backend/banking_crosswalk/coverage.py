@@ -21,9 +21,11 @@ from .policy import (
 from .models import (
     ApplicabilityDecision,
     ClauseReviewStatus,
+    EffectiveAssessmentBaseline,
     EnterpriseBaseline,
     EnterpriseClause,
     EnterpriseClauseCoverage,
+    EnterprisePolicy,
     GapRecord,
     GapType,
     ApplicabilityStatus,
@@ -39,11 +41,13 @@ from .models import (
     ObligationCoverage,
     QuestionBank,
     QuestionRecord,
+    ReconciliationDecision,
     RegulatoryPack,
     ReviewStatus,
     authority_layer_bucket,
     utc_now,
 )
+from .reconciliation import validate_effective_baseline_for_assessment
 
 
 STOP_WORDS = {
@@ -270,6 +274,11 @@ def evaluate_questionnaire_coverage(
     review_mappings: Sequence[MappingDecision] = (),
     enterprise_baseline: Optional[EnterpriseBaseline] = None,
     enterprise_clauses: Sequence[EnterpriseClause] = (),
+    effective_baseline: Optional[EffectiveAssessmentBaseline] = None,
+    reconciliation_decisions: Optional[Sequence[ReconciliationDecision]] = None,
+    enterprise_policies: Optional[Sequence[EnterprisePolicy]] = None,
+    expected_effective_baseline_sha256: Optional[str] = None,
+    as_of_date: Optional[str] = None,
     assessment_mode: Optional[str] = None,
     assessment_target_type: str = "questionnaire",
 ) -> CoverageAssessment:
@@ -288,6 +297,11 @@ def evaluate_questionnaire_coverage(
         raise ValueError(f"Unsupported assessment mode '{effective_mode}'")
 
     if effective_mode == "regulatory_only":
+        if effective_baseline is not None:
+            raise ValueError(
+                "Cannot bind an EffectiveAssessmentBaseline when assessment_mode is 'regulatory_only'. "
+                "Select 'enterprise_enhanced' or 'provisional' to evaluate against an Effective Assessment Baseline."
+            )
         enterprise_baseline = None
         enterprise_clauses = ()
     elif effective_mode == "enterprise_enhanced":
@@ -321,6 +335,19 @@ def evaluate_questionnaire_coverage(
                 raise ValueError(
                     f"Baseline integrity error: cryptographic fingerprint mismatch on baseline '{enterprise_baseline.baseline_id}'"
                 )
+
+    if effective_baseline is not None:
+        validate_effective_baseline_for_assessment(
+            effective_baseline=effective_baseline,
+            tenant_id=tenant_id,
+            use_case=use_case,
+            regulatory_pack=regulatory_pack,
+            enterprise_baseline=enterprise_baseline,
+            reconciliation_decisions=reconciliation_decisions,
+            policies=enterprise_policies,
+            expected_effective_baseline_sha256=expected_effective_baseline_sha256,
+            as_of_date=as_of_date,
+        )
 
     is_enterprise = effective_mode in {"enterprise_enhanced", "provisional"}
 
@@ -542,6 +569,9 @@ def evaluate_questionnaire_coverage(
     selection_warning = question_bank.routing_metadata.get("selection_warning")
 
     enterprise_gaps: List[GapRecord] = []
+    reconciliation_conflict_gaps: List[GapRecord] = []
+    reconciled_equivalence_group_ids: List[str] = []
+    unresolved_reconciliation_ids: List[str] = []
     enterprise_clause_coverage: List[EnterpriseClauseCoverage] = []
     applicable_enterprise_requirement_ids: List[str] = []
 
@@ -551,7 +581,14 @@ def evaluate_questionnaire_coverage(
             if enterprise_baseline and enterprise_baseline.clause_snapshots
             else enterprise_clauses
         )
+        excluded_by_effective: Set[str] = (
+            set(effective_baseline.excluded_enterprise_clause_ids or [])
+            if effective_baseline is not None
+            else set()
+        )
         for clause in source_clauses:
+            if clause.clause_id in excluded_by_effective:
+                continue
             # Superseded or retired requirements must not silently influence active assessments
             if getattr(clause, "status", None) in {"superseded", "retired"}:
                 continue
@@ -1057,8 +1094,67 @@ def evaluate_questionnaire_coverage(
                 enterprise_gaps.append(role_gap)
                 gaps.append(role_gap)
 
+        # 3. Effective Assessment Baseline Reconciliation Integration (E1.1)
+        if effective_baseline is not None:
+            reconciled_equivalence_group_ids = [
+                g.group_id
+                for g in (effective_baseline.presentation_groups or [])
+                if g.group_type == "reviewed_equivalence_group"
+            ]
+            unresolved_reconciliation_ids = [
+                u.reconciliation_id
+                for u in (effective_baseline.unresolved_items or [])
+            ]
+            for conflict_item in effective_baseline.potential_conflicts or []:
+                c_gap = GapRecord(
+                    gap_id=f"GAP-R-{uuid.uuid5(uuid.NAMESPACE_URL, f'{assessment_id}|reconciliation_conflict|{conflict_item.reconciliation_id}').hex[:16].upper()}",
+                    gap_type=GapType.CONTROL_CONFLICT,
+                    title=(
+                        f"Reconciliation {conflict_item.validated_relationship.value}: "
+                        f"clause {conflict_item.enterprise_clause_id}"
+                        + (
+                            f" vs {conflict_item.external_obligation_id}"
+                            if conflict_item.external_obligation_id
+                            else f" vs {conflict_item.peer_enterprise_clause_id}"
+                            if conflict_item.peer_enterprise_clause_id
+                            else ""
+                        )
+                    ),
+                    status="open",
+                    severity=conflict_item.severity,
+                    obligation_id=conflict_item.external_obligation_id,
+                    policy_clause_id=conflict_item.enterprise_clause_id,
+                    missing_facets=[conflict_item.validated_relationship.value],
+                    recommendation=(
+                        f"{conflict_item.summary} Resolve reconciliation '{conflict_item.reconciliation_id}' "
+                        "with Legal/Compliance before treating the enterprise clause as aligned."
+                    ),
+                    evidence_required=[
+                        "Approved reconciliation review decision",
+                        "Policy amendment or legal exception approval",
+                    ],
+                    owner="Compliance & Policy Owner",
+                    source_type="reconciliation_conflict",
+                    evidence_missing=True,
+                )
+                reconciliation_conflict_gaps.append(c_gap)
+                enterprise_gaps.append(c_gap)
+                gaps.append(c_gap)
+
+    if effective_baseline is not None:
+        assessment_basis: str = "effective_assessment_baseline"
+        effective_baseline_binding_mode: str = "explicit_validated_effective_baseline"
+    elif is_enterprise and (enterprise_baseline is not None or enterprise_clauses):
+        assessment_basis = "regulatory_pack_plus_enterprise_baseline"
+        effective_baseline_binding_mode = "not_bound"
+    else:
+        assessment_basis = "regulatory_pack_only"
+        effective_baseline_binding_mode = "not_bound"
+
     provenance = {
         "assessment_mode": effective_mode,
+        "assessment_basis": assessment_basis,
+        "effective_baseline_binding_mode": effective_baseline_binding_mode,
         "assessment_target_type": assessment_target_type,
         "tenant_id": tenant_id,
         "regulatory_pack_id": regulatory_pack.pack_id,
@@ -1068,6 +1164,11 @@ def evaluate_questionnaire_coverage(
         "enterprise_baseline_version": enterprise_baseline.version if (is_enterprise and enterprise_baseline) else None,
         "enterprise_baseline_revision": enterprise_baseline.revision if (is_enterprise and enterprise_baseline) else None,
         "baseline_sha256": enterprise_baseline.baseline_sha256 if (is_enterprise and enterprise_baseline) else None,
+        "effective_baseline_id": effective_baseline.effective_baseline_id if effective_baseline is not None else None,
+        "effective_baseline_sha256": effective_baseline.effective_baseline_sha256 if effective_baseline is not None else None,
+        "reconciled_equivalence_group_count": len(reconciled_equivalence_group_ids),
+        "unresolved_reconciliation_count": len(unresolved_reconciliation_ids),
+        "reconciliation_conflict_gap_count": len(reconciliation_conflict_gaps),
         "applicable_obligation_count": len(applicable_obligation_ids),
         "applicable_enterprise_requirement_count": len(applicable_enterprise_requirement_ids),
         "timestamp": utc_now().isoformat(),
@@ -1078,6 +1179,8 @@ def evaluate_questionnaire_coverage(
         tenant_id=tenant_id,
         created_at=utc_now(),
         assessment_mode=effective_mode,
+        assessment_basis=assessment_basis,
+        effective_baseline_binding_mode=effective_baseline_binding_mode,
         assessment_target_type=assessment_target_type,
         questionnaire_id=question_bank.metadata.questionnaire_id,
         questionnaire_sha256=question_bank.metadata.source_sha256,
@@ -1100,6 +1203,11 @@ def evaluate_questionnaire_coverage(
         enterprise_baseline_id=enterprise_baseline.baseline_id if (is_enterprise and enterprise_baseline) else None,
         enterprise_baseline_version=enterprise_baseline.version if (is_enterprise and enterprise_baseline) else None,
         enterprise_baseline_revision=enterprise_baseline.revision if (is_enterprise and enterprise_baseline) else None,
+        effective_baseline_id=effective_baseline.effective_baseline_id if effective_baseline is not None else None,
+        effective_baseline_sha256=effective_baseline.effective_baseline_sha256 if effective_baseline is not None else None,
+        reconciled_equivalence_group_ids=reconciled_equivalence_group_ids,
+        unresolved_reconciliation_ids=unresolved_reconciliation_ids,
+        reconciliation_conflict_gaps=reconciliation_conflict_gaps,
         enterprise_gaps=enterprise_gaps if is_enterprise else [],
         enterprise_clause_coverage=enterprise_clause_coverage if is_enterprise else [],
         applicable_obligation_ids=applicable_obligation_ids,

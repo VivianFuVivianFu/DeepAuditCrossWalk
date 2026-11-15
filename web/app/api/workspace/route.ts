@@ -304,6 +304,18 @@ export async function POST(request: Request) {
             { status: 400 }
           );
         }
+        if (
+          mode === "regulatory_only" &&
+          (input.effective_baseline_id || input.effective_baseline_sha256)
+        ) {
+          return NextResponse.json(
+            {
+              error:
+                "effective_baseline_id cannot be supplied when assessment_mode is 'regulatory_only'.",
+            },
+            { status: 400 }
+          );
+        }
         let baselineId: string | undefined;
         if (mode === "enterprise_enhanced") {
           baselineId = assertSafeId(
@@ -316,6 +328,24 @@ export async function POST(request: Request) {
           typeof input.use_case === "object" &&
           !Array.isArray(input.use_case)
             ? input.use_case
+            : undefined;
+
+        const effectiveBaselineId =
+          mode !== "regulatory_only" &&
+          input.effective_baseline_id !== undefined &&
+          input.effective_baseline_id !== null &&
+          String(input.effective_baseline_id).trim() !== ""
+            ? assertSafeId(input.effective_baseline_id, "effective_baseline_id")
+            : undefined;
+        const effectiveBaselineSha256 =
+          mode !== "regulatory_only" &&
+          typeof input.effective_baseline_sha256 === "string" &&
+          input.effective_baseline_sha256.trim()
+            ? input.effective_baseline_sha256.trim()
+            : undefined;
+        const asOfDate =
+          typeof input.as_of_date === "string" && input.as_of_date.trim()
+            ? input.as_of_date.trim()
             : undefined;
 
         targetPath = "/v1/assessments/coverage";
@@ -336,6 +366,13 @@ export async function POST(request: Request) {
                   input.enterprise_baseline_version.trim(),
               }
             : {}),
+          ...(effectiveBaselineId
+            ? { effective_baseline_id: effectiveBaselineId }
+            : {}),
+          ...(effectiveBaselineSha256
+            ? { effective_baseline_sha256: effectiveBaselineSha256 }
+            : {}),
+          ...(asOfDate ? { as_of_date: asOfDate } : {}),
         };
         break;
       }
