@@ -137,10 +137,11 @@ class LLMRuntimeConfig(BaseModel):
     # Safety, timeout & budget controls
     request_timeout_seconds: float = Field(default=15.0, ge=0.5, le=120.0)
     max_retries: int = Field(default=2, ge=0, le=5)
-    retry_backoff_seconds: float = Field(default=0.25, ge=0.0, le=5.0)
+    retry_backoff_seconds: float = Field(default=0.25, ge=0.0, le=15.0)
     max_concurrency: int = Field(default=4, ge=1, le=32)
-    max_calls_per_run: int = Field(default=40, ge=1, le=500)
+    max_calls_per_run: int = Field(default=40, ge=1, le=2000)
     max_calls_per_minute: int = Field(default=30, ge=1, le=600)
+    rpm_min_interval_seconds: float = Field(default=0.0, ge=0.0, le=30.0)
     max_input_chars: int = Field(default=4000, ge=256, le=32000)
     max_output_tokens: int = Field(default=1024, ge=128, le=8192)
     top_k_candidates: int = Field(default=5, ge=1, le=15)
@@ -216,6 +217,9 @@ class LLMRuntimeConfig(BaseModel):
             max_concurrency=int(os.getenv("LLM_MAX_CONCURRENCY") or "4"),
             max_calls_per_run=int(os.getenv("LLM_MAX_CALLS_PER_RUN") or "40"),
             max_calls_per_minute=int(os.getenv("LLM_MAX_CALLS_PER_MINUTE") or "30"),
+            rpm_min_interval_seconds=float(
+                os.getenv("LLM_RPM_MIN_INTERVAL_SECONDS") or "0.0"
+            ),
             max_input_chars=int(os.getenv("LLM_MAX_INPUT_CHARS") or "4000"),
             max_output_tokens=int(os.getenv("LLM_MAX_OUTPUT_TOKENS") or "1024"),
         )
@@ -316,11 +320,15 @@ class UsageTelemetry(BaseModel):
     embedding_texts: int = 0
     embedding_cache_hits: int = 0
     reasoning_calls: int = 0
+    api_attempts: int = 0
     fallback_events: int = 0
     quota_or_rate_limit_errors: int = 0
     citation_rejections: int = 0
     prompt_tokens: int = 0
     completion_tokens: int = 0
+    thoughts_tokens: int = 0
+    total_tokens: int = 0
+    estimated_cost_usd: Optional[float] = None
     total_latency_ms: float = 0.0
     lifecycle_warnings: List[ProviderLifecycleWarning] = Field(default_factory=list)
     notes: List[str] = Field(default_factory=list)

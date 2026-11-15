@@ -46,7 +46,7 @@ GEMINI_REASONING_MODEL=gemini-2.5-flash
 GEMINI_EMBEDDING_DIMENSIONS=256
 ```
 
-### Generic OpenAI-Compatible Settings (Private VPC / Ollama / vLLM / Gateway)
+### Generic OpenAI-Compatible Settings (Private VPC / vLLM / Enterprise Gateway)
 ```env
 LLM_BASE_URL=
 LLM_API_KEY=

@@ -2158,9 +2158,8 @@ def get_semantic_matching_status_endpoint(
         "embedding_provider": cfg.embedding_provider.value,
         "reasoning_provider": cfg.reasoning_provider.value,
         "gemini_billing_tier": cfg.gemini_billing_tier,
-        "free_tier_confidential_blocked": (
-            cfg.gemini_billing_tier == "free" and not cfg.allow_confidential_on_free_tier
-        ),
+        "free_tier_confidential_blocked": cfg.gemini_billing_tier == "free",
+        "effective_confidential_gemini_allowed": cfg.gemini_billing_tier == "paid",
         "embedding_model": (
             cfg.gemini_embedding_model
             if cfg.embedding_provider == LLMProviderKind.GEMINI

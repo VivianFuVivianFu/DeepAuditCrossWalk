@@ -33,6 +33,7 @@ from banking_crosswalk.app import app
 from banking_crosswalk.catalog import load_regulatory_pack
 from banking_crosswalk.coverage import evaluate_questionnaire_coverage
 from banking_crosswalk.llm import (
+    CitationVerificationError,
     ConfidentialityPolicyError,
     DataClassification,
     DeploymentEdition,
@@ -44,12 +45,15 @@ from banking_crosswalk.llm import (
     LLMRuntimeConfig,
     OpenAICompatibleProvider,
     ProviderConfigurationError,
+    ProviderOutputError,
     ProviderQuotaError,
     ProviderTimeoutError,
     SemanticMatchingMode,
+    SemanticRelationshipAnalysis,
     build_provider_bundle,
     check_gemini_model_lifecycle,
     enforce_free_tier_confidentiality,
+    probe_gemini_model_availability,
     resolve_provider_api_key,
     sanitize_untrusted_text,
     scrub_secrets,
@@ -677,7 +681,8 @@ def _b64(raw: bytes) -> str:
 def test_e3_07_opt_in_live_gemini_smoke(monkeypatch):
     """Opt-in live verification against real Google Gemini API with synthetic test strings."""
     monkeypatch.setenv("CROSSWALK_EDITION", "self_hosted")
-    monkeypatch.setenv("LLM_MATCHING_MODE", "hybrid")
+    monkeypatch.setenv("SEMANTIC_MATCHING_ENABLED", "true")
+    monkeypatch.setenv("SEMANTIC_MATCHING_MODE", "hybrid")
     monkeypatch.setenv("LLM_EMBEDDING_PROVIDER", "gemini")
     monkeypatch.setenv("LLM_REASONING_PROVIDER", "gemini")
 
@@ -716,6 +721,219 @@ def test_e3_07_opt_in_live_gemini_smoke(monkeypatch):
         obligation=app1_ob,
     )
     print(f"\n[LIVE GEMINI SMOKE] model={bundle.reasoning_provider.model_name} rel={rsn.proposed_relationship.value} conf={rsn.confidence}")
+
+
+def test_e31_llm_status_blocks_confidential_even_with_override(monkeypatch):
+    """E3.1 audit fix: /v1/enterprise/llm-status reflects hard fail-closed free-tier policy."""
+    monkeypatch.setenv("CROSSWALK_EDITION", "self_hosted")
+    monkeypatch.setenv("SEMANTIC_MATCHING_ENABLED", "true")
+    monkeypatch.setenv("SEMANTIC_MATCHING_MODE", "hybrid")
+    monkeypatch.setenv("LLM_EMBEDDING_PROVIDER", "gemini")
+    monkeypatch.setenv("LLM_REASONING_PROVIDER", "gemini")
+    monkeypatch.setenv("GEMINI_BILLING_TIER", "free")
+    monkeypatch.setenv("ALLOW_CONFIDENTIAL_LLM_ON_FREE_TIER", "true")
+    client = TestClient(app)
+
+    status = client.get(
+        "/v1/enterprise/llm-status",
+        headers={"X-Tenant-ID": "t-api", "X-Actor": "analyst.1", "X-Role": "analyst"},
+    )
+    assert status.status_code == 200
+    body = status.json()
+    assert body["free_tier_confidential_blocked"] is True
+    assert body["effective_confidential_gemini_allowed"] is False
+
+
+def test_e31_abbreviated_citation_verification_and_rejection():
+    """E3.1: Valid abbreviated statutory citations pass while fabricated/misquoted citations fail closed."""
+    reg = load_regulatory_pack()
+    app1_ob = next(o for o in reg.obligations if o.obligation_id == "AU-PRIV-APP1-GOV")
+    ndb_ob = next(o for o in reg.obligations if o.obligation_id == "AU-PRIV-NDB-S26WE")
+    clause_text = "Maintain a current privacy policy and notify eligible data breaches within 30 calendar days."
+
+    valid_abbr_app = SemanticRelationshipAnalysis(
+        clause_id="CIT-1",
+        external_obligation_id=app1_ob.obligation_id,
+        cited_obligation_id=app1_ob.obligation_id,
+        cited_provision="APP 1.1-1.6",
+        proposed_relationship=ReconciliationRelationship.PARTIALLY_OVERLAPPING,
+        semantic_relevance="high",
+        confidence=0.82,
+        operational_scope="privacy_governance",
+        required_actions_and_prohibitions=["maintain_privacy_policy"],
+        potential_contradiction=False,
+        supporting_clause_quote="Maintain a current privacy policy",
+        supporting_obligation_quote=app1_ob.concise_obligation_summary[:100],
+        reasoning_summary="Valid abbreviated APP citation.",
+    )
+    validate_semantic_citation(valid_abbr_app, source_text=clause_text, obligation=app1_ob)
+
+    valid_abbr_ndb = valid_abbr_app.model_copy(
+        update={
+            "external_obligation_id": ndb_ob.obligation_id,
+            "cited_obligation_id": ndb_ob.obligation_id,
+            "cited_provision": "ss 26WE-26WL",
+            "supporting_clause_quote": "notify eligible data breaches",
+            "supporting_obligation_quote": ndb_ob.concise_obligation_summary[:100],
+        }
+    )
+    validate_semantic_citation(valid_abbr_ndb, source_text=clause_text, obligation=ndb_ob)
+
+    fabricated_prov = valid_abbr_app.model_copy(update={"cited_provision": "Section 999 Invented"})
+    with pytest.raises(CitationVerificationError):
+        validate_semantic_citation(fabricated_prov, source_text=clause_text, obligation=app1_ob)
+
+    fabricated_quote = valid_abbr_app.model_copy(
+        update={"supporting_clause_quote": "completely invented clause phrase"}
+    )
+    with pytest.raises(CitationVerificationError):
+        validate_semantic_citation(fabricated_quote, source_text=clause_text, obligation=app1_ob)
+
+
+def test_e31_gemini_probe_availability_and_key_redaction(monkeypatch):
+    """E3.1: Probe uses x-goog-api-key header (never query param) and scrubs keys on errors."""
+    monkeypatch.setenv("CROSSWALK_EDITION", "self_hosted")
+    fake_secret = "AIzaSyE31ProbeSecret1234567890abcd"
+    monkeypatch.setenv("GEMINI_API_KEY", fake_secret)
+    monkeypatch.setenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
+    monkeypatch.setenv("GEMINI_REASONING_MODEL", "gemini-2.5-flash")
+    cfg = LLMRuntimeConfig.from_env()
+
+    seen_calls: List[Tuple[str, Dict[str, str]]] = []
+
+    def _mock_get(url: str, headers: Dict[str, str], _timeout: float) -> Tuple[int, str]:
+        assert fake_secret not in url
+        assert headers.get("x-goog-api-key") == fake_secret
+        seen_calls.append((url, headers))
+        if url.endswith("/models/gemini-embedding-001"):
+            return 200, json.dumps(
+                {
+                    "name": "models/gemini-embedding-001",
+                    "supportedGenerationMethods": ["embedContent"],
+                    "inputTokenLimit": 2048,
+                }
+            )
+        if url.endswith("/models/gemini-2.5-flash"):
+            return 404, f"Model not found using key {fake_secret}"
+        return 200, json.dumps(
+            {
+                "models": [
+                    {
+                        "name": "models/gemini-2.5-flash",
+                        "supportedGenerationMethods": ["generateContent"],
+                    },
+                    {
+                        "name": "models/gemini-embedding-001",
+                        "supportedGenerationMethods": ["embedContent"],
+                    },
+                ]
+            }
+        )
+
+    probed = probe_gemini_model_availability(cfg, get_transport=_mock_get)
+    assert len(seen_calls) == 3
+    assert probed["embedding_model"]["available"] is True
+    assert probed["reasoning_model"]["available"] is False
+    assert fake_secret not in probed["reasoning_model"]["error"]
+    assert len(probed["lifecycle_warnings"]) == 1
+
+
+def test_e31_gemini_thinking_tokens_and_max_tokens_finish_reason(monkeypatch):
+    """E3.1: Gemini 2.5 reserves >= 2048 maxOutputTokens, tracks thoughts tokens, and fails on MAX_TOKENS truncation."""
+    monkeypatch.setenv("CROSSWALK_EDITION", "self_hosted")
+    monkeypatch.setenv("SEMANTIC_MATCHING_ENABLED", "true")
+    monkeypatch.setenv("SEMANTIC_MATCHING_MODE", "hybrid")
+    monkeypatch.setenv("LLM_EMBEDDING_PROVIDER", "gemini")
+    monkeypatch.setenv("LLM_REASONING_PROVIDER", "gemini")
+    monkeypatch.setenv("GEMINI_API_KEY", "AIzaSyE31ThinkingTestKey1234567890")
+    monkeypatch.setenv("GEMINI_REASONING_MODEL", "gemini-2.5-flash")
+    monkeypatch.setenv("LLM_MAX_OUTPUT_TOKENS", "512")
+
+    cfg = LLMRuntimeConfig.from_env()
+    reg = load_regulatory_pack()
+    ob = next(o for o in reg.obligations if o.obligation_id == "AU-PRIV-APP1-GOV")
+    clause_text = "Maintain a current privacy policy covering AI personal information handling."
+
+    captured_payloads: List[Dict[str, Any]] = []
+
+    def _ok_transport(_url: str, _headers: Dict[str, str], payload: Dict[str, Any], _timeout: float) -> Tuple[int, str]:
+        captured_payloads.append(payload)
+        analysis = {
+            "clause_id": "TH-1",
+            "external_obligation_id": ob.obligation_id,
+            "cited_obligation_id": ob.obligation_id,
+            "cited_provision": ob.provision,
+            "proposed_relationship": "partially_overlapping",
+            "semantic_relevance": "high",
+            "confidence": 0.85,
+            "operational_scope": "privacy_governance",
+            "required_actions_and_prohibitions": ["maintain_privacy_policy"],
+            "potential_contradiction": False,
+            "missing_requirement_facets": [],
+            "inferred_covered_facets": ["privacy_policy_exists"],
+            "uncertainty_flags": [],
+            "supporting_clause_quote": "Maintain a current privacy policy",
+            "supporting_obligation_quote": ob.concise_obligation_summary[:80],
+            "reasoning_summary": "Grounded match.",
+        }
+        return 200, json.dumps(
+            {
+                "candidates": [
+                    {
+                        "finishReason": "STOP",
+                        "content": {
+                            "parts": [
+                                {"text": "internal thought", "thought": True},
+                                {"text": json.dumps(analysis)},
+                            ]
+                        },
+                    }
+                ],
+                "usageMetadata": {
+                    "promptTokenCount": 310,
+                    "candidatesTokenCount": 140,
+                    "thoughtsTokenCount": 420,
+                    "totalTokenCount": 870,
+                },
+            }
+        )
+
+    bundle = build_provider_bundle(cfg, transport=_ok_transport)
+    rsn = bundle.reasoning_provider.analyze_reconciliation(
+        clause_id="TH-1",
+        clause_text=clause_text,
+        obligation=ob,
+        dimension_summary={},
+        data_classification=DataClassification.PUBLIC_OR_SYNTHETIC,
+        tenant_id="t-think",
+    )
+    assert rsn.proposed_relationship == ReconciliationRelationship.PARTIALLY_OVERLAPPING
+    assert captured_payloads[0]["generationConfig"]["maxOutputTokens"] >= 2048
+    assert bundle.telemetry.prompt_tokens == 310
+    assert bundle.telemetry.completion_tokens == 140
+    assert bundle.telemetry.thoughts_tokens == 420
+    assert bundle.telemetry.total_tokens == 870
+
+    def _truncated_transport(_url: str, _headers: Dict[str, str], _payload: Dict[str, Any], _timeout: float) -> Tuple[int, str]:
+        return 200, json.dumps(
+            {
+                "candidates": [
+                    {"finishReason": "MAX_TOKENS", "content": {"parts": [{"text": '{"clause_id": "TH-2"'}]}}
+                ],
+                "usageMetadata": {"promptTokenCount": 200, "candidatesTokenCount": 50, "thoughtsTokenCount": 1998},
+            }
+        )
+
+    trunc_bundle = build_provider_bundle(cfg, transport=_truncated_transport)
+    with pytest.raises(ProviderOutputError, match="MAX_TOKENS"):
+        trunc_bundle.reasoning_provider.analyze_reconciliation(
+            clause_id="TH-2",
+            clause_text=clause_text,
+            obligation=ob,
+            dimension_summary={},
+            data_classification=DataClassification.PUBLIC_OR_SYNTHETIC,
+            tenant_id="t-think",
+        )
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -1189,3 +1407,72 @@ def test_e3_10_section7_questionnaire_matching_evaluation():
         print(f"  Combined R@1:  {format_metric_ci(r1_all, q_all)} | Combined R@3: {format_metric_ci(r3_all, q_all)}")
         print(f"  Confirmed Covered (Safety Check): {cov.metrics.confirmed_covered} (rate={cov.metrics.confirmed_coverage_rate:.1%}) | Latency={dt_ms:.2f} ms")
         assert r3_all >= 14 if mode != SemanticMatchingMode.DISABLED else r3_all >= 8
+
+
+def test_e31_adversarial_calibration_harness_and_multi_obligation(tmp_path: Path, monkeypatch):
+    """E3.1: Verify 24-case 9-phenomenon adversarial calibration suite + CLI harness in mock mode."""
+    from banking_crosswalk.llm.eval_harness import render_evaluation_markdown, run_evaluation_suite
+    from tests.e31_calibration_dataset import E31_CALIBRATION_CLAUSES
+
+    assert len(E31_CALIBRATION_CLAUSES) == 24
+    dev_phenomena = {c.phenomenon for c in E31_CALIBRATION_CLAUSES if c.split == "dev"}
+    ho_phenomena = {c.phenomenon for c in E31_CALIBRATION_CLAUSES if c.split == "held_out"}
+    assert len(dev_phenomena) == 9
+    assert dev_phenomena == ho_phenomena
+
+    report = run_evaluation_suite(
+        datasets={"e31": E31_CALIBRATION_CLAUSES},
+        provider="mock",
+        split="all",
+        doc_bytes_builder=lambda paras, fmt, title: (
+            _build_pdf_bytes(paras, title)
+            if fmt == "pdf"
+            else (_build_docx_bytes(paras) if fmt == "docx" else ("\n\n".join(paras)).encode("utf-8"))
+        ),
+    )
+    md = render_evaluation_markdown(report)
+    assert "Multi-Ob (Ret/Dec)" in md
+
+    comb_c = report["clause_benchmarks"]["e31"]["combined"]["hybrid"]
+    comb_a = report["clause_benchmarks"]["e31"]["combined"]["disabled"]
+    assert comb_c["false_equivalence"] == 0
+    assert comb_c["false_coverage"] == 0
+    assert comb_c["citation_accurate"] == comb_c["n_clauses"]
+    # Hybrid must preserve multi-obligation recall better than deterministic-only
+    assert comb_c["multi_ob_total"] == 3
+    assert comb_c["multi_ob_decision_hits"] == 3
+    assert comb_c["exact_accuracy"] >= comb_a["exact_accuracy"]
+
+    # Verify CLI script fails closed on --provider gemini without GEMINI_API_KEY
+    import importlib.util
+
+    cli_path = Path(__file__).resolve().parents[2] / "scripts" / "evaluate_e3_live_gemini.py"
+    spec = importlib.util.spec_from_file_location("evaluate_e3_live_gemini", cli_path)
+    assert spec and spec.loader
+    cli_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli_mod)
+
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+    assert cli_mod.main(["--provider", "gemini", "--benchmark", "e31", "--split", "dev"]) == 2
+
+    out_json = tmp_path / "e31_eval.json"
+    out_md = tmp_path / "e31_eval.md"
+    assert (
+        cli_mod.main(
+            [
+                "--provider",
+                "mock",
+                "--benchmark",
+                "e31",
+                "--split",
+                "dev",
+                "--output-json",
+                str(out_json),
+                "--output-md",
+                str(out_md),
+            ]
+        )
+        == 0
+    )
+    assert out_json.exists() and out_md.exists()
