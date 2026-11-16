@@ -479,7 +479,7 @@ def test_coverage_uses_routed_snapshot_and_materialises_questionnaire_gaps():
     assert routed.question_scope == "routed_snapshot"
     assert routed.routing_snapshot_id == routing_snapshot.snapshot_id
     assert routed.questionnaire_sha256
-    assert routed.regulatory_pack_version == "0.1.0"
+    assert routed.regulatory_pack_version == "0.2.0"
     assert "FQ01" in routed.selected_question_ids
     assert routed.selected_question_count > 16
 
@@ -516,7 +516,7 @@ def test_assessment_rejects_caller_approved_mappings_and_uses_versioned_reviews(
     )
     assert mapping.questionnaire_id
     assert mapping.questionnaire_sha256
-    assert mapping.regulatory_pack_version == "0.1.0"
+    assert mapping.regulatory_pack_version == "0.2.0"
     assert mapping.reviewer_role == "risk"
     assert mapping.reviewed_at is not None
 

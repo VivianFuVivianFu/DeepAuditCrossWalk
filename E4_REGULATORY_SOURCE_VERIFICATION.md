@@ -47,3 +47,9 @@ This Phase 1 audit distinguishes strictly between three assurance categories:
 | 15 | `ISO-42001` | ISO/IEC 42001:2023 AI management systems — ISO/IEC | `2023 (Edition 1, December 2023)`; `eff=2023-12-18` | `voluntary` (`voluntary_framework`) | Proprietary Paywall (`NOT_DOWNLOADED_PROPRIETARY_STANDARD`) | `source_unavailable` | Edition 1 publication date (`18 December 2023`) and official ISO catalogue URL verified; normative clause text is commercially licensed and unavailable in repo (independently authored themes only, per copyright guardrails). |
 | 16 | `ISO-23894` | ISO/IEC 23894:2023 AI risk management guidance — ISO/IEC | `2023 (Edition 1, February 2023)`; `eff=2023-02-06` | `voluntary` (`voluntary_framework`) | Proprietary Paywall (`NOT_DOWNLOADED_PROPRIETARY_STANDARD`) | `source_unavailable` | Edition 1 publication date (`6 February 2023`) and official ISO catalogue URL verified; normative clause text unavailable without commercial license (`PRIVATE_REGULATORY_OVERLAY_PATH`). |
 | 17 | `ISO-27001` | ISO/IEC 27001:2022 Information security management systems — ISO/IEC | `2022 (Edition 3, October 2022)`; `eff=2022-10-25` | `voluntary` (`voluntary_framework`) | Proprietary Paywall (`NOT_DOWNLOADED_PROPRIETARY_STANDARD`) | `source_unavailable` | Edition 3 publication date (`25 October 2022`) and official ISO catalogue URL verified; normative clause text and Annex A controls unavailable without commercial license. |
+
+---
+
+## E4.1 Remediation Update (`2026.11-au-banking-v0.2.0`)
+
+Primary-source corrections to `AU-PRIVACY-ACT` (APP 11.3), `APRA-CPS220` (`F2019L00669`), `ASIC-RG271` (Instruments `2020/98` vs `2022/205`), and `EU-AI-ACT` (Regulation (EU) 2026/1744) are documented in [`E41_PRIMARY_SOURCE_EVIDENCE.md`](E41_PRIMARY_SOURCE_EVIDENCE.md) and [`E41_REGULATORY_CORRECTION_CHANGELOG.md`](E41_REGULATORY_CORRECTION_CHANGELOG.md).

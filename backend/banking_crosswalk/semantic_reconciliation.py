@@ -631,7 +631,10 @@ def generate_hybrid_reconciliation_candidates(
         for oid in ctrl.associated_obligation_ids:
             if oid in ob_by_id and all(x.obligation_id != oid for x in control_to_obligations.setdefault(ctrl.control_id, [])):
                 control_to_obligations[ctrl.control_id].append(ob_by_id[oid])
+    non_eq_rels = {MappingRelationship.NON_EQUIVALENT, MappingRelationship.NOT_EQUIVALENT}
     for m in ob_map_cat.mappings:
+        if m.mapping_relationship in non_eq_rels:
+            continue
         if m.obligation_id in ob_by_id and all(x.obligation_id != m.obligation_id for x in control_to_obligations.setdefault(m.control_id, [])):
             control_to_obligations[m.control_id].append(ob_by_id[m.obligation_id])
 
@@ -715,8 +718,12 @@ def generate_hybrid_reconciliation_candidates(
             )
             continue
 
+        non_eq_rels = {MappingRelationship.NON_EQUIVALENT, MappingRelationship.NOT_EQUIVALENT}
         non_rejected_mappings = [
-            m for m in (clause.control_mappings or []) if m.review_status != ClauseReviewStatus.REJECTED
+            m
+            for m in (clause.control_mappings or [])
+            if m.review_status != ClauseReviewStatus.REJECTED
+            and m.relationship not in non_eq_rels
         ]
         # Track whether candidate obligations have strong explicit human/statutory provenance
         # vs auto-tagged keyword heuristic mappings emitted on upload.

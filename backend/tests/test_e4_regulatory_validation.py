@@ -37,13 +37,7 @@ def test_e4_twelve_structural_checks_and_diagnostics():
 
     diag = report["content_assurance_diagnostics"]
     assert diag["human_legal_review_required"] is True
-    assert diag["duplicate_obligation_control_pairs"] == [
-        {
-            "obligation_id": "ISO23894-AI-RISK-PROCESS",
-            "control_id": "CTRL-RISK-FRAMEWORK",
-            "count": 2,
-        }
-    ]
+    assert diag["duplicate_obligation_control_pairs"] == []
     assert "CTRL-AI-GOV-ACCOUNTABILITY" in diag["shared_controls"]
     assert len(diag["shared_controls"]["CTRL-AI-GOV-ACCOUNTABILITY"]) == 5
     assert set(diag["proprietary_unavailable_sources"]) == {
@@ -51,8 +45,8 @@ def test_e4_twelve_structural_checks_and_diagnostics():
         "ISO-23894",
         "ISO-27001",
     }
-    assert len(diag["broad_or_guidance_full_mappings"]) == 9
-    assert len(diag["non_equivalent_with_mapped_facets"]) == 3
+    assert len(diag["broad_or_guidance_full_mappings"]) == 4
+    assert diag["non_equivalent_with_mapped_facets"] == []
 
 
 def test_e4_structural_checks_detect_mapping_and_source_regressions():
@@ -118,7 +112,7 @@ def test_e4_deliverables_complete_and_no_auto_approvals():
 
     with (ROOT / "E4_ATOMIC_OBLIGATION_AUDIT.csv").open(encoding="utf-8", newline="") as f:
         ob_rows = list(csv.DictReader(f))
-    assert len(ob_rows) == 45
+    assert len(ob_rows) == 46
     assert {r["obligation_id"] for r in ob_rows} == {o.obligation_id for o in pack.obligations}
     assert all(r["verification_status"] in VALID_E4_STATUSES for r in ob_rows)
     iso_rows = [r for r in ob_rows if r["source"].startswith("ISO-")]
@@ -133,7 +127,7 @@ def test_e4_deliverables_complete_and_no_auto_approvals():
 
     with (ROOT / "E4_LEGAL_REVIEW_REGISTER.csv").open(encoding="utf-8", newline="") as f:
         reg_rows = list(csv.DictReader(f))
-    assert len(reg_rows) >= 17 + 45 + 55
+    assert len(reg_rows) >= 17 + 46 + 55
     assert all(r["e4_verification_status"] in VALID_E4_STATUSES for r in reg_rows)
     assert all(r["signoff_decision"].startswith("PENDING_") for r in reg_rows)
 

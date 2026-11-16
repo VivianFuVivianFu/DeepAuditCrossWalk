@@ -41,6 +41,7 @@ from .models import (
     EnterpriseBaseline,
     EnterpriseClause,
     EnterprisePolicy,
+    MappingRelationship,
     ObligationControlMappingCatalogue,
     ReconciliationAuditEntry,
     ReconciliationDecision,
@@ -623,19 +624,28 @@ def validate_candidate_relationship(
     ext_actor = _detect_external_actor(ext_text)
     ext_scopes = _detect_operational_scopes(ext_text)
 
-    # Control and facet overlap analysis
-    clause_expanded_controls = _expand_control_ids(m.control_id for m in non_rejected_mappings)
-    approved_expanded_controls = _expand_control_ids(m.control_id for m in approved_mappings)
+    # Control and facet overlap analysis — never allow non_equivalent mappings to credit controls or facets
+    non_eq_rels = {MappingRelationship.NON_EQUIVALENT, MappingRelationship.NOT_EQUIVALENT}
+    clause_expanded_controls = _expand_control_ids(
+        m.control_id for m in non_rejected_mappings if m.relationship not in non_eq_rels
+    )
+    approved_expanded_controls = _expand_control_ids(
+        m.control_id for m in approved_mappings if m.relationship not in non_eq_rels
+    )
     ob_controls = _expand_control_ids([obligation.control_id] if obligation.control_id else [])
     shared_controls = sorted(clause_expanded_controls & ob_controls)
 
     clause_facets: Set[str] = set(clause.control_facets or [])
     for m in approved_mappings:
+        if m.relationship in non_eq_rels:
+            continue
         if obligation.control_id in _expand_control_ids([m.control_id]):
             clause_facets.update(m.mapped_facets or [])
     # Also include proposed mapping facets for candidate comparison, but track approval status separately
     candidate_facets: Set[str] = set(clause_facets)
     for m in proposed_mappings:
+        if m.relationship in non_eq_rels:
+            continue
         if obligation.control_id in _expand_control_ids([m.control_id]):
             candidate_facets.update(m.mapped_facets or [])
 
@@ -1235,13 +1245,16 @@ def rank_reconciliation_candidates_for_clause(
     for ctrl in ctrl_lib.controls:
         for oid in ctrl.associated_obligation_ids:
             control_to_ob_ids.setdefault(ctrl.control_id, set()).add(oid)
+    non_eq_rels = {MappingRelationship.NON_EQUIVALENT, MappingRelationship.NOT_EQUIVALENT}
     for m in ob_map_cat.mappings:
+        if m.mapping_relationship in non_eq_rels:
+            continue
         control_to_ob_ids.setdefault(m.control_id, set()).add(m.obligation_id)
 
     clause_controls = _expand_control_ids(
         m.control_id
         for m in (clause.control_mappings or [])
-        if m.review_status != ClauseReviewStatus.REJECTED
+        if m.review_status != ClauseReviewStatus.REJECTED and m.relationship not in non_eq_rels
     )
     control_linked_ob_ids: Set[str] = set()
     for cid in clause_controls:
@@ -1540,7 +1553,10 @@ def generate_reconciliation_candidates(
                 if all(x.obligation_id != oid for x in existing):
                     existing.append(ob_by_id[oid])
 
+    non_eq_rels = {MappingRelationship.NON_EQUIVALENT, MappingRelationship.NOT_EQUIVALENT}
     for m in ob_map_cat.mappings:
+        if m.mapping_relationship in non_eq_rels:
+            continue
         if m.obligation_id in ob_by_id:
             existing = control_to_obligations.setdefault(m.control_id, [])
             if all(x.obligation_id != m.obligation_id for x in existing):

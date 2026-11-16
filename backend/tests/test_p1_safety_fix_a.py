@@ -932,9 +932,9 @@ def test_scenario_26_historical_library_and_baseline_references_auditable(
     """Scenario 26: Historical library and baseline references remain auditable."""
     controls = load_unified_control_library()
     mappings = load_obligation_control_mappings()
-    assert regulatory_pack.version == "0.1.0"
+    assert regulatory_pack.version == "0.2.0"
     assert len(regulatory_pack.sources) == 17
-    assert len(regulatory_pack.obligations) == 45
+    assert len(regulatory_pack.obligations) == 46
     assert len(controls.controls) == 33
     assert len(mappings.mappings) == 55
     assert regulatory_pack.verified_as_of is not None
