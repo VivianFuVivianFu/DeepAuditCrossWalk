@@ -1,7 +1,7 @@
 {
   "pack_id": "AU-BANKING-REG-PACK-0.1",
-  "version": "0.1.0",
-  "library_release": "2026.10-au-banking-v1",
+  "version": "0.2.0",
+  "library_release": "2026.11-au-banking-v0.2.0",
   "title": "Australian Banking AI Governance Regulatory Crosswalk Pack",
   "verified_as_of": "2026-11-02",
   "jurisdiction_focus": "AU-banking",
@@ -35,7 +35,7 @@
       "licensing_or_copyright_status": "Commonwealth legislative material (CC BY 4.0 under Federal Register of Legislation reuse terms; structured summaries only stored in repo).",
       "extraction_status": "extracted_key_banking_ai_provisions_pending_full_act_review",
       "reviewer_status": "proposed",
-      "notes": "Compilation No. 104 (C2026C00227, 4 June 2026). APP 1.7-1.9 automated-decision privacy-policy transparency amendments under Privacy and Other Legislation Amendment Act 2024 (C2024A00128) commence 10 December 2026.",
+      "notes": "Compilation No. 104 (C2026C00227, 4 June 2026). Under Privacy and Other Legislation Amendment Act 2024 (C2024A00128), APP 11.3 commenced 11 December 2024 (clarifying that 'reasonable steps' under APP 11.1 and APP 11.2 include technical and organisational measures), while APP 1.7-1.9 automated-decision transparency commences 10 December 2026.",
       "temporal_status": "current",
       "supersedes": null,
       "superseded_by": null,
@@ -77,18 +77,18 @@
     {
       "source_id": "APRA-CPS220",
       "title": "CPS 220 Risk Management",
-      "instrument_title": "Prudential Standard CPS 220 Risk Management",
+      "instrument_title": "Prudential Standard CPS 220 Risk Management (Banking, Insurance, Life Insurance and Health Insurance (prudential standard) determination No. 1 of 2019)",
       "regulator_or_publisher": "Australian Prudential Regulation Authority (APRA)",
       "authority": "binding",
       "legal_authority_type": "binding_legal_or_prudential_obligation",
       "jurisdiction": "AU",
-      "version": "Effective 1 January 2015 (harmonised cross-industry standard, current at 2 Nov 2026)",
-      "version_id": "APRA-CPS220-2015-01 (F2017L00695 / F2014L01822)",
-      "publication_date": "2014-12-23",
-      "effective_from": "2015-01-01",
+      "version": "Effective 1 July 2019 (F2019L00669, replacing initial 1 January 2015 determination; current at Nov 2026)",
+      "version_id": "APRA-CPS220-2019-07 (F2019L00669)",
+      "publication_date": "2019-07-01",
+      "effective_from": "2019-07-01",
       "effective_to": "NONE_CURRENT",
       "verified_as_of": "2026-11-02",
-      "source_url": "https://www.apra.gov.au/standards/cps-220",
+      "source_url": "https://www.legislation.gov.au/F2019L00669/latest/details",
       "applicable_entity_types": [
         "ADI",
         "GENERAL_INSURER",
@@ -98,15 +98,22 @@
       ],
       "licence_conditions": "Binding prudential standard made under s 11AF of the Banking Act 1959 (Cth) for Authorised Deposit-taking Institutions (ADIs) and authorised NOHCs.",
       "source_sha256": "NOT_DOWNLOADED_URL_REFERENCED",
-      "source_location": "https://www.apra.gov.au/standards/cps-220",
+      "source_location": "https://www.legislation.gov.au/F2019L00669/latest/details",
       "licensing_or_copyright_status": "APRA Commonwealth copyright (CC BY 3.0 AU / Federal Register of Legislation; paraphrased control summaries only).",
       "extraction_status": "extracted_key_banking_ai_provisions_pending_full_review",
       "reviewer_status": "proposed",
-      "notes": "Also accessible via APRA Digital Prudential Handbook at https://handbook.apra.gov.au/standard/cps-220.",
+      "notes": "F2019L00669 (effective 1 July 2019) is the current Federal Register of Legislation instrument for CPS 220, replacing earlier determinations from 1 Jan 2015 / 2016 / 2017; prior erroneous references F2017L00695 and F2014L01822 were removed in E4.1. Also accessible at https://www.apra.gov.au/standards/cps-220 and https://handbook.apra.gov.au/standard/cps-220.",
+      "historical_versions": [
+        {
+          "version_id": "APRA-CPS220-2015-01",
+          "effective_from": "2015-01-01",
+          "status": "superseded_for_harmonised_text_by_F2019L00669",
+          "notes": "Original ADI CPS 220 Risk Management commencement (1 Jan 2015); superseded by F2019L00669 on 1 July 2019."
+        }
+      ],
       "temporal_status": "current",
       "supersedes": null,
-      "superseded_by": null,
-      "historical_versions": []
+      "superseded_by": null
     },
     {
       "source_id": "APRA-CPS230",
@@ -245,7 +252,7 @@
       "licensing_or_copyright_status": "ASIC Commonwealth copyright (CC BY 3.0 AU; paraphrased control summaries only).",
       "extraction_status": "extracted_key_banking_ai_provisions_pending_full_review",
       "reviewer_status": "proposed",
-      "notes": "Specific paragraphs designated in ASIC Instrument 2020/98 are enforceable requirements; explanatory text remains guidance.",
+      "notes": "Specific paragraphs designated in ASIC Corporations, Credit and Superannuation (Internal Dispute Resolution) Instrument 2020/98 (e.g. RG 271.27, 271.56, 271.118-271.120, 271.165) are enforceable requirements; explanatory text (including RG 271.51 acknowledgement guidance) remains guidance. Mandatory semi-annual IDR data reporting to ASIC arises separately under ASIC Corporations (Internal Dispute Resolution Data Reporting) Instrument 2022/205 (F2022L00430).",
       "temporal_status": "current",
       "supersedes": null,
       "superseded_by": null,
@@ -419,9 +426,9 @@
       "authority": "binding",
       "legal_authority_type": "binding_legal_or_prudential_obligation",
       "jurisdiction": "EU",
-      "version": "CELEX:32024R1689, OJ L 2024/1689, 12.7.2024 (consolidated status verified 2 Nov 2026)",
-      "version_id": "CELEX:32024R1689",
-      "publication_date": "2024-07-12",
+      "version": "CELEX:32024R1689 (OJ L 2024/1689, 12.7.2024) as amended by Regulation (EU) 2026/1744 (CELEX:32026R1744, OJ L 24.7.2026)",
+      "version_id": "CELEX:32024R1689 / CELEX:32026R1744",
+      "publication_date": "2026-07-24",
       "effective_from": "2024-08-01",
       "effective_to": "NONE_CURRENT",
       "verified_as_of": "2026-11-02",
@@ -431,17 +438,24 @@
         "EU_DEPLOYER",
         "NON_EU_ENTITY_WITH_ART2_NEXUS"
       ],
-      "licence_conditions": "Extraterritorial application under Article 2 requires an EU market placement, EU establishment, or output use in the Union, plus a regulated operator role (provider, deployer, importer, distributor) and phased commencement under Article 113 (2 Feb 2025, 2 Aug 2025, 2 Aug 2026, 2 Aug 2027).",
+      "licence_conditions": "Extraterritorial application under Article 2 requires an EU market placement, EU establishment, or output use in the Union, plus a regulated operator role (provider, deployer, importer, distributor) and phased commencement under Article 113 as amended by Regulation (EU) 2026/1744 (2 Feb 2025, 2 Aug 2025, 2 Aug 2026, 2 Dec 2027, 2 Aug 2028).",
       "source_sha256": "NOT_DOWNLOADED_URL_REFERENCED",
       "source_location": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
       "licensing_or_copyright_status": "EUR-Lex European Union public reuse policy (Decision 2011/833/EU; structured summaries only).",
       "extraction_status": "extracted_key_extraterritorial_and_banking_high_risk_provisions",
       "reviewer_status": "proposed",
-      "notes": "Entered into force 1 August 2024. Phased application under Art 113: Chapters I & II (Arts 4 & 5) from 2 Feb 2025; Chapter V GPAI from 2 Aug 2025; general & Annex III high-risk (including creditworthiness Annex III point 5(b)) from 2 Aug 2026; Annex I from 2 Aug 2027.",
+      "notes": "Regulation (EU) 2024/1689 entered into force 1 August 2024 and was amended by Regulation (EU) 2026/1744 (OJ L, 24 Jul 2026, CELEX:32026R1744). Phased Art 113 commencement: Chapters I & II (Arts 4 & 5) 2 Feb 2025; Chapter V GPAI 2 Aug 2025; Article 50 transparency 2 Aug 2026 (unchanged, with transitional GenAI marking to late 2026); Annex III stand-alone high-risk systems (Art 6(2), Arts 9-15, Arts 26-27, Annex III pt 5(b)) deferred to 2 December 2027; Annex I embedded product high-risk systems (Art 6(1)) deferred to 2 August 2028.",
+      "historical_versions": [
+        {
+          "version_id": "CELEX:32024R1689-ORIGINAL-TIMELINE",
+          "effective_from": "2024-08-01",
+          "status": "amended_by_CELEX:32026R1744",
+          "notes": "Original Art 113 schedule had Annex III applying 2 Aug 2026 and Annex I applying 2 Aug 2027 prior to Regulation (EU) 2026/1744."
+        }
+      ],
       "temporal_status": "current",
       "supersedes": null,
-      "superseded_by": null,
-      "historical_versions": []
+      "superseded_by": null
     },
     {
       "source_id": "NIST-AI-RMF",
@@ -979,17 +993,17 @@
       "obligation_id": "AU-PRIV-APP11-SECURITY",
       "source_id": "AU-PRIVACY-ACT",
       "instrument": "Privacy Act 1988 / APP 11",
-      "provision": "Schedule 1, APP 11.1–11.2 ( including APP 11.3 retention commentary )",
-      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 4, clauses 11.1–11.2 (APP 11)",
-      "title": "Security, retention and destruction of personal information",
-      "concise_obligation_summary": "An APP entity must take reasonable technical and organisational steps to protect personal information it holds from misuse, interference, loss and unauthorised access, modification or disclosure, and must destroy or de-identify it once no longer needed for any permitted purpose and not required by law to be retained.",
+      "provision": "Schedule 1, APP 11.1–11.3 (Security, technical & organisational measures, and destruction/de-identification)",
+      "exact_clause_reference": "Privacy Act 1988 (Cth) Sch 1, Part 4, clauses 11.1, 11.2 and 11.3 (as inserted by POLA Act 2024, C2024A00128)",
+      "title": "Security, technical and organisational measures (APP 11.1/11.3), and destruction or de-identification (APP 11.2)",
+      "concise_obligation_summary": "Under APP 11.1, an APP entity holding personal information must take reasonable steps to protect it from misuse, interference and loss, and from unauthorised access, modification or disclosure; APP 11.3 (commenced 11 Dec 2024) clarifies that those reasonable steps include technical and organisational measures. Separately, under APP 11.2, the entity must take reasonable steps to destroy or ensure de-identification of personal information once no longer needed for any permitted APP purpose and not required to be retained by law.",
       "jurisdiction": "AU",
       "layer": "australian_legislation",
       "authority": "binding",
       "legal_authority_classification": "binding_legal_or_prudential_obligation",
       "version": "Compilation 104",
       "source_url": "https://www.legislation.gov.au/C2004A03712/latest/details",
-      "effective_from": "2014-03-12",
+      "effective_from": "2024-12-11",
       "effective_to": "NONE_CURRENT",
       "applicability_key": "privacy_personal_information",
       "applicability_conditions": [
@@ -998,44 +1012,60 @@
       "entity_and_business_scope": "All banking AI systems storing or processing personal information.",
       "assessment_scope": "use_case",
       "control_id": "CTRL-PRIV-SECURITY-RETENTION",
-      "control_objective": "Protect personal information and securely destroy or de-identify it when no longer required.",
+      "control_objective": "Protect personal information via technical and organisational measures (APP 11.1/11.3) and securely destroy or de-identify it when no longer required (APP 11.2).",
       "coverage_facets": [
-        "security_controls_defined",
+        "technical_security_measures_implemented",
+        "organisational_security_measures_implemented",
         "retention_schedule_applied",
         "destruction_or_deidentification_verified"
       ],
       "evidence_requirements": [
-        "Security control design",
-        "Retention schedule",
-        "Deletion or de-identification record"
+        "Technical security architecture & access/encryption controls (APP 11.1/11.3)",
+        "Organisational governance, training & vendor security procedures (APP 11.1/11.3)",
+        "Approved retention schedule (APP 11.2)",
+        "Deletion or de-identification verification record (APP 11.2)"
       ],
       "facet_keywords": {
-        "security_controls_defined": [
+        "technical_security_measures_implemented": [
+          "technical measures",
+          "encryption",
+          "encrypted",
+          "access controls",
           "information security controls",
-          "protect personal information",
-          "access controls"
+          "protect personal information"
+        ],
+        "organisational_security_measures_implemented": [
+          "organisational measures",
+          "organizational measures",
+          "role-based",
+          "security governance",
+          "staff training",
+          "access review procedure"
         ],
         "retention_schedule_applied": [
           "retention period",
           "retention schedule",
+          "retention-schedule",
           "data lifecycle"
         ],
         "destruction_or_deidentification_verified": [
           "destroy",
+          "destruction",
           "delete",
           "de-identify",
           "data disposal"
         ]
       },
       "suggested_questions": {
-        "security_controls_defined": "Are security controls for all personal-information assets used by the AI system documented and implemented?",
-        "retention_schedule_applied": "Is an approved retention period applied to prompts, outputs, logs and source data containing personal information?",
-        "destruction_or_deidentification_verified": "Is destruction or de-identification verified when personal information is no longer required?"
+        "technical_security_measures_implemented": "Are technical security measures (access control, encryption, segmentation, logging) implemented for personal-information assets used by the AI system per APP 11.1 and APP 11.3?",
+        "organisational_security_measures_implemented": "Are organisational security measures (policies, role responsibilities, staff training, vendor oversight) implemented for personal-information assets per APP 11.1 and APP 11.3?",
+        "retention_schedule_applied": "Is an approved retention period applied to prompts, outputs, logs and source data containing personal information under APP 11.2?",
+        "destruction_or_deidentification_verified": "Is destruction or de-identification verified when personal information is no longer required under APP 11.2?"
       },
-      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 11.1–11.2",
-      "source_location": "Schedule 1, Part 4 — Security of personal information",
+      "source_citation": "Privacy Act 1988 (Cth) Sch 1, APP 11.1, APP 11.2 and APP 11.3",
+      "source_location": "Schedule 1, Part 4 — Security of personal information (APP 11.3 inserted by C2024A00128)",
       "extraction_confidence": "high",
-      "extraction_uncertainty": "Technical feasibility of deleting personal information embedded in trained model weights vs. RAG vector indices requires architectural review.",
+      "extraction_uncertainty": "APP 11.3 commenced 11 December 2024 clarifying APP 11.1/11.2 'reasonable steps' include technical and organisational measures; technical feasibility of deleting personal information embedded in trained model weights vs. RAG vector indices requires architectural review.",
       "review_status": "proposed",
       "reviewer_status": "proposed",
       "temporal_status": "current",
@@ -1388,9 +1418,9 @@
       "layer": "banking_prudential",
       "authority": "binding",
       "legal_authority_classification": "binding_legal_or_prudential_obligation",
-      "version": "current at 27 October 2026",
-      "source_url": "https://www.apra.gov.au/standards/cps-220",
-      "effective_from": "2015-01-01",
+      "version": "Effective 1 July 2019 (F2019L00669)",
+      "source_url": "https://www.legislation.gov.au/F2019L00669/latest/details",
+      "effective_from": "2019-07-01",
       "effective_to": "NONE_CURRENT",
       "applicability_key": "apra_entity",
       "applicability_conditions": [
@@ -1453,17 +1483,17 @@
       "obligation_id": "AU-APRA-CPS220-REVIEW",
       "source_id": "APRA-CPS220",
       "instrument": "APRA CPS 220",
-      "provision": "CPS 220 paras 37–47, 51 (Risk management function, independent review and declaration)",
-      "exact_clause_reference": "Prudential Standard CPS 220 Risk Management, paragraphs 37–47 and 51",
+      "provision": "CPS 220 paras 38–51 & Attachment A (Risk management function, independent review and Risk Management Declaration)",
+      "exact_clause_reference": "Prudential Standard CPS 220 Risk Management (F2019L00669), paragraphs 38–43 (Risk Management Function), 45–48 (Review of the Risk Management Framework), 49–51 and Attachment A (Risk Management Declaration)",
       "title": "Independent review and risk management challenge for AI governance",
-      "concise_obligation_summary": "An APRA-regulated institution must maintain a designated risk management function providing effective challenge, subject its risk management framework to regular appropriateness, effectiveness and comprehensiveness reviews by operationally independent persons, and support the Board's annual Risk Management Declaration.",
+      "concise_obligation_summary": "An APRA-regulated institution must maintain a designated risk management function providing effective challenge (paras 38–43), subject its risk management framework to annual internal/external audit review (para 45) and at least three-yearly comprehensive review by operationally independent persons (paras 46–48), and support the Board's annual Risk Management Declaration including any qualifications (paras 49–51 & Attachment A).",
       "jurisdiction": "AU",
       "layer": "banking_prudential",
       "authority": "binding",
       "legal_authority_classification": "binding_legal_or_prudential_obligation",
-      "version": "current at 27 October 2026",
-      "source_url": "https://www.apra.gov.au/standards/cps-220",
-      "effective_from": "2015-01-01",
+      "version": "Effective 1 July 2019 (F2019L00669)",
+      "source_url": "https://www.legislation.gov.au/F2019L00669/latest/details",
+      "effective_from": "2019-07-01",
       "effective_to": "NONE_CURRENT",
       "applicability_key": "apra_entity",
       "applicability_conditions": [
@@ -1505,10 +1535,10 @@
         "independent_framework_review_covers_ai": "Are AI risk governance and model/agent controls included within the scope of independent CPS 220 reviews?",
         "material_ai_control_gaps_escalated_for_declaration": "Are unresolved material AI control deficiencies escalated into the CPS 220 annual Risk Management Declaration process?"
       },
-      "source_citation": "APRA Prudential Standard CPS 220, paras 37–47, 51",
-      "source_location": "CPS 220 Risk Management Function, Review of the Risk Management Framework, and Risk Management Declaration",
+      "source_citation": "APRA Prudential Standard CPS 220 (F2019L00669), paras 38–51 & Attachment A",
+      "source_location": "CPS 220 Risk Management Function (paras 38–43), Review of the Risk Management Framework (paras 45–48), and Risk Management Declaration (paras 49–51, Attachment A)",
       "extraction_confidence": "high",
-      "extraction_uncertainty": "None; CPS 220 paras 45–47 mandate comprehensive review at least every three years.",
+      "extraction_uncertainty": "Note para 37 covers policy revision-date monitoring rather than the Risk Management Function; CPS 220 para 45 covers annual audit review and paras 46–48 cover at least three-yearly comprehensive independent review.",
       "review_status": "proposed",
       "reviewer_status": "proposed",
       "temporal_status": "current",
@@ -2222,10 +2252,10 @@
       "obligation_id": "AU-ASIC-RG271-COMPLAINT",
       "source_id": "ASIC-RG271",
       "instrument": "ASIC RG 271",
-      "provision": "RG 271 paras 271.27–271.32, 271.51–271.68 (Enforceable IDR complaint handling and response)",
-      "exact_clause_reference": "ASIC Regulatory Guide 271 Internal dispute resolution, paragraphs 271.27–271.32 and 271.51–271.68 (ASIC Instrument 2020/98)",
+      "provision": "RG 271 enforceable paras 271.27, 271.56 & response requirements (ASIC Instrument 2020/98); guidance paras 271.51–271.55",
+      "exact_clause_reference": "ASIC Regulatory Guide 271 Internal dispute resolution (Instrument 2020/98 enforceable provisions: paras 271.27, 271.53–271.68; guidance: paras 271.28–271.32, 271.51)",
       "title": "Recognise, record and respond to complaints fairly and on time",
-      "concise_obligation_summary": "A financial firm must recognise any expression of dissatisfaction made to or about the firm where a response or resolution is explicitly or implicitly expected (RG 271.27), record all complaints, handle them fairly and objectively, and provide a compliant written IDR response within 30 calendar days (RG 271.56) including reasons and AFCA escalation details.",
+      "concise_obligation_summary": "Under enforceable ASIC Instrument 2020/98 provisions, a financial firm must recognise any expression of dissatisfaction where a response or resolution is explicitly or implicitly expected (RG 271.27), record complaints, and provide a compliant written IDR response within 30 calendar days (RG 271.56; shorter 21-day credit hardship/default limits). RG 271.51 acknowledgement within 24 hours / 1 business day is non-enforceable regulatory guidance rather than an enforceable Instrument 2020/98 clause.",
       "jurisdiction": "AU",
       "layer": "financial_conduct",
       "authority": "enforceable_guidance",
@@ -2291,7 +2321,7 @@
         "response_content_complete": "Does every required written IDR response contain reasons, rights and AFCA information appropriate to the matter?",
         "human_escalation_available": "Can a customer obtain timely human complaint review without the AI treating its own output as final?"
       },
-      "source_citation": "ASIC RG 271, paras 271.27–271.32, 271.51–271.68; ASIC Instrument 2020/98",
+      "source_citation": "ASIC RG 271 (ASIC Instrument 2020/98 enforceable paras e.g. 271.27, 271.56; guidance para 271.51)",
       "source_location": "RG 271 Section B (Definition of complaint) and Section C (Maximum timeframes and IDR responses)",
       "extraction_confidence": "high",
       "extraction_uncertainty": "Shorter timeframes apply to credit hardship/default notice complaints (21 calendar days under RG 271.64).",
@@ -2305,10 +2335,10 @@
       "obligation_id": "AU-ASIC-RG271-SYSTEMIC",
       "source_id": "ASIC-RG271",
       "instrument": "ASIC RG 271",
-      "provision": "RG 271 paras 271.116–271.124, 271.165–271.182 (Systemic issues and IDR data reporting)",
-      "exact_clause_reference": "ASIC Regulatory Guide 271 Internal dispute resolution, paragraphs 271.116–271.124 and 271.165–271.182 (ASIC Instrument 2020/98)",
-      "title": "Identify and remediate systemic issues from complaints",
-      "concise_obligation_summary": "Boards and senior management must ensure systemic issues are identified through complaint data analysis, escalated promptly, investigated for root cause, and remediated for all affected consumers, with regular IDR reporting to the Board/executive committees and ASIC.",
+      "provision": "RG 271 enforceable paras 271.118–271.120 & 271.165 (Systemic issue escalation, Board accountability & timely implementation; ASIC Instrument 2020/98)",
+      "exact_clause_reference": "ASIC Regulatory Guide 271 Internal dispute resolution, enforceable paragraphs 271.118–271.120 and 271.165 (ASIC Instrument 2020/98); excludes mandatory IDR data reporting under separate ASIC Instrument 2022/205 (F2022L00430)",
+      "title": "Identify, escalate and remediate systemic issues from complaints",
+      "concise_obligation_summary": "Under enforceable ASIC Instrument 2020/98 provisions, Boards and senior management must ensure systemic issues are identified through complaint analysis, escalated promptly, investigated and remediated for affected consumers (RG 271.118–271.120), with timely outcome implementation (RG 271.165). Note: RG 271.116 concerns credit hardship enforcement postponement, and mandatory semi-annual IDR data reporting to ASIC arises under separate Instrument 2022/205 (tracked as a candidate requirement).",
       "jurisdiction": "AU",
       "layer": "financial_conduct",
       "authority": "enforceable_guidance",
@@ -2365,10 +2395,10 @@
         "systemic_issues_escalated": "Are suspected systemic issues escalated to accountable risk and product owners?",
         "affected_customers_remediated": "Does the process identify and remediate other customers affected by the same AI-related issue?"
       },
-      "source_citation": "ASIC RG 271, paras 271.116–271.124, 271.165–271.182; ASIC Instrument 2020/98",
-      "source_location": "RG 271 Section D (Systemic issues) and Section F (Accountability and reporting)",
+      "source_citation": "ASIC RG 271 enforceable paras 271.118–271.120 & 271.165 (ASIC Instrument 2020/98)",
+      "source_location": "RG 271 Section D (Systemic issues) and Section F (Accountability)",
       "extraction_confidence": "high",
-      "extraction_uncertainty": "None; RG 271.117–271.121 are enforceable requirements under ASIC Instrument 2020/98.",
+      "extraction_uncertainty": "Mandatory semi-annual ASIC IDR data reporting obligations arise under separate legislative instrument ASIC Corporations (Internal Dispute Resolution Data Reporting) Instrument 2022/205 (F2022L00430), not Instrument 2020/98; RG 271.116 relates to hardship/enforcement postponement rather than systemic issues.",
       "review_status": "proposed",
       "reviewer_status": "proposed",
       "temporal_status": "current",
@@ -2989,17 +3019,17 @@
       "obligation_id": "EU-AIA-ART2-HIGH-RISK",
       "source_id": "EU-AI-ACT",
       "instrument": "EU AI Act",
-      "provision": "Articles 2, 3, 6, 9–15, Annex III (Territorial scope and high-risk AI system requirements)",
-      "exact_clause_reference": "Regulation (EU) 2024/1689 Articles 2, 3, 6, 9–15 and Annex III",
+      "provision": "Articles 2, 3, 6, 9–15, 113 & Annex III (Territorial scope and high-risk AI system requirements, amended by Reg (EU) 2026/1744)",
+      "exact_clause_reference": "Regulation (EU) 2024/1689 Articles 2, 3, 6, 9–15, 113 and Annex III, as amended by Regulation (EU) 2026/1744",
       "title": "Conditional EU AI Act high-risk governance controls",
-      "concise_obligation_summary": "Where an Australian bank places an AI system on the EU market, has an EU establishment, or has the AI system's output used in the Union (Art 2), and acts in a regulated operator role for a high-risk AI system (Art 6 & Annex III), it must satisfy applicable risk-management, data-governance, technical-documentation, automatic-logging, transparency, human-oversight and accuracy/robustness/cybersecurity requirements (Arts 9–15).",
+      "concise_obligation_summary": "Where an Australian bank places an AI system on the EU market, has an EU establishment, or has the AI system's output used in the Union (Art 2), and acts in a regulated operator role for a high-risk AI system (Art 6 & Annex III / Annex I), it must satisfy applicable risk-management, data-governance, technical-documentation, automatic-logging, transparency, human-oversight and accuracy/robustness/cybersecurity requirements (Arts 9–15). Under Regulation (EU) 2026/1744, Annex III high-risk systems apply from 2 Dec 2027 and Annex I embedded high-risk systems apply from 2 Aug 2028.",
       "jurisdiction": "EU",
       "layer": "eu_ai_act",
       "authority": "binding",
       "legal_authority_classification": "binding_legal_or_prudential_obligation",
-      "version": "Regulation (EU) 2024/1689",
+      "version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
       "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
-      "effective_from": "2026-08-02",
+      "effective_from": "2027-12-02",
       "effective_to": "NONE_CURRENT",
       "applicability_key": "eu_ai_act_nexus",
       "applicability_conditions": [
@@ -3060,10 +3090,10 @@
         "risk_management_and_logging": "If high-risk obligations apply, are the required risk-management, documentation and logging controls implemented?",
         "human_oversight_and_robustness": "If high-risk obligations apply, are human oversight, accuracy, robustness and cybersecurity controls implemented and evidenced?"
       },
-      "source_citation": "Regulation (EU) 2024/1689 Arts 2, 6, 9–15, 113 & Annex III",
-      "source_location": "Chapters I, III and XII of Regulation (EU) 2024/1689",
+      "source_citation": "Regulation (EU) 2024/1689 Arts 2, 6, 9–15, 113 & Annex III (as amended by Regulation (EU) 2026/1744)",
+      "source_location": "Chapters I, III and XII of Regulation (EU) 2024/1689 (amended by CELEX:32026R1744)",
       "extraction_confidence": "high",
-      "extraction_uncertainty": "Never applies by default to a purely domestic Australian banking use case; extraterritorial nexus under Art 2(1)(c) ('output of the AI system is used in the Union') requires specific legal analysis.",
+      "extraction_uncertainty": "Never applies by default to a purely domestic Australian banking use case; extraterritorial nexus under Art 2(1)(c) requires specific legal analysis. Annex III high-risk systems apply from 2 December 2027 (Annex I embedded high-risk systems from 2 August 2028) under Regulation (EU) 2026/1744.",
       "review_status": "proposed",
       "reviewer_status": "proposed",
       "legal_note": "Never apply by default to an Australian use case; Article 2 nexus, role, system classification and phased commencement must be confirmed.",
@@ -3144,37 +3174,38 @@
       "obligation_id": "EU-AIA-ART26-27-DEPLOYER-CREDIT",
       "source_id": "EU-AI-ACT",
       "instrument": "EU AI Act",
-      "provision": "Articles 26, 27, 50 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA)",
-      "exact_clause_reference": "Regulation (EU) 2024/1689 Articles 26, 27, 50 and Annex III point 5(b)",
-      "title": "EU AI Act deployer obligations for creditworthiness AI, log retention and FRIA",
-      "concise_obligation_summary": "Where an entity within Article 2 scope acts as a deployer of a high-risk AI system evaluating creditworthiness or credit scores of natural persons (Annex III point 5(b), excluding fraud detection), it must use the system per instructions, assign competent human oversight, ensure input data relevance, retain automatically generated logs for at least 6 months (or per financial law), inform affected individuals, and perform a Fundamental Rights Impact Assessment (Art 27) prior to deployment.",
+      "provision": "Articles 26, 27 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA, deferred to 2 Dec 2027)",
+      "exact_clause_reference": "Regulation (EU) 2024/1689 Articles 26, 27 and Annex III point 5(b), as amended by Regulation (EU) 2026/1744",
+      "title": "EU AI Act deployer obligations for creditworthiness AI, human oversight, log retention and FRIA",
+      "concise_obligation_summary": "Where an entity within Article 2 scope acts as a deployer of a high-risk AI system evaluating creditworthiness or credit scores of natural persons (Annex III point 5(b), excluding fraud detection), it must use the system per instructions, assign competent human oversight, ensure input data relevance, retain automatically generated logs for at least 6 months (or per financial law), inform affected individuals, and perform a Fundamental Rights Impact Assessment (Art 27) prior to deployment (applicable from 2 December 2027 under Regulation (EU) 2026/1744).",
       "jurisdiction": "EU",
       "layer": "eu_ai_act",
       "authority": "binding",
       "legal_authority_classification": "binding_legal_or_prudential_obligation",
-      "version": "Regulation (EU) 2024/1689",
+      "version": "Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744",
       "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
-      "effective_from": "2026-08-02",
+      "effective_from": "2027-12-02",
       "effective_to": "NONE_CURRENT",
       "applicability_key": "eu_ai_act_deployer_high_risk",
       "applicability_conditions": [
         "Article 2(1) EU territorial nexus is met",
-        "Bank acts as a deployer (Art 3(4)) of an Annex III point 5(b) creditworthiness/credit-scoring AI system (or Art 50 interactive AI system)"
+        "Bank acts as a deployer (Art 3(4)) of an Annex III point 5(b) creditworthiness/credit-scoring AI system (applicable from 2 December 2027 under Regulation (EU) 2026/1744)"
       ],
       "entity_and_business_scope": "Banking creditworthiness/credit-scoring AI workflows with EU territorial nexus.",
       "assessment_scope": "use_case",
       "control_id": "CTRL-EU-HIGH-RISK",
-      "control_objective": "Satisfy EU AI Act Article 26 deployer duties, 6-month minimum log retention, Article 27 Fundamental Rights Impact Assessment, and Article 50 user transparency where EU scope applies.",
+      "control_objective": "Satisfy EU AI Act Article 26 deployer human oversight, 6-month minimum automatic log retention, and Article 27 Fundamental Rights Impact Assessment where EU scope applies.",
       "coverage_facets": [
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "deployer_human_oversight_and_6month_log_retention",
-        "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "deployer_human_oversight_assigned",
+        "automatic_logs_retained_6months",
+        "article27_fundamental_rights_impact_assessment_completed"
       ],
       "evidence_requirements": [
         "Annex III point 5(b) classification memo",
-        "Article 27 Fundamental Rights Impact Assessment (FRIA)",
-        "6-month+ automated log retention configuration"
+        "Competent deployer human oversight assignment & Art 26 instruction controls",
+        "6-month+ automated log retention configuration (Art 26(6))",
+        "Article 27 Fundamental Rights Impact Assessment (FRIA)"
       ],
       "facet_keywords": {
         "annex3_5b_credit_vs_fraud_exemption_assessed": [
@@ -3183,36 +3214,98 @@
           "Annex III",
           "financial fraud"
         ],
-        "deployer_human_oversight_and_6month_log_retention": [
+        "deployer_human_oversight_assigned": [
           "Article 26",
-          "six months",
           "deployer obligations",
-          "automatic logs"
+          "human oversight",
+          "competent natural person"
+        ],
+        "automatic_logs_retained_6months": [
+          "six months",
+          "6 months",
+          "automatic logs",
+          "Article 26(6)"
         ],
         "article27_fundamental_rights_impact_assessment_completed": [
           "fundamental rights impact assessment",
           "FRIA",
           "Article 27"
-        ],
-        "article50_ai_interaction_transparency_provided": [
-          "Article 50",
-          "interacting with an AI system",
-          "synthetic content"
         ]
       },
       "suggested_questions": {
         "annex3_5b_credit_vs_fraud_exemption_assessed": "Where EU scope applies, has Legal assessed whether the AI system evaluates natural-person creditworthiness under Annex III point 5(b) or falls within the financial-fraud detection carve-out?",
-        "deployer_human_oversight_and_6month_log_retention": "Where Article 26 applies, are competent human oversight, input-data relevance checks and at least 6-month automatic log retention enforced?",
-        "article27_fundamental_rights_impact_assessment_completed": "Where Article 27 applies to high-risk creditworthiness AI, has a Fundamental Rights Impact Assessment (FRIA) been completed?",
-        "article50_ai_interaction_transparency_provided": "Where Article 50 applies, are natural persons informed that they are interacting with an AI system?"
+        "deployer_human_oversight_assigned": "Where Article 26 applies, is competent human oversight with authority and training assigned to oversee high-risk AI operation?",
+        "automatic_logs_retained_6months": "Where Article 26(6) applies, are automatically generated high-risk AI logs retained for at least 6 months (or longer if required by financial law)?",
+        "article27_fundamental_rights_impact_assessment_completed": "Where Article 27 applies to high-risk creditworthiness AI, has a Fundamental Rights Impact Assessment (FRIA) been completed?"
       },
-      "source_citation": "Regulation (EU) 2024/1689 Arts 26, 27, 50 & Annex III point 5(b)",
-      "source_location": "Chapter III Section 3 (Arts 26–27), Chapter IV (Art 50) and Annex III",
+      "source_citation": "Regulation (EU) 2024/1689 Arts 26, 27 & Annex III point 5(b) (as amended by Regulation (EU) 2026/1744)",
+      "source_location": "Chapter III Section 3 (Arts 26–27) and Annex III",
       "extraction_confidence": "high",
-      "extraction_uncertainty": "Note ongoing EU Omnibus legislative discussions regarding Annex III high-risk transition timelines; baseline statutory date in Art 113 is 2 August 2026.",
+      "extraction_uncertainty": "Regulation (EU) 2026/1744 (CELEX:32026R1744, OJ L 24.7.2026) deferred Annex III high-risk commencement (Art 6(2), Arts 26–27, Annex III pt 5(b)) from 2 August 2026 to 2 December 2027 (Annex I to 2 August 2028); Article 50 transparency remains 2 August 2026 in EU-AIA-ART50-TRANSPARENCY.",
       "review_status": "proposed",
       "reviewer_status": "proposed",
-      "legal_note": "Conditional on EU Article 2 territorial nexus and deployer role.",
+      "legal_note": "Conditional on EU Article 2 territorial nexus, deployer role, and 2 December 2027 Annex III commencement.",
+      "temporal_status": "current",
+      "supersedes": null,
+      "superseded_by": null
+    },
+    {
+      "obligation_id": "EU-AIA-ART50-TRANSPARENCY",
+      "source_id": "EU-AI-ACT",
+      "instrument": "EU AI Act",
+      "provision": "Article 50 & Article 113 (Transparency obligations for certain AI systems, applicable from 2 August 2026)",
+      "exact_clause_reference": "Regulation (EU) 2024/1689 Article 50 and Article 113 (not deferred by Regulation (EU) 2026/1744)",
+      "title": "EU AI Act Article 50 transparency for AI interactions and synthetic content",
+      "concise_obligation_summary": "Where Article 2 EU territorial scope applies, providers and deployers of interactive AI, emotion-recognition/biometric-categorisation systems, or synthetic audio/image/video/text generators must satisfy Article 50 transparency and machine-readable marking/disclosure duties from 2 August 2026 (unchanged by Regulation (EU) 2026/1744's Annex III/I high-risk deferral).",
+      "jurisdiction": "EU",
+      "layer": "eu_ai_act",
+      "authority": "binding",
+      "legal_authority_classification": "binding_legal_or_prudential_obligation",
+      "version": "Regulation (EU) 2024/1689",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "effective_from": "2026-08-02",
+      "effective_to": "NONE_CURRENT",
+      "applicability_key": "eu_ai_act_transparency",
+      "applicability_conditions": [
+        "Article 2(1) EU territorial nexus is met",
+        "Bank provides or deploys interactive AI, synthetic-content AI, or other Article 50 scoped AI systems (applicable from 2 August 2026)"
+      ],
+      "entity_and_business_scope": "Customer-facing interactive AI agents and synthetic-content workflows with EU territorial nexus.",
+      "assessment_scope": "use_case",
+      "control_id": "CTRL-EU-HIGH-RISK",
+      "control_objective": "Provide Article 50 interaction and synthetic-content transparency disclosures where EU territorial scope applies.",
+      "coverage_facets": [
+        "article50_ai_interaction_transparency_provided",
+        "synthetic_content_marking_and_disclosure_applied"
+      ],
+      "evidence_requirements": [
+        "Customer-facing AI interaction disclosure wording / UI proof (Art 50(1))",
+        "Synthetic content marking / deepfake or public-interest text disclosure controls (Art 50(2)-(4))"
+      ],
+      "facet_keywords": {
+        "article50_ai_interaction_transparency_provided": [
+          "Article 50",
+          "interacting with an AI system",
+          "AI transparency disclosure"
+        ],
+        "synthetic_content_marking_and_disclosure_applied": [
+          "synthetic content",
+          "machine-readable marking",
+          "watermark",
+          "deepfake"
+        ]
+      },
+      "suggested_questions": {
+        "article50_ai_interaction_transparency_provided": "Where EU Article 50 applies, are natural persons informed in a timely, clear manner that they are interacting with an AI system?",
+        "synthetic_content_marking_and_disclosure_applied": "Where EU Article 50(2)-(4) applies, are synthetic outputs appropriately marked/disclosed as artificially generated or manipulated?"
+      },
+      "source_citation": "Regulation (EU) 2024/1689 Art 50 & Art 113 (commenced 2 August 2026)",
+      "source_location": "Chapter IV (Article 50) and Chapter XII (Article 113)",
+      "extraction_confidence": "high",
+      "extraction_uncertainty": "Article 50 applies from 2 August 2026 (transitional grace for legacy pre-existing GenAI providers under Reg (EU) 2026/1744 applies where triggered); requires Article 2 territorial nexus.",
+      "review_status": "proposed",
+      "reviewer_status": "proposed",
+      "legal_note": "Conditional on EU Article 2 territorial nexus; Article 50 remains effective 2 August 2026 despite Annex III deferral.",
       "temporal_status": "current",
       "supersedes": null,
       "superseded_by": null

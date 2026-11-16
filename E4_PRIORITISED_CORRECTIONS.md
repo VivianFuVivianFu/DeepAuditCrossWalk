@@ -65,3 +65,9 @@
    - Replace `NOT_DOWNLOADED_URL_REFERENCED` across the 14 open government/EU/NIST sources with verified local snapshot SHA-256 digests during periodic compliance release sign-off (consistent with E4's no-crawler, one-time QA policy).
 3. **Add P2 Supporting Prudential & Data-Sharing Rules:**
    - *APRA CPS 511 Remuneration*, *APRA CPG 230*, *APRA CPG 234*, *Consumer Data Right (CCA Pt IVD)*, and *Spam Act 2003*.
+
+---
+
+## E4.1 Remediation Update (`2026.11-au-banking-v0.2.0`)
+
+P0 findings C1–C11 from this E4 register have been remediated in **E4.1** (`regulatory_pack` `0.2.0`, `obligation_control_mappings` `1.1.0`); see [`E41_REGULATORY_CORRECTION_CHANGELOG.md`](E41_REGULATORY_CORRECTION_CHANGELOG.md), [`E41_CONTROL_MAPPING_REMEDIATION.md`](E41_CONTROL_MAPPING_REMEDIATION.md), and [`E41_CANDIDATE_REQUIREMENTS_REGISTER.csv`](E41_CANDIDATE_REQUIREMENTS_REGISTER.csv). Remaining open legal review and deferred items are tracked in [`E41_PENDING_LEGAL_REVIEW.md`](E41_PENDING_LEGAL_REVIEW.md).

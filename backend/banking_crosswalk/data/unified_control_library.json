@@ -195,12 +195,13 @@
     {
       "control_id": "CTRL-PRIV-SECURITY-RETENTION",
       "domain": "Information security",
-      "title": "Personal Information Security, De-identification & Retention",
-      "control_objective": "Protect personal information in AI prompts, retrieval stores, logs and outputs from misuse, interference and unauthorised access, and destroy or de-identify data when no longer needed.",
-      "objective": "Protect personal information in AI prompts, retrieval stores, logs and outputs from misuse, interference and unauthorised access, and destroy or de-identify data when no longer needed.",
+      "title": "Personal Information Technical & Organisational Security (APP 11.1/11.3), De-identification & Retention (APP 11.2)",
+      "control_objective": "Protect personal information in AI prompts, retrieval stores, logs and outputs through technical and organisational measures (APP 11.1 & APP 11.3), and destroy or de-identify data when no longer required (APP 11.2).",
+      "objective": "Protect personal information in AI prompts, retrieval stores, logs and outputs through technical and organisational measures (APP 11.1 & APP 11.3), and destroy or de-identify data when no longer required (APP 11.2).",
       "assessment_scope": "use_case",
       "control_facets": [
-        "security_controls_defined",
+        "technical_security_measures_implemented",
+        "organisational_security_measures_implemented",
         "retention_schedule_applied",
         "destruction_or_deidentification_verified"
       ],
@@ -214,9 +215,10 @@
         "AU-PRIVACY-ACT"
       ],
       "evidence_requirements": [
-        "Security control design",
-        "Retention schedule",
-        "Deletion or de-identification record"
+        "Technical security architecture & access/encryption controls (APP 11.1/11.3)",
+        "Organisational governance, training & vendor security procedures (APP 11.1/11.3)",
+        "Approved retention schedule (APP 11.2)",
+        "Deletion or de-identification verification record (APP 11.2)"
       ],
       "testing_and_assurance_guidance": "Owner: Information Security & Data Governance | Frequency: Quarterly access/retention audit",
       "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",
@@ -1037,9 +1039,9 @@
     {
       "control_id": "CTRL-EU-HIGH-RISK",
       "domain": "AI governance and accountability",
-      "title": "EU AI Act Extraterritorial Scope, Prohibited Practice & High-Risk Screening",
-      "control_objective": "Screen AI systems for EU AI Act Article 2 territorial nexus, Article 5 prohibited practices, Article 4 literacy duties, and Annex III (creditworthiness/employment) high-risk deployer obligations.",
-      "objective": "Screen AI systems for EU AI Act Article 2 territorial nexus, Article 5 prohibited practices, Article 4 literacy duties, and Annex III (creditworthiness/employment) high-risk deployer obligations.",
+      "title": "EU AI Act Extraterritorial Scope, Prohibited Practice, Transparency & High-Risk Screening",
+      "control_objective": "Screen AI systems for EU AI Act Article 2 territorial nexus, Article 5 prohibited practices (2 Feb 2025), Article 4 literacy duties (2 Feb 2025), Article 50 transparency (2 Aug 2026), and Annex III high-risk deployer obligations (2 Dec 2027 under Regulation (EU) 2026/1744).",
+      "objective": "Screen AI systems for EU AI Act Article 2 territorial nexus, Article 5 prohibited practices (2 Feb 2025), Article 4 literacy duties (2 Feb 2025), Article 50 transparency (2 Aug 2026), and Annex III high-risk deployer obligations (2 Dec 2027 under Regulation (EU) 2026/1744).",
       "assessment_scope": "use_case",
       "control_facets": [
         "territorial_nexus_confirmed",
@@ -1051,19 +1053,23 @@
         "article4_staff_ai_literacy_evidenced",
         "phased_commencement_2feb2025_verified",
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "deployer_human_oversight_and_6month_log_retention",
+        "deployer_human_oversight_assigned",
+        "automatic_logs_retained_6months",
         "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "article50_ai_interaction_transparency_provided",
+        "synthetic_content_marking_and_disclosure_applied"
       ],
       "associated_obligation_ids": [
         "EU-AIA-ART2-HIGH-RISK",
         "EU-AIA-ART4-5-PROHIBITED-LITERACY",
-        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT",
+        "EU-AIA-ART50-TRANSPARENCY"
       ],
       "associated_obligations": [
         "EU-AIA-ART2-HIGH-RISK",
         "EU-AIA-ART4-5-PROHIBITED-LITERACY",
-        "EU-AIA-ART26-27-DEPLOYER-CREDIT"
+        "EU-AIA-ART26-27-DEPLOYER-CREDIT",
+        "EU-AIA-ART50-TRANSPARENCY"
       ],
       "associated_source_ids": [
         "EU-AI-ACT"
@@ -1076,8 +1082,11 @@
         "Article 4 AI literacy training syllabus and completion log",
         "Legal territorial scope sign-off",
         "Annex III point 5(b) classification memo",
+        "Competent deployer human oversight assignment & Art 26 instruction controls",
+        "6-month+ automated log retention configuration (Art 26(6))",
         "Article 27 Fundamental Rights Impact Assessment (FRIA)",
-        "6-month+ automated log retention configuration"
+        "Customer-facing AI interaction disclosure wording / UI proof (Art 50(1))",
+        "Synthetic content marking / deepfake or public-interest text disclosure controls (Art 50(2)-(4))"
       ],
       "testing_and_assurance_guidance": "Owner: International Regulatory Legal & AI Governance | Frequency: At use-case intake and prior to cross-border rollout",
       "copyright_and_provenance_note": "Independently authored DeepAuditCrossWalk control summary; contains no reproduced proprietary ISO text.",

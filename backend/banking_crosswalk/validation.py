@@ -62,6 +62,7 @@ ALLOWED_PHASED_CHILD_DATES = {
     "AU-ASIC-RG105-COMPETENCE",
     "EU-AIA-ART2-HIGH-RISK",
     "EU-AIA-ART4-5-PROHIBITED-LITERACY",
+    "EU-AIA-ART50-TRANSPARENCY",
     "EU-AIA-ART26-27-DEPLOYER-CREDIT",
 }
 
@@ -947,6 +948,7 @@ def _check_mapping_facet_and_relationship_consistency(
     obligations_by_id = {ob.obligation_id: ob for ob in obligations}
     controls_by_id = {ctrl.control_id: ctrl for ctrl in active_controls.controls}
     valid_rels = set(MappingRelationship)
+    seen_pairs: Dict[tuple[str, str], str] = {}
 
     for mapping in active_mappings.mappings:
         if mapping.mapping_relationship not in valid_rels:
@@ -954,6 +956,23 @@ def _check_mapping_facet_and_relationship_consistency(
                 f"Mapping {mapping.mapping_id} has invalid mapping_relationship '{mapping.mapping_relationship}'"
             )
             continue
+
+        pair = (mapping.obligation_id, mapping.control_id)
+        if pair in seen_pairs:
+            errors.append(
+                f"Duplicate obligation-control mapping pair {pair}: {mapping.mapping_id} duplicates {seen_pairs[pair]}"
+            )
+        else:
+            seen_pairs[pair] = mapping.mapping_id
+
+        if (
+            mapping.mapping_relationship
+            in {MappingRelationship.NON_EQUIVALENT, MappingRelationship.NOT_EQUIVALENT}
+            and mapping.mapped_facets
+        ):
+            errors.append(
+                f"Non-equivalent mapping {mapping.mapping_id} must have empty mapped_facets (found {mapping.mapped_facets})"
+            )
 
         mapped_set = set(mapping.mapped_facets)
         unmapped_set = set(mapping.unmapped_obligation_facets)

@@ -801,7 +801,7 @@ def test_scenario_18_external_regulatory_pack_version_update(regulatory_pack):
     )
 
     # Bump regulatory pack version
-    newer_pack = regulatory_pack.model_copy(update={"version": "0.2.0"})
+    newer_pack = regulatory_pack.model_copy(update={"version": "0.3.0"})
     stale_dec = evaluate_reconciliation_staleness(
         approved_dec,
         enterprise_baseline=baseline,
@@ -809,8 +809,8 @@ def test_scenario_18_external_regulatory_pack_version_update(regulatory_pack):
         policies=[policy],
     )
     assert stale_dec.is_stale is True
-    assert "0.1.0" in (stale_dec.stale_reason or "")
-    assert "0.2.0" in (stale_dec.stale_reason or "")
+    assert regulatory_pack.version in (stale_dec.stale_reason or "")
+    assert "0.3.0" in (stale_dec.stale_reason or "")
 
     # Effective baseline marks stale decision as unresolved and does not use it for equivalence grouping
     eff = compose_effective_assessment_baseline(

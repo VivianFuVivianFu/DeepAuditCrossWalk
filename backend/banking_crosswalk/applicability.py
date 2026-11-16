@@ -161,7 +161,7 @@ def _asic_idr(use_case: BankingUseCase, _: AtomicObligation) -> RuleResult:
     )
 
 
-def _eu(use_case: BankingUseCase, _: AtomicObligation) -> RuleResult:
+def _eu(use_case: BankingUseCase, obligation: AtomicObligation) -> RuleResult:
     nexus_values = [use_case.eu_establishment_or_market, use_case.eu_output_used]
     if all(value is False for value in nexus_values):
         return (
@@ -169,15 +169,20 @@ def _eu(use_case: BankingUseCase, _: AtomicObligation) -> RuleResult:
             "No Article 2 EU establishment, market or output-use nexus is indicated.",
         )
     if any(value is True for value in nexus_values):
+        if use_case.eu_deployer_or_provider_role is False or use_case.eu_operator_role == "none":
+            return (
+                ApplicabilityStatus.NOT_APPLICABLE,
+                "An EU nexus exists but no relevant provider/deployer/operator role is confirmed.",
+            )
+        if obligation.effective_from and use_case.as_of_date < obligation.effective_from:
+            return (
+                ApplicabilityStatus.CONDITIONAL,
+                f"EU nexus is indicated; this EU AI Act obligation is phased and commences {obligation.effective_from.isoformat()} (as_of_date={use_case.as_of_date.isoformat()}).",
+            )
         if use_case.eu_deployer_or_provider_role is True:
             return (
                 ApplicabilityStatus.CONDITIONAL,
                 "EU nexus and a regulated role are indicated; classification and phased commencement require Legal confirmation.",
-            )
-        if use_case.eu_deployer_or_provider_role is False:
-            return (
-                ApplicabilityStatus.NOT_APPLICABLE,
-                "An EU nexus exists but no relevant provider/deployer role is confirmed.",
             )
         return (
             ApplicabilityStatus.CONDITIONAL,
@@ -359,9 +364,33 @@ def _eu_prohibited_or_literacy(
     if base is ApplicabilityStatus.NOT_APPLICABLE:
         return base, reason
     if base is ApplicabilityStatus.CONDITIONAL:
+        if obligation.effective_from and use_case.as_of_date < obligation.effective_from:
+            return (
+                ApplicabilityStatus.CONDITIONAL,
+                f"EU Article 2 nexus is indicated; Chapter I/II AI literacy (Art 4) and prohibited practice screening (Art 5) apply from {obligation.effective_from.isoformat()}.",
+            )
         return (
             ApplicabilityStatus.CONDITIONAL,
             "EU Article 2 nexus is indicated; Chapter I/II AI literacy (Art 4) and prohibited practice screening (Art 5, applicable from 2 Feb 2025) require Legal confirmation.",
+        )
+    return base, reason
+
+
+def _eu_transparency(
+    use_case: BankingUseCase, obligation: AtomicObligation
+) -> RuleResult:
+    base, reason = _eu(use_case, obligation)
+    if base is ApplicabilityStatus.NOT_APPLICABLE:
+        return base, reason
+    if base is ApplicabilityStatus.CONDITIONAL:
+        if obligation.effective_from and use_case.as_of_date < obligation.effective_from:
+            return (
+                ApplicabilityStatus.CONDITIONAL,
+                f"EU Article 2 nexus is indicated; Article 50 transparency obligations apply from {obligation.effective_from.isoformat()} (unchanged by Regulation (EU) 2026/1744).",
+            )
+        return (
+            ApplicabilityStatus.CONDITIONAL,
+            "EU Article 2 nexus is indicated; Article 50 transparency obligations (applicable from 2 Aug 2026, unchanged by Regulation (EU) 2026/1744) require Legal confirmation against operator role and system design.",
         )
     return base, reason
 
@@ -378,14 +407,24 @@ def _eu_deployer_high_risk(
             "Entity has confirmed no operator role under the EU AI Act.",
         )
     if base is ApplicabilityStatus.CONDITIONAL:
+        if use_case.assists_consumer_credit_decision is False:
+            return (
+                ApplicabilityStatus.CONDITIONAL,
+                "EU nexus is indicated and consumer credit scoring is not indicated; other Annex III / Annex I high-risk categories (2 Dec 2027 / 2 Aug 2028) still require Legal confirmation.",
+            )
         if obligation.effective_from and use_case.as_of_date < obligation.effective_from:
             return (
                 ApplicabilityStatus.CONDITIONAL,
-                f"EU nexus is indicated; deployer/high-risk provisions are phased to {obligation.effective_from.isoformat()}.",
+                f"EU nexus is indicated; Annex III high-risk deployer duties (Arts 26-27) are phased to {obligation.effective_from.isoformat()} under Regulation (EU) 2026/1744.",
+            )
+        if use_case.eu_operator_role == "provider":
+            return (
+                ApplicabilityStatus.CONDITIONAL,
+                "EU nexus with provider role indicated; Annex III point 5(b) high-risk classification (2 Dec 2027) and provider/deployer boundary require Legal confirmation.",
             )
         return (
             ApplicabilityStatus.CONDITIONAL,
-            "EU nexus is indicated; Annex III point 5(b) creditworthiness/credit-scoring classification and Articles 26-27 deployer duties require Legal confirmation.",
+            "EU nexus is indicated; Annex III point 5(b) creditworthiness/credit-scoring classification (2 Dec 2027 under Regulation (EU) 2026/1744) and Articles 26-27 deployer duties require Legal confirmation.",
         )
     return base, reason
 
@@ -475,6 +514,7 @@ RULES: Dict[str, Callable[[BankingUseCase, AtomicObligation], RuleResult]] = {
     "au_ai_guidance_adopted": _au_ai_guidance,
     "eu_ai_act_nexus": _eu,
     "eu_ai_act_prohibited_or_literacy": _eu_prohibited_or_literacy,
+    "eu_ai_act_transparency": _eu_transparency,
     "eu_ai_act_deployer_high_risk": _eu_deployer_high_risk,
     "nist_adopted": _nist,
     "iso42001_adopted": _iso,

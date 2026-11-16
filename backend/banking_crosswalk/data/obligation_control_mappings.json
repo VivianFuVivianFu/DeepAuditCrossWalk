@@ -1,10 +1,13 @@
 {
-  "catalogue_id": "AU-BANKING-OBLIGATION-CONTROL-MAPPINGS-1.0",
-  "mapping_catalogue_id": "AU-BANKING-OBLIGATION-CONTROL-MAPPINGS-1.0",
-  "version": "1.0.0",
+  "catalogue_id": "AU-BANKING-OBLIGATION-CONTROL-MAPPINGS-1.1",
+  "mapping_catalogue_id": "AU-BANKING-OBLIGATION-CONTROL-MAPPINGS-1.1",
+  "version": "1.1.0",
   "verified_as_of": "2026-11-02",
   "disclaimer": "Similar wording across standards or jurisdictions never automatically establishes legal equivalence. Every mapping is classified as full, partial, related, or non_equivalent and remains in 'proposed' status until validated by a qualified human reviewer.",
   "equivalence_policy": "Similar wording across standards or jurisdictions never automatically establishes legal equivalence. Every mapping is classified as full, partial, related, or non_equivalent and remains in 'proposed' status until validated by a qualified human reviewer.",
+  "superseded_mapping_ids": [
+    "MAP-CROSS-007"
+  ],
   "total_mappings": 55,
   "mappings": [
     {
@@ -191,26 +194,28 @@
       "mapping_id": "MAP-PRIMARY-007",
       "obligation_id": "AU-PRIV-APP11-SECURITY",
       "source_id": "AU-PRIVACY-ACT",
-      "provision": "Schedule 1, APP 11.1–11.2 ( including APP 11.3 retention commentary )",
+      "provision": "Schedule 1, APP 11.1–11.3 (Security, technical & organisational measures, and destruction/de-identification)",
       "authority": "binding",
       "control_id": "CTRL-PRIV-SECURITY-RETENTION",
       "control_domain": "Information security",
       "mapping_relationship": "full",
       "relationship": "full",
       "mapped_facets": [
-        "security_controls_defined",
+        "technical_security_measures_implemented",
+        "organisational_security_measures_implemented",
         "retention_schedule_applied",
         "destruction_or_deidentification_verified"
       ],
       "covered_facets": [
-        "security_controls_defined",
+        "technical_security_measures_implemented",
+        "organisational_security_measures_implemented",
         "retention_schedule_applied",
         "destruction_or_deidentification_verified"
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-PRIV-SECURITY-RETENTION directly operationalises all extracted control facets and evidence requirements of AU-PRIV-APP11-SECURITY (Privacy Act 1988 / APP 11 Schedule 1, APP 11.1–11.2 ( including APP 11.3 retention commentary )).",
-      "rationale": "Unified control CTRL-PRIV-SECURITY-RETENTION directly operationalises all extracted control facets and evidence requirements of AU-PRIV-APP11-SECURITY (Privacy Act 1988 / APP 11 Schedule 1, APP 11.1–11.2 ( including APP 11.3 retention commentary )).",
+      "equivalence_rationale": "Unified control CTRL-PRIV-SECURITY-RETENTION directly operationalises all extracted control facets and evidence requirements of AU-PRIV-APP11-SECURITY (Privacy Act 1988 / APP 11 Schedule 1, APP 11.1–11.3 (Security, technical & organisational measures, and destruction/de-identification)).",
+      "rationale": "Unified control CTRL-PRIV-SECURITY-RETENTION directly operationalises all extracted control facets and evidence requirements of AU-PRIV-APP11-SECURITY (Privacy Act 1988 / APP 11 Schedule 1, APP 11.1–11.3 (Security, technical & organisational measures, and destruction/de-identification)).",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -403,7 +408,7 @@
       "mapping_id": "MAP-PRIMARY-014",
       "obligation_id": "AU-APRA-CPS220-REVIEW",
       "source_id": "APRA-CPS220",
-      "provision": "CPS 220 paras 37–47, 51 (Risk management function, independent review and declaration)",
+      "provision": "CPS 220 paras 38–51 & Attachment A (Risk management function, independent review and Risk Management Declaration)",
       "authority": "binding",
       "control_id": "CTRL-INDEPENDENT-AUDIT-ASSURANCE",
       "control_domain": "Evidence, assurance and control testing",
@@ -421,8 +426,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-INDEPENDENT-AUDIT-ASSURANCE directly operationalises all extracted control facets and evidence requirements of AU-APRA-CPS220-REVIEW (APRA CPS 220 CPS 220 paras 37–47, 51 (Risk management function, independent review and declaration)).",
-      "rationale": "Unified control CTRL-INDEPENDENT-AUDIT-ASSURANCE directly operationalises all extracted control facets and evidence requirements of AU-APRA-CPS220-REVIEW (APRA CPS 220 CPS 220 paras 37–47, 51 (Risk management function, independent review and declaration)).",
+      "equivalence_rationale": "Unified control CTRL-INDEPENDENT-AUDIT-ASSURANCE directly operationalises all extracted control facets and evidence requirements of AU-APRA-CPS220-REVIEW (APRA CPS 220 CPS 220 paras 38–51 & Attachment A (Risk management function, independent review and Risk Management Declaration)).",
+      "rationale": "Unified control CTRL-INDEPENDENT-AUDIT-ASSURANCE directly operationalises all extracted control facets and evidence requirements of AU-APRA-CPS220-REVIEW (APRA CPS 220 CPS 220 paras 38–51 & Attachment A (Risk management function, independent review and Risk Management Declaration)).",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -687,8 +692,8 @@
       "authority": "guidance",
       "control_id": "CTRL-DATA-QUALITY-GOV",
       "control_domain": "Data quality and data governance",
-      "mapping_relationship": "full",
-      "relationship": "full",
+      "mapping_relationship": "related",
+      "relationship": "related",
       "mapped_facets": [
         "critical_ai_data_elements_owned",
         "data_risk_appetite_and_tolerances_defined",
@@ -701,8 +706,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-DATA-QUALITY-GOV directly operationalises all extracted control facets and evidence requirements of AU-APRA-CPG235-GOV (APRA CPG 235 CPG 235 paras 12–19 (Data risk governance, roles and accountability)).",
-      "rationale": "Unified control CTRL-DATA-QUALITY-GOV directly operationalises all extracted control facets and evidence requirements of AU-APRA-CPG235-GOV (APRA CPG 235 CPG 235 paras 12–19 (Data risk governance, roles and accountability)).",
+      "equivalence_rationale": "CPG 235 is a non-binding APRA prudential practice guide supporting binding CPS 220/CPS 230 data governance; mapping to shared control CTRL-DATA-QUALITY-GOV demonstrates supervisory alignment rather than full statutory equivalence.",
+      "rationale": "CPG 235 is a non-binding APRA prudential practice guide supporting binding CPS 220/CPS 230 data governance; mapping to shared control CTRL-DATA-QUALITY-GOV demonstrates supervisory alignment rather than full statutory equivalence.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -743,7 +748,7 @@
       "mapping_id": "MAP-PRIMARY-025",
       "obligation_id": "AU-ASIC-RG271-COMPLAINT",
       "source_id": "ASIC-RG271",
-      "provision": "RG 271 paras 271.27–271.32, 271.51–271.68 (Enforceable IDR complaint handling and response)",
+      "provision": "RG 271 enforceable paras 271.27, 271.56 & response requirements (ASIC Instrument 2020/98); guidance paras 271.51–271.55",
       "authority": "enforceable_guidance",
       "control_id": "CTRL-IDR-HANDLING",
       "control_domain": "Customer complaints and contestability",
@@ -765,8 +770,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-IDR-HANDLING directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG271-COMPLAINT (ASIC RG 271 RG 271 paras 271.27–271.32, 271.51–271.68 (Enforceable IDR complaint handling and response)).",
-      "rationale": "Unified control CTRL-IDR-HANDLING directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG271-COMPLAINT (ASIC RG 271 RG 271 paras 271.27–271.32, 271.51–271.68 (Enforceable IDR complaint handling and response)).",
+      "equivalence_rationale": "Unified control CTRL-IDR-HANDLING directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG271-COMPLAINT (ASIC RG 271 RG 271 enforceable paras 271.27, 271.56 & response requirements (ASIC Instrument 2020/98); guidance paras 271.51–271.55).",
+      "rationale": "Unified control CTRL-IDR-HANDLING directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG271-COMPLAINT (ASIC RG 271 RG 271 enforceable paras 271.27, 271.56 & response requirements (ASIC Instrument 2020/98); guidance paras 271.51–271.55).",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -777,7 +782,7 @@
       "mapping_id": "MAP-PRIMARY-026",
       "obligation_id": "AU-ASIC-RG271-SYSTEMIC",
       "source_id": "ASIC-RG271",
-      "provision": "RG 271 paras 271.116–271.124, 271.165–271.182 (Systemic issues and IDR data reporting)",
+      "provision": "RG 271 enforceable paras 271.118–271.120 & 271.165 (Systemic issue escalation, Board accountability & timely implementation; ASIC Instrument 2020/98)",
       "authority": "enforceable_guidance",
       "control_id": "CTRL-IDR-SYSTEMIC",
       "control_domain": "Customer complaints and contestability",
@@ -797,8 +802,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-IDR-SYSTEMIC directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG271-SYSTEMIC (ASIC RG 271 RG 271 paras 271.116–271.124, 271.165–271.182 (Systemic issues and IDR data reporting)).",
-      "rationale": "Unified control CTRL-IDR-SYSTEMIC directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG271-SYSTEMIC (ASIC RG 271 RG 271 paras 271.116–271.124, 271.165–271.182 (Systemic issues and IDR data reporting)).",
+      "equivalence_rationale": "Unified control CTRL-IDR-SYSTEMIC directly operationalises RG 271 enforceable systemic-issue paragraphs (271.118–271.120 and 271.165 under Instrument 2020/98); mandatory semi-annual IDR data reporting under separate ASIC Instrument 2022/205 is tracked separately in E4.1.",
+      "rationale": "Unified control CTRL-IDR-SYSTEMIC directly operationalises RG 271 enforceable systemic-issue paragraphs (271.118–271.120 and 271.165 under Instrument 2020/98); mandatory semi-annual IDR data reporting under separate ASIC Instrument 2022/205 is tracked separately in E4.1.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -813,8 +818,8 @@
       "authority": "guidance",
       "control_id": "CTRL-AI-GOV-ACCOUNTABILITY",
       "control_domain": "AI governance and accountability",
-      "mapping_relationship": "full",
-      "relationship": "full",
+      "mapping_relationship": "partial",
+      "relationship": "partial",
       "mapped_facets": [
         "afsl_compliance_measures_cover_ai",
         "technological_resources_adequacy_reviewed",
@@ -827,8 +832,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-AI-GOV-ACCOUNTABILITY directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG104-COMPLIANCE-TECH (ASIC RG 104 / Corporations Act s 912A(1) RG 104 paras 104.31–104.76, 104.88–104.104 (interpreting Corporations Act s 912A(1)(a), (c), (d), (h))).",
-      "rationale": "Unified control CTRL-AI-GOV-ACCOUNTABILITY directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG104-COMPLIANCE-TECH (ASIC RG 104 / Corporations Act s 912A(1) RG 104 paras 104.31–104.76, 104.88–104.104 (interpreting Corporations Act s 912A(1)(a), (c), (d), (h))).",
+      "equivalence_rationale": "RG 104 is ASIC interpretive guidance supporting Corporations Act s 912A(1) technology and risk compliance across the licensee; shared control CTRL-AI-GOV-ACCOUNTABILITY covers AI governance facets only rather than entire AFSL compliance.",
+      "rationale": "RG 104 is ASIC interpretive guidance supporting Corporations Act s 912A(1) technology and risk compliance across the licensee; shared control CTRL-AI-GOV-ACCOUNTABILITY covers AI governance facets only rather than entire AFSL compliance.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -843,8 +848,8 @@
       "authority": "guidance",
       "control_id": "CTRL-HUMAN-OVERSIGHT",
       "control_domain": "Human oversight and approval",
-      "mapping_relationship": "full",
-      "relationship": "full",
+      "mapping_relationship": "partial",
+      "relationship": "partial",
       "mapped_facets": [
         "operator_ai_competence_and_training_completed",
         "supervisory_quality_assurance_on_ai_assisted_staff",
@@ -857,8 +862,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-HUMAN-OVERSIGHT directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG104-REPRESENTATIVES (ASIC RG 104 / Corporations Act s 912A(1)(ca), (f) RG 104 paras 104.105–104.118 (Monitoring, supervision and training of representatives)).",
-      "rationale": "Unified control CTRL-HUMAN-OVERSIGHT directly operationalises all extracted control facets and evidence requirements of AU-ASIC-RG104-REPRESENTATIVES (ASIC RG 104 / Corporations Act s 912A(1)(ca), (f) RG 104 paras 104.105–104.118 (Monitoring, supervision and training of representatives)).",
+      "equivalence_rationale": "RG 104 guidance on supervision and monitoring of representatives extends beyond AI workflows; shared control CTRL-HUMAN-OVERSIGHT covers AI oversight facets rather than all licensee representative obligations.",
+      "rationale": "RG 104 guidance on supervision and monitoring of representatives extends beyond AI workflows; shared control CTRL-HUMAN-OVERSIGHT covers AI oversight facets rather than all licensee representative obligations.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -903,8 +908,8 @@
       "authority": "guidance",
       "control_id": "CTRL-AI-GOV-ACCOUNTABILITY",
       "control_domain": "AI governance and accountability",
-      "mapping_relationship": "full",
-      "relationship": "full",
+      "mapping_relationship": "related",
+      "relationship": "related",
       "mapped_facets": [
         "use_case_registered_in_enterprise_ai_inventory",
         "consumer_harm_and_bias_assessed_pre_deployment",
@@ -917,8 +922,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-AI-GOV-ACCOUNTABILITY directly operationalises all extracted control facets and evidence requirements of AU-ASIC-REP798-AI-GAP (ASIC REP 798 REP 798 Key Findings & Governance Expectations (pp. 4–18)).",
-      "rationale": "Unified control CTRL-AI-GOV-ACCOUNTABILITY directly operationalises all extracted control facets and evidence requirements of AU-ASIC-REP798-AI-GAP (ASIC REP 798 REP 798 Key Findings & Governance Expectations (pp. 4–18)).",
+      "equivalence_rationale": "ASIC Report 798 is a non-binding thematic surveillance report rather than a legislative instrument; shared control CTRL-AI-GOV-ACCOUNTABILITY addresses key governance expectations.",
+      "rationale": "ASIC Report 798 is a non-binding thematic surveillance report rather than a legislative instrument; shared control CTRL-AI-GOV-ACCOUNTABILITY addresses key governance expectations.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -933,8 +938,8 @@
       "authority": "binding",
       "control_id": "CTRL-AI-GOV-ACCOUNTABILITY",
       "control_domain": "AI governance and accountability",
-      "mapping_relationship": "full",
-      "relationship": "full",
+      "mapping_relationship": "partial",
+      "relationship": "partial",
       "mapped_facets": [
         "credit_activity_fairness_and_honesty_verified",
         "credit_compliance_and_breach_monitoring_active",
@@ -947,8 +952,8 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Unified control CTRL-AI-GOV-ACCOUNTABILITY directly operationalises all extracted control facets and evidence requirements of AU-NCCP-S47-CONDUCT (NCCP Act 2009 Chapter 2, Part 2-2, Division 5, s 47(1)(a), (d), (g), (h), (l)).",
-      "rationale": "Unified control CTRL-AI-GOV-ACCOUNTABILITY directly operationalises all extracted control facets and evidence requirements of AU-NCCP-S47-CONDUCT (NCCP Act 2009 Chapter 2, Part 2-2, Division 5, s 47(1)(a), (d), (g), (h), (l)).",
+      "equivalence_rationale": "CTRL-AI-GOV-ACCOUNTABILITY operationalises AI-level s 47 governance, accountability and conflict facets, whereas NCCP Act s 47(1)(a),(d),(g),(h),(l) imposes broader entity-wide credit licensee duties including full statutory IDR (RG 271) and credit compliance.",
+      "rationale": "CTRL-AI-GOV-ACCOUNTABILITY operationalises AI-level s 47 governance, accountability and conflict facets, whereas NCCP Act s 47(1)(a),(d),(g),(h),(l) imposes broader entity-wide credit licensee duties including full statutory IDR (RG 271) and credit compliance.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -1081,7 +1086,7 @@
       "mapping_id": "MAP-PRIMARY-036",
       "obligation_id": "EU-AIA-ART2-HIGH-RISK",
       "source_id": "EU-AI-ACT",
-      "provision": "Articles 2, 3, 6, 9–15, Annex III (Territorial scope and high-risk AI system requirements)",
+      "provision": "Articles 2, 3, 6, 9–15, 113 & Annex III (Territorial scope and high-risk AI system requirements, amended by Reg (EU) 2026/1744)",
       "authority": "binding",
       "control_id": "CTRL-EU-HIGH-RISK",
       "control_domain": "AI governance and accountability",
@@ -1145,7 +1150,7 @@
       "mapping_id": "MAP-PRIMARY-038",
       "obligation_id": "EU-AIA-ART26-27-DEPLOYER-CREDIT",
       "source_id": "EU-AI-ACT",
-      "provision": "Articles 26, 27, 50 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA)",
+      "provision": "Articles 26, 27 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA, deferred to 2 Dec 2027)",
       "authority": "binding",
       "control_id": "CTRL-EU-HIGH-RISK",
       "control_domain": "AI governance and accountability",
@@ -1153,20 +1158,48 @@
       "relationship": "partial",
       "mapped_facets": [
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "deployer_human_oversight_and_6month_log_retention",
-        "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "deployer_human_oversight_assigned",
+        "automatic_logs_retained_6months",
+        "article27_fundamental_rights_impact_assessment_completed"
       ],
       "covered_facets": [
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "deployer_human_oversight_and_6month_log_retention",
-        "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "deployer_human_oversight_assigned",
+        "automatic_logs_retained_6months",
+        "article27_fundamental_rights_impact_assessment_completed"
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "Control implements deployer human oversight, input data relevance, monitoring, log retention and FRIA workflows, but legal equivalence with Australian NCCP/Privacy law is non-automatic.",
-      "rationale": "Control implements deployer human oversight, input data relevance, monitoring, log retention and FRIA workflows, but legal equivalence with Australian NCCP/Privacy law is non-automatic.",
+      "equivalence_rationale": "Control implements deployer human oversight, 6-month automatic log retention and FRIA workflows (phased to 2 Dec 2027 under Regulation (EU) 2026/1744), but legal equivalence with Australian NCCP/Privacy law is non-automatic.",
+      "rationale": "Control implements deployer human oversight, 6-month automatic log retention and FRIA workflows (phased to 2 Dec 2027 under Regulation (EU) 2026/1744), but legal equivalence with Australian NCCP/Privacy law is non-automatic.",
+      "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
+      "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
+      "requires_human_validation": true,
+      "review_status": "proposed",
+      "reviewer_status": "proposed"
+    },
+    {
+      "mapping_id": "MAP-PRIMARY-046",
+      "obligation_id": "EU-AIA-ART50-TRANSPARENCY",
+      "source_id": "EU-AI-ACT",
+      "provision": "Article 50 & Article 113 (Transparency obligations for certain AI systems, applicable from 2 August 2026)",
+      "authority": "binding",
+      "control_id": "CTRL-EU-HIGH-RISK",
+      "control_domain": "AI governance and accountability",
+      "mapping_relationship": "partial",
+      "relationship": "partial",
+      "mapped_facets": [
+        "article50_ai_interaction_transparency_provided",
+        "synthetic_content_marking_and_disclosure_applied"
+      ],
+      "covered_facets": [
+        "article50_ai_interaction_transparency_provided",
+        "synthetic_content_marking_and_disclosure_applied"
+      ],
+      "unmapped_obligation_facets": [],
+      "unmapped_facets": [],
+      "equivalence_rationale": "Control operationalises Article 50 interactive AI and synthetic-content transparency checks (effective 2 Aug 2026 under Art 113, unaffected by Regulation (EU) 2026/1744 deferral), subject to Article 2 territorial nexus and UI/marking evidence.",
+      "rationale": "Control operationalises Article 50 interactive AI and synthetic-content transparency checks (effective 2 Aug 2026 under Art 113, unaffected by Regulation (EU) 2026/1744 deferral), subject to Article 2 territorial nexus and UI/marking evidence.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
@@ -1351,13 +1384,16 @@
       ],
       "unmapped_obligation_facets": [],
       "unmapped_facets": [],
-      "equivalence_rationale": "ISO/IEC 23894:2023 provides voluntary AI risk management guidelines and has no independent legal force.",
-      "rationale": "ISO/IEC 23894:2023 provides voluntary AI risk management guidelines and has no independent legal force.",
+      "equivalence_rationale": "ISO/IEC 23894:2023 provides voluntary AI risk management guidelines and has no independent legal force. Consolidates and supersedes duplicate cross-mapping MAP-CROSS-007 under single authoritative mapping MAP-PRIMARY-044 -> CTRL-RISK-FRAMEWORK.",
+      "rationale": "ISO/IEC 23894:2023 provides voluntary AI risk management guidelines and has no independent legal force. Consolidates and supersedes duplicate cross-mapping MAP-CROSS-007 under single authoritative mapping MAP-PRIMARY-044 -> CTRL-RISK-FRAMEWORK.",
       "mapping_uncertainty": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "equivalence_caution": "Primary obligation-to-control mapping; human legal review required before promotion from proposed to approved.",
       "requires_human_validation": true,
       "review_status": "proposed",
-      "reviewer_status": "proposed"
+      "reviewer_status": "proposed",
+      "superseded_mapping_ids": [
+        "MAP-CROSS-007"
+      ]
     },
     {
       "mapping_id": "MAP-PRIMARY-045",
@@ -1396,29 +1432,31 @@
       "control_id": "CTRL-SEC-COMMENSURATE",
       "relationship": "partial",
       "covered_facets": [
-        "security_controls_defined"
+        "technical_security_measures_implemented",
+        "organisational_security_measures_implemented"
       ],
       "unmapped_facets": [
         "retention_schedule_applied",
         "destruction_or_deidentification_verified"
       ],
-      "rationale": "APRA CPS 234 commensurate security controls (CTRL-SEC-COMMENSURATE) satisfy APP 11.1 technical security expectations for personal information, but do not automatically satisfy APP 11.2 destruction/de-identification retention obligations.",
+      "rationale": "APRA CPS 234 commensurate security controls (CTRL-SEC-COMMENSURATE) support APP 11.1/11.3 technical and organisational security measures for personal information, but do not satisfy APP 11.2 destruction/de-identification retention obligations.",
       "equivalence_caution": "CPS 234 security controls do not replace APP 11.2 personal information disposal/de-identification rules.",
       "requires_human_validation": true,
       "review_status": "proposed",
       "reviewer_status": "proposed",
-      "provision": "Schedule 1, APP 11.1–11.2 ( including APP 11.3 retention commentary )",
+      "provision": "Schedule 1, APP 11.1–11.3 (Security, technical & organisational measures, and destruction/de-identification)",
       "authority": "binding",
       "control_domain": "Information security",
       "mapping_relationship": "partial",
       "mapped_facets": [
-        "security_controls_defined"
+        "technical_security_measures_implemented",
+        "organisational_security_measures_implemented"
       ],
       "unmapped_obligation_facets": [
         "retention_schedule_applied",
         "destruction_or_deidentification_verified"
       ],
-      "equivalence_rationale": "APRA CPS 234 commensurate security controls (CTRL-SEC-COMMENSURATE) satisfy APP 11.1 technical security expectations for personal information, but do not automatically satisfy APP 11.2 destruction/de-identification retention obligations.",
+      "equivalence_rationale": "APRA CPS 234 commensurate security controls (CTRL-SEC-COMMENSURATE) support APP 11.1/11.3 technical and organisational security measures for personal information, but do not satisfy APP 11.2 destruction/de-identification retention obligations.",
       "mapping_uncertainty": "CPS 234 security controls do not replace APP 11.2 personal information disposal/de-identification rules."
     },
     {
@@ -1459,14 +1497,13 @@
       "source_id": "AU-PRIVACY-ACT",
       "control_id": "CTRL-SEC-INCIDENT",
       "relationship": "non_equivalent",
-      "covered_facets": [
-        "ai_data_leakage_detection_enabled"
-      ],
+      "covered_facets": [],
       "unmapped_facets": [
+        "ai_data_leakage_detection_enabled",
         "ndb_30day_assessment_workflow_defined",
         "oaic_and_individual_notification_prepared"
       ],
-      "rationale": "Both Privacy Act Part IIIC and APRA CPS 234 para 35–36 address incident notification, but their legal triggers, regulators and timeframes are non-equivalent: CPS 234 requires APRA notification within 72 hours for material information security incidents, whereas Part IIIC requires a 30-day serious-harm assessment and notification to the OAIC and affected individuals.",
+      "rationale": "Both Privacy Act Part IIIC and APRA CPS 234 para 35–36 address incident notification, but their legal triggers, regulators and timeframes are non-equivalent: CPS 234 requires APRA notification within 72 hours for material information security incidents, whereas Part IIIC requires a 30-day serious-harm assessment and notification to the OAIC and affected individuals. Covered facets remain empty to prevent false regulatory coverage.",
       "equivalence_caution": "CRITICAL NON-EQUIVALENCE: Notifying APRA within 72 hours under CPS 234 does NOT discharge the Privacy Act Part IIIC duty to notify the OAIC and affected individuals of an eligible data breach (nor vice versa).",
       "requires_human_validation": true,
       "review_status": "proposed",
@@ -1475,14 +1512,13 @@
       "authority": "binding",
       "control_domain": "Monitoring and incident management",
       "mapping_relationship": "non_equivalent",
-      "mapped_facets": [
-        "ai_data_leakage_detection_enabled"
-      ],
+      "mapped_facets": [],
       "unmapped_obligation_facets": [
+        "ai_data_leakage_detection_enabled",
         "ndb_30day_assessment_workflow_defined",
         "oaic_and_individual_notification_prepared"
       ],
-      "equivalence_rationale": "Both Privacy Act Part IIIC and APRA CPS 234 para 35–36 address incident notification, but their legal triggers, regulators and timeframes are non-equivalent: CPS 234 requires APRA notification within 72 hours for material information security incidents, whereas Part IIIC requires a 30-day serious-harm assessment and notification to the OAIC and affected individuals.",
+      "equivalence_rationale": "Both Privacy Act Part IIIC and APRA CPS 234 para 35–36 address incident notification, but their legal triggers, regulators and timeframes are non-equivalent: CPS 234 requires APRA notification within 72 hours for material information security incidents, whereas Part IIIC requires a 30-day serious-harm assessment and notification to the OAIC and affected individuals. Covered facets remain empty to prevent false regulatory coverage.",
       "mapping_uncertainty": "CRITICAL NON-EQUIVALENCE: Notifying APRA within 72 hours under CPS 234 does NOT discharge the Privacy Act Part IIIC duty to notify the OAIC and affected individuals of an eligible data breach (nor vice versa)."
     },
     {
@@ -1491,14 +1527,13 @@
       "source_id": "AU-PRIVACY-ACT",
       "control_id": "CTRL-MSP-NOTIFICATION",
       "relationship": "non_equivalent",
-      "covered_facets": [
-        "overseas_recipients_and_regions_mapped"
-      ],
+      "covered_facets": [],
       "unmapped_facets": [
+        "overseas_recipients_and_regions_mapped",
         "app8_reasonable_steps_and_contracts_in_place",
         "s16c_accountability_and_exception_assessed"
       ],
-      "rationale": "Both APP 8 (Privacy Act) and CPS 230 para 60(b) regulate offshoring/cross-border arrangements, but they are legally non-equivalent: CPS 230 requires prior prudential consultation with APRA for material offshoring arrangements, whereas APP 8 imposes strict vicarious privacy liability under s 16C unless an APP 8.2 exception applies.",
+      "rationale": "Both APP 8 (Privacy Act) and CPS 230 para 60(b) regulate offshoring/cross-border arrangements, but they are legally non-equivalent: CPS 230 requires prior prudential consultation with APRA for material offshoring arrangements, whereas APP 8 imposes strict vicarious privacy liability under s 16C unless an APP 8.2 exception applies. Covered facets remain empty to prevent false regulatory coverage.",
       "equivalence_caution": "CRITICAL NON-EQUIVALENCE: Prior notification to APRA under CPS 230 para 60(b) does not satisfy APP 8 cross-border personal information protection or s 16C accountability.",
       "requires_human_validation": true,
       "review_status": "proposed",
@@ -1507,14 +1542,13 @@
       "authority": "binding",
       "control_domain": "Third-party AI and service-provider risk",
       "mapping_relationship": "non_equivalent",
-      "mapped_facets": [
-        "overseas_recipients_and_regions_mapped"
-      ],
+      "mapped_facets": [],
       "unmapped_obligation_facets": [
+        "overseas_recipients_and_regions_mapped",
         "app8_reasonable_steps_and_contracts_in_place",
         "s16c_accountability_and_exception_assessed"
       ],
-      "equivalence_rationale": "Both APP 8 (Privacy Act) and CPS 230 para 60(b) regulate offshoring/cross-border arrangements, but they are legally non-equivalent: CPS 230 requires prior prudential consultation with APRA for material offshoring arrangements, whereas APP 8 imposes strict vicarious privacy liability under s 16C unless an APP 8.2 exception applies.",
+      "equivalence_rationale": "Both APP 8 (Privacy Act) and CPS 230 para 60(b) regulate offshoring/cross-border arrangements, but they are legally non-equivalent: CPS 230 requires prior prudential consultation with APRA for material offshoring arrangements, whereas APP 8 imposes strict vicarious privacy liability under s 16C unless an APP 8.2 exception applies. Covered facets remain empty to prevent false regulatory coverage.",
       "mapping_uncertainty": "CRITICAL NON-EQUIVALENCE: Prior notification to APRA under CPS 230 para 60(b) does not satisfy APP 8 cross-border personal information protection or s 16C accountability."
     },
     {
@@ -1524,31 +1558,31 @@
       "control_id": "CTRL-HUMAN-OVERSIGHT",
       "relationship": "partial",
       "covered_facets": [
-        "deployer_human_oversight_and_6month_log_retention"
+        "deployer_human_oversight_assigned"
       ],
       "unmapped_facets": [
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "automatic_logs_retained_6months",
+        "article27_fundamental_rights_impact_assessment_completed"
       ],
-      "rationale": "Unified control CTRL-HUMAN-OVERSIGHT satisfies the human-in-the-loop competence and override requirements of EU AI Act Article 26(2), while Article 26(6) 6-month log retention and Article 27 FRIA require additional EU-specific workflows.",
+      "rationale": "Unified control CTRL-HUMAN-OVERSIGHT satisfies the competent human-oversight assignment requirements of EU AI Act Article 26(2), while Article 26(6) 6-month automatic log retention, Annex III point 5(b) legal scope and Article 27 FRIA require separate EU-specific controls.",
       "equivalence_caution": "General human-in-the-loop oversight does not automatically satisfy EU AI Act Article 26(6) log retention or Article 27 FRIA duties.",
       "requires_human_validation": true,
       "review_status": "proposed",
       "reviewer_status": "proposed",
-      "provision": "Articles 26, 27, 50 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA)",
+      "provision": "Articles 26, 27 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA, deferred to 2 Dec 2027)",
       "authority": "binding",
       "control_domain": "Human oversight and approval",
       "mapping_relationship": "partial",
       "mapped_facets": [
-        "deployer_human_oversight_and_6month_log_retention"
+        "deployer_human_oversight_assigned"
       ],
       "unmapped_obligation_facets": [
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "automatic_logs_retained_6months",
+        "article27_fundamental_rights_impact_assessment_completed"
       ],
-      "equivalence_rationale": "Unified control CTRL-HUMAN-OVERSIGHT satisfies the human-in-the-loop competence and override requirements of EU AI Act Article 26(2), while Article 26(6) 6-month log retention and Article 27 FRIA require additional EU-specific workflows.",
+      "equivalence_rationale": "Unified control CTRL-HUMAN-OVERSIGHT satisfies the competent human-oversight assignment requirements of EU AI Act Article 26(2), while Article 26(6) 6-month automatic log retention, Annex III point 5(b) legal scope and Article 27 FRIA require separate EU-specific controls.",
       "mapping_uncertainty": "General human-in-the-loop oversight does not automatically satisfy EU AI Act Article 26(6) log retention or Article 27 FRIA duties."
     },
     {
@@ -1557,65 +1591,31 @@
       "source_id": "EU-AI-ACT",
       "control_id": "CTRL-CREDIT-UNSUITABILITY",
       "relationship": "non_equivalent",
-      "covered_facets": [
-        "deployer_human_oversight_and_6month_log_retention"
-      ],
+      "covered_facets": [],
       "unmapped_facets": [
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "deployer_human_oversight_assigned",
+        "automatic_logs_retained_6months",
+        "article27_fundamental_rights_impact_assessment_completed"
       ],
-      "rationale": "Both EU AI Act Annex III point 5(b) (creditworthiness AI) and Australia's NCCP Act ss 128–133 regulate consumer credit decisions, but their legal duties are non-equivalent: NCCP Act mandates affirmative inquiries/verification of consumer requirements and financial situation and prohibits unsuitable credit contracts, whereas EU AI Act Art 26 regulates high-risk AI system operation according to provider instructions.",
+      "rationale": "Both EU AI Act Annex III point 5(b) (creditworthiness AI) and Australia's NCCP Act ss 128–133 regulate consumer credit decisions, but their legal duties are non-equivalent: NCCP Act mandates affirmative inquiries/verification of consumer requirements and financial situation and prohibits unsuitable credit contracts, whereas EU AI Act Art 26 regulates high-risk AI system operation according to provider instructions. Covered facets remain empty to prevent false regulatory coverage.",
       "equivalence_caution": "CRITICAL NON-EQUIVALENCE: EU AI Act Annex III high-risk credit AI compliance does not satisfy Australian NCCP Act s 128/s 130 responsible lending inquiries and verification.",
       "requires_human_validation": true,
       "review_status": "proposed",
       "reviewer_status": "proposed",
-      "provision": "Articles 26, 27, 50 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA)",
+      "provision": "Articles 26, 27 & Annex III point 5(b) (Deployer obligations for high-risk creditworthiness AI and FRIA, deferred to 2 Dec 2027)",
       "authority": "binding",
       "control_domain": "Human oversight and approval",
       "mapping_relationship": "non_equivalent",
-      "mapped_facets": [
-        "deployer_human_oversight_and_6month_log_retention"
-      ],
+      "mapped_facets": [],
       "unmapped_obligation_facets": [
         "annex3_5b_credit_vs_fraud_exemption_assessed",
-        "article27_fundamental_rights_impact_assessment_completed",
-        "article50_ai_interaction_transparency_provided"
+        "deployer_human_oversight_assigned",
+        "automatic_logs_retained_6months",
+        "article27_fundamental_rights_impact_assessment_completed"
       ],
-      "equivalence_rationale": "Both EU AI Act Annex III point 5(b) (creditworthiness AI) and Australia's NCCP Act ss 128–133 regulate consumer credit decisions, but their legal duties are non-equivalent: NCCP Act mandates affirmative inquiries/verification of consumer requirements and financial situation and prohibits unsuitable credit contracts, whereas EU AI Act Art 26 regulates high-risk AI system operation according to provider instructions.",
+      "equivalence_rationale": "Both EU AI Act Annex III point 5(b) (creditworthiness AI) and Australia's NCCP Act ss 128–133 regulate consumer credit decisions, but their legal duties are non-equivalent: NCCP Act mandates affirmative inquiries/verification of consumer requirements and financial situation and prohibits unsuitable credit contracts, whereas EU AI Act Art 26 regulates high-risk AI system operation according to provider instructions. Covered facets remain empty to prevent false regulatory coverage.",
       "mapping_uncertainty": "CRITICAL NON-EQUIVALENCE: EU AI Act Annex III high-risk credit AI compliance does not satisfy Australian NCCP Act s 128/s 130 responsible lending inquiries and verification."
-    },
-    {
-      "mapping_id": "MAP-CROSS-007",
-      "obligation_id": "ISO23894-AI-RISK-PROCESS",
-      "source_id": "ISO-23894",
-      "control_id": "CTRL-RISK-FRAMEWORK",
-      "relationship": "related",
-      "covered_facets": [
-        "ai_specific_risk_sources_and_consequences_identified",
-        "iterative_risk_treatment_and_monitoring_recorded"
-      ],
-      "unmapped_facets": [
-        "risk_criteria_and_likelihood_severity_evaluated"
-      ],
-      "rationale": "ISO/IEC 23894:2023 AI risk management practices enrich enterprise risk identification and treatment under CTRL-RISK-FRAMEWORK (APRA CPS 220), though ISO 23894 is voluntary.",
-      "equivalence_caution": "Voluntary standard alignment supporting CPS 220 risk identification.",
-      "requires_human_validation": true,
-      "review_status": "proposed",
-      "reviewer_status": "proposed",
-      "provision": "Clauses 5 & 6 (AI risk management framework integration and risk assessment/treatment process)",
-      "authority": "voluntary",
-      "control_domain": "AI risk assessment",
-      "mapping_relationship": "related",
-      "mapped_facets": [
-        "ai_specific_risk_sources_and_consequences_identified",
-        "iterative_risk_treatment_and_monitoring_recorded"
-      ],
-      "unmapped_obligation_facets": [
-        "risk_criteria_and_likelihood_severity_evaluated"
-      ],
-      "equivalence_rationale": "ISO/IEC 23894:2023 AI risk management practices enrich enterprise risk identification and treatment under CTRL-RISK-FRAMEWORK (APRA CPS 220), though ISO 23894 is voluntary.",
-      "mapping_uncertainty": "Voluntary standard alignment supporting CPS 220 risk identification."
     },
     {
       "mapping_id": "MAP-CROSS-008",
