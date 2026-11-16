@@ -110,12 +110,23 @@ jobs:
         run: npx playwright test e2e/scenario_a_public_demo.spec.ts
         working-directory: web
       - name: Start optional PostgreSQL stack
+        env:
+          BANKING_CROSSWALK_TENANT_ID: ci-persistence-smoke
         run: |
           docker compose down
           docker compose -f compose.yaml -f compose.postgres.yaml up -d --wait --wait-timeout 120
-      - run: python scripts/persistence_smoke_test.py create
-      - run: docker compose -f compose.yaml -f compose.postgres.yaml restart api
-      - run: python scripts/persistence_smoke_test.py verify
+      - name: Persistence smoke test — create & review in PostgreSQL
+        env:
+          BANKING_CROSSWALK_TENANT_ID: ci-persistence-smoke
+        run: python scripts/persistence_smoke_test.py create
+      - name: Restart API container to verify PostgreSQL persistence
+        env:
+          BANKING_CROSSWALK_TENANT_ID: ci-persistence-smoke
+        run: docker compose -f compose.yaml -f compose.postgres.yaml restart api
+      - name: Persistence smoke test — verify after restart & tenant isolation
+        env:
+          BANKING_CROSSWALK_TENANT_ID: ci-persistence-smoke
+        run: python scripts/persistence_smoke_test.py verify
       - name: Scenario B — Playwright against Authenticated Private Workspace (PostgreSQL)
         env:
           BANKING_CROSSWALK_TENANT_ID: ci-private-workspace
@@ -138,11 +149,14 @@ jobs:
           ')
           WORKSPACE_SESSION_SECRET="$SCENARIO_B_SECRET" WORKSPACE_USERS_JSON="$SCENARIO_B_USERS_JSON" \
             docker compose -f compose.yaml -f compose.postgres.yaml up -d --force-recreate --wait --wait-timeout 120
-          SMOKE_WEB_URL="http://localhost:3000" \
-          E2E_SCENARIO="private_workspace" \
-          E2E_USERNAME="ci.reviewer" \
-          E2E_PASSWORD="$SCENARIO_B_PASSWORD" \
-          E2E_TENANT_ID="ci-private-workspace" \
-            npx --prefix web playwright test e2e/scenario_b_private_workspace.spec.ts
+          (
+            cd web
+            SMOKE_WEB_URL="http://localhost:3000" \
+            E2E_SCENARIO="private_workspace" \
+            E2E_USERNAME="ci.reviewer" \
+            E2E_PASSWORD="$SCENARIO_B_PASSWORD" \
+            E2E_TENANT_ID="ci-private-workspace" \
+              npx playwright test e2e/scenario_b_private_workspace.spec.ts
+          )
       - if: always()
         run: docker compose -f compose.yaml -f compose.postgres.yaml down -v

@@ -10,7 +10,7 @@
 | **E3 Semantic Precedence Tests** | `$env:PYTHONPATH=""; .venv\Scripts\python.exe -m pytest backend/tests/test_e3_semantic_matching.py -q` | **15 passed, 1 skipped** (opt-in live Gemini) |
 | **E4 Regulatory Governance Audit** | `.venv\Scripts\python.exe scripts/audit_regulatory_library.py` | **12/12 checks passed**, `human_approved=0`, `deliverables passed=True` |
 | **E3 Benchmark Harness (Direct Script)** | `$env:PYTHONPATH=""; .venv\Scripts\python.exe scripts/evaluate_e3_live_gemini.py --provider mock --benchmark e31 --split dev` | Exited 0 cleanly with zero `tests` package import errors |
-| **Web Unit & Security Matrix** | `npm --prefix web test` | **5 test files passed, 78 passed / 78 total** (including all 50 matrix checks and 6 cross-process OS concurrency scenarios) |
+| **Web Unit & Security Matrix** | `npm --prefix web test` | **5 test files passed, 79 passed / 79 total** (including all 51 security matrix checks C1–C6 and 6 cross-process OS concurrency scenarios) |
 | **Web Typecheck & Production Build** | `npm --prefix web run typecheck` + `npm --prefix web run build` | Both exited 0 |
 | **Playwright Scenario A (Local Prod Build)** | `npx playwright test e2e/scenario_a_public_demo.spec.ts` | **1 passed (1.4s)** against `ENV=production`, `public-demo` |
 | **Playwright Scenario B (Local Web Prod + Migrated API)** | `npx playwright test e2e/scenario_b_private_workspace.spec.ts` | **1 passed (1.3s)** against `ENV=production` `next start` + schema-migrated SQLite API (`ci-private-workspace`, ephemeral `scrypt` creds) |
@@ -19,8 +19,15 @@
 
 ## 2. Pull Request & Remote GitHub Actions CI Status
 
-- **Branch:** `fix/p0-ci-auth-and-test-stabilisation` (PR A against `main`)
-- **Remote CI Status:** *Pending push & PR workflow execution — will be updated immediately upon GitHub Actions completion.*
+- **PR #36 (Merged early at `78346d4` -> `8fc0b5b`):** Landed core backend test-package isolation, Vitest B8/P0.6 race/timeout fixes, Gemini confidentiality precedence, E4 review lifecycle gate, and Playwright Scenario A/B split.
+- **Follow-on PR (`fix/p0-ci-containers-csrf-followon` against `main`):** Lands the remaining three container CI & standalone CSRF origin fixes verified in green CI run [`43789944621`](https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/actions/runs/43789944621) (`4m59s`, 2026-11-16T02:04:33Z):
+  - `backend (3.11)`: passed (`36s`)
+  - `backend (3.13)`: passed (`55s`)
+  - `postgres (17)`: passed (`46s`)
+  - `postgres (18)`: passed (`48s`)
+  - `web`: passed (`45s`)
+  - `containers` (smoke test + Scenario A + PostgreSQL restart persistence smoke test + Scenario B against PostgreSQL 17 & standalone `0.0.0.0:3000` web): passed (`4m55s`)
+  - `CodeQL` (`analyze (python)` + `analyze (javascript-typescript)` on [`43786291416`](https://github.com/VivianFuVivianFu/DeepAuditCrossWalk/actions/runs/43786291416)): passed (`1m10s`; pending re-check on follow-on PR)
 
 ---
 

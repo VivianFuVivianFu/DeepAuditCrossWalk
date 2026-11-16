@@ -15,6 +15,7 @@ No security boundary, credential hash policy, revocation mechanism, or confident
    - Vitest-only worker isolation in `DurableRevocationStore.resolveFilePath()` triggers only when `VITEST_WORKER_ID` is defined and `SESSION_REVOCATION_PATH` is unset, preventing unrelated Vitest files from unlinking each other's temp store while leaving `SESSION_REVOCATION_PATH` multi-process behaviour (verified by P0.6 Scenarios A–F) 100% intact.
 3. **CSRF, Origin & RBAC Enforcement:**
    - Cookie-authenticated state mutations require valid `X-CSRF-Token` and same-origin headers (`403` otherwise).
+   - Inside standalone Next.js containers (`HOSTNAME=0.0.0.0`), `verifyCsrfProtection` resolves the request's `Host` header (rejecting malformed values) while blocking forged cross-origin requests (`403`, verified by `C6` in `web/tests/p0_security_matrix.test.ts`).
    - Live role downgrades, disabled/deleted accounts, and tenant membership removals invalidate active session tokens immediately on next request.
 4. **LLM Confidentiality Policy Precedence (Gemini E3):**
    - `enforce_runtime_confidentiality(config, *, data_classification, tenant_id=None)` (`backend/banking_crosswalk/llm/security.py`) runs at the entry of `retrieve_reconciliation_candidates_hybrid`, `generate_hybrid_reconciliation_candidates`, and `suggest_questionnaire_mappings_hybrid` **before** `build_provider_bundle(cfg)` or any provider HTTP / credential check.
@@ -29,7 +30,7 @@ No security boundary, credential hash policy, revocation mechanism, or confident
 | :--- | :--- | :--- |
 | Anonymous private workspace blocking (A1–A12) | `web/tests/p0_security_matrix.test.ts` | Passed (`401`, backend never called) |
 | Token/session integrity, B8 revocation under parallel Vitest workers (B1–B10) | `web/tests/p0_security_matrix.test.ts` | Passed (`401`; zero B8 `502` races) |
-| CSRF & `Origin` checks, cookie attributes `HttpOnly; SameSite=Lax` (C1–C5) | `web/tests/p0_security_matrix.test.ts` | Passed |
+| CSRF & `Origin` checks (including standalone `0.0.0.0` `Host` resolution), cookie attributes `HttpOnly; SameSite=Lax` (C1–C6) | `web/tests/p0_security_matrix.test.ts` | Passed |
 | RBAC viewer/analyst/reviewer separation & live downgrade (D1–D11) | `web/tests/p0_security_matrix.test.ts` | Passed |
 | Cross-tenant isolation & `public-demo` boundary on `/api/workspace` (E1–E9) | `web/tests/p0_security_matrix.test.ts` | Passed |
 | Anonymous stateless `/api/analysis` (`DEMO_BANKING_V1` only) (F1–F6) | `web/tests/p0_security_matrix.test.ts` | Passed |

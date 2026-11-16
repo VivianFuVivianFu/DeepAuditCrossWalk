@@ -127,7 +127,15 @@ test.describe("Scenario B — Authenticated Private Test Workspace (non-demo ten
     ).toBe(true);
 
     // 4. Logout via UI invalidates session AND rejects subsequent replay of old cookie (401)
-    await page.getByRole("button", { name: /Sign out/i }).click();
+    const [logoutRes] = await Promise.all([
+      page.waitForResponse(
+        (res) =>
+          res.url().includes("/api/auth/logout") &&
+          res.request().method() === "POST"
+      ),
+      page.getByRole("button", { name: /Sign out/i }).click(),
+    ]);
+    expect(logoutRes.status()).toBe(200);
     await expect(page.getByTestId("session-badge")).toContainText(
       /Sign-In Required for Private Workspace/i,
       { timeout: 15_000 }
