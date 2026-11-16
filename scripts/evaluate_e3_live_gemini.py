@@ -20,8 +20,11 @@ from typing import Any, Dict, Sequence
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 BACKEND_DIR = REPO_ROOT / "backend"
+BACKEND_TESTS_DIR = BACKEND_DIR / "tests"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
+if str(BACKEND_TESTS_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_TESTS_DIR))
 
 from banking_crosswalk.llm.eval_harness import (  # noqa: E402
     render_evaluation_markdown,
@@ -29,9 +32,9 @@ from banking_crosswalk.llm.eval_harness import (  # noqa: E402
 )
 from banking_crosswalk.llm.security import scrub_secrets  # noqa: E402
 from banking_crosswalk.llm.types import ProviderConfigurationError  # noqa: E402
-from tests.e31_calibration_dataset import E31_CALIBRATION_CLAUSES  # noqa: E402
-from tests.e3_benchmark_dataset import E3_EXTENDED_CLAUSES, E3_QUESTIONNAIRE_CASES  # noqa: E402
-from tests.test_e11_accuracy_and_effective_baseline_e2e import (  # noqa: E402
+from e31_calibration_dataset import E31_CALIBRATION_CLAUSES  # noqa: E402
+from e3_benchmark_dataset import E3_EXTENDED_CLAUSES, E3_QUESTIONNAIRE_CASES  # noqa: E402
+from e11_benchmark_dataset import (  # noqa: E402
     E11_BENCHMARK_CLAUSES,
     _build_docx_bytes,
     _build_pdf_bytes,

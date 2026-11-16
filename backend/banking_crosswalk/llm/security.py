@@ -20,6 +20,7 @@ from .types import (
     ProviderConfigurationError,
     ProviderQuotaError,
     QuestionnaireSemanticMatchAnalysis,
+    SemanticMatchingMode,
     SemanticRelationshipAnalysis,
 )
 
@@ -161,6 +162,30 @@ def enforce_free_tier_confidentiality(
         "Configure GEMINI_BILLING_TIER=paid with an enterprise billing project, use a "
         "private self-hosted OpenAI-compatible endpoint, or operate in deterministic mode."
     )
+
+
+def enforce_runtime_confidentiality(
+    config: LLMRuntimeConfig,
+    *,
+    data_classification: DataClassification,
+    tenant_id: Optional[str] = None,
+) -> None:
+    """Enforce data-classification policy across active providers before credential/provider init."""
+    if not config.semantic_matching_enabled or config.matching_mode == SemanticMatchingMode.DISABLED:
+        return
+    enforce_free_tier_confidentiality(
+        config,
+        provider=config.embedding_provider,
+        data_classification=data_classification,
+        tenant_id=tenant_id,
+    )
+    if config.matching_mode == SemanticMatchingMode.HYBRID:
+        enforce_free_tier_confidentiality(
+            config,
+            provider=config.reasoning_provider,
+            data_classification=data_classification,
+            tenant_id=tenant_id,
+        )
 
 
 def _normalise_for_quote(text: str) -> str:

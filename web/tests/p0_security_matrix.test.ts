@@ -1,7 +1,8 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { POST as analysisPOST } from "../app/api/analysis/route";
 import { POST as loginPOST } from "../app/api/auth/login/route";
 import { POST as logoutPOST } from "../app/api/auth/logout/route";
@@ -24,11 +25,29 @@ import {
   WorkspaceUserRecord,
 } from "../app/security";
 
+let activeSecurityTmpDir: string | null = null;
+
+beforeEach(() => {
+  activeSecurityTmpDir = fs.mkdtempSync(
+    path.join(os.tmpdir(), "crosswalk-p0-matrix-")
+  );
+  vi.stubEnv(
+    "SESSION_REVOCATION_PATH",
+    path.join(activeSecurityTmpDir, "security_state.json")
+  );
+});
+
 afterEach(() => {
   clearSecurityStateForTests();
   clearLoginRateLimitsForTests();
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
+  if (activeSecurityTmpDir) {
+    try {
+      fs.rmSync(activeSecurityTmpDir, { recursive: true, force: true });
+    } catch {}
+    activeSecurityTmpDir = null;
+  }
 });
 
 function createSignedCookieRequest(
