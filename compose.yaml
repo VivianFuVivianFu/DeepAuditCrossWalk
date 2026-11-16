@@ -20,6 +20,7 @@ services:
     build: ./web
     ports: ["127.0.0.1:3000:3000"]
     environment:
+      ENV: ${ENV:-development}
       CROSSWALK_API_URL: http://api:8000
       CROSSWALK_API_KEY: ${CROSSWALK_API_KEY:-}
       WORKSPACE_SESSION_SECRET: ${WORKSPACE_SESSION_SECRET:-}
