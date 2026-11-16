@@ -1906,18 +1906,29 @@ export function verifyCsrfProtection(
   const refererHeader = request.headers.get("referer");
   try {
     const reqUrl = new URL(request.url);
-    const expectedOrigin = reqUrl.origin.toLowerCase();
+    const unspecifiedBindHosts = new Set(["0.0.0.0", "::", "[::]"]);
+    let targetUrl = reqUrl;
+    if (unspecifiedBindHosts.has(reqUrl.hostname.toLowerCase())) {
+      const hostHeader = (request.headers.get("host") || "").trim();
+      if (hostHeader && !/[\s/@\\?#]/.test(hostHeader)) {
+        targetUrl = new URL(`${reqUrl.protocol}//${hostHeader}`);
+      }
+    }
+    const expectedOrigin = targetUrl.origin.toLowerCase();
     const isLoopback = (h: string) =>
       h === "localhost" || h === "127.0.0.1" || h === "::1" || h === "[::1]";
 
     const matchesExpected = (candidateOrigin: string) => {
+      if (unspecifiedBindHosts.has(targetUrl.hostname.toLowerCase())) {
+        return false;
+      }
       const cand = new URL(candidateOrigin);
       if (cand.origin.toLowerCase() === expectedOrigin) return true;
       if (
-        cand.port === reqUrl.port &&
-        cand.protocol.toLowerCase() === reqUrl.protocol.toLowerCase() &&
+        cand.port === targetUrl.port &&
+        cand.protocol.toLowerCase() === targetUrl.protocol.toLowerCase() &&
         isLoopback(cand.hostname.toLowerCase()) &&
-        isLoopback(reqUrl.hostname.toLowerCase())
+        isLoopback(targetUrl.hostname.toLowerCase())
       ) {
         return true;
       }

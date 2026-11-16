@@ -463,6 +463,47 @@ describe("P0 Security Acceptance Matrix — Group C: CSRF & Browser Security (C1
     const res = await workspacePOST(request);
     expect(res.status).toBe(200);
   });
+
+  it("C6: Standalone container bind address 0.0.0.0 resolves Host header for same-origin POST/logout while blocking forged cross-origin", async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }));
+    vi.stubGlobal("fetch", fetcher);
+
+    const issued = createSessionToken({
+      user_id: "usr-local-reviewer",
+      tenant_id: "local-workspace",
+      roles: ["reviewer"],
+    });
+    const sameOriginReq = new Request("http://0.0.0.0:3000/api/workspace", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Host: "localhost:3000",
+        Origin: "http://localhost:3000",
+        Cookie: `crosswalk_session=${issued.token}`,
+        "X-CSRF-Token": issued.claims.csrf,
+      },
+      body: JSON.stringify({ action: "list_questionnaires" }),
+    });
+    const okRes = await workspacePOST(sameOriginReq);
+    expect(okRes.status).toBe(200);
+
+    const crossOriginReq = new Request("http://0.0.0.0:3000/api/workspace", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Host: "localhost:3000",
+        Origin: "https://evil-attacker.example.com",
+        Cookie: `crosswalk_session=${issued.token}`,
+        "X-CSRF-Token": issued.claims.csrf,
+      },
+      body: JSON.stringify({ action: "list_questionnaires" }),
+    });
+    const badRes = await workspacePOST(crossOriginReq);
+    expect(badRes.status).toBe(403);
+    expect((await badRes.json()).error).toMatch(/cross-origin/i);
+  });
 });
 
 describe("P0 Security Acceptance Matrix — Group D: Role & Permission Enforcement (D1–D11)", () => {
