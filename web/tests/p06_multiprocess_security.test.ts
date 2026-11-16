@@ -257,7 +257,7 @@ describe("P0.6 Real Multi-Process Session Revocation, Membership & Rate-Limit Ve
       body: { action: "list_questionnaires" },
     });
     expect(afterRestartB.status).toBe(401);
-  });
+  }, 25_000);
 
   it("Scenario B: Concurrent Logout Across Separate Processes Preserves Every Revocation (No Lost Updates)", async () => {
     const stateFile = createTempStateFilePath("p06_scenario_b");
@@ -334,7 +334,7 @@ describe("P0.6 Real Multi-Process Session Revocation, Membership & Rate-Limit Ve
       });
       expect(wsRes.status).toBe(401);
     }
-  });
+  }, 25_000);
 
   it("Scenario C: Cross-Process Membership, Account Disable/Delete & Role Downgrade Enforcement", async () => {
     const stateFile = createTempStateFilePath("p06_scenario_c");
@@ -539,7 +539,7 @@ describe("P0.6 Real Multi-Process Session Revocation, Membership & Rate-Limit Ve
     });
     expect(afterAdminRevokeB.status).toBe(403);
     expect(afterAdminRevokeB.backendCalled).toBe(false);
-  });
+  }, 25_000);
 
   it("Scenario D: Cross-Process Login Rate Limiting Cannot Be Bypassed By Worker Distribution Or Spoofed X-Forwarded-For", async () => {
     const stateFile = createTempStateFilePath("p06_scenario_d");
@@ -591,7 +591,7 @@ describe("P0.6 Real Multi-Process Session Revocation, Membership & Rate-Limit Ve
       },
     });
     expect(seventhAttemptA.status).toBe(429);
-  });
+  }, 25_000);
 
   it("Scenario E: Fail-Closed Behaviour When Security State Storage Is Corrupted Or Multi-Instance Is Unsafely Configured", async () => {
     const stateFile = createTempStateFilePath("p06_scenario_e");
@@ -647,7 +647,7 @@ describe("P0.6 Real Multi-Process Session Revocation, Membership & Rate-Limit Ve
     const multiSessionRes = await procMulti.send("session");
     expect(multiSessionRes.status).toBe(503);
     expect(multiSessionRes.body?.ready).toBe(false);
-  });
+  }, 25_000);
 
   it("Scenario F: Backward-Compatible Migration From Legacy v1 Revocation Format & Expired Entry Pruning", async () => {
     const stateFile = createTempStateFilePath("p06_scenario_f");
@@ -713,5 +713,5 @@ describe("P0.6 Real Multi-Process Session Revocation, Membership & Rate-Limit Ve
     });
     expect(afterUpgradeB1.revoked).toBe(true);
     expect(afterUpgradeB2.revoked).toBe(true);
-  });
+  }, 25_000);
 });

@@ -18,6 +18,7 @@ from .providers import (
 from .security import (
     APICallBudgetTracker,
     enforce_free_tier_confidentiality,
+    enforce_runtime_confidentiality,
     resolve_provider_api_key,
     sanitize_untrusted_text,
     scrub_secrets,
@@ -82,6 +83,7 @@ __all__ = [
     "default_urllib_json_get_transport",
     "default_urllib_json_transport",
     "enforce_free_tier_confidentiality",
+    "enforce_runtime_confidentiality",
     "probe_gemini_model_availability",
     "resolve_provider_api_key",
     "sanitize_untrusted_text",

@@ -54,8 +54,150 @@ REQUIRED_DELIVERABLES = [
 ]
 
 
+def validate_review_lifecycle_governance(
+    *,
+    sources: list[Any],
+    pack: Any,
+    mappings: Any,
+    ob_rows: list[dict[str, str]],
+    map_rows: list[dict[str, str]],
+    reg_rows: list[dict[str, str]],
+) -> dict[str, Any]:
+    """Audit review lifecycle governance without allowing silent or invalid approvals.
+
+    - Preserves `proposed` records clearly marked as `proposed` without auto-approving.
+    - Allows `approved` runtime records ONLY when:
+      1) Matching row exists in `E4_LEGAL_REVIEW_REGISTER.csv` with `runtime_review_status == "approved"`
+         and `signoff_decision` starting with `"APPROVED"` (never `PENDING_*`).
+      2) Reviewer identity, review timestamp/date, and written signoff rationale are recorded
+         (in register columns `reviewed_by`/`reviewer_identity`, `reviewed_at`/`signoff_date`,
+         `signoff_rationale`, or on `ObligationControlMapping` fields `reviewer`, `reviewed_at`,
+         `equivalence_rationale`).
+      3) Item is NOT `source_unavailable` (e.g., proprietary ISO standards without licensed text).
+      4) Item does NOT carry an unremediated `P0` `needs_correction` audit status.
+    - Flags runtime/register status drift or invalid/pending approvals.
+    """
+    errors: list[str] = []
+    reg_by_key = {(r["item_type"], r["item_id"]): r for r in reg_rows}
+    ob_audit_by_id = {r["obligation_id"]: r for r in ob_rows}
+    map_audit_by_id = {r["mapping_id"]: r for r in map_rows}
+
+    runtime_items: list[tuple[str, str, ReviewStatus, Any]] = (
+        [("regulatory_source", s.source_id, s.reviewer_status, s) for s in sources]
+        + [("atomic_obligation", ob.obligation_id, ob.review_status, ob) for ob in pack.obligations]
+        + [("obligation_control_mapping", m.mapping_id, m.review_status, m) for m in mappings.mappings]
+    )
+
+    status_counts: Counter[str] = Counter()
+    approved_by_type: Counter[str] = Counter()
+    proposed_by_type: Counter[str] = Counter()
+    unremediated_p0 = 0
+    source_unavailable_count = 0
+
+    for item_type, item_id, rt_status, obj in runtime_items:
+        status_counts[rt_status.value] += 1
+        reg_row = reg_by_key.get((item_type, item_id))
+        if not reg_row:
+            errors.append(f"Missing legal review register entry for {item_type} '{item_id}'")
+            continue
+
+        e4_status = (reg_row.get("e4_verification_status") or "").strip()
+        priority = (reg_row.get("priority") or "").strip().upper()
+        reg_rt_status = (reg_row.get("runtime_review_status") or "").strip().lower()
+        signoff = (reg_row.get("signoff_decision") or "").strip()
+
+        if e4_status == "source_unavailable":
+            source_unavailable_count += 1
+        if priority == "P0" and e4_status == "needs_correction":
+            unremediated_p0 += 1
+
+        # Cross-check dedicated audit CSVs when applicable
+        if item_type == "atomic_obligation":
+            audit_status = (ob_audit_by_id.get(item_id, {}).get("verification_status") or "").strip()
+            if audit_status and audit_status != e4_status:
+                errors.append(
+                    f"Obligation {item_id} status mismatch between audit CSV ('{audit_status}') and legal register ('{e4_status}')"
+                )
+        elif item_type == "obligation_control_mapping":
+            audit_status = (map_audit_by_id.get(item_id, {}).get("audit_status") or "").strip()
+            if audit_status and audit_status != e4_status:
+                errors.append(
+                    f"Mapping {item_id} status mismatch between audit CSV ('{audit_status}') and legal register ('{e4_status}')"
+                )
+
+        if rt_status is ReviewStatus.PROPOSED:
+            proposed_by_type[item_type] += 1
+            if reg_rt_status != "proposed":
+                errors.append(
+                    f"Register drift for {item_type} '{item_id}': runtime is 'proposed' but register says '{reg_rt_status}'"
+                )
+            if signoff.upper().startswith("APPROVED"):
+                errors.append(
+                    f"Register drift for {item_type} '{item_id}': signoff_decision='{signoff}' while runtime remains 'proposed'"
+                )
+        elif rt_status is ReviewStatus.APPROVED:
+            approved_by_type[item_type] += 1
+            if e4_status == "source_unavailable":
+                errors.append(
+                    f"Unauthorised approval for {item_type} '{item_id}': cannot approve item with status 'source_unavailable'"
+                )
+            if priority == "P0" and e4_status == "needs_correction":
+                errors.append(
+                    f"Unauthorised approval for {item_type} '{item_id}': cannot approve unremediated P0 'needs_correction' item"
+                )
+            if reg_rt_status != "approved":
+                errors.append(
+                    f"Silent approval rejected for {item_type} '{item_id}': register runtime_review_status is '{reg_rt_status}', expected 'approved'"
+                )
+            if not signoff.upper().startswith("APPROVED") or signoff.upper().startswith("PENDING"):
+                errors.append(
+                    f"Unauthorised approval for {item_type} '{item_id}': signoff_decision must record qualified human approval, got '{signoff}'"
+                )
+
+            reviewer_val = (
+                (reg_row.get("reviewed_by") or reg_row.get("reviewer_identity") or reg_row.get("reviewer") or "").strip()
+                or (getattr(obj, "reviewer", None) or "").strip()
+            )
+            reviewed_at_val = (
+                (reg_row.get("reviewed_at") or reg_row.get("signoff_date") or "").strip()
+                or (str(getattr(obj, "reviewed_at", None) or "")).strip()
+            )
+            rationale_val = (
+                (reg_row.get("signoff_rationale") or reg_row.get("legal_rationale") or "").strip()
+                or (getattr(obj, "legal_note", None) or getattr(obj, "equivalence_rationale", None) or getattr(obj, "notes", None) or "").strip()
+            )
+            if not reviewer_val:
+                errors.append(
+                    f"Invalid approval for {item_type} '{item_id}': missing reviewer identity"
+                )
+            if not reviewed_at_val:
+                errors.append(
+                    f"Invalid approval for {item_type} '{item_id}': missing review timestamp/date"
+                )
+            if not rationale_val:
+                errors.append(
+                    f"Invalid approval for {item_type} '{item_id}': missing approval rationale"
+                )
+        else:
+            # UNREVIEWED or REJECTED must match register runtime status
+            if reg_rt_status != rt_status.value:
+                errors.append(
+                    f"Register drift for {item_type} '{item_id}': runtime is '{rt_status.value}' but register says '{reg_rt_status}'"
+                )
+
+    return {
+        "passed": len(errors) == 0,
+        "errors": errors,
+        "runtime_status_counts": dict(status_counts),
+        "proposed_by_type": dict(proposed_by_type),
+        "approved_by_type": dict(approved_by_type),
+        "unremediated_p0_needs_correction": unremediated_p0,
+        "source_unavailable_items": source_unavailable_count,
+    }
+
+
 def verify_e4_deliverables(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
-    """Verify presence, schema, row coverage, and status integrity of the 6 E4 deliverables."""
+    """Verify presence, schema, row coverage, and review-lifecycle governance of the 6 E4 deliverables."""
     errors: list[str] = []
     missing = [name for name in REQUIRED_DELIVERABLES if not (repo_root / name).exists()]
     if missing:
@@ -66,22 +208,6 @@ def verify_e4_deliverables(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     sources = load_source_register()
     mappings = load_obligation_control_mappings()
     controls = load_unified_control_library()
-
-    # Check zero auto-approvals in runtime data
-    non_proposed_obs = [
-        ob.obligation_id for ob in pack.obligations if ob.review_status is not ReviewStatus.PROPOSED
-    ]
-    non_proposed_maps = [
-        m.mapping_id for m in mappings.mappings if m.review_status is not ReviewStatus.PROPOSED
-    ]
-    non_proposed_srcs = [
-        s.source_id for s in sources if s.reviewer_status is not ReviewStatus.PROPOSED
-    ]
-    if non_proposed_obs or non_proposed_maps or non_proposed_srcs:
-        errors.append(
-            "Runtime library contains non-proposed records without human sign-off: "
-            f"sources={non_proposed_srcs}, obligations={non_proposed_obs}, mappings={non_proposed_maps}"
-        )
 
     # Obligation audit CSV
     expected_ob_cols = [
@@ -147,6 +273,16 @@ def verify_e4_deliverables(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
     if bad_reg_statuses:
         errors.append(f"Invalid legal register statuses: {bad_reg_statuses}")
 
+    lifecycle_report = validate_review_lifecycle_governance(
+        sources=sources,
+        pack=pack,
+        mappings=mappings,
+        ob_rows=ob_rows,
+        map_rows=map_rows,
+        reg_rows=reg_rows,
+    )
+    errors.extend(lifecycle_report["errors"])
+
     return {
         "passed": len(errors) == 0,
         "errors": errors,
@@ -162,22 +298,32 @@ def verify_e4_deliverables(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
         "obligation_status_counts": dict(Counter(r["verification_status"] for r in ob_rows)),
         "mapping_status_counts": dict(Counter(r["audit_status"] for r in map_rows)),
         "register_status_counts": dict(Counter(r["e4_verification_status"] for r in reg_rows)),
+        "lifecycle_governance": lifecycle_report,
     }
 
 
 def run_full_audit() -> dict[str, Any]:
     """Run structural checks, synthetic scenarios, and deliverable assurance verification."""
-    validation_report = validate_regulatory_library()
-    synthetic_suite = run_synthetic_evaluation_suite()
     deliverables_report = verify_e4_deliverables()
+    validation_report = validate_regulatory_library(forbid_auto_approved=False)
+    synthetic_suite = run_synthetic_evaluation_suite()
     overall_passed = bool(
         validation_report["valid"]
         and synthetic_suite["all_passed"]
         and deliverables_report["passed"]
     )
+    approved_total = sum(
+        deliverables_report.get("lifecycle_governance", {})
+        .get("approved_by_type", {})
+        .values()
+    )
     return {
         "overall_structural_audit_passed": overall_passed,
-        "legal_review_status": validation_report["legal_review_status"],
+        "legal_review_status": (
+            "pending_expert_human_review"
+            if approved_total == 0
+            else "partial_human_signoff_with_lineage"
+        ),
         "automated_structural_checks": validation_report["checks"],
         "content_assurance_diagnostics": validation_report["content_assurance_diagnostics"],
         "synthetic_evaluation_summary": {
@@ -203,8 +349,11 @@ def main(argv: list[str] | None = None) -> int:
         passed_n = sum(1 for c in checks.values() if c["passed"])
         diag = report["content_assurance_diagnostics"]
         deliv = report["e4_deliverables_verification"]
+        approved_count = sum(
+            deliv.get("lifecycle_governance", {}).get("approved_by_type", {}).values()
+        )
         print(f"E4 Structural Validation: {passed_n}/{len(checks)} checks passed (valid={report['overall_structural_audit_passed']})")
-        print(f"Legal Review Status: {report['legal_review_status']} (zero auto-approvals)")
+        print(f"Legal Review Status: {report['legal_review_status']} (human_approved={approved_count})")
         print(f"Synthetic Scenarios: {report['synthetic_evaluation_summary']}")
         print(
             "Diagnostics: "

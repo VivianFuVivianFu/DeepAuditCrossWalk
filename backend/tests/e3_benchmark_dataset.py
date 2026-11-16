@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from typing import Optional, Tuple
 
 from banking_crosswalk.models import ReconciliationRelationship
-from tests.test_e11_accuracy_and_effective_baseline_e2e import LabelledBenchmarkClause
+from e11_benchmark_dataset import LabelledBenchmarkClause
 
 
 @dataclass(frozen=True)

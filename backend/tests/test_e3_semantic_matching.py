@@ -90,8 +90,8 @@ def _reset_store():
     store.reset()
     yield
     store.reset()
-from tests.e3_benchmark_dataset import E3_EXTENDED_CLAUSES, E3_QUESTIONNAIRE_CASES
-from tests.test_e11_accuracy_and_effective_baseline_e2e import (
+from e3_benchmark_dataset import E3_EXTENDED_CLAUSES, E3_QUESTIONNAIRE_CASES
+from e11_benchmark_dataset import (
     E11_BENCHMARK_CLAUSES,
     LabelledBenchmarkClause,
     _build_docx_bytes,
@@ -666,6 +666,119 @@ def test_e3_06_api_endpoints_security_rbac_and_matching_mode(monkeypatch):
         json={"matching_mode": "hybrid"},
     )
     assert rec_free.status_code == 403
+
+
+def _setup_approved_baseline_for_reconcile_matrix(client: TestClient, tenant_id: str = "t-matrix") -> str:
+    up = client.post(
+        "/v1/enterprise/policies/import-file",
+        headers={"X-Tenant-ID": tenant_id, "X-Actor": "analyst.1", "X-Role": "analyst"},
+        json={
+            "name": "Precedence Matrix Policy",
+            "filename": "policy.txt",
+            "file_base64": _b64(
+                b"Each AI system must assign an accountable privacy owner, implement privacy by design, and maintain a current privacy policy."
+            ),
+            "category": "ai_governance",
+            "authority_level": "enterprise_policy",
+            "version": "1.0.0",
+        },
+    )
+    assert up.status_code == 201, up.text
+    pol = up.json()
+    for cls in pol["clauses"]:
+        rev = client.put(
+            f"/v1/enterprise/clauses/{cls['clause_id']}/review",
+            headers={"X-Tenant-ID": tenant_id, "X-Actor": "rev.1", "X-Role": "reviewer"},
+            json={"status": "approved", "actor": "rev.1", "role": "reviewer"},
+        )
+        assert rev.status_code == 200, rev.text
+    bl = client.post(
+        "/v1/enterprise/baselines",
+        headers={"X-Tenant-ID": tenant_id, "X-Actor": "rev.1", "X-Role": "reviewer"},
+        json={"name": "Matrix BL", "policy_ids": [pol["policy_id"]], "version": "1.0.0", "status": "active"},
+    )
+    assert bl.status_code == 201, bl.text
+    return bl.json()["baseline_id"]
+
+
+def test_e3_06b_confidentiality_vs_config_precedence_matrix(monkeypatch):
+    """Verify explicit HTTP 403 Confidentiality vs HTTP 503 Configuration precedence across all 6 isolated scenarios."""
+    from banking_crosswalk.llm import ConfidentialityPolicyError, DataClassification, ProviderConfigurationError
+
+    monkeypatch.setenv("CROSSWALK_AUTH_DISABLED", "true")
+    monkeypatch.setenv("CROSSWALK_EDITION", "self_hosted")
+    monkeypatch.setenv("SEMANTIC_MATCHING_ENABLED", "true")
+    monkeypatch.setenv("SEMANTIC_MATCHING_MODE", "hybrid")
+    monkeypatch.delenv("HOSTED_GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+
+    client = TestClient(app)
+    bl_id = _setup_approved_baseline_for_reconcile_matrix(client)
+    hdrs = {"X-Tenant-ID": "t-matrix", "X-Actor": "analyst.1", "X-Role": "analyst"}
+
+    # Scenario 1: Confidential policy + Gemini free-tier + WITH API key -> 403 (never touches network)
+    monkeypatch.setenv("LLM_EMBEDDING_PROVIDER", "gemini")
+    monkeypatch.setenv("LLM_REASONING_PROVIDER", "gemini")
+    monkeypatch.setenv("GEMINI_BILLING_TIER", "free")
+    monkeypatch.setenv("ALLOW_CONFIDENTIAL_LLM_ON_FREE_TIER", "false")
+    monkeypatch.setenv("GEMINI_API_KEY", "dummy-non-empty-user-key-for-policy-test")
+    s1 = client.post(f"/v1/enterprise/baselines/{bl_id}/reconcile", headers=hdrs, json={"matching_mode": "hybrid"})
+    assert s1.status_code == 403
+
+    # Scenario 2: Confidential policy + Gemini free-tier + WITHOUT API key -> 403 (confidentiality precedes 503)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    s2 = client.post(f"/v1/enterprise/baselines/{bl_id}/reconcile", headers=hdrs, json={"matching_mode": "hybrid"})
+    assert s2.status_code == 403
+
+    # Scenario 3: Confidential policy + Gemini paid-tier + WITHOUT API key -> 503
+    monkeypatch.setenv("GEMINI_BILLING_TIER", "paid")
+    s3 = client.post(f"/v1/enterprise/baselines/{bl_id}/reconcile", headers=hdrs, json={"matching_mode": "hybrid"})
+    assert s3.status_code == 503
+
+    # Scenario 4: Synthetic / public-demo + Gemini free-tier + WITHOUT API key -> ProviderConfigurationError (503)
+    cfg_free_nokey = LLMRuntimeConfig(
+        semantic_matching_enabled=True,
+        matching_mode=SemanticMatchingMode.HYBRID,
+        embedding_provider=LLMProviderKind.GEMINI,
+        reasoning_provider=LLMProviderKind.GEMINI,
+        gemini_billing_tier="free",
+        gemini_api_key=None,
+    )
+    bl_demo = store.get_enterprise_baseline("t-matrix", bl_id).model_copy(update={"tenant_id": "public-demo"})
+    with pytest.raises(ProviderConfigurationError):
+        generate_hybrid_reconciliation_candidates(
+            tenant_id="public-demo",
+            enterprise_baseline=bl_demo,
+            config=cfg_free_nokey,
+            data_classification=DataClassification.PUBLIC_OR_SYNTHETIC,
+        )
+    # Double-check confidential fails with ConfidentialityPolicyError even on same key-less config
+    with pytest.raises(ConfidentialityPolicyError):
+        generate_hybrid_reconciliation_candidates(
+            tenant_id="t-matrix",
+            enterprise_baseline=store.get_enterprise_baseline("t-matrix", bl_id),
+            config=cfg_free_nokey,
+            data_classification=DataClassification.CONFIDENTIAL_ENTERPRISE,
+        )
+
+    # Scenario 5: Confidential policy + Mock providers -> 201
+    monkeypatch.setenv("LLM_EMBEDDING_PROVIDER", "mock")
+    monkeypatch.setenv("LLM_REASONING_PROVIDER", "mock")
+    s5 = client.post(f"/v1/enterprise/baselines/{bl_id}/reconcile", headers=hdrs, json={"matching_mode": "hybrid"})
+    assert s5.status_code == 201
+
+    # Scenario 6: Confidential policy + deterministic_only -> 201 even with free-tier Gemini configured without key
+    monkeypatch.setenv("LLM_EMBEDDING_PROVIDER", "gemini")
+    monkeypatch.setenv("LLM_REASONING_PROVIDER", "gemini")
+    monkeypatch.setenv("GEMINI_BILLING_TIER", "free")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    s6 = client.post(
+        f"/v1/enterprise/baselines/{bl_id}/reconcile",
+        headers=hdrs,
+        json={"matching_mode": "deterministic_only"},
+    )
+    assert s6.status_code == 201
+    assert all(d["matching_mode"] == "deterministic_only" for d in s6.json())
 
 
 def _b64(raw: bytes) -> str:
@@ -1412,7 +1525,7 @@ def test_e3_10_section7_questionnaire_matching_evaluation():
 def test_e31_adversarial_calibration_harness_and_multi_obligation(tmp_path: Path, monkeypatch):
     """E3.1: Verify 24-case 9-phenomenon adversarial calibration suite + CLI harness in mock mode."""
     from banking_crosswalk.llm.eval_harness import render_evaluation_markdown, run_evaluation_suite
-    from tests.e31_calibration_dataset import E31_CALIBRATION_CLAUSES
+    from e31_calibration_dataset import E31_CALIBRATION_CLAUSES
 
     assert len(E31_CALIBRATION_CLAUSES) == 24
     dev_phenomena = {c.phenomenon for c in E31_CALIBRATION_CLAUSES if c.split == "dev"}

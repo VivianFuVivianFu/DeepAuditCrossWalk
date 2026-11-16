@@ -228,6 +228,10 @@ export class DurableRevocationStore {
     }
     const tmp =
       process.env.TMPDIR || process.env.TEMP || process.env.TMP || "/tmp";
+    const vitestWorker = (process.env.VITEST_WORKER_ID || "").trim();
+    if (vitestWorker) {
+      return path.join(tmp, `crosswalk_revocations_vitest_${vitestWorker}.json`);
+    }
     return path.join(tmp, "crosswalk_revocations.json");
   }
 

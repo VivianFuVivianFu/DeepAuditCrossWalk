@@ -1,4 +1,7 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GET, POST } from "../app/api/workspace/route";
 import {
   clearSecurityStateForTests,
@@ -6,10 +9,28 @@ import {
   formatSessionCookie,
 } from "../app/security";
 
+let activeGatewayTmpDir: string | null = null;
+
+beforeEach(() => {
+  activeGatewayTmpDir = fs.mkdtempSync(
+    path.join(os.tmpdir(), "crosswalk-gateway-test-")
+  );
+  vi.stubEnv(
+    "SESSION_REVOCATION_PATH",
+    path.join(activeGatewayTmpDir, "security_state.json")
+  );
+});
+
 afterEach(() => {
   clearSecurityStateForTests();
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
+  if (activeGatewayTmpDir) {
+    try {
+      fs.rmSync(activeGatewayTmpDir, { recursive: true, force: true });
+    } catch {}
+    activeGatewayTmpDir = null;
+  }
 });
 
 function buildAuthenticatedHeaders(params?: {

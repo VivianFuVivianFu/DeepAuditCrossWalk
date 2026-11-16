@@ -35,6 +35,7 @@ from .llm import (
     SemanticProviderBundle,
     SemanticRelationshipAnalysis,
     build_provider_bundle,
+    enforce_runtime_confidentiality,
     sanitize_untrusted_text,
     scrub_secrets,
     validate_semantic_citation,
@@ -180,6 +181,11 @@ def retrieve_reconciliation_candidates_hybrid(
         and bundle.embedding_provider.supports_embeddings
         and applicable_obs
     ):
+        enforce_runtime_confidentiality(
+            bundle.config,
+            data_classification=data_classification,
+            tenant_id=clause.tenant_id,
+        )
         try:
             ob_texts = [_format_obligation_embedding_text(ob) for ob in applicable_obs]
             ob_vecs = bundle.embed_with_cache(
@@ -587,6 +593,11 @@ def generate_hybrid_reconciliation_candidates(
     if enterprise_baseline.tenant_id != tenant_id:
         raise ValueError("Tenant mismatch when generating reconciliation candidates.")
 
+    enforce_runtime_confidentiality(
+        cfg,
+        data_classification=data_classification,
+        tenant_id=tenant_id,
+    )
     active_bundle = bundle or build_provider_bundle(cfg)
     reg_pack = regulatory_pack or load_regulatory_pack()
     ctrl_lib = control_library or load_unified_control_library()
@@ -1085,6 +1096,11 @@ def suggest_questionnaire_mappings_hybrid(
         and bundle.embedding_provider.supports_embeddings
         and applicable_obs
     ):
+        enforce_runtime_confidentiality(
+            bundle.config,
+            data_classification=data_classification,
+            tenant_id=resolved_tenant,
+        )
         try:
             ob_vecs = bundle.embed_with_cache(
                 ob_texts,

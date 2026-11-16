@@ -150,3 +150,182 @@ def test_e4_executable_audit_cli_runs_cleanly():
     )
     assert proc.returncode == 0, proc.stderr or proc.stdout
     assert '"overall_structural_audit_passed": true' in proc.stdout
+
+
+def _load_audit_cli_module():
+    import importlib.util
+
+    cli_path = ROOT / "scripts" / "audit_regulatory_library.py"
+    spec = importlib.util.spec_from_file_location("audit_regulatory_library", cli_path)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def test_e4_review_lifecycle_governance_allows_qualified_human_approval_and_blocks_invalid():
+    mod = _load_audit_cli_module()
+    sources = load_source_register()
+    pack = load_regulatory_pack()
+    mappings = load_obligation_control_mappings()
+
+    with (ROOT / "E4_ATOMIC_OBLIGATION_AUDIT.csv").open(encoding="utf-8", newline="") as f:
+        ob_rows = list(csv.DictReader(f))
+    with (ROOT / "E4_CONTROL_MAPPING_AUDIT.csv").open(encoding="utf-8", newline="") as f:
+        map_rows = list(csv.DictReader(f))
+    with (ROOT / "E4_LEGAL_REVIEW_REGISTER.csv").open(encoding="utf-8", newline="") as f:
+        reg_rows = list(csv.DictReader(f))
+
+    # Baseline: all proposed passes with 0 approved
+    baseline = mod.validate_review_lifecycle_governance(
+        sources=sources,
+        pack=pack,
+        mappings=mappings,
+        ob_rows=ob_rows,
+        map_rows=map_rows,
+        reg_rows=reg_rows,
+    )
+    assert baseline["passed"] is True
+    assert sum(baseline["approved_by_type"].values()) == 0
+
+    # 1. Silent runtime promotion without legal register signoff -> rejected
+    silent_map = mappings.mappings[0].model_copy(
+        update={
+            "review_status": ReviewStatus.APPROVED,
+            "reviewer": "legal.lead",
+            "reviewed_at": "2026-11-16T00:00:00Z",
+        }
+    )
+    silent_pack_maps = mappings.model_copy(update={"mappings": [silent_map, *mappings.mappings[1:]]})
+    silent_res = mod.validate_review_lifecycle_governance(
+        sources=sources,
+        pack=pack,
+        mappings=silent_pack_maps,
+        ob_rows=ob_rows,
+        map_rows=map_rows,
+        reg_rows=reg_rows,
+    )
+    assert silent_res["passed"] is False
+    assert any("Silent approval rejected" in e for e in silent_res["errors"])
+
+    # 2. Qualified human approval on verified non-P0 mapping with matching register lineage -> accepted
+    target_id = next(
+        r["item_id"]
+        for r in reg_rows
+        if r["item_type"] == "obligation_control_mapping"
+        and r["e4_verification_status"] == "verified_against_source"
+    )
+    approved_mappings = mappings.model_copy(
+        update={
+            "mappings": [
+                m.model_copy(
+                    update={
+                        "review_status": ReviewStatus.APPROVED,
+                        "reviewer": "senior.afs.counsel@bank.au",
+                        "reviewed_at": "2026-11-16T00:00:00Z",
+                    }
+                )
+                if m.mapping_id == target_id
+                else m
+                for m in mappings.mappings
+            ]
+        }
+    )
+    approved_reg = [
+        {
+            **r,
+            "runtime_review_status": "approved",
+            "signoff_decision": "APPROVED_BY_LEGAL",
+        }
+        if r["item_type"] == "obligation_control_mapping" and r["item_id"] == target_id
+        else r
+        for r in reg_rows
+    ]
+    ok_res = mod.validate_review_lifecycle_governance(
+        sources=sources,
+        pack=pack,
+        mappings=approved_mappings,
+        ob_rows=ob_rows,
+        map_rows=map_rows,
+        reg_rows=approved_reg,
+    )
+    assert ok_res["passed"] is True, ok_res["errors"]
+    assert ok_res["approved_by_type"]["obligation_control_mapping"] == 1
+
+    # 3. Attempting to approve ISO source_unavailable item even with register approval -> rejected
+    iso_ob_id = "ISO42001-AIMS-ORG"
+    iso_pack = pack.model_copy(
+        update={
+            "obligations": [
+                o.model_copy(update={"review_status": ReviewStatus.APPROVED, "legal_note": "Tried"})
+                if o.obligation_id == iso_ob_id
+                else o
+                for o in pack.obligations
+            ]
+        }
+    )
+    iso_reg = [
+        {
+            **r,
+            "runtime_review_status": "approved",
+            "signoff_decision": "APPROVED_BY_LEGAL",
+            "reviewed_by": "iso.auditor@bank.au",
+            "reviewed_at": "2026-11-16",
+            "signoff_rationale": "Attempted without licensed text",
+        }
+        if r["item_type"] == "atomic_obligation" and r["item_id"] == iso_ob_id
+        else r
+        for r in reg_rows
+    ]
+    iso_res = mod.validate_review_lifecycle_governance(
+        sources=sources,
+        pack=iso_pack,
+        mappings=mappings,
+        ob_rows=ob_rows,
+        map_rows=map_rows,
+        reg_rows=iso_reg,
+    )
+    assert iso_res["passed"] is False
+    assert any("source_unavailable" in e for e in iso_res["errors"])
+
+    # 4. Attempting to approve unremediated P0 needs_correction obligation even with register approval -> rejected
+    p0_ob_id = next(
+        r["item_id"]
+        for r in reg_rows
+        if r["item_type"] == "atomic_obligation"
+        and r["priority"] == "P0"
+        and r["e4_verification_status"] == "needs_correction"
+    )
+    p0_pack = pack.model_copy(
+        update={
+            "obligations": [
+                o.model_copy(update={"review_status": ReviewStatus.APPROVED, "legal_note": "Tried"})
+                if o.obligation_id == p0_ob_id
+                else o
+                for o in pack.obligations
+            ]
+        }
+    )
+    p0_reg = [
+        {
+            **r,
+            "runtime_review_status": "approved",
+            "signoff_decision": "APPROVED_BY_LEGAL",
+            "reviewed_by": "counsel@bank.au",
+            "reviewed_at": "2026-11-16",
+            "signoff_rationale": "Premature approval before P0 remediation",
+        }
+        if r["item_type"] == "atomic_obligation" and r["item_id"] == p0_ob_id
+        else r
+        for r in reg_rows
+    ]
+    p0_res = mod.validate_review_lifecycle_governance(
+        sources=sources,
+        pack=p0_pack,
+        mappings=mappings,
+        ob_rows=ob_rows,
+        map_rows=map_rows,
+        reg_rows=p0_reg,
+    )
+    assert p0_res["passed"] is False
+    assert any("unremediated P0" in e for e in p0_res["errors"])
