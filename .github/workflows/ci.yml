@@ -149,11 +149,14 @@ jobs:
           ')
           WORKSPACE_SESSION_SECRET="$SCENARIO_B_SECRET" WORKSPACE_USERS_JSON="$SCENARIO_B_USERS_JSON" \
             docker compose -f compose.yaml -f compose.postgres.yaml up -d --force-recreate --wait --wait-timeout 120
-          SMOKE_WEB_URL="http://localhost:3000" \
-          E2E_SCENARIO="private_workspace" \
-          E2E_USERNAME="ci.reviewer" \
-          E2E_PASSWORD="$SCENARIO_B_PASSWORD" \
-          E2E_TENANT_ID="ci-private-workspace" \
-            npx --prefix web playwright test e2e/scenario_b_private_workspace.spec.ts
+          (
+            cd web
+            SMOKE_WEB_URL="http://localhost:3000" \
+            E2E_SCENARIO="private_workspace" \
+            E2E_USERNAME="ci.reviewer" \
+            E2E_PASSWORD="$SCENARIO_B_PASSWORD" \
+            E2E_TENANT_ID="ci-private-workspace" \
+              npx playwright test e2e/scenario_b_private_workspace.spec.ts
+          )
       - if: always()
         run: docker compose -f compose.yaml -f compose.postgres.yaml down -v
