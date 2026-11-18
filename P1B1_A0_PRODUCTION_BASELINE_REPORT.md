@@ -19,7 +19,7 @@ Engine A0 represents the production deterministic extraction algorithm developed
 When subjected to the standardized, multi-layer evaluation harness across the 156-case V2 benchmark and the 36-case Supplemental Adversarial dataset, Engine A0 exhibited severe architectural limitations:
 - **Baseline Extraction Recall on Development Split**: **3.73%** (Facet Micro F1: **6.37%**).
 - **Canonical Control Top-1 Recall on Development Split**: **3.81%** (MRR: **0.0381**).
-- **Canonical UCL Facet Coverage**: **3.23%** (5 out of 155 canonical facets covered).
+- **Canonical UCL Facet Coverage (pre-E4.1 `v1.0.0` 155-facet UCL)**: **3.23%** (5 out of 155 canonical facets covered; current E4.1 Pack `0.2.0` defines 158 canonical facets).
 - **False-Control Trigger Rate on Supplemental Prohibitions**: **16.67%** (3 false alarms out of 18 non-affirmative cases).
 - **False-Control Trigger Rate on Holdout Prohibitions**: **50.00%** (1 false alarm out of 2 non-affirmative cases, triggering falsely on `P1-127`).
 
@@ -51,7 +51,7 @@ xychart-beta
 | | Micro Recall ($R_{B}$) | 3.73% | 25.71% | 9.09% |
 | | **Micro F1 ($F1_{B}$)** | **6.37%** | **30.00%** | **14.81%** |
 | | Unique Facets Predicted | 5 | 8 | 5 |
-| | Canonical UCL Coverage | **3.23%** (5/155) | **5.16%** (8/155) | **3.23%** (5/155) |
+| | Canonical UCL Coverage *(pre-E4.1 155-facet UCL)* | **3.23%** (5/155) | **5.16%** (8/155) | **3.23%** (5/155) |
 | **Layer C: Unified Controls** | Top-1 Recall ($R_{C@1}$) | **3.81%** | **11.11%** | **8.16%** |
 | | Top-3 Recall ($R_{C@3}$) | 3.81% | 11.11% | 8.16% |
 | | Top-5 Recall ($R_{C@5}$) | 3.81% | 11.11% | 8.16% |
@@ -75,7 +75,7 @@ xychart-beta
 ### 3.1 Root Cause 1: Complete Absence of Taxonomy Coverage (The "147 Missing Facets" Dilemma)
 Engine A0 defines regex patterns for exactly 8 heuristic pattern groups. Of those 8, only 3 match canonical facet strings verbatim (`human_approval_required`, `approval_threshold_defined`, `pre_execution_block`). 
 
-Out of the **155 canonical facets** in `UNIFIED_CONTROL_LIBRARY.json`, Engine A0 has zero patterns for **147 facets**. Consequently:
+Out of the **155 canonical facets** in the pre-E4.1 `v1.0.0` `UNIFIED_CONTROL_LIBRARY.json` snapshot (now **158 canonical facets** in E4.1 Pack `0.2.0`), Engine A0 has zero patterns for **147 facets** (pattern-group view; **152** exact-string missing at pre-E4.1). Consequently:
 - In the V2 Development split (105 cases), which spans diverse regulatory obligations (APRA CPS 230, CPS 234, Privacy Act APPs 1–13, ASIC RG 271, EU AI Act), Engine A0 was completely blind to 96% of reference obligations.
 - For controls such as `CTRL-SEC-TESTING`, `CTRL-BCP-AI`, `CTRL-IDR-HANDLING`, `CTRL-INDEPENDENT-AUDIT-ASSURANCE`, and `CTRL-PRIV-ACCESS-CORRECTION`, A0 generated **zero candidate controls across all 105 development cases**.
 

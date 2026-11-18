@@ -44,7 +44,7 @@ flowchart TD
    - Synthesized to exercise specific linguistic, structural, and regulatory combinations across the 9 UCL domains.
    - Status: Valid for exploratory algorithmic development (Phase P1B).
 2. **Tier 2: Internally Reviewed (156 cases / 100.0%)**:
-   - Verified by internal engineering reviewers to ensure 100% taxonomic alignment with the 33 Canonical Unified Controls and 155 Canonical Facets.
+   - Verified at P1B-0 against the pre-E4.1 `v1.0.0` baseline (33 Canonical Unified Controls and 155 Canonical Facets); note that after E4.1 (158 canonical facets in Pack `0.2.0`), `P1-009` and `P1-151` still retain pre-E4.1 retired facet labels pending dataset refresh.
 3. **Tier 3: Independently Expert-Verified (0 cases / 0.0%)**:
    - **Critical Truth**: No external independent regulatory counsel, former APRA prudential supervisor, or accredited law firm partner has yet formally executed sign-off records on this dataset.
    - No benchmark claims of "expert-validated compliance" may be made until Tier 3 review is executed.

@@ -50,7 +50,7 @@ A human-in-the-loop review gate operates as an effective filter for **Type I err
 However, a review gate is structurally ineffective for **Type II errors (False Negatives)**:
 - When a policy contains a mandatory control (e.g. *annual incident response testing under APRA CPS 234* or *credit demographic statistical parity*), the regex engine produces **0 candidate facets and 0 candidate controls**.
 - In the review interface, the clause appears as **Unmapped** (`is_unmapped: true`) with an empty suggestion queue.
-- Unless the compliance officer reads the entire policy document line by line, notices that an operative control was skipped, and manually navigates through all 155 Canonical Control Facets to synthesize a new mapping, the omission persists straight into the baseline.
+- Unless the compliance officer reads the entire policy document line by line, notices that an operative control was skipped, and manually navigates through all Canonical Control Facets in `UNIFIED_CONTROL_LIBRARY.json` (158 in E4.1 / Pack `0.2.0`; 155 in pre-E4.1 `v1.0.0`) to synthesize a new mapping, the omission persists straight into the baseline.
 
 ### Corrected Risk Re-Rating
 

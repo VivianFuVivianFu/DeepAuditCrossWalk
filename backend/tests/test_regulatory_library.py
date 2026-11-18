@@ -175,3 +175,56 @@ def test_private_licensed_standard_overlay_mechanism(tmp_path: Path):
     with pytest.raises(FileNotFoundError):
         load_regulatory_pack(private_overlay_path=tmp_path / "missing_overlay.json")
 
+
+def test_ucl_taxonomy_integrity_and_library_parity():
+    backend_data_dir = ROOT / "backend" / "banking_crosswalk" / "data"
+    root_ucl = json.loads((ROOT / "UNIFIED_CONTROL_LIBRARY.json").read_text(encoding="utf-8"))
+    backend_ucl = json.loads(
+        (backend_data_dir / "unified_control_library.json").read_text(encoding="utf-8")
+    )
+    assert root_ucl == backend_ucl
+    assert json.loads(
+        (ROOT / "ATOMIC_OBLIGATION_CATALOGUE.json").read_text(encoding="utf-8")
+    ) == json.loads(
+        (backend_data_dir / "atomic_obligation_catalogue.json").read_text(encoding="utf-8")
+    )
+    assert json.loads(
+        (ROOT / "OBLIGATION_CONTROL_MAPPINGS.json").read_text(encoding="utf-8")
+    ) == json.loads(
+        (backend_data_dir / "obligation_control_mappings.json").read_text(encoding="utf-8")
+    )
+
+    controls = root_ucl["controls"]
+    control_ids = [c["control_id"] for c in controls]
+    assert len(control_ids) == len(set(control_ids)) == root_ucl["total_controls"]
+    control_id_set = set(control_ids)
+
+    seen_facets: dict[str, str] = {}
+    for control in controls:
+        cid = control["control_id"]
+        facets = control.get("control_facets", [])
+        assert facets
+        assert len(facets) == len(set(facets))
+        for facet in facets:
+            assert facet not in seen_facets, (
+                f"Facet {facet} duplicated across {seen_facets[facet]} and {cid}"
+            )
+            seen_facets[facet] = cid
+
+    assert len(seen_facets) == 158
+    canonical_facets = set(seen_facets)
+
+    pack = load_regulatory_pack()
+    for ob in pack.obligations:
+        assert ob.control_id in control_id_set
+        assert set(ob.coverage_facets).issubset(canonical_facets)
+    mappings = load_obligation_control_mappings(ROOT / "OBLIGATION_CONTROL_MAPPINGS.json")
+    for mapping in mappings.mappings:
+        assert mapping.control_id in control_id_set
+        if mapping.mapping_relationship.value == "non_equivalent":
+            assert mapping.mapped_facets == []
+        else:
+            assert mapping.mapped_facets
+        assert set(mapping.mapped_facets).issubset(canonical_facets)
+
+

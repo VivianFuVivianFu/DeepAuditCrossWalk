@@ -2,12 +2,12 @@
   "engine": "A0",
   "engine_name": "Production Baseline (A0)",
   "split": "holdout",
-  "split_name": "V2 Holdout",
+  "split_name": "V2 Holdout (Pack v0.2.0)",
   "total_cases": 51,
-  "git_commit": "65b9a08a2e31ed56cc6b7292bd463842f22ff7e4",
+  "git_commit": "e47f66d0bf9a75c0d305502ec1c4f8bd04e79db6",
   "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
   "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
-  "timestamp": "2026-11-05T04:28:32Z",
+  "timestamp": "2026-11-18T07:12:12Z",
   "metrics": {
     "total_cases": 51,
     "layer_a_atomic": {
@@ -26,7 +26,7 @@
       "recall_micro": 0.0857,
       "f1_micro": 0.1481,
       "unique_facets_predicted": 5,
-      "canonical_facet_coverage_rate": 0.0323
+      "canonical_facet_coverage_rate": 0.0316
     },
     "layer_c_controls": {
       "cases_with_targets": 49,
@@ -52,9 +52,9 @@
       "threshold_accuracy": 0.0
     },
     "performance_latency_ms": {
-      "mean": 0.09,
-      "p50": 0.09,
-      "p95": 0.13
+      "mean": 0.16,
+      "p50": 0.15,
+      "p95": 0.26
     }
   },
   "by_normative_class": {
@@ -102,9 +102,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.11,
-        "p50": 0.11,
-        "p95": 0.11
+        "mean": 0.16,
+        "p50": 0.16,
+        "p95": 0.16
       }
     },
     "conditional_exemption": {
@@ -151,9 +151,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.11,
-        "p50": 0.11,
-        "p95": 0.11
+        "mean": 0.21,
+        "p50": 0.21,
+        "p95": 0.21
       }
     },
     "harmful_practice_prohibition": {
@@ -174,7 +174,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 1,
-        "canonical_facet_coverage_rate": 0.0065
+        "canonical_facet_coverage_rate": 0.0063
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -200,9 +200,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.08,
-        "p95": 0.08
+        "mean": 0.13,
+        "p50": 0.13,
+        "p95": 0.13
       }
     },
     "mandatory_prohibition": {
@@ -223,7 +223,7 @@
         "recall_micro": 0.0909,
         "f1_micro": 0.1667,
         "unique_facets_predicted": 1,
-        "canonical_facet_coverage_rate": 0.0065
+        "canonical_facet_coverage_rate": 0.0063
       },
       "layer_c_controls": {
         "cases_with_targets": 8,
@@ -249,9 +249,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.1
+        "mean": 0.16,
+        "p50": 0.15,
+        "p95": 0.19
       }
     },
     "mandatory_requirement": {
@@ -272,7 +272,7 @@
         "recall_micro": 0.0962,
         "f1_micro": 0.1695,
         "unique_facets_predicted": 4,
-        "canonical_facet_coverage_rate": 0.0258
+        "canonical_facet_coverage_rate": 0.0253
       },
       "layer_c_controls": {
         "cases_with_targets": 35,
@@ -298,9 +298,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.14
+        "mean": 0.17,
+        "p50": 0.15,
+        "p95": 0.28
       }
     },
     "uncertain_prohibition": {
@@ -321,7 +321,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 2,
-        "canonical_facet_coverage_rate": 0.0129
+        "canonical_facet_coverage_rate": 0.0127
       },
       "layer_c_controls": {
         "cases_with_targets": 5,
@@ -347,9 +347,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.16,
+        "p50": 0.17,
+        "p95": 0.21
       }
     }
   },
@@ -372,7 +372,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 2,
-        "canonical_facet_coverage_rate": 0.0129
+        "canonical_facet_coverage_rate": 0.0127
       },
       "layer_c_controls": {
         "cases_with_targets": 5,
@@ -398,9 +398,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.16,
+        "p50": 0.17,
+        "p95": 0.21
       }
     },
     "conditional_requirement": {
@@ -447,9 +447,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.11,
-        "p50": 0.11,
-        "p95": 0.11
+        "mean": 0.21,
+        "p50": 0.21,
+        "p95": 0.21
       }
     },
     "exact_match": {
@@ -470,7 +470,7 @@
         "recall_micro": 0.0833,
         "f1_micro": 0.1538,
         "unique_facets_predicted": 1,
-        "canonical_facet_coverage_rate": 0.0065
+        "canonical_facet_coverage_rate": 0.0063
       },
       "layer_c_controls": {
         "cases_with_targets": 10,
@@ -496,9 +496,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.1,
-        "p50": 0.08,
-        "p95": 0.18
+        "mean": 0.17,
+        "p50": 0.14,
+        "p95": 0.36
       }
     },
     "multi_facet": {
@@ -519,7 +519,7 @@
         "recall_micro": 0.1429,
         "f1_micro": 0.25,
         "unique_facets_predicted": 2,
-        "canonical_facet_coverage_rate": 0.0129
+        "canonical_facet_coverage_rate": 0.0127
       },
       "layer_c_controls": {
         "cases_with_targets": 6,
@@ -545,9 +545,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.16,
+        "p50": 0.15,
+        "p95": 0.21
       }
     },
     "negated_control": {
@@ -568,7 +568,7 @@
         "recall_micro": 0.0909,
         "f1_micro": 0.1538,
         "unique_facets_predicted": 2,
-        "canonical_facet_coverage_rate": 0.0129
+        "canonical_facet_coverage_rate": 0.0127
       },
       "layer_c_controls": {
         "cases_with_targets": 8,
@@ -594,9 +594,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.1
+        "mean": 0.15,
+        "p50": 0.14,
+        "p95": 0.19
       }
     },
     "non_applicable_obligation": {
@@ -643,9 +643,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.11,
-        "p50": 0.11,
-        "p95": 0.11
+        "mean": 0.16,
+        "p50": 0.16,
+        "p95": 0.16
       }
     },
     "numeric_threshold": {
@@ -666,7 +666,7 @@
         "recall_micro": 1.0,
         "f1_micro": 0.6667,
         "unique_facets_predicted": 2,
-        "canonical_facet_coverage_rate": 0.0129
+        "canonical_facet_coverage_rate": 0.0127
       },
       "layer_c_controls": {
         "cases_with_targets": 1,
@@ -692,9 +692,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.09
+        "mean": 0.17,
+        "p50": 0.17,
+        "p95": 0.17
       }
     },
     "paraphrased_match": {
@@ -715,7 +715,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 1,
-        "canonical_facet_coverage_rate": 0.0065
+        "canonical_facet_coverage_rate": 0.0063
       },
       "layer_c_controls": {
         "cases_with_targets": 7,
@@ -741,9 +741,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.16,
+        "p50": 0.15,
+        "p95": 0.21
       }
     },
     "questionnaire_facet": {
@@ -764,7 +764,7 @@
         "recall_micro": 0.0588,
         "f1_micro": 0.1111,
         "unique_facets_predicted": 1,
-        "canonical_facet_coverage_rate": 0.0065
+        "canonical_facet_coverage_rate": 0.0063
       },
       "layer_c_controls": {
         "cases_with_targets": 11,
@@ -790,9 +790,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.17,
+        "p50": 0.17,
+        "p95": 0.26
       }
     }
   },
@@ -815,7 +815,7 @@
         "recall_micro": 0.0857,
         "f1_micro": 0.1481,
         "unique_facets_predicted": 5,
-        "canonical_facet_coverage_rate": 0.0323
+        "canonical_facet_coverage_rate": 0.0316
       },
       "layer_c_controls": {
         "cases_with_targets": 49,
@@ -841,9 +841,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.13
+        "mean": 0.16,
+        "p50": 0.15,
+        "p95": 0.26
       }
     }
   },
@@ -878,7 +878,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.17659999866737053
+      "execution_time_ms": 0.3565000370144844
     },
     {
       "case_id": "P1-022",
@@ -910,7 +910,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.12599999899975955
+      "execution_time_ms": 0.25219994131475687
     },
     {
       "case_id": "P1-023",
@@ -943,7 +943,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10960000145132653
+      "execution_time_ms": 0.21460000425577164
     },
     {
       "case_id": "P1-024",
@@ -976,7 +976,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.11530000119819306
+      "execution_time_ms": 0.21389999892562628
     },
     {
       "case_id": "P1-025",
@@ -1009,7 +1009,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.12440000136848539
+      "execution_time_ms": 0.26030000299215317
     },
     {
       "case_id": "P1-026",
@@ -1041,7 +1041,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0962999984039925
+      "execution_time_ms": 0.18880004063248634
     },
     {
       "case_id": "P1-027",
@@ -1073,7 +1073,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10450000263517722
+      "execution_time_ms": 0.19320007413625717
     },
     {
       "case_id": "P1-028",
@@ -1105,7 +1105,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09390000195708126
+      "execution_time_ms": 0.18470000941306353
     },
     {
       "case_id": "P1-029",
@@ -1140,7 +1140,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.12119999882997945
+      "execution_time_ms": 0.20679994486272335
     },
     {
       "case_id": "P1-030",
@@ -1175,7 +1175,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.10099999781232327
+      "execution_time_ms": 0.20730006508529186
     },
     {
       "case_id": "P1-047",
@@ -1207,7 +1207,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08049999814829789
+      "execution_time_ms": 0.15300000086426735
     },
     {
       "case_id": "P1-048",
@@ -1239,7 +1239,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08689999958733097
+      "execution_time_ms": 0.13950001448392868
     },
     {
       "case_id": "P1-049",
@@ -1271,7 +1271,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08199999865610152
+      "execution_time_ms": 0.14430005103349686
     },
     {
       "case_id": "P1-050",
@@ -1304,7 +1304,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08829999933368526
+      "execution_time_ms": 0.16719999257475138
     },
     {
       "case_id": "P1-051",
@@ -1337,7 +1337,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09339999814983457
+      "execution_time_ms": 0.16549997963011265
     },
     {
       "case_id": "P1-052",
@@ -1371,7 +1371,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07730000288574956
+      "execution_time_ms": 0.1425000373274088
     },
     {
       "case_id": "P1-053",
@@ -1406,7 +1406,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08689999958733097
+      "execution_time_ms": 0.1732000382617116
     },
     {
       "case_id": "P1-054",
@@ -1438,7 +1438,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.03949999882024713
+      "execution_time_ms": 0.0724999699741602
     },
     {
       "case_id": "P1-069",
@@ -1470,7 +1470,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07700000060140155
+      "execution_time_ms": 0.13920001219958067
     },
     {
       "case_id": "P1-070",
@@ -1502,7 +1502,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08370000068680383
+      "execution_time_ms": 0.15769992023706436
     },
     {
       "case_id": "P1-071",
@@ -1535,7 +1535,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08259999958681874
+      "execution_time_ms": 0.1428000396117568
     },
     {
       "case_id": "P1-072",
@@ -1567,7 +1567,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08059999890974723
+      "execution_time_ms": 0.14489993918687105
     },
     {
       "case_id": "P1-073",
@@ -1600,7 +1600,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08849999721860513
+      "execution_time_ms": 0.15620002523064613
     },
     {
       "case_id": "P1-074",
@@ -1632,7 +1632,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08679999882588163
+      "execution_time_ms": 0.15400000847876072
     },
     {
       "case_id": "P1-087",
@@ -1664,7 +1664,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08069999967119657
+      "execution_time_ms": 0.1385000068694353
     },
     {
       "case_id": "P1-088",
@@ -1696,7 +1696,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07270000060088933
+      "execution_time_ms": 0.12710003647953272
     },
     {
       "case_id": "P1-089",
@@ -1728,7 +1728,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0962999984039925
+      "execution_time_ms": 0.2175000263378024
     },
     {
       "case_id": "P1-090",
@@ -1760,7 +1760,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07730000288574956
+      "execution_time_ms": 0.1517999917268753
     },
     {
       "case_id": "P1-091",
@@ -1794,7 +1794,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.0943000013648998
+      "execution_time_ms": 0.1471999567002058
     },
     {
       "case_id": "P1-092",
@@ -1826,7 +1826,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09100000170292333
+      "execution_time_ms": 0.16639998648315668
     },
     {
       "case_id": "P1-107",
@@ -1864,7 +1864,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.0987999992503319
+      "execution_time_ms": 0.17330003902316093
     },
     {
       "case_id": "P1-108",
@@ -1902,7 +1902,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.09689999933470972
+      "execution_time_ms": 0.1680999994277954
     },
     {
       "case_id": "P1-109",
@@ -1940,7 +1940,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10230000043520704
+      "execution_time_ms": 0.17550005577504635
     },
     {
       "case_id": "P1-110",
@@ -1973,7 +1973,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08460000026389025
+      "execution_time_ms": 0.13939989730715752
     },
     {
       "case_id": "P1-111",
@@ -2013,7 +2013,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.12149999747634865
+      "execution_time_ms": 0.19679998513311148
     },
     {
       "case_id": "P1-112",
@@ -2045,7 +2045,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.11190000077476725
+      "execution_time_ms": 0.17600005958229303
     },
     {
       "case_id": "P1-124",
@@ -2077,7 +2077,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08140000136336312
+      "execution_time_ms": 0.1305999467149377
     },
     {
       "case_id": "P1-125",
@@ -2113,7 +2113,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.09210000280290842
+      "execution_time_ms": 0.14729995746165514
     },
     {
       "case_id": "P1-126",
@@ -2145,7 +2145,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08150000212481245
+      "execution_time_ms": 0.13609998859465122
     },
     {
       "case_id": "P1-127",
@@ -2177,7 +2177,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07830000322428532
+      "execution_time_ms": 0.12620002962648869
     },
     {
       "case_id": "P1-128",
@@ -2210,7 +2210,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0810999990790151
+      "execution_time_ms": 0.12179999612271786
     },
     {
       "case_id": "P1-137",
@@ -2242,7 +2242,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08130000060191378
+      "execution_time_ms": 0.13689999468624592
     },
     {
       "case_id": "P1-138",
@@ -2274,7 +2274,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0928999979805667
+      "execution_time_ms": 0.14589994680136442
     },
     {
       "case_id": "P1-139",
@@ -2307,7 +2307,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08940000043367036
+      "execution_time_ms": 0.13770000077784061
     },
     {
       "case_id": "P1-140",
@@ -2339,7 +2339,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08449999950244091
+      "execution_time_ms": 0.13990001752972603
     },
     {
       "case_id": "P1-146",
@@ -2371,7 +2371,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0746000005165115
+      "execution_time_ms": 0.1314000692218542
     },
     {
       "case_id": "P1-147",
@@ -2403,7 +2403,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09230000068782829
+      "execution_time_ms": 0.14519994147121906
     },
     {
       "case_id": "P1-148",
@@ -2436,7 +2436,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0903999971342273
+      "execution_time_ms": 0.13800000306218863
     },
     {
       "case_id": "P1-154",
@@ -2468,7 +2468,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09900000077323057
+      "execution_time_ms": 0.16259995754808187
     },
     {
       "case_id": "P1-155",
@@ -2496,7 +2496,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10750000001280569
+      "execution_time_ms": 0.16009993851184845
     },
     {
       "case_id": "P1-156",
@@ -2528,7 +2528,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08349999916390516
+      "execution_time_ms": 0.1273000380024314
     }
   ]
 }

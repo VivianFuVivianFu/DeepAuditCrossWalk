@@ -1,13 +1,13 @@
 {
   "engine": "A1",
-  "engine_name": "Enhanced Rules (A1)",
+  "engine_name": "Enhanced Rules (A1 - Revised v0.2.0)",
   "split": "supp",
-  "split_name": "Supplemental Adversarial",
+  "split_name": "Supplemental Adversarial (Historical Labels)",
   "total_cases": 36,
-  "git_commit": "65b9a08a2e31ed56cc6b7292bd463842f22ff7e4",
+  "git_commit": "e47f66d0bf9a75c0d305502ec1c4f8bd04e79db6",
   "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
   "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
-  "timestamp": "2026-11-05T04:28:32Z",
+  "timestamp": "2026-11-18T07:12:13Z",
   "metrics": {
     "total_cases": 36,
     "layer_a_atomic": {
@@ -20,31 +20,31 @@
     },
     "layer_b_facets": {
       "tp": 24,
-      "fp": 6,
+      "fp": 9,
       "fn": 1,
-      "precision_micro": 0.8,
+      "precision_micro": 0.7273,
       "recall_micro": 0.96,
-      "f1_micro": 0.8727,
-      "unique_facets_predicted": 25,
-      "canonical_facet_coverage_rate": 0.1613
+      "f1_micro": 0.8276,
+      "unique_facets_predicted": 26,
+      "canonical_facet_coverage_rate": 0.1646
     },
     "layer_c_controls": {
       "cases_with_targets": 18,
-      "top1_recall": 0.8889,
+      "top1_recall": 0.9444,
       "top3_recall": 0.9444,
       "top5_recall": 0.9444,
-      "mrr": 0.9167,
-      "micro_precision": 0.7727,
+      "mrr": 0.9444,
+      "micro_precision": 0.6296,
       "micro_recall": 0.9444,
-      "micro_f1": 0.85
+      "micro_f1": 0.7556
     },
     "layer_c_normative_safety": {
       "suppression_target_cases": 18,
-      "correct_suppressions": 18,
-      "suppression_accuracy": 1.0,
-      "false_triggers_on_suppressed": 0,
-      "false_trigger_rate": 0.0,
-      "total_false_triggers": 0
+      "correct_suppressions": 13,
+      "suppression_accuracy": 0.7222,
+      "false_triggers_on_suppressed": 5,
+      "false_trigger_rate": 0.2778,
+      "total_false_triggers": 5
     },
     "layer_f_thresholds": {
       "total_threshold_cases": 2,
@@ -52,9 +52,9 @@
       "threshold_accuracy": 1.0
     },
     "performance_latency_ms": {
-      "mean": 0.07,
-      "p50": 0.06,
-      "p95": 0.16
+      "mean": 0.26,
+      "p50": 0.27,
+      "p95": 0.65
     }
   },
   "by_normative_class": {
@@ -70,20 +70,20 @@
       },
       "layer_b_facets": {
         "tp": 24,
-        "fp": 6,
+        "fp": 3,
         "fn": 1,
-        "precision_micro": 0.8,
+        "precision_micro": 0.8889,
         "recall_micro": 0.96,
-        "f1_micro": 0.8727,
+        "f1_micro": 0.9231,
         "unique_facets_predicted": 25,
-        "canonical_facet_coverage_rate": 0.1613
+        "canonical_facet_coverage_rate": 0.1582
       },
       "layer_c_controls": {
         "cases_with_targets": 18,
-        "top1_recall": 0.8889,
+        "top1_recall": 0.9444,
         "top3_recall": 0.9444,
         "top5_recall": 0.9444,
-        "mrr": 0.9167,
+        "mrr": 0.9444,
         "micro_precision": 0.7727,
         "micro_recall": 0.9444,
         "micro_f1": 0.85
@@ -102,9 +102,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.13,
-        "p50": 0.13,
-        "p95": 0.16
+        "mean": 0.4,
+        "p50": 0.36,
+        "p95": 1.24
       }
     },
     "aspirational_statement": {
@@ -151,9 +151,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.02,
-        "p50": 0.02,
-        "p95": 0.02
+        "mean": 0.06,
+        "p50": 0.06,
+        "p95": 0.09
       }
     },
     "permissive_guidance": {
@@ -200,9 +200,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.02,
-        "p50": 0.02,
-        "p95": 0.02
+        "mean": 0.05,
+        "p50": 0.04,
+        "p95": 0.06
       }
     },
     "prohibition_absolute": {
@@ -217,13 +217,13 @@
       },
       "layer_b_facets": {
         "tp": 0,
-        "fp": 0,
+        "fp": 3,
         "fn": 0,
         "precision_micro": 0.0,
         "recall_micro": 0.0,
         "f1_micro": 0.0,
-        "unique_facets_predicted": 0,
-        "canonical_facet_coverage_rate": 0.0
+        "unique_facets_predicted": 3,
+        "canonical_facet_coverage_rate": 0.019
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -237,11 +237,11 @@
       },
       "layer_c_normative_safety": {
         "suppression_target_cases": 5,
-        "correct_suppressions": 5,
-        "suppression_accuracy": 1.0,
-        "false_triggers_on_suppressed": 0,
-        "false_trigger_rate": 0.0,
-        "total_false_triggers": 0
+        "correct_suppressions": 2,
+        "suppression_accuracy": 0.4,
+        "false_triggers_on_suppressed": 3,
+        "false_trigger_rate": 0.6,
+        "total_false_triggers": 3
       },
       "layer_f_thresholds": {
         "total_threshold_cases": 0,
@@ -249,9 +249,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.01,
-        "p50": 0.01,
-        "p95": 0.01
+        "mean": 0.17,
+        "p50": 0.24,
+        "p95": 0.3
       }
     },
     "prohibition_conditional": {
@@ -266,13 +266,13 @@
       },
       "layer_b_facets": {
         "tp": 0,
-        "fp": 0,
+        "fp": 3,
         "fn": 0,
         "precision_micro": 0.0,
         "recall_micro": 0.0,
         "f1_micro": 0.0,
-        "unique_facets_predicted": 0,
-        "canonical_facet_coverage_rate": 0.0
+        "unique_facets_predicted": 3,
+        "canonical_facet_coverage_rate": 0.019
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -286,11 +286,11 @@
       },
       "layer_c_normative_safety": {
         "suppression_target_cases": 2,
-        "correct_suppressions": 2,
-        "suppression_accuracy": 1.0,
-        "false_triggers_on_suppressed": 0,
-        "false_trigger_rate": 0.0,
-        "total_false_triggers": 0
+        "correct_suppressions": 0,
+        "suppression_accuracy": 0.0,
+        "false_triggers_on_suppressed": 2,
+        "false_trigger_rate": 1.0,
+        "total_false_triggers": 2
       },
       "layer_f_thresholds": {
         "total_threshold_cases": 1,
@@ -298,9 +298,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.02,
-        "p50": 0.02,
-        "p95": 0.03
+        "mean": 0.32,
+        "p50": 0.32,
+        "p95": 0.35
       }
     },
     "scope_exemption": {
@@ -347,9 +347,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.02,
-        "p50": 0.02,
-        "p95": 0.02
+        "mean": 0.05,
+        "p50": 0.04,
+        "p95": 0.06
       }
     }
   },
@@ -398,9 +398,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.02,
-        "p50": 0.02,
-        "p95": 0.02
+        "mean": 0.06,
+        "p50": 0.06,
+        "p95": 0.09
       }
     },
     "contrastive_exemption": {
@@ -447,9 +447,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.02,
-        "p50": 0.02,
-        "p95": 0.02
+        "mean": 0.05,
+        "p50": 0.04,
+        "p95": 0.06
       }
     },
     "contrastive_obligation": {
@@ -464,20 +464,20 @@
       },
       "layer_b_facets": {
         "tp": 24,
-        "fp": 6,
+        "fp": 3,
         "fn": 1,
-        "precision_micro": 0.8,
+        "precision_micro": 0.8889,
         "recall_micro": 0.96,
-        "f1_micro": 0.8727,
+        "f1_micro": 0.9231,
         "unique_facets_predicted": 25,
-        "canonical_facet_coverage_rate": 0.1613
+        "canonical_facet_coverage_rate": 0.1582
       },
       "layer_c_controls": {
         "cases_with_targets": 18,
-        "top1_recall": 0.8889,
+        "top1_recall": 0.9444,
         "top3_recall": 0.9444,
         "top5_recall": 0.9444,
-        "mrr": 0.9167,
+        "mrr": 0.9444,
         "micro_precision": 0.7727,
         "micro_recall": 0.9444,
         "micro_f1": 0.85
@@ -496,9 +496,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.13,
-        "p50": 0.13,
-        "p95": 0.16
+        "mean": 0.4,
+        "p50": 0.36,
+        "p95": 1.24
       }
     },
     "contrastive_permissive": {
@@ -545,9 +545,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.02,
-        "p50": 0.02,
-        "p95": 0.02
+        "mean": 0.05,
+        "p50": 0.04,
+        "p95": 0.06
       }
     },
     "contrastive_prohibition": {
@@ -562,13 +562,13 @@
       },
       "layer_b_facets": {
         "tp": 0,
-        "fp": 0,
+        "fp": 6,
         "fn": 0,
         "precision_micro": 0.0,
         "recall_micro": 0.0,
         "f1_micro": 0.0,
-        "unique_facets_predicted": 0,
-        "canonical_facet_coverage_rate": 0.0
+        "unique_facets_predicted": 6,
+        "canonical_facet_coverage_rate": 0.038
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -582,11 +582,11 @@
       },
       "layer_c_normative_safety": {
         "suppression_target_cases": 7,
-        "correct_suppressions": 7,
-        "suppression_accuracy": 1.0,
-        "false_triggers_on_suppressed": 0,
-        "false_trigger_rate": 0.0,
-        "total_false_triggers": 0
+        "correct_suppressions": 2,
+        "suppression_accuracy": 0.2857,
+        "false_triggers_on_suppressed": 5,
+        "false_trigger_rate": 0.7143,
+        "total_false_triggers": 5
       },
       "layer_f_thresholds": {
         "total_threshold_cases": 1,
@@ -594,9 +594,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.01,
-        "p50": 0.01,
-        "p95": 0.03
+        "mean": 0.21,
+        "p50": 0.28,
+        "p95": 0.35
       }
     }
   },
@@ -613,31 +613,31 @@
       },
       "layer_b_facets": {
         "tp": 24,
-        "fp": 6,
+        "fp": 9,
         "fn": 1,
-        "precision_micro": 0.8,
+        "precision_micro": 0.7273,
         "recall_micro": 0.96,
-        "f1_micro": 0.8727,
-        "unique_facets_predicted": 25,
-        "canonical_facet_coverage_rate": 0.1613
+        "f1_micro": 0.8276,
+        "unique_facets_predicted": 26,
+        "canonical_facet_coverage_rate": 0.1646
       },
       "layer_c_controls": {
         "cases_with_targets": 18,
-        "top1_recall": 0.8889,
+        "top1_recall": 0.9444,
         "top3_recall": 0.9444,
         "top5_recall": 0.9444,
-        "mrr": 0.9167,
-        "micro_precision": 0.7727,
+        "mrr": 0.9444,
+        "micro_precision": 0.6296,
         "micro_recall": 0.9444,
-        "micro_f1": 0.85
+        "micro_f1": 0.7556
       },
       "layer_c_normative_safety": {
         "suppression_target_cases": 18,
-        "correct_suppressions": 18,
-        "suppression_accuracy": 1.0,
-        "false_triggers_on_suppressed": 0,
-        "false_trigger_rate": 0.0,
-        "total_false_triggers": 0
+        "correct_suppressions": 13,
+        "suppression_accuracy": 0.7222,
+        "false_triggers_on_suppressed": 5,
+        "false_trigger_rate": 0.2778,
+        "total_false_triggers": 5
       },
       "layer_f_thresholds": {
         "total_threshold_cases": 2,
@@ -645,9 +645,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.07,
-        "p50": 0.06,
-        "p95": 0.16
+        "mean": 0.26,
+        "p50": 0.27,
+        "p95": 0.65
       }
     }
   },
@@ -664,11 +664,10 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 1,
-      "facet_fp": 1,
+      "facet_fp": 0,
       "facet_fn": 0,
       "predicted_facets": [
-        "controls_commensurate",
-        "security_controls_defined"
+        "controls_commensurate"
       ],
       "expected_facets": [
         "controls_commensurate"
@@ -687,7 +686,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.1567999970575329
+      "execution_time_ms": 0.43809995986521244
     },
     {
       "case_id": "SUPP-002",
@@ -701,21 +700,25 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 0,
-      "facet_fp": 0,
+      "facet_fp": 1,
       "facet_fn": 0,
-      "predicted_facets": [],
+      "predicted_facets": [
+        "controls_commensurate"
+      ],
       "expected_facets": [],
       "top1_match": false,
       "top3_match": false,
       "top5_match": false,
       "reciprocal_rank": 0.0,
-      "predicted_controls": [],
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
       "expected_controls": [],
-      "false_control_trigger": false,
-      "correct_suppression": true,
+      "false_control_trigger": true,
+      "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.012699998478638008
+      "execution_time_ms": 0.23500004317611456
     },
     {
       "case_id": "SUPP-003",
@@ -756,7 +759,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": true,
-      "execution_time_ms": 0.15899999925750308
+      "execution_time_ms": 0.548899988643825
     },
     {
       "case_id": "SUPP-004",
@@ -770,21 +773,26 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 0,
-      "facet_fp": 0,
+      "facet_fp": 2,
       "facet_fn": 0,
-      "predicted_facets": [],
+      "predicted_facets": [
+        "approval_threshold_defined",
+        "pre_execution_block"
+      ],
       "expected_facets": [],
       "top1_match": false,
       "top3_match": false,
       "top5_match": false,
       "reciprocal_rank": 0.0,
-      "predicted_controls": [],
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
       "expected_controls": [],
-      "false_control_trigger": false,
-      "correct_suppression": true,
+      "false_control_trigger": true,
+      "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": true,
-      "execution_time_ms": 0.025099998310906813
+      "execution_time_ms": 0.3478000871837139
     },
     {
       "case_id": "SUPP-005",
@@ -820,7 +828,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.1384999995934777
+      "execution_time_ms": 0.3394999075680971
     },
     {
       "case_id": "SUPP-006",
@@ -848,7 +856,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.018399998225504532
+      "execution_time_ms": 0.037400051951408386
     },
     {
       "case_id": "SUPP-007",
@@ -877,7 +885,8 @@
       "top5_match": true,
       "reciprocal_rank": 1.0,
       "predicted_controls": [
-        "CTRL-PRIV-SECURITY-RETENTION"
+        "CTRL-PRIV-SECURITY-RETENTION",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
       ],
       "expected_controls": [
         "CTRL-PRIV-SECURITY-RETENTION"
@@ -886,7 +895,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.13179999950807542
+      "execution_time_ms": 0.26700005400925875
     },
     {
       "case_id": "SUPP-008",
@@ -914,7 +923,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.02359999780310318
+      "execution_time_ms": 0.0423000892624259
     },
     {
       "case_id": "SUPP-009",
@@ -928,12 +937,11 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 2,
-      "facet_fp": 1,
+      "facet_fp": 0,
       "facet_fn": 0,
       "predicted_facets": [
         "due_diligence_completed",
-        "provider_materiality_assessed",
-        "security_controls_defined"
+        "provider_materiality_assessed"
       ],
       "expected_facets": [
         "due_diligence_completed",
@@ -944,8 +952,7 @@
       "top5_match": true,
       "reciprocal_rank": 1.0,
       "predicted_controls": [
-        "CTRL-THIRD-PARTY-AI",
-        "CTRL-SEC-COMMENSURATE"
+        "CTRL-THIRD-PARTY-AI"
       ],
       "expected_controls": [
         "CTRL-THIRD-PARTY-AI"
@@ -954,7 +961,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.14259999807109125
+      "execution_time_ms": 0.2823000540956855
     },
     {
       "case_id": "SUPP-010",
@@ -982,7 +989,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.020399998902576044
+      "execution_time_ms": 0.03990007098764181
     },
     {
       "case_id": "SUPP-011",
@@ -1018,7 +1025,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.1419000000169035
+      "execution_time_ms": 0.2615000121295452
     },
     {
       "case_id": "SUPP-012",
@@ -1032,21 +1039,25 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 0,
-      "facet_fp": 0,
+      "facet_fp": 1,
       "facet_fn": 0,
-      "predicted_facets": [],
+      "predicted_facets": [
+        "sensitive_information_consent"
+      ],
       "expected_facets": [],
       "top1_match": false,
       "top3_match": false,
       "top5_match": false,
       "reciprocal_rank": 0.0,
-      "predicted_controls": [],
+      "predicted_controls": [
+        "CTRL-PRIV-COLLECTION"
+      ],
       "expected_controls": [],
-      "false_control_trigger": false,
-      "correct_suppression": true,
+      "false_control_trigger": true,
+      "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.008999999408842996
+      "execution_time_ms": 0.29699993319809437
     },
     {
       "case_id": "SUPP-013",
@@ -1082,7 +1093,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.11460000314400531
+      "execution_time_ms": 0.23280002642422915
     },
     {
       "case_id": "SUPP-014",
@@ -1110,7 +1121,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.02429999949526973
+      "execution_time_ms": 0.04949991125613451
     },
     {
       "case_id": "SUPP-015",
@@ -1146,7 +1157,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.1348999976471532
+      "execution_time_ms": 0.2772000152617693
     },
     {
       "case_id": "SUPP-016",
@@ -1174,7 +1185,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.02010000025620684
+      "execution_time_ms": 0.04549999721348286
     },
     {
       "case_id": "SUPP-017",
@@ -1212,7 +1223,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.12659999993047677
+      "execution_time_ms": 0.25509996339678764
     },
     {
       "case_id": "SUPP-018",
@@ -1240,7 +1251,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.020600000425474718
+      "execution_time_ms": 0.04009995609521866
     },
     {
       "case_id": "SUPP-019",
@@ -1254,25 +1265,24 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 2,
-      "facet_fp": 2,
+      "facet_fp": 1,
       "facet_fn": 0,
       "predicted_facets": [
         "incident_detection_defined",
         "response_and_escalation_defined",
-        "security_controls_defined",
         "security_roles_and_asset_owners_assigned"
       ],
       "expected_facets": [
         "incident_detection_defined",
         "response_and_escalation_defined"
       ],
-      "top1_match": false,
+      "top1_match": true,
       "top3_match": true,
       "top5_match": true,
-      "reciprocal_rank": 0.5,
+      "reciprocal_rank": 1.0,
       "predicted_controls": [
-        "CTRL-SEC-COMMENSURATE",
-        "CTRL-SEC-INCIDENT"
+        "CTRL-SEC-INCIDENT",
+        "CTRL-SEC-COMMENSURATE"
       ],
       "expected_controls": [
         "CTRL-SEC-INCIDENT"
@@ -1281,7 +1291,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.13069999840809032
+      "execution_time_ms": 0.4659999394789338
     },
     {
       "case_id": "SUPP-020",
@@ -1309,7 +1319,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.009100000170292333
+      "execution_time_ms": 0.02429995220154524
     },
     {
       "case_id": "SUPP-021",
@@ -1345,7 +1355,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.12069999866071157
+      "execution_time_ms": 0.42810000013560057
     },
     {
       "case_id": "SUPP-022",
@@ -1373,7 +1383,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.01639999754843302
+      "execution_time_ms": 0.042599975131452084
     },
     {
       "case_id": "SUPP-023",
@@ -1409,7 +1419,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10539999857428484
+      "execution_time_ms": 0.39219995960593224
     },
     {
       "case_id": "SUPP-024",
@@ -1437,7 +1447,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.022199998056748882
+      "execution_time_ms": 0.09049999061971903
     },
     {
       "case_id": "SUPP-025",
@@ -1475,7 +1485,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.1452999968023505
+      "execution_time_ms": 1.243900042027235
     },
     {
       "case_id": "SUPP-026",
@@ -1489,21 +1499,25 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 0,
-      "facet_fp": 0,
+      "facet_fp": 1,
       "facet_fn": 0,
-      "predicted_facets": [],
+      "predicted_facets": [
+        "retention_schedule_applied"
+      ],
       "expected_facets": [],
       "top1_match": false,
       "top3_match": false,
       "top5_match": false,
       "reciprocal_rank": 0.0,
-      "predicted_controls": [],
+      "predicted_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
       "expected_controls": [],
-      "false_control_trigger": false,
-      "correct_suppression": true,
+      "false_control_trigger": true,
+      "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.007800001185387373
+      "execution_time_ms": 0.28090004343539476
     },
     {
       "case_id": "SUPP-027",
@@ -1539,7 +1553,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.131200002215337
+      "execution_time_ms": 0.38540002424269915
     },
     {
       "case_id": "SUPP-028",
@@ -1567,7 +1581,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.020899999071843922
+      "execution_time_ms": 0.059699988923966885
     },
     {
       "case_id": "SUPP-029",
@@ -1581,9 +1595,10 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 1,
-      "facet_fp": 0,
+      "facet_fp": 1,
       "facet_fn": 0,
       "predicted_facets": [
+        "clear_escalation_and_override_authority",
         "human_approval_required"
       ],
       "expected_facets": [
@@ -1594,7 +1609,8 @@
       "top5_match": true,
       "reciprocal_rank": 1.0,
       "predicted_controls": [
-        "CTRL-HUMAN-OVERSIGHT"
+        "CTRL-HUMAN-OVERSIGHT",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
       ],
       "expected_controls": [
         "CTRL-HUMAN-OVERSIGHT"
@@ -1603,7 +1619,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10250000195810571
+      "execution_time_ms": 0.3290999447926879
     },
     {
       "case_id": "SUPP-030",
@@ -1617,21 +1633,25 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 0,
-      "facet_fp": 0,
+      "facet_fp": 1,
       "facet_fn": 0,
-      "predicted_facets": [],
+      "predicted_facets": [
+        "human_approval_required"
+      ],
       "expected_facets": [],
       "top1_match": false,
       "top3_match": false,
       "top5_match": false,
       "reciprocal_rank": 0.0,
-      "predicted_controls": [],
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
       "expected_controls": [],
-      "false_control_trigger": false,
-      "correct_suppression": true,
+      "false_control_trigger": true,
+      "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.01809999957913533
+      "execution_time_ms": 0.28469995595514774
     },
     {
       "case_id": "SUPP-031",
@@ -1667,7 +1687,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.13079999916953966
+      "execution_time_ms": 0.41660002898424864
     },
     {
       "case_id": "SUPP-032",
@@ -1695,7 +1715,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.009700001101009548
+      "execution_time_ms": 0.027999980375170708
     },
     {
       "case_id": "SUPP-033",
@@ -1727,7 +1747,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.11850000009872019
+      "execution_time_ms": 0.3282000543549657
     },
     {
       "case_id": "SUPP-034",
@@ -1755,7 +1775,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.018700000509852543
+      "execution_time_ms": 0.05689996760338545
     },
     {
       "case_id": "SUPP-035",
@@ -1769,10 +1789,9 @@
       "atomic_fp": 0,
       "atomic_fn": 0,
       "facet_tp": 2,
-      "facet_fp": 1,
+      "facet_fp": 0,
       "facet_fn": 0,
       "predicted_facets": [
-        "security_controls_defined",
         "testing_program_exists",
         "testing_scope_defined"
       ],
@@ -1785,8 +1804,7 @@
       "top5_match": true,
       "reciprocal_rank": 1.0,
       "predicted_controls": [
-        "CTRL-SEC-TESTING",
-        "CTRL-SEC-COMMENSURATE"
+        "CTRL-SEC-TESTING"
       ],
       "expected_controls": [
         "CTRL-SEC-TESTING"
@@ -1795,7 +1813,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.12649999916902743
+      "execution_time_ms": 0.39110006764531136
     },
     {
       "case_id": "SUPP-036",
@@ -1823,7 +1841,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.02099999983329326
+      "execution_time_ms": 0.060999998822808266
     }
   ]
 }

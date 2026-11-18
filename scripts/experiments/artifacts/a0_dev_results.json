@@ -2,12 +2,12 @@
   "engine": "A0",
   "engine_name": "Production Baseline (A0)",
   "split": "dev",
-  "split_name": "V2 Development",
+  "split_name": "V2 Development (Pack v0.2.0)",
   "total_cases": 105,
-  "git_commit": "65b9a08a2e31ed56cc6b7292bd463842f22ff7e4",
+  "git_commit": "e47f66d0bf9a75c0d305502ec1c4f8bd04e79db6",
   "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
   "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
-  "timestamp": "2026-11-05T04:28:32Z",
+  "timestamp": "2026-11-18T07:12:12Z",
   "metrics": {
     "total_cases": 105,
     "layer_a_atomic": {
@@ -26,7 +26,7 @@
       "recall_micro": 0.0345,
       "f1_micro": 0.0637,
       "unique_facets_predicted": 5,
-      "canonical_facet_coverage_rate": 0.0323
+      "canonical_facet_coverage_rate": 0.0316
     },
     "layer_c_controls": {
       "cases_with_targets": 105,
@@ -52,9 +52,9 @@
       "threshold_accuracy": 0.0
     },
     "performance_latency_ms": {
-      "mean": 0.1,
-      "p50": 0.09,
-      "p95": 0.12
+      "mean": 0.21,
+      "p50": 0.15,
+      "p95": 0.28
     }
   },
   "by_normative_class": {
@@ -102,9 +102,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.04,
-        "p50": 0.04,
-        "p95": 0.04
+        "mean": 0.07,
+        "p50": 0.06,
+        "p95": 0.1
       }
     },
     "mandatory_requirement": {
@@ -125,7 +125,7 @@
         "recall_micro": 0.0362,
         "f1_micro": 0.0667,
         "unique_facets_predicted": 5,
-        "canonical_facet_coverage_rate": 0.0323
+        "canonical_facet_coverage_rate": 0.0316
       },
       "layer_c_controls": {
         "cases_with_targets": 100,
@@ -151,9 +151,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.1,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.22,
+        "p50": 0.15,
+        "p95": 0.29
       }
     }
   },
@@ -202,9 +202,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.04,
-        "p50": 0.04,
-        "p95": 0.04
+        "mean": 0.07,
+        "p50": 0.07,
+        "p95": 0.1
       }
     },
     "exact_match": {
@@ -225,7 +225,7 @@
         "recall_micro": 0.0263,
         "f1_micro": 0.0496,
         "unique_facets_predicted": 5,
-        "canonical_facet_coverage_rate": 0.0323
+        "canonical_facet_coverage_rate": 0.0316
       },
       "layer_c_controls": {
         "cases_with_targets": 82,
@@ -251,9 +251,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.1,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.19,
+        "p50": 0.15,
+        "p95": 0.28
       }
     },
     "numeric_threshold": {
@@ -274,7 +274,7 @@
         "recall_micro": 0.1667,
         "f1_micro": 0.2353,
         "unique_facets_predicted": 3,
-        "canonical_facet_coverage_rate": 0.0194
+        "canonical_facet_coverage_rate": 0.019
       },
       "layer_c_controls": {
         "cases_with_targets": 10,
@@ -300,9 +300,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.43,
+        "p50": 0.2,
+        "p95": 2.51
       }
     },
     "paraphrased_match": {
@@ -349,9 +349,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.08,
-        "p95": 0.11
+        "mean": 0.19,
+        "p50": 0.21,
+        "p95": 0.26
       }
     }
   },
@@ -374,7 +374,7 @@
         "recall_micro": 0.0345,
         "f1_micro": 0.0637,
         "unique_facets_predicted": 5,
-        "canonical_facet_coverage_rate": 0.0323
+        "canonical_facet_coverage_rate": 0.0316
       },
       "layer_c_controls": {
         "cases_with_targets": 105,
@@ -400,9 +400,9 @@
         "threshold_accuracy": 0.0
       },
       "performance_latency_ms": {
-        "mean": 0.1,
-        "p50": 0.09,
-        "p95": 0.12
+        "mean": 0.21,
+        "p50": 0.15,
+        "p95": 0.28
       }
     }
   },
@@ -438,7 +438,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 1.0307999982615001
+      "execution_time_ms": 1.699900021776557
     },
     {
       "case_id": "P1-002",
@@ -470,7 +470,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.12229999992996454
+      "execution_time_ms": 0.4121999954804778
     },
     {
       "case_id": "P1-003",
@@ -503,7 +503,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0962999984039925
+      "execution_time_ms": 0.23090001195669174
     },
     {
       "case_id": "P1-004",
@@ -535,7 +535,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08860000161803328
+      "execution_time_ms": 0.22820010781288147
     },
     {
       "case_id": "P1-005",
@@ -569,7 +569,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.1033000007737428
+      "execution_time_ms": 0.2663999330252409
     },
     {
       "case_id": "P1-006",
@@ -605,7 +605,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10539999857428484
+      "execution_time_ms": 0.2761000068858266
     },
     {
       "case_id": "P1-007",
@@ -638,7 +638,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09479999789618887
+      "execution_time_ms": 0.28279994148761034
     },
     {
       "case_id": "P1-008",
@@ -670,7 +670,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10520000068936497
+      "execution_time_ms": 0.2634000265970826
     },
     {
       "case_id": "P1-009",
@@ -688,7 +688,7 @@
       "facet_fn": 1,
       "predicted_facets": [],
       "expected_facets": [
-        "security_controls_defined"
+        "technical_security_measures_implemented"
       ],
       "top1_match": false,
       "top3_match": false,
@@ -702,7 +702,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0790999984019436
+      "execution_time_ms": 0.21840003319084644
     },
     {
       "case_id": "P1-010",
@@ -738,7 +738,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.11440000162110664
+      "execution_time_ms": 0.27199997566640377
     },
     {
       "case_id": "P1-011",
@@ -771,7 +771,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.10929999916697852
+      "execution_time_ms": 0.26050000451505184
     },
     {
       "case_id": "P1-012",
@@ -804,7 +804,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.09979999958886765
+      "execution_time_ms": 0.25749998167157173
     },
     {
       "case_id": "P1-013",
@@ -836,7 +836,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09249999857274815
+      "execution_time_ms": 0.2487999154254794
     },
     {
       "case_id": "P1-014",
@@ -868,7 +868,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.09109999882639386
+      "execution_time_ms": 0.22869999520480633
     },
     {
       "case_id": "P1-015",
@@ -900,7 +900,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10429999747429974
+      "execution_time_ms": 0.27929991483688354
     },
     {
       "case_id": "P1-016",
@@ -934,7 +934,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09969999882741831
+      "execution_time_ms": 0.25319994892925024
     },
     {
       "case_id": "P1-017",
@@ -967,7 +967,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08879999950295314
+      "execution_time_ms": 0.24339999072253704
     },
     {
       "case_id": "P1-018",
@@ -1000,7 +1000,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10140000085812062
+      "execution_time_ms": 0.25749998167157173
     },
     {
       "case_id": "P1-019",
@@ -1037,7 +1037,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.1171000003523659
+      "execution_time_ms": 0.2938000252470374
     },
     {
       "case_id": "P1-020",
@@ -1070,7 +1070,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09369999679620378
+      "execution_time_ms": 0.2082999562844634
     },
     {
       "case_id": "P1-031",
@@ -1103,7 +1103,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09639999916544184
+      "execution_time_ms": 0.2389000728726387
     },
     {
       "case_id": "P1-032",
@@ -1136,7 +1136,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07700000060140155
+      "execution_time_ms": 0.18699991051107645
     },
     {
       "case_id": "P1-033",
@@ -1169,7 +1169,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08270000034826808
+      "execution_time_ms": 0.25049992837011814
     },
     {
       "case_id": "P1-034",
@@ -1202,7 +1202,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09030000001075678
+      "execution_time_ms": 0.22929999977350235
     },
     {
       "case_id": "P1-035",
@@ -1234,7 +1234,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.0881000014487654
+      "execution_time_ms": 0.24359999224543571
     },
     {
       "case_id": "P1-036",
@@ -1267,7 +1267,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.10180000026593916
+      "execution_time_ms": 0.2389999572187662
     },
     {
       "case_id": "P1-037",
@@ -1301,7 +1301,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09499999941908754
+      "execution_time_ms": 0.25290006306022406
     },
     {
       "case_id": "P1-038",
@@ -1333,7 +1333,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09409999984200113
+      "execution_time_ms": 0.15460001304745674
     },
     {
       "case_id": "P1-039",
@@ -1365,7 +1365,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08240000170189887
+      "execution_time_ms": 0.129799940623343
     },
     {
       "case_id": "P1-040",
@@ -1398,7 +1398,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09110000246437266
+      "execution_time_ms": 0.14779996126890182
     },
     {
       "case_id": "P1-041",
@@ -1431,7 +1431,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08369999704882503
+      "execution_time_ms": 0.13539998326450586
     },
     {
       "case_id": "P1-042",
@@ -1463,7 +1463,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.09479999789618887
+      "execution_time_ms": 0.14789996203035116
     },
     {
       "case_id": "P1-043",
@@ -1495,7 +1495,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08010000237845816
+      "execution_time_ms": 0.12560002505779266
     },
     {
       "case_id": "P1-044",
@@ -1527,7 +1527,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09189999764203094
+      "execution_time_ms": 0.15659991186112165
     },
     {
       "case_id": "P1-045",
@@ -1560,7 +1560,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.03780000042752363
+      "execution_time_ms": 0.06470002699643373
     },
     {
       "case_id": "P1-046",
@@ -1592,7 +1592,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07299999924725853
+      "execution_time_ms": 0.11629995424300432
     },
     {
       "case_id": "P1-055",
@@ -1624,7 +1624,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08329999764100648
+      "execution_time_ms": 0.13129995204508305
     },
     {
       "case_id": "P1-056",
@@ -1656,7 +1656,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0822000001790002
+      "execution_time_ms": 0.1452000578865409
     },
     {
       "case_id": "P1-057",
@@ -1688,7 +1688,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0822000001790002
+      "execution_time_ms": 0.12649991549551487
     },
     {
       "case_id": "P1-058",
@@ -1720,7 +1720,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08990000060293823
+      "execution_time_ms": 0.1351999817416072
     },
     {
       "case_id": "P1-059",
@@ -1752,7 +1752,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08609999713371508
+      "execution_time_ms": 0.13429997488856316
     },
     {
       "case_id": "P1-060",
@@ -1784,7 +1784,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07369999730144627
+      "execution_time_ms": 0.13619998935610056
     },
     {
       "case_id": "P1-061",
@@ -1816,7 +1816,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.0718000010238029
+      "execution_time_ms": 0.11690007522702217
     },
     {
       "case_id": "P1-062",
@@ -1849,7 +1849,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0776999986555893
+      "execution_time_ms": 0.1262999139726162
     },
     {
       "case_id": "P1-063",
@@ -1882,7 +1882,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07530000220867805
+      "execution_time_ms": 0.12250000145286322
     },
     {
       "case_id": "P1-064",
@@ -1914,7 +1914,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07980000009411015
+      "execution_time_ms": 0.13990001752972603
     },
     {
       "case_id": "P1-065",
@@ -1946,7 +1946,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0351999988197349
+      "execution_time_ms": 0.05819997750222683
     },
     {
       "case_id": "P1-066",
@@ -1978,7 +1978,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08580000212532468
+      "execution_time_ms": 0.12280000373721123
     },
     {
       "case_id": "P1-067",
@@ -2010,7 +2010,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07630000254721381
+      "execution_time_ms": 0.11999998241662979
     },
     {
       "case_id": "P1-068",
@@ -2042,7 +2042,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07819999882485718
+      "execution_time_ms": 0.12229999992996454
     },
     {
       "case_id": "P1-075",
@@ -2074,7 +2074,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09820000195759349
+      "execution_time_ms": 0.15810003969818354
     },
     {
       "case_id": "P1-076",
@@ -2106,7 +2106,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09060000229510479
+      "execution_time_ms": 0.1401999033987522
     },
     {
       "case_id": "P1-077",
@@ -2139,7 +2139,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07720000212430023
+      "execution_time_ms": 0.12740003876388073
     },
     {
       "case_id": "P1-078",
@@ -2171,7 +2171,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08159999924828298
+      "execution_time_ms": 0.13479997869580984
     },
     {
       "case_id": "P1-079",
@@ -2203,7 +2203,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.09109999882639386
+      "execution_time_ms": 2.5144999381154776
     },
     {
       "case_id": "P1-080",
@@ -2235,7 +2235,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07689999983995222
+      "execution_time_ms": 0.2202000468969345
     },
     {
       "case_id": "P1-081",
@@ -2267,7 +2267,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08150000212481245
+      "execution_time_ms": 0.16000005416572094
     },
     {
       "case_id": "P1-082",
@@ -2299,7 +2299,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07220000043162145
+      "execution_time_ms": 0.13240007683634758
     },
     {
       "case_id": "P1-083",
@@ -2332,7 +2332,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07639999967068434
+      "execution_time_ms": 0.13430009130388498
     },
     {
       "case_id": "P1-084",
@@ -2364,7 +2364,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08139999772538431
+      "execution_time_ms": 0.13970001600682735
     },
     {
       "case_id": "P1-085",
@@ -2396,7 +2396,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07619999814778566
+      "execution_time_ms": 0.12770004104822874
     },
     {
       "case_id": "P1-086",
@@ -2428,7 +2428,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.041299997974419966
+      "execution_time_ms": 0.06719992961734533
     },
     {
       "case_id": "P1-093",
@@ -2470,7 +2470,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.12789999891538173
+      "execution_time_ms": 0.215300009585917
     },
     {
       "case_id": "P1-094",
@@ -2503,7 +2503,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08789999992586672
+      "execution_time_ms": 0.14599994756281376
     },
     {
       "case_id": "P1-095",
@@ -2540,7 +2540,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10539999857428484
+      "execution_time_ms": 0.1998000079765916
     },
     {
       "case_id": "P1-096",
@@ -2572,7 +2572,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07840000034775585
+      "execution_time_ms": 0.13339996803551912
     },
     {
       "case_id": "P1-097",
@@ -2604,7 +2604,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08580000212532468
+      "execution_time_ms": 0.14070002362132072
     },
     {
       "case_id": "P1-098",
@@ -2636,7 +2636,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08199999865610152
+      "execution_time_ms": 0.13449997641146183
     },
     {
       "case_id": "P1-099",
@@ -2668,7 +2668,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07720000212430023
+      "execution_time_ms": 0.1501000951975584
     },
     {
       "case_id": "P1-100",
@@ -2700,7 +2700,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08040000102482736
+      "execution_time_ms": 0.20830007269978523
     },
     {
       "case_id": "P1-101",
@@ -2738,7 +2738,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.10159999874304049
+      "execution_time_ms": 0.28520007617771626
     },
     {
       "case_id": "P1-102",
@@ -2774,7 +2774,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.0976999981503468
+      "execution_time_ms": 0.27219997718930244
     },
     {
       "case_id": "P1-103",
@@ -2808,7 +2808,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08940000043367036
+      "execution_time_ms": 0.21500000730156898
     },
     {
       "case_id": "P1-104",
@@ -2840,7 +2840,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08149999848683365
+      "execution_time_ms": 0.21089997608214617
     },
     {
       "case_id": "P1-105",
@@ -2873,7 +2873,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.036399997043190524
+      "execution_time_ms": 0.0969999236986041
     },
     {
       "case_id": "P1-106",
@@ -2905,7 +2905,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08270000034826808
+      "execution_time_ms": 0.19440008327364922
     },
     {
       "case_id": "P1-113",
@@ -2939,7 +2939,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08259999958681874
+      "execution_time_ms": 0.15350000467151403
     },
     {
       "case_id": "P1-114",
@@ -2973,7 +2973,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09190000128000975
+      "execution_time_ms": 0.15180010814219713
     },
     {
       "case_id": "P1-115",
@@ -3006,7 +3006,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08610000077169389
+      "execution_time_ms": 0.1439000479876995
     },
     {
       "case_id": "P1-116",
@@ -3038,7 +3038,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08569999772589654
+      "execution_time_ms": 0.13509998098015785
     },
     {
       "case_id": "P1-117",
@@ -3070,7 +3070,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08929999967222102
+      "execution_time_ms": 0.1382000045850873
     },
     {
       "case_id": "P1-118",
@@ -3102,7 +3102,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08030000026337802
+      "execution_time_ms": 0.13319996651262045
     },
     {
       "case_id": "P1-119",
@@ -3134,7 +3134,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.06579999899258837
+      "execution_time_ms": 0.1086000120267272
     },
     {
       "case_id": "P1-120",
@@ -3166,7 +3166,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08059999890974723
+      "execution_time_ms": 0.13749999925494194
     },
     {
       "case_id": "P1-121",
@@ -3198,7 +3198,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0850000033096876
+      "execution_time_ms": 0.14500005636364222
     },
     {
       "case_id": "P1-122",
@@ -3230,7 +3230,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08940000043367036
+      "execution_time_ms": 0.1599999377503991
     },
     {
       "case_id": "P1-123",
@@ -3262,7 +3262,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08180000077118166
+      "execution_time_ms": 0.13890000991523266
     },
     {
       "case_id": "P1-129",
@@ -3294,7 +3294,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0911999995878432
+      "execution_time_ms": 0.14209991786628962
     },
     {
       "case_id": "P1-130",
@@ -3326,7 +3326,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07679999907850288
+      "execution_time_ms": 0.12420001439750195
     },
     {
       "case_id": "P1-131",
@@ -3358,7 +3358,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08589999924879521
+      "execution_time_ms": 0.13760000001639128
     },
     {
       "case_id": "P1-132",
@@ -3390,7 +3390,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08439999874099158
+      "execution_time_ms": 0.13479997869580984
     },
     {
       "case_id": "P1-133",
@@ -3422,7 +3422,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08430000161752105
+      "execution_time_ms": 0.13639999087899923
     },
     {
       "case_id": "P1-134",
@@ -3454,7 +3454,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07719999848632142
+      "execution_time_ms": 0.12839992996305227
     },
     {
       "case_id": "P1-135",
@@ -3490,7 +3490,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.12129999959142879
+      "execution_time_ms": 0.17579994164407253
     },
     {
       "case_id": "P1-136",
@@ -3523,7 +3523,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08570000136387534
+      "execution_time_ms": 0.13749999925494194
     },
     {
       "case_id": "P1-141",
@@ -3555,7 +3555,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08370000068680383
+      "execution_time_ms": 0.14110002666711807
     },
     {
       "case_id": "P1-142",
@@ -3587,7 +3587,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09800000043469481
+      "execution_time_ms": 0.16950001008808613
     },
     {
       "case_id": "P1-143",
@@ -3619,7 +3619,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09510000018053688
+      "execution_time_ms": 0.1602000556886196
     },
     {
       "case_id": "P1-144",
@@ -3651,7 +3651,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.08789999992586672
+      "execution_time_ms": 0.15350000467151403
     },
     {
       "case_id": "P1-145",
@@ -3683,7 +3683,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09049999789567664
+      "execution_time_ms": 0.1439000479876995
     },
     {
       "case_id": "P1-149",
@@ -3716,7 +3716,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09680000221123919
+      "execution_time_ms": 0.15259999781847
     },
     {
       "case_id": "P1-150",
@@ -3749,7 +3749,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09959999806596898
+      "execution_time_ms": 0.16210007015615702
     },
     {
       "case_id": "P1-151",
@@ -3767,7 +3767,7 @@
       "facet_fn": 1,
       "predicted_facets": [],
       "expected_facets": [
-        "deployer_human_oversight_and_6month_log_retention"
+        "automatic_logs_retained_6months"
       ],
       "top1_match": false,
       "top3_match": false,
@@ -3781,7 +3781,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": false,
-      "execution_time_ms": 0.07969999933266081
+      "execution_time_ms": 0.13149995356798172
     },
     {
       "case_id": "P1-152",
@@ -3813,7 +3813,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.03529999958118424
+      "execution_time_ms": 0.056299963034689426
     },
     {
       "case_id": "P1-153",
@@ -3845,7 +3845,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09050000153365545
+      "execution_time_ms": 0.14190003275871277
     }
   ]
 }

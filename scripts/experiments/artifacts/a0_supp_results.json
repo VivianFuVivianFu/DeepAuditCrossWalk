@@ -2,12 +2,12 @@
   "engine": "A0",
   "engine_name": "Production Baseline (A0)",
   "split": "supp",
-  "split_name": "Supplemental Adversarial",
+  "split_name": "Supplemental Adversarial (Historical Labels)",
   "total_cases": 36,
-  "git_commit": "65b9a08a2e31ed56cc6b7292bd463842f22ff7e4",
+  "git_commit": "e47f66d0bf9a75c0d305502ec1c4f8bd04e79db6",
   "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
   "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
-  "timestamp": "2026-11-05T04:28:32Z",
+  "timestamp": "2026-11-18T07:12:12Z",
   "metrics": {
     "total_cases": 36,
     "layer_a_atomic": {
@@ -26,7 +26,7 @@
       "recall_micro": 0.24,
       "f1_micro": 0.3,
       "unique_facets_predicted": 8,
-      "canonical_facet_coverage_rate": 0.0516
+      "canonical_facet_coverage_rate": 0.0506
     },
     "layer_c_controls": {
       "cases_with_targets": 18,
@@ -52,9 +52,9 @@
       "threshold_accuracy": 1.0
     },
     "performance_latency_ms": {
-      "mean": 0.09,
-      "p50": 0.08,
-      "p95": 0.16
+      "mean": 0.15,
+      "p50": 0.13,
+      "p95": 0.3
     }
   },
   "by_normative_class": {
@@ -76,7 +76,7 @@
         "recall_micro": 0.24,
         "f1_micro": 0.3429,
         "unique_facets_predicted": 8,
-        "canonical_facet_coverage_rate": 0.0516
+        "canonical_facet_coverage_rate": 0.0506
       },
       "layer_c_controls": {
         "cases_with_targets": 18,
@@ -102,9 +102,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.1,
-        "p50": 0.08,
-        "p95": 0.29
+        "mean": 0.16,
+        "p50": 0.14,
+        "p95": 0.36
       }
     },
     "aspirational_statement": {
@@ -125,7 +125,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 3,
-        "canonical_facet_coverage_rate": 0.0194
+        "canonical_facet_coverage_rate": 0.019
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -151,9 +151,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.09,
-        "p95": 0.09
+        "mean": 0.17,
+        "p50": 0.14,
+        "p95": 0.28
       }
     },
     "permissive_guidance": {
@@ -200,9 +200,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.08,
-        "p95": 0.09
+        "mean": 0.13,
+        "p50": 0.14,
+        "p95": 0.14
       }
     },
     "prohibition_absolute": {
@@ -249,9 +249,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.08,
-        "p95": 0.12
+        "mean": 0.16,
+        "p50": 0.13,
+        "p95": 0.27
       }
     },
     "prohibition_conditional": {
@@ -272,7 +272,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 2,
-        "canonical_facet_coverage_rate": 0.0129
+        "canonical_facet_coverage_rate": 0.0127
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -298,9 +298,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.09,
-        "p95": 0.1
+        "mean": 0.14,
+        "p50": 0.14,
+        "p95": 0.17
       }
     },
     "scope_exemption": {
@@ -347,9 +347,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.05,
-        "p50": 0.04,
-        "p95": 0.08
+        "mean": 0.11,
+        "p50": 0.07,
+        "p95": 0.23
       }
     }
   },
@@ -372,7 +372,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 3,
-        "canonical_facet_coverage_rate": 0.0194
+        "canonical_facet_coverage_rate": 0.019
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -398,9 +398,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.09,
-        "p95": 0.09
+        "mean": 0.17,
+        "p50": 0.14,
+        "p95": 0.28
       }
     },
     "contrastive_exemption": {
@@ -447,9 +447,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.05,
-        "p50": 0.04,
-        "p95": 0.08
+        "mean": 0.11,
+        "p50": 0.07,
+        "p95": 0.23
       }
     },
     "contrastive_obligation": {
@@ -470,7 +470,7 @@
         "recall_micro": 0.24,
         "f1_micro": 0.3429,
         "unique_facets_predicted": 8,
-        "canonical_facet_coverage_rate": 0.0516
+        "canonical_facet_coverage_rate": 0.0506
       },
       "layer_c_controls": {
         "cases_with_targets": 18,
@@ -496,9 +496,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.1,
-        "p50": 0.08,
-        "p95": 0.29
+        "mean": 0.16,
+        "p50": 0.14,
+        "p95": 0.36
       }
     },
     "contrastive_permissive": {
@@ -545,9 +545,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.08,
-        "p95": 0.09
+        "mean": 0.13,
+        "p50": 0.14,
+        "p95": 0.14
       }
     },
     "contrastive_prohibition": {
@@ -568,7 +568,7 @@
         "recall_micro": 0.0,
         "f1_micro": 0.0,
         "unique_facets_predicted": 2,
-        "canonical_facet_coverage_rate": 0.0129
+        "canonical_facet_coverage_rate": 0.0127
       },
       "layer_c_controls": {
         "cases_with_targets": 0,
@@ -594,9 +594,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.08,
-        "p50": 0.08,
-        "p95": 0.12
+        "mean": 0.15,
+        "p50": 0.13,
+        "p95": 0.27
       }
     }
   },
@@ -619,7 +619,7 @@
         "recall_micro": 0.24,
         "f1_micro": 0.3,
         "unique_facets_predicted": 8,
-        "canonical_facet_coverage_rate": 0.0516
+        "canonical_facet_coverage_rate": 0.0506
       },
       "layer_c_controls": {
         "cases_with_targets": 18,
@@ -645,9 +645,9 @@
         "threshold_accuracy": 1.0
       },
       "performance_latency_ms": {
-        "mean": 0.09,
-        "p50": 0.08,
-        "p95": 0.16
+        "mean": 0.15,
+        "p50": 0.13,
+        "p95": 0.3
       }
     }
   },
@@ -685,7 +685,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.2928000030806288
+      "execution_time_ms": 0.3622999647632241
     },
     {
       "case_id": "SUPP-002",
@@ -713,7 +713,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.11729999823728576
+      "execution_time_ms": 0.15510001685470343
     },
     {
       "case_id": "SUPP-003",
@@ -754,7 +754,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": true,
-      "execution_time_ms": 0.13279999984661117
+      "execution_time_ms": 0.21869991905987263
     },
     {
       "case_id": "SUPP-004",
@@ -788,7 +788,7 @@
       "correct_suppression": false,
       "threshold_evaluated": true,
       "threshold_correct": true,
-      "execution_time_ms": 0.10440000187372789
+      "execution_time_ms": 0.16759999562054873
     },
     {
       "case_id": "SUPP-005",
@@ -823,7 +823,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.10380000094301067
+      "execution_time_ms": 0.18510001245886087
     },
     {
       "case_id": "SUPP-006",
@@ -851,7 +851,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.037099998735357076
+      "execution_time_ms": 0.06440002471208572
     },
     {
       "case_id": "SUPP-007",
@@ -887,7 +887,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0911999995878432
+      "execution_time_ms": 0.15380000695586205
     },
     {
       "case_id": "SUPP-008",
@@ -918,7 +918,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09030000001075678
+      "execution_time_ms": 0.14579994603991508
     },
     {
       "case_id": "SUPP-009",
@@ -951,7 +951,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08379999781027436
+      "execution_time_ms": 0.15470001380890608
     },
     {
       "case_id": "SUPP-010",
@@ -979,7 +979,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0822000001790002
+      "execution_time_ms": 0.13539998326450586
     },
     {
       "case_id": "SUPP-011",
@@ -1011,7 +1011,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08059999890974723
+      "execution_time_ms": 0.1305999467149377
     },
     {
       "case_id": "SUPP-012",
@@ -1039,7 +1039,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07589999950141646
+      "execution_time_ms": 0.26510003954172134
     },
     {
       "case_id": "SUPP-013",
@@ -1075,7 +1075,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.081900001532631
+      "execution_time_ms": 0.18930004443973303
     },
     {
       "case_id": "SUPP-014",
@@ -1107,7 +1107,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.09130000034929253
+      "execution_time_ms": 0.2840000670403242
     },
     {
       "case_id": "SUPP-015",
@@ -1139,7 +1139,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07809999806340784
+      "execution_time_ms": 0.1984999980777502
     },
     {
       "case_id": "SUPP-016",
@@ -1167,7 +1167,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08460000026389025
+      "execution_time_ms": 0.23010000586509705
     },
     {
       "case_id": "SUPP-017",
@@ -1199,7 +1199,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07879999975557439
+      "execution_time_ms": 0.20560005214065313
     },
     {
       "case_id": "SUPP-018",
@@ -1227,7 +1227,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08890000026440248
+      "execution_time_ms": 0.1398000167682767
     },
     {
       "case_id": "SUPP-019",
@@ -1260,7 +1260,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08689999958733097
+      "execution_time_ms": 0.13499998021870852
     },
     {
       "case_id": "SUPP-020",
@@ -1288,7 +1288,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0794000006862916
+      "execution_time_ms": 0.12790004257112741
     },
     {
       "case_id": "SUPP-021",
@@ -1320,7 +1320,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07669999831705354
+      "execution_time_ms": 0.1257999101653695
     },
     {
       "case_id": "SUPP-022",
@@ -1348,7 +1348,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.035400000342633575
+      "execution_time_ms": 0.07589999586343765
     },
     {
       "case_id": "SUPP-023",
@@ -1380,7 +1380,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07030000051599927
+      "execution_time_ms": 0.1460999483242631
     },
     {
       "case_id": "SUPP-024",
@@ -1408,7 +1408,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08030000026337802
+      "execution_time_ms": 0.13079994823783636
     },
     {
       "case_id": "SUPP-025",
@@ -1441,7 +1441,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08259999958681874
+      "execution_time_ms": 0.13449997641146183
     },
     {
       "case_id": "SUPP-026",
@@ -1469,7 +1469,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.06750000102329068
+      "execution_time_ms": 0.10810000821948051
     },
     {
       "case_id": "SUPP-027",
@@ -1501,7 +1501,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07569999797851779
+      "execution_time_ms": 0.11760008055716753
     },
     {
       "case_id": "SUPP-028",
@@ -1529,7 +1529,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07579999873996712
+      "execution_time_ms": 0.12430001515895128
     },
     {
       "case_id": "SUPP-029",
@@ -1561,7 +1561,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.06359999679261819
+      "execution_time_ms": 0.1058999914675951
     },
     {
       "case_id": "SUPP-030",
@@ -1589,7 +1589,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.0670000008540228
+      "execution_time_ms": 0.10770000517368317
     },
     {
       "case_id": "SUPP-031",
@@ -1621,7 +1621,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07890000051702373
+      "execution_time_ms": 0.13040006160736084
     },
     {
       "case_id": "SUPP-032",
@@ -1649,7 +1649,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07800000093993731
+      "execution_time_ms": 0.13419997412711382
     },
     {
       "case_id": "SUPP-033",
@@ -1681,7 +1681,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07370000093942508
+      "execution_time_ms": 0.12779992539435625
     },
     {
       "case_id": "SUPP-034",
@@ -1709,7 +1709,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.03550000110408291
+      "execution_time_ms": 0.06180000491440296
     },
     {
       "case_id": "SUPP-035",
@@ -1742,7 +1742,7 @@
       "correct_suppression": false,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.08200000229408033
+      "execution_time_ms": 0.12919993605464697
     },
     {
       "case_id": "SUPP-036",
@@ -1770,7 +1770,7 @@
       "correct_suppression": true,
       "threshold_evaluated": false,
       "threshold_correct": false,
-      "execution_time_ms": 0.07360000017797574
+      "execution_time_ms": 0.1308999489992857
     }
   ]
 }

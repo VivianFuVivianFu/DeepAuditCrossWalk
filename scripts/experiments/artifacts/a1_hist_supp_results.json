@@ -1,0 +1,1826 @@
+{
+  "engine": "A1_HIST",
+  "engine_name": "Enhanced Rules (A1 - Historical P1B-1 Mode)",
+  "split": "supp",
+  "split_name": "Supplemental Adversarial (Historical Labels)",
+  "total_cases": 36,
+  "git_commit": "e47f66d0bf9a75c0d305502ec1c4f8bd04e79db6",
+  "v2_hash": "3ee3241ce557b423584c9cda805f534001ed044178d465025d9c9e1ef3007569",
+  "supp_hash": "5f164cdcb69f9034386b4a2f123ddf964783ced75dc5cf091723d861aa432f68",
+  "timestamp": "2026-11-18T07:12:13Z",
+  "metrics": {
+    "total_cases": 36,
+    "layer_a_atomic": {
+      "tp": 18,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "layer_b_facets": {
+      "tp": 24,
+      "fp": 3,
+      "fn": 1,
+      "precision_micro": 0.8889,
+      "recall_micro": 0.96,
+      "f1_micro": 0.9231,
+      "unique_facets_predicted": 25,
+      "canonical_facet_coverage_rate": 0.1582
+    },
+    "layer_c_controls": {
+      "cases_with_targets": 18,
+      "top1_recall": 0.9444,
+      "top3_recall": 0.9444,
+      "top5_recall": 0.9444,
+      "mrr": 0.9444,
+      "micro_precision": 0.7727,
+      "micro_recall": 0.9444,
+      "micro_f1": 0.85
+    },
+    "layer_c_normative_safety": {
+      "suppression_target_cases": 18,
+      "correct_suppressions": 18,
+      "suppression_accuracy": 1.0,
+      "false_triggers_on_suppressed": 0,
+      "false_trigger_rate": 0.0,
+      "total_false_triggers": 0
+    },
+    "layer_f_thresholds": {
+      "total_threshold_cases": 2,
+      "correct_thresholds": 2,
+      "threshold_accuracy": 1.0
+    },
+    "performance_latency_ms": {
+      "mean": 0.36,
+      "p50": 0.35,
+      "p95": 1.3
+    }
+  },
+  "by_normative_class": {
+    "affirmative_obligation": {
+      "total_cases": 18,
+      "layer_a_atomic": {
+        "tp": 18,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 24,
+        "fp": 3,
+        "fn": 1,
+        "precision_micro": 0.8889,
+        "recall_micro": 0.96,
+        "f1_micro": 0.9231,
+        "unique_facets_predicted": 25,
+        "canonical_facet_coverage_rate": 0.1582
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 18,
+        "top1_recall": 0.9444,
+        "top3_recall": 0.9444,
+        "top5_recall": 0.9444,
+        "mrr": 0.9444,
+        "micro_precision": 0.7727,
+        "micro_recall": 0.9444,
+        "micro_f1": 0.85
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 1,
+        "correct_thresholds": 1,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.51,
+        "p50": 0.5,
+        "p95": 1.04
+      }
+    },
+    "aspirational_statement": {
+      "total_cases": 4,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 4,
+        "correct_suppressions": 4,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.76,
+        "p50": 0.08,
+        "p95": 2.79
+      }
+    },
+    "permissive_guidance": {
+      "total_cases": 3,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 3,
+        "correct_suppressions": 3,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.07,
+        "p50": 0.07,
+        "p95": 0.07
+      }
+    },
+    "prohibition_absolute": {
+      "total_cases": 5,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 5,
+        "correct_suppressions": 5,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.03,
+        "p50": 0.03,
+        "p95": 0.04
+      }
+    },
+    "prohibition_conditional": {
+      "total_cases": 2,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 2,
+        "correct_suppressions": 2,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 1,
+        "correct_thresholds": 1,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.06,
+        "p50": 0.06,
+        "p95": 0.07
+      }
+    },
+    "scope_exemption": {
+      "total_cases": 4,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 4,
+        "correct_suppressions": 4,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.06,
+        "p50": 0.06,
+        "p95": 0.07
+      }
+    }
+  },
+  "by_category": {
+    "contrastive_aspirational": {
+      "total_cases": 4,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 4,
+        "correct_suppressions": 4,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.76,
+        "p50": 0.08,
+        "p95": 2.79
+      }
+    },
+    "contrastive_exemption": {
+      "total_cases": 4,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 4,
+        "correct_suppressions": 4,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.06,
+        "p50": 0.06,
+        "p95": 0.07
+      }
+    },
+    "contrastive_obligation": {
+      "total_cases": 18,
+      "layer_a_atomic": {
+        "tp": 18,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 24,
+        "fp": 3,
+        "fn": 1,
+        "precision_micro": 0.8889,
+        "recall_micro": 0.96,
+        "f1_micro": 0.9231,
+        "unique_facets_predicted": 25,
+        "canonical_facet_coverage_rate": 0.1582
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 18,
+        "top1_recall": 0.9444,
+        "top3_recall": 0.9444,
+        "top5_recall": 0.9444,
+        "mrr": 0.9444,
+        "micro_precision": 0.7727,
+        "micro_recall": 0.9444,
+        "micro_f1": 0.85
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 0,
+        "correct_suppressions": 0,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 1,
+        "correct_thresholds": 1,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.51,
+        "p50": 0.5,
+        "p95": 1.04
+      }
+    },
+    "contrastive_permissive": {
+      "total_cases": 3,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 3,
+        "correct_suppressions": 3,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 0,
+        "correct_thresholds": 0,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.07,
+        "p50": 0.07,
+        "p95": 0.07
+      }
+    },
+    "contrastive_prohibition": {
+      "total_cases": 7,
+      "layer_a_atomic": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "layer_b_facets": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision_micro": 0.0,
+        "recall_micro": 0.0,
+        "f1_micro": 0.0,
+        "unique_facets_predicted": 0,
+        "canonical_facet_coverage_rate": 0.0
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 0,
+        "top1_recall": 0.0,
+        "top3_recall": 0.0,
+        "top5_recall": 0.0,
+        "mrr": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 7,
+        "correct_suppressions": 7,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 1,
+        "correct_thresholds": 1,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.04,
+        "p50": 0.03,
+        "p95": 0.07
+      }
+    }
+  },
+  "by_length_tier": {
+    "medium": {
+      "total_cases": 36,
+      "layer_a_atomic": {
+        "tp": 18,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0
+      },
+      "layer_b_facets": {
+        "tp": 24,
+        "fp": 3,
+        "fn": 1,
+        "precision_micro": 0.8889,
+        "recall_micro": 0.96,
+        "f1_micro": 0.9231,
+        "unique_facets_predicted": 25,
+        "canonical_facet_coverage_rate": 0.1582
+      },
+      "layer_c_controls": {
+        "cases_with_targets": 18,
+        "top1_recall": 0.9444,
+        "top3_recall": 0.9444,
+        "top5_recall": 0.9444,
+        "mrr": 0.9444,
+        "micro_precision": 0.7727,
+        "micro_recall": 0.9444,
+        "micro_f1": 0.85
+      },
+      "layer_c_normative_safety": {
+        "suppression_target_cases": 18,
+        "correct_suppressions": 18,
+        "suppression_accuracy": 1.0,
+        "false_triggers_on_suppressed": 0,
+        "false_trigger_rate": 0.0,
+        "total_false_triggers": 0
+      },
+      "layer_f_thresholds": {
+        "total_threshold_cases": 2,
+        "correct_thresholds": 2,
+        "threshold_accuracy": 1.0
+      },
+      "performance_latency_ms": {
+        "mean": 0.36,
+        "p50": 0.35,
+        "p95": 1.3
+      }
+    }
+  },
+  "individual_case_results": [
+    {
+      "case_id": "SUPP-001",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 136,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "controls_commensurate"
+      ],
+      "expected_facets": [
+        "controls_commensurate"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.39030006155371666
+    },
+    {
+      "case_id": "SUPP-002",
+      "split": "development_supplemental",
+      "category": "contrastive_prohibition",
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 130,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.024400069378316402
+    },
+    {
+      "case_id": "SUPP-003",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 146,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 3,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "approval_threshold_defined",
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "expected_facets": [
+        "approval_threshold_defined",
+        "human_approval_required",
+        "pre_execution_block"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "expected_controls": [
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": true,
+      "threshold_correct": true,
+      "execution_time_ms": 0.3684000112116337
+    },
+    {
+      "case_id": "SUPP-004",
+      "split": "development_supplemental",
+      "category": "contrastive_prohibition",
+      "normative_type": "prohibition_conditional",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 115,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": true,
+      "threshold_correct": true,
+      "execution_time_ms": 0.06569991819560528
+    },
+    {
+      "case_id": "SUPP-005",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 138,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "use_case_registered_in_enterprise_ai_inventory"
+      ],
+      "expected_facets": [
+        "use_case_registered_in_enterprise_ai_inventory"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "expected_controls": [
+        "CTRL-AI-GOV-ACCOUNTABILITY"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.33249997068196535
+    },
+    {
+      "case_id": "SUPP-006",
+      "split": "development_supplemental",
+      "category": "contrastive_exemption",
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 127,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.03970006946474314
+    },
+    {
+      "case_id": "SUPP-007",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 135,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "approval_logs_retained",
+        "retention_schedule_applied"
+      ],
+      "expected_facets": [
+        "approval_logs_retained",
+        "retention_schedule_applied"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.3986000083386898
+    },
+    {
+      "case_id": "SUPP-008",
+      "split": "development_supplemental",
+      "category": "contrastive_aspirational",
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 120,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07639999967068434
+    },
+    {
+      "case_id": "SUPP-009",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 154,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "due_diligence_completed",
+        "provider_materiality_assessed"
+      ],
+      "expected_facets": [
+        "due_diligence_completed",
+        "provider_materiality_assessed"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "expected_controls": [
+        "CTRL-THIRD-PARTY-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.5524000152945518
+    },
+    {
+      "case_id": "SUPP-010",
+      "split": "development_supplemental",
+      "category": "contrastive_permissive",
+      "normative_type": "permissive_guidance",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.06930006202310324
+    },
+    {
+      "case_id": "SUPP-011",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 148,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "pia_threshold_screen_completed"
+      ],
+      "expected_facets": [
+        "pia_threshold_screen_completed"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-GOVERNANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 1.0399000020697713
+    },
+    {
+      "case_id": "SUPP-012",
+      "split": "development_supplemental",
+      "category": "contrastive_prohibition",
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 122,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.035400036722421646
+    },
+    {
+      "case_id": "SUPP-013",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 134,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "fairness_and_explainability_metrics_evaluated"
+      ],
+      "expected_facets": [
+        "fairness_and_explainability_metrics_evaluated"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "expected_controls": [
+        "CTRL-AI-DRIFT-MONITORING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.4746000049635768
+    },
+    {
+      "case_id": "SUPP-014",
+      "split": "development_supplemental",
+      "category": "contrastive_aspirational",
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 136,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0849999487400055
+    },
+    {
+      "case_id": "SUPP-015",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 133,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "complaints_recorded"
+      ],
+      "expected_facets": [
+        "complaints_recorded"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "expected_controls": [
+        "CTRL-IDR-HANDLING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.5112000508233905
+    },
+    {
+      "case_id": "SUPP-016",
+      "split": "development_supplemental",
+      "category": "contrastive_exemption",
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 139,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.0657000346109271
+    },
+    {
+      "case_id": "SUPP-017",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 130,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "ai_assets_classified_by_criticality_and_sensitivity",
+        "independent_framework_review_covers_ai"
+      ],
+      "expected_facets": [
+        "independent_framework_review_covers_ai"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE",
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-INDEPENDENT-AUDIT-ASSURANCE"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.498599954880774
+    },
+    {
+      "case_id": "SUPP-018",
+      "split": "development_supplemental",
+      "category": "contrastive_permissive",
+      "normative_type": "permissive_guidance",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 121,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07050007116049528
+    },
+    {
+      "case_id": "SUPP-019",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 137,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 2,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined",
+        "security_roles_and_asset_owners_assigned"
+      ],
+      "expected_facets": [
+        "incident_detection_defined",
+        "response_and_escalation_defined"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-SEC-INCIDENT",
+        "CTRL-SEC-COMMENSURATE"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-INCIDENT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.5414999322965741
+    },
+    {
+      "case_id": "SUPP-020",
+      "split": "development_supplemental",
+      "category": "contrastive_prohibition",
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 122,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.030700000934302807
+    },
+    {
+      "case_id": "SUPP-021",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 132,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "overseas_recipients_and_regions_mapped"
+      ],
+      "expected_facets": [
+        "overseas_recipients_and_regions_mapped"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-CROSS-BORDER"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.49249990843236446
+    },
+    {
+      "case_id": "SUPP-022",
+      "split": "development_supplemental",
+      "category": "contrastive_exemption",
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 131,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.05549995694309473
+    },
+    {
+      "case_id": "SUPP-023",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 120,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "continuity_plan_tested"
+      ],
+      "expected_facets": [
+        "continuity_plan_tested"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "expected_controls": [
+        "CTRL-BCP-AI"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.4190000472590327
+    },
+    {
+      "case_id": "SUPP-024",
+      "split": "development_supplemental",
+      "category": "contrastive_aspirational",
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 116,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07240008562803268
+    },
+    {
+      "case_id": "SUPP-025",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 150,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "destruction_or_deidentification_verified",
+        "retention_schedule_applied"
+      ],
+      "expected_facets": [
+        "destruction_or_deidentification_verified",
+        "retention_schedule_applied"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "expected_controls": [
+        "CTRL-PRIV-SECURITY-RETENTION"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.584100023843348
+    },
+    {
+      "case_id": "SUPP-026",
+      "split": "development_supplemental",
+      "category": "contrastive_prohibition",
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 108,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.026499968953430653
+    },
+    {
+      "case_id": "SUPP-027",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 139,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "board_or_senior_oversight"
+      ],
+      "expected_facets": [
+        "board_or_senior_oversight"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-RISK-FRAMEWORK"
+      ],
+      "expected_controls": [
+        "CTRL-RISK-FRAMEWORK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.5140999564900994
+    },
+    {
+      "case_id": "SUPP-028",
+      "split": "development_supplemental",
+      "category": "contrastive_permissive",
+      "normative_type": "permissive_guidance",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 123,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.07239996921271086
+    },
+    {
+      "case_id": "SUPP-029",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 119,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 1,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "clear_escalation_and_override_authority",
+        "human_approval_required"
+      ],
+      "expected_facets": [
+        "human_approval_required"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-HUMAN-OVERSIGHT",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD"
+      ],
+      "expected_controls": [
+        "CTRL-HUMAN-OVERSIGHT"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.4260001005604863
+    },
+    {
+      "case_id": "SUPP-030",
+      "split": "development_supplemental",
+      "category": "contrastive_prohibition",
+      "normative_type": "prohibition_conditional",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 111,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.06290001329034567
+    },
+    {
+      "case_id": "SUPP-031",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 146,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 1,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "incidents_and_weaknesses_managed"
+      ],
+      "expected_facets": [
+        "incidents_and_weaknesses_managed"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "expected_controls": [
+        "CTRL-OPS-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.5463999696075916
+    },
+    {
+      "case_id": "SUPP-032",
+      "split": "development_supplemental",
+      "category": "contrastive_prohibition",
+      "normative_type": "prohibition_absolute",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 131,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.03190001007169485
+    },
+    {
+      "case_id": "SUPP-033",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 129,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 1,
+      "predicted_facets": [],
+      "expected_facets": [
+        "article50_ai_interaction_transparency_provided"
+      ],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [
+        "CTRL-EU-HIGH-RISK"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.45769999269396067
+    },
+    {
+      "case_id": "SUPP-034",
+      "split": "development_supplemental",
+      "category": "contrastive_exemption",
+      "normative_type": "scope_exemption",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 144,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.06479991134256124
+    },
+    {
+      "case_id": "SUPP-035",
+      "split": "development_supplemental",
+      "category": "contrastive_obligation",
+      "normative_type": "affirmative_obligation",
+      "expected_candidate_behavior": "should_generate_candidates",
+      "input_length_chars": 148,
+      "length_tier": "medium",
+      "atomic_tp": 1,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 2,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [
+        "testing_program_exists",
+        "testing_scope_defined"
+      ],
+      "expected_facets": [
+        "testing_program_exists",
+        "testing_scope_defined"
+      ],
+      "top1_match": true,
+      "top3_match": true,
+      "top5_match": true,
+      "reciprocal_rank": 1.0,
+      "predicted_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "expected_controls": [
+        "CTRL-SEC-TESTING"
+      ],
+      "false_control_trigger": false,
+      "correct_suppression": false,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 0.5517000099644065
+    },
+    {
+      "case_id": "SUPP-036",
+      "split": "development_supplemental",
+      "category": "contrastive_aspirational",
+      "normative_type": "aspirational_statement",
+      "expected_candidate_behavior": "must_not_generate_candidates",
+      "input_length_chars": 119,
+      "length_tier": "medium",
+      "atomic_tp": 0,
+      "atomic_fp": 0,
+      "atomic_fn": 0,
+      "facet_tp": 0,
+      "facet_fp": 0,
+      "facet_fn": 0,
+      "predicted_facets": [],
+      "expected_facets": [],
+      "top1_match": false,
+      "top3_match": false,
+      "top5_match": false,
+      "reciprocal_rank": 0.0,
+      "predicted_controls": [],
+      "expected_controls": [],
+      "false_control_trigger": false,
+      "correct_suppression": true,
+      "threshold_evaluated": false,
+      "threshold_correct": false,
+      "execution_time_ms": 2.786400029435754
+    }
+  ]
+}

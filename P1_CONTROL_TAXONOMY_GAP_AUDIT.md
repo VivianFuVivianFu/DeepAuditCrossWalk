@@ -15,16 +15,16 @@ This audit establishes the definitive baseline of the DeepAudit Crosswalk **Unif
 
 The platform architecture mandates a strict separation between:
 1. **Layer 1: Shared Regulatory Library (Platform-Maintained)**: Source of external statutory obligations (APRA prudential standards, ASIC regulatory guides, Privacy Act / APPs, NCCP Act) and AI governance frameworks (NIST, ISO/IEC).
-2. **Layer 2: Unified Control Library (Platform-Maintained)**: 33 technology-neutral, banking-specific controls and 155 standardized control facets that operationalize regulatory obligations.
+2. **Layer 2: Unified Control Library (Platform-Maintained)**: 33 technology-neutral, banking-specific controls and standardized control facets (**155** at P1A pre-E4.1 `v1.0.0` audit time; **158 unique facets** in current E4.1 / Pack `0.2.0`) that operationalize regulatory obligations.
 3. **Layer 3: Enterprise Policy Baseline (Tenant-Specific, Optional)**: Tenant policies mapped to Unified Controls and reviewed by human compliance officers.
 
 ### Critical Taxonomy Disconnects Discovered in this Audit
-1. **Facet Coverage Chasm**: The Canonical Unified Control Library defines **155 standardized control facets** across 33 Unified Controls. The production extraction engine ([`ENTERPRISE_FACET_PATTERNS`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/backend/banking_crosswalk/policy.py)) defines regex patterns for only **8 facets**. **152 canonical facets (98.1%) have zero extraction patterns**, yielding an effective extraction recall of 0.0% for all unrepresented governance areas.
+1. **Facet Coverage Chasm (Pre-E4.1 `v1.0.0` 155-Facet Audit Baseline)**: At P1A audit time, the Canonical Unified Control Library defined **155 standardized control facets** across 33 Unified Controls (now **158 unique facets** in E4.1 / Pack `0.2.0`). The production extraction engine ([`ENTERPRISE_FACET_PATTERNS`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/backend/banking_crosswalk/policy.py)) defines regex patterns for only **8 facets**. **152 canonical facets (98.1%)** had zero exact-string extraction patterns (155/158 under current E4.1), yielding an effective extraction recall of 0.0% for all unrepresented governance areas.
 2. **Identifier Misalignment (Canonical vs Legacy Synthetic IDs)**:
    - In `UNIFIED_CONTROL_LIBRARY.json`, controls have canonical IDs such as `CTRL-DELEGATED-AUTHORITY-THRESHOLD`, `CTRL-HUMAN-OVERSIGHT`, `CTRL-SEC-INCIDENT`, and `CTRL-THIRD-PARTY-AI`.
    - In `backend/banking_crosswalk/policy.py`, `FACET_TO_UNIFIED_CONTROLS` maps to legacy/synthetic IDs such as `CTRL-FIN-APPROVAL-THRESHOLDS`, `CTRL-GOV-OVERSIGHT`, and `CTRL-OPS-OUTSOURCING`. Only 2 of the 8 mapped IDs match canonical UCL controls (`CTRL-PRIV-CROSS-BORDER`, `CTRL-PRIV-COLLECTION`).
    - In the P0 benchmark [`MAPPING_EVALUATION_DATASET.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/MAPPING_EVALUATION_DATASET.json), all 11 expected controls use ad-hoc synthetic names (`CTRL-FAIR-BIAS-EVALUATION`, `CTRL-DATA-RETENTION-DISPOSAL`, `CTRL-COMPL-DISPUTE-RESOLUTION`, etc.), with **zero** overlap with canonical UCL identifiers.
-3. **Facet Naming Discrepancies**: Of the 8 facets in `ENTERPRISE_FACET_PATTERNS`, only 3 match canonical UCL facet strings (`human_approval_required`, `approval_threshold_defined`, `pre_execution_block`). The other 5 (`zero_data_retention`, `prompt_logging`, `model_inventory`, `bias_testing`, `data_sovereignty`) are informal shorthands that do not align with the 155 canonical facet names.
+3. **Facet Naming Discrepancies**: Of the 8 facets in `ENTERPRISE_FACET_PATTERNS`, only 3 match canonical UCL facet strings (`human_approval_required`, `approval_threshold_defined`, `pre_execution_block`). The other 5 (`zero_data_retention`, `prompt_logging`, `model_inventory`, `bias_testing`, `data_sovereignty`) are informal shorthands that do not align with the canonical facet names (155 in pre-E4.1 `v1.0.0`; 158 in E4.1 / Pack `0.2.0`).
 
 ---
 
@@ -101,7 +101,7 @@ pie title Unified Controls by Domain (33 Controls Total)
 
 ---
 
-## 4. Taxonomy Gap Analysis: The 155 vs 8 Facet Chasm
+## 4. Taxonomy Gap Analysis: The Pre-E4.1 155 vs 8 Facet Chasm *(158 vs 8 in E4.1)*
 
 ### 4.1 Production Extraction Engine Facets (`policy.py`)
 The extraction engine defines regex token lists for exactly 8 facets in `ENTERPRISE_FACET_PATTERNS`:
@@ -119,7 +119,7 @@ ENTERPRISE_FACET_PATTERNS = {
 }
 ```
 
-### 4.2 Comparison with the 155 Canonical UCL Facets
+### 4.2 Comparison with the 155 Canonical UCL Facets *(Pre-E4.1 `v1.0.0` Snapshot; 158 in E4.1)*
 1. **Direct Name Match (3 facets / 1.9%)**:
    - `human_approval_required`
    - `approval_threshold_defined`
@@ -184,6 +184,6 @@ flowchart TD
 
 ## 7. Audit Conclusion & P1 Action Items
 
-1. **The 38.89% baseline extraction recall is directly attributable to the 155 vs 8 facet gap**: Because 94.8% of canonical facets lack regex patterns, the engine cannot extract them regardless of how well policies are written.
-2. **Canonical Taxonomy Unification Required for P1**: The P1 evaluation harness and all candidate models (Rules, Embeddings, LLM) must evaluate against the **33 Canonical UCL Control IDs** and **155 Canonical Facets**, eliminating legacy synthetic placeholders.
+1. **The 38.89% baseline extraction recall is directly attributable to the 155 vs 8 facet gap (pre-E4.1 `v1.0.0`; now 158 vs 8)**: Because 94.8% (147/155 in pre-E4.1 `v1.0.0`; 150/158 in E4.1) of canonical facets lack regex patterns, the engine cannot extract them regardless of how well policies are written.
+2. **Canonical Taxonomy Unification Required for P1**: The P1 evaluation harness and all candidate models (Rules, Embeddings, LLM) must evaluate dynamically against the **33 Canonical UCL Control IDs** and **Canonical Facets** in `UNIFIED_CONTROL_LIBRARY.json` (**158** in current E4.1 / Pack `0.2.0`; **155** in pre-E4.1 `v1.0.0`), eliminating legacy synthetic placeholders.
 3. **Preservation Invariant**: No production mapping code or regulatory catalogue files are modified during this audit phase. The unified taxonomy will be exercised via the versioned `P1_EVALUATION_DATASET_V2.json`.

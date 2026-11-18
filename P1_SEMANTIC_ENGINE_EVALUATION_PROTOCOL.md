@@ -24,7 +24,7 @@ This protocol establishes a **six-layer evaluation architecture (Layers A throug
 flowchart TD
     Raw["Raw Input Text (Policy, Question, Intake Claim)"]
     Raw --> LayerA["Layer A: Atomic Requirement Extraction<br><i>Obligations, conditions, exceptions segmented</i>"]
-    LayerA --> LayerB["Layer B: Control Facet Identification<br><i>Precision, Recall & F1 across 155 UCL facets</i>"]
+    LayerA --> LayerB["Layer B: Control Facet Identification<br><i>Precision, Recall & F1 across canonical UCL facets</i>"]
     LayerB --> LayerC["Layer C: Candidate Control Mapping<br><i>Top-1, Top-3, Top-5 recall across 33 Unified Controls</i>"]
     LayerC --> LayerD["Layer D: Assessment Coverage Classification<br><i>Full, Partial, Unverified, Gap categorization</i>"]
     LayerD --> LayerE["Layer E: Source Grounding & Applicability<br><i>Statutory authority, instrument citations, rule checks</i>"]
@@ -45,7 +45,7 @@ flowchart TD
 ---
 
 ### Layer B — Control Facet Identification
-* **Objective**: Measure the engine's ability to classify extracted text into the **155 Canonical Control Facets** defined in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json).
+* **Objective**: Measure the engine's ability to classify extracted text into the **Canonical Control Facets** loaded dynamically from [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json) (**158 unique facets** in E4.1 / Pack `0.2.0`; **155** in pre-E4.1 `v1.0.0`).
 * **Input**: Atomic policy clauses or questionnaire questions.
 * **Ground Truth**: Canonical facet identifiers (`expected_facets`).
 * **Metrics**:

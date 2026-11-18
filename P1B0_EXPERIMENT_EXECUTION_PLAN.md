@@ -71,7 +71,7 @@ flowchart TD
 - **Hypothesis**: Will significantly outperform P0 baseline (increasing recall from 38.89% to ~65–70%), but will fail on complex domain synonyms (*statistical parity*, *operational substitution*, *FIPS 140-3 HSM*).
 
 #### Option B: Embedding-Assisted Candidate Retrieval
-- **Mechanism**: Encode incoming clauses into 384-dimensional dense vectors using a local, open-source embedding model (e.g. `sentence-transformers/all-MiniLM-L6-v2` or `BAAI/bge-small-en-v1.5`) running locally via ONNX / PyTorch. Compute cosine similarity against pre-computed vector embeddings of the 33 Canonical Unified Controls and their 155 facets.
+- **Mechanism**: Encode incoming clauses into 384-dimensional dense vectors using a local, open-source embedding model (e.g. `sentence-transformers/all-MiniLM-L6-v2` or `BAAI/bge-small-en-v1.5`) running locally via ONNX / PyTorch. Compute cosine similarity against pre-computed vector embeddings of the 33 Canonical Unified Controls and their canonical facets loaded dynamically from `UNIFIED_CONTROL_LIBRARY.json` (158 facets in current E4.1 / Pack `0.2.0`; 155 at pre-E4.1 `v1.0.0`).
 - **Candidate Selection**: Rank top-5 controls above similarity threshold $\tau \ge 0.72$. Apply deterministic negation filter to suppress Category 4 and 5 clauses.
 - **Inference Runtime**: $50 - 150\text{ ms}$ per clause (local CPU/GPU).
 - **Cost**: \$0.00 (Local open-source model; zero external cloud API calls).
