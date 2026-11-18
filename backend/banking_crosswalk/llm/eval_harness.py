@@ -18,7 +18,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
-from ..catalog import load_regulatory_pack
+from ..catalog import load_obligation_control_mappings, load_regulatory_pack
 from ..coverage import evaluate_questionnaire_coverage
 from ..models import (
     BankingUseCase,
@@ -204,6 +204,12 @@ def evaluate_clause_benchmark(
     y_pred: List[str] = []
     per_case: List[Dict[str, Any]] = []
     by_phenomenon: Dict[str, Dict[str, int]] = defaultdict(lambda: {"correct": 0, "total": 0})
+    by_authority_layer: Dict[str, Dict[str, int]] = defaultdict(lambda: {"correct": 0, "total": 0})
+    by_risk_category: Dict[str, Dict[str, int]] = defaultdict(lambda: {"correct": 0, "total": 0})
+    pred_rel_counts: Dict[str, int] = defaultdict(int)
+    proposed_coverage_cases = 0
+    false_positive_coverage_proposals = 0
+    ob_by_id = {ob.obligation_id: ob for ob in reg_pack.obligations}
 
     for org_id in org_order:
         tenant_id = f"eval-{org_id}"
@@ -248,15 +254,26 @@ def evaluate_clause_benchmark(
             pol = pol.model_copy(update={"clauses": approved_clauses})
             policies.append(pol)
 
+            def _norm_quote(s: str) -> str:
+                return (
+                    s.lower()
+                    .replace("\u2019", "'")
+                    .replace("\u2018", "'")
+                    .replace("\u201c", '"')
+                    .replace("\u201d", '"')
+                    .replace("\u2013", "-")
+                    .replace("\u2014", "-")
+                )
+
             for case in doc_cases:
-                norm_full = " ".join(case.raw_text.lower().split())
+                norm_full = " ".join(_norm_quote(case.raw_text).split())
                 matched = next(
-                    (c for c in pol.clauses if " ".join(c.text.lower().split()) == norm_full),
+                    (c for c in pol.clauses if " ".join(_norm_quote(c.text).split()) == norm_full),
                     None,
                 )
                 if matched is None:
                     matched = next(
-                        (c for c in pol.clauses if norm_full in " ".join(c.text.lower().split())),
+                        (c for c in pol.clauses if norm_full in " ".join(_norm_quote(c.text).split())),
                         None,
                     )
                 if matched is None:
@@ -334,12 +351,45 @@ def evaluate_clause_benchmark(
             true_rel = case.ground_truth_relationship.value
             y_true.append(true_rel)
             y_pred.append(pred_rel)
+            pred_rel_counts[pred_rel] += 1
             is_correct = pred_rel == true_rel
             if is_correct:
                 exact_matches += 1
             by_phenomenon[case.phenomenon]["total"] += 1
             if is_correct:
                 by_phenomenon[case.phenomenon]["correct"] += 1
+
+            target_ob_obj = (
+                ob_by_id.get(case.ground_truth_obligation_id)
+                if case.ground_truth_obligation_id
+                else ob_by_id.get(chosen.external_obligation_id or "")
+            )
+            auth_layer = (
+                target_ob_obj.authority.value
+                if target_ob_obj is not None
+                else "unmapped_or_enterprise"
+            )
+            risk_cat = (
+                target_ob_obj.legal_authority_classification.value
+                if (target_ob_obj is not None and target_ob_obj.legal_authority_classification is not None)
+                else ("enterprise_defined_control" if true_rel == "additional_enterprise_requirement" else "out_of_scope_or_ambiguous")
+            )
+            by_authority_layer[auth_layer]["total"] += 1
+            by_risk_category[risk_cat]["total"] += 1
+            if is_correct:
+                by_authority_layer[auth_layer]["correct"] += 1
+                by_risk_category[risk_cat]["correct"] += 1
+
+            # Metric 3: proposing that a governance clause addresses an external requirement
+            proposes_external_coverage = pred_rel in {
+                "equivalent",
+                "stricter_enterprise_requirement",
+                "partially_overlapping",
+            }
+            if proposes_external_coverage:
+                proposed_coverage_cases += 1
+                if case.ground_truth_obligation_id is None:
+                    false_positive_coverage_proposals += 1
 
             if pred_rel == "equivalent" and true_rel != "equivalent":
                 false_equiv += 1
@@ -426,6 +476,8 @@ def evaluate_clause_benchmark(
         "exact_accuracy": exact_matches,
         "false_equivalence": false_equiv,
         "false_coverage": false_cov,
+        "false_positive_coverage_proposals": false_positive_coverage_proposals,
+        "proposed_coverage_cases": proposed_coverage_cases,
         "false_conflict": false_conflict,
         "unresolved_flagged": human_flagged,
         "unresolved_total": human_total,
@@ -452,6 +504,9 @@ def evaluate_clause_benchmark(
             "lifecycle_warnings": [w.model_dump(mode="json") for w in tel.lifecycle_warnings],
         },
         "by_phenomenon": dict(by_phenomenon),
+        "by_authority_layer": dict(by_authority_layer),
+        "by_risk_category": dict(by_risk_category),
+        "predicted_relationship_counts": dict(pred_rel_counts),
         "per_case": per_case,
     }
 
@@ -572,6 +627,7 @@ def render_evaluation_markdown(report: Dict[str, Any]) -> str:
         "# E3.1 Evaluation Harness Output",
         "",
         f"- **Timestamp (UTC)**: `{report['generated_at']}`",
+        f"- **Regulatory Pack**: `{report.get('regulatory_pack_id', 'unknown')}` v`{report.get('regulatory_pack_version', 'unknown')}` (`{report.get('obligation_count', '?')}` obligations, `{report.get('mapping_catalogue_version', '?')}` mappings v)",
         f"- **Provider Mode**: `{report['provider']}`",
         f"- **Split Requested**: `{report['split']}`",
         f"- **Embedding Model**: `{report['embedding_model']}`",
@@ -746,8 +802,16 @@ def run_evaluation_suite(
                 transport=transport,
             )
 
+    reg_pack = load_regulatory_pack()
+    mapping_cat = load_obligation_control_mappings()
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "regulatory_pack_id": reg_pack.pack_id,
+        "regulatory_pack_version": reg_pack.version,
+        "obligation_count": len(reg_pack.obligations),
+        "source_count": len(reg_pack.sources),
+        "mapping_catalogue_version": mapping_cat.version,
+        "mapping_count": len(mapping_cat.mappings),
         "provider": provider,
         "split": split,
         "embedding_model": embedding_model if provider == "gemini" else "mock-concept-v1",
