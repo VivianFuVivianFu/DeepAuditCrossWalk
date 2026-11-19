@@ -63,6 +63,8 @@ from .models import (
 )
 from .reconciliation import (
     ENTERPRISE_GENERIC_FACETS,
+    _NON_REGULATORY_CORPORATE_NOISE_PATTERN,
+    _compare_obligation_bound_timeframes,
     _detect_action_polarity,
     _detect_external_timing,
     _detect_internal_enterprise_conflicts,
@@ -214,6 +216,13 @@ def retrieve_reconciliation_candidates_hybrid(
                 bundle.telemetry.notes.append(f"Stage A embedding fallback: {fallback_reason}")
 
     c_lower = (clause.text or "").lower()
+    if _NON_REGULATORY_CORPORATE_NOISE_PATTERN.search(c_lower) and not det_by_id:
+        return {
+            "candidates": [],
+            "all_emb_scores": emb_scores,
+            "retrieval_mode": retrieval_mode,
+            "fallback_reason": fallback_reason,
+        }
     has_eu_cue = any(
         w in c_lower
         for w in ("eu ai act", "article 26", "article 27", "article 50", "annex iii", "fria", "eur ", "eur$")
@@ -232,7 +241,9 @@ def retrieve_reconciliation_candidates_hybrid(
 
         reasons: List[str] = list(det_item["reasons"]) if det_item else []
         if emb_score is not None:
-            if det_score > 0.0:
+            if det_score >= 0.35:
+                hybrid_score = 0.42 * emb_score + 0.58 * det_score
+            elif det_score > 0.0:
                 hybrid_score = 0.62 * emb_score + 0.38 * det_score
             else:
                 hybrid_score = emb_score * 0.96
@@ -329,19 +340,9 @@ def _dimension_precheck_summary(
             else:
                 threshold_comp = "weaker_enterprise"
 
-    ent_hours = _extract_timeframe_hours(clause.text)
-    ext_hours = _extract_timeframe_hours(ext_text)
-    timeframe_conflict = False
-    timeframe_stricter = False
-    if ent_hours is not None and ext_hours is not None:
-        if any(
-            w in (clause.text or "").lower()
-            for w in ("notifi", "notify", "notification", "report", "respond", "response", "escalat", "assess")
-        ):
-            if ent_hours > ext_hours:
-                timeframe_conflict = True
-            elif ent_hours < ext_hours:
-                timeframe_stricter = True
+    ent_hours, ext_hours, timeframe_conflict, timeframe_stricter = (
+        _compare_obligation_bound_timeframes(clause.text, obligation, ext_text)
+    )
 
     timing_comp = "not_applicable"
     if ent_timing == "post_execution" and ext_timing == "pre_execution":
@@ -528,16 +529,77 @@ def validate_hybrid_candidate_relationship(
     if decision_status == ReconciliationDecisionStatus.APPROVED:
         decision_status = ReconciliationDecisionStatus.PROPOSED
 
+    ai_proposed_rel = (
+        semantic_analysis.proposed_relationship if semantic_analysis is not None else None
+    )
+    veto_list: List[str] = list(veto_reasons) if semantic_analysis is not None else []
+    missing_conds = list(base_decision.missing_conditions_or_evidence or [])
+    for u in uncertainties:
+        if u not in missing_conds:
+            missing_conds.append(u)
+
+    preserved_evidence: List[Dict[str, Any]] = list(base_decision.preserved_candidate_evidence or [])
+    if obligation is not None and (
+        veto_list
+        or validated_rel != proposed_rel
+        or validated_rel
+        in {
+            ReconciliationRelationship.PARTIALLY_OVERLAPPING,
+            ReconciliationRelationship.WEAKER_OR_POTENTIALLY_INSUFFICIENT,
+            ReconciliationRelationship.POTENTIAL_CONFLICT,
+            ReconciliationRelationship.UNDETERMINED,
+        }
+    ):
+        preserved_evidence.append(
+            {
+                "obligation_id": obligation.obligation_id,
+                "provision": obligation.provision,
+                "stage_a_reason": stage_a_reason,
+                "embedding_similarity": embedding_similarity,
+                "ai_proposed_relationship": ai_proposed_rel.value if ai_proposed_rel else None,
+                "deterministically_validated_relationship": validated_rel.value,
+                "deterministic_veto_applied": bool(veto_list),
+                "deterministic_veto_reasons": veto_list,
+                "supporting_passages": supporting_passages,
+                "missing_conditions_or_evidence": missing_conds,
+            }
+        )
+
+    if validated_rel == ReconciliationRelationship.EQUIVALENT:
+        rel_state = "equivalent_pending_human_review"
+    elif validated_rel == ReconciliationRelationship.POTENTIAL_CONFLICT:
+        rel_state = "requirement_apparently_contradicted"
+    elif validated_rel in {
+        ReconciliationRelationship.PARTIALLY_OVERLAPPING,
+        ReconciliationRelationship.STRICTER_ENTERPRISE_REQUIREMENT,
+    }:
+        rel_state = "requirement_partially_addressed"
+    elif validated_rel in {
+        ReconciliationRelationship.WEAKER_OR_POTENTIALLY_INSUFFICIENT,
+        ReconciliationRelationship.UNDETERMINED,
+    }:
+        rel_state = "evidence_insufficient"
+    elif validated_rel == ReconciliationRelationship.UNMAPPED_NO_RELIABLE_RELATIONSHIP:
+        rel_state = "no_relevant_requirement_found"
+    else:
+        rel_state = "requirement_potentially_relevant"
+
     return base_decision.model_copy(
         update={
             "enterprise_clause_sha256": original_sha,
             "proposed_relationship": proposed_rel,
             "validated_relationship": validated_rel,
+            "ai_proposed_relationship": ai_proposed_rel,
             "approved_relationship": None,
             "decision_status": decision_status,
             "supporting_passages": supporting_passages,
             "comparison_rationale": rationale,
             "uncertainties": uncertainties,
+            "deterministic_veto_applied": bool(veto_list),
+            "deterministic_veto_reasons": veto_list,
+            "missing_conditions_or_evidence": missing_conds,
+            "candidate_relevance_state": rel_state,
+            "preserved_candidate_evidence": preserved_evidence,
             "matching_mode": matching_mode,
             "embedding_similarity": embedding_similarity,
             "semantic_analysis": (
@@ -696,26 +758,40 @@ def generate_hybrid_reconciliation_candidates(
         pol_version = policy_versions.get(clause.policy_id, enterprise_baseline.version)
         pol_name = policy_names.get(clause.policy_id, clause.source_name)
 
-        # Indeterminate/vague clauses MUST resolve safely to UNDETERMINED regardless of Stage A hits
+        # Indeterminate/vague clauses MUST resolve safely to UNDETERMINED while preserving candidate evidence
         if _is_ambiguous_clause(clause):
             mode_label = (
                 "hybrid_embedding_llm_deterministic"
                 if use_llm
                 else "embedding_plus_deterministic"
             )
-            decisions.append(
-                validate_hybrid_candidate_relationship(
-                    clause=clause,
-                    obligation=None,
-                    regulatory_pack=reg_pack,
-                    enterprise_baseline=enterprise_baseline,
-                    policy_version=pol_version,
-                    policy_name=pol_name,
-                    stage_a_reason="Clause contains indeterminate/vague schedule or discretionary reference.",
-                    matching_mode=mode_label,
-                    provider_meta={"retrieval_mode": "ambiguous_guardrail"},
+            preserved_ambig = [
+                {
+                    "obligation_id": ob.obligation_id,
+                    "provision": ob.provision,
+                    "reason": topic_reason,
+                    "status": "held_pending_unresolved_dependency",
+                }
+                for ob, topic_reason in _match_topic_obligations_for_unmapped_or_negative_clause(
+                    clause, candidate_obligations
                 )
+            ]
+            ambig_dec = validate_hybrid_candidate_relationship(
+                clause=clause,
+                obligation=None,
+                regulatory_pack=reg_pack,
+                enterprise_baseline=enterprise_baseline,
+                policy_version=pol_version,
+                policy_name=pol_name,
+                stage_a_reason="Clause contains indeterminate/vague schedule or discretionary reference.",
+                matching_mode=mode_label,
+                provider_meta={"retrieval_mode": "ambiguous_guardrail"},
             )
+            if preserved_ambig:
+                ambig_dec = ambig_dec.model_copy(
+                    update={"preserved_candidate_evidence": preserved_ambig}
+                )
+            decisions.append(ambig_dec)
             continue
 
         non_eq_rels = {MappingRelationship.NON_EQUIVALENT, MappingRelationship.NOT_EQUIVALENT}
@@ -825,12 +901,30 @@ def generate_hybrid_reconciliation_candidates(
                 item[0].obligation_id,
             ),
         )
-        # Keep top candidates within call budget (top 3 for Stage B reranking & multi-obligation clauses)
+        # Keep top candidates within call budget while ensuring multi-regulator diversity
         max_cands = min(
             max(cfg.top_k_candidates, 3),
             max(3 if use_llm else 2, len([x for x in ranked_selected if x[3]])),
         )
-        candidates_to_validate = ranked_selected[:max_cands]
+        candidates_to_validate = list(ranked_selected[:max_cands])
+        if len(ranked_selected) > len(candidates_to_validate):
+            selected_sources = {item[0].source_id for item in candidates_to_validate}
+            for extra_item in ranked_selected[len(candidates_to_validate) :]:
+                if (
+                    extra_item[0].source_id not in selected_sources
+                    and (extra_item[4] >= 0.34 or extra_item[3])
+                ):
+                    if len(candidates_to_validate) >= max_cands and len(candidates_to_validate) >= 2:
+                        # Replace a duplicate-source lower-ranked candidate if present
+                        for idx in range(len(candidates_to_validate) - 1, 0, -1):
+                            src_i = candidates_to_validate[idx][0].source_id
+                            if sum(1 for c_it in candidates_to_validate if c_it[0].source_id == src_i) > 1:
+                                candidates_to_validate[idx] = extra_item
+                                selected_sources.add(extra_item[0].source_id)
+                                break
+                    else:
+                        candidates_to_validate.append(extra_item)
+                        selected_sources.add(extra_item[0].source_id)
 
         if not candidates_to_validate:
             mode_label = (
@@ -960,6 +1054,24 @@ def generate_hybrid_reconciliation_candidates(
                         "uncertainties": list(standalone.uncertainties) + dismissed_notes,
                     }
                 )
+            standalone = standalone.model_copy(
+                update={
+                    "candidate_relevance_state": "irrelevant_candidate_dismissed",
+                    "preserved_candidate_evidence": [
+                        {
+                            "obligation_id": item[0].obligation_id,
+                            "provision": item[0].provision,
+                            "embedding_similarity": item[2],
+                            "semantic_relevance": item[4].semantic_relevance if item[4] else None,
+                            "ai_proposed_relationship": (
+                                item[4].proposed_relationship.value if item[4] else None
+                            ),
+                            "dismissal_reason": item[4].reasoning_summary if item[4] else "Low relevance",
+                        }
+                        for item in interpreted
+                    ],
+                }
+            )
             decisions.append(standalone)
             continue
 

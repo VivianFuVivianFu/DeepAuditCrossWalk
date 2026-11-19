@@ -96,16 +96,63 @@ ENTERPRISE_ONLY_CONTROL_IDS: Set[str] = {
     "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
 }
 
+_INTERNAL_ATTACHMENT_DEPENDENCY_PATTERN = re.compile(
+    r"\b(?:in\s+accordance\s+with|follow(?:s|ing)?|specified\s+in|under|per|refer\s+to|set\s+out\s+in)\s+"
+    r"(schedule|appendix|annex|annexure|exhibit|attachment)\s+([a-z0-9]+)\b",
+    re.IGNORECASE,
+)
+
+# Authoritative statutory annexes/schedules that must NOT be confused with missing internal attachments
+_STATUTORY_ANNEX_CITATION_PATTERN = re.compile(
+    r"(?:"
+    r"\bannex\s+(?:i|ii|iii|iv|v|1|2|3|4|5)\b(?=[^.;]{0,120}\b(?:point\s+\d|ai\s+act|regulation|eu\b|european\s+union|territorial|high[-\s]risk|creditworthiness|fundamental\s+rights|article\s+\d+))"
+    r"|"
+    r"(?:\b(?:eu|european\s+union|ai\s+act|territorial|creditworthiness|high[-\s]risk|article\s+\d+)\b[^.;]{0,120})\bannex\s+(?:i|ii|iii|iv|v|1|2|3|4|5)\b"
+    r"|"
+    r"\bschedule\s+1\b(?=[^.;]{0,100}\b(?:privacy\s+act|australian\s+privacy\s+principles|\bapp\b))"
+    r")",
+    re.IGNORECASE,
+)
+
 AMBIGUOUS_CLAUSE_PATTERNS: Tuple[re.Pattern[str], ...] = (
     re.compile(r"\bas\s+determined\s+from\s+time\s+to\s+time\b", re.IGNORECASE),
-    re.compile(
-        r"\b(?:in\s+accordance\s+with|follow(?:ing)?|specified\s+in|under|per)\s+(?:schedule|appendix|annex|exhibit)\s+[a-z0-9]+\b",
-        re.IGNORECASE,
-    ),
+    _INTERNAL_ATTACHMENT_DEPENDENCY_PATTERN,
     re.compile(r"\bappropriate\s+governance\s+arrangements\s+shall\s+be\s+applied\b", re.IGNORECASE),
     re.compile(r"\bwhere\s+deemed\s+appropriate\s+by\s+management\b", re.IGNORECASE),
     re.compile(r"\bsubject\s+to\s+unquantified\s+discretion\b", re.IGNORECASE),
     re.compile(r"\bas\s+reasonably\s+practicable\s+without\s+defined\s+criteria\b", re.IGNORECASE),
+    re.compile(
+        r"\b(?:discretionary\s+interim\s+arrangements?|as\s+the\s+(?:\w+\s+)?committee\s+decides)\b",
+        re.IGNORECASE,
+    ),
+)
+
+PERMISSIVE_CONTROL_OMISSION_PATTERN = re.compile(
+    r"\b(?:"
+    r"may\s+(?:close|resolve|handle|process|dispose|dismiss)\b[^.;]{0,90}\bwithout\s+(?:logging|recording|issuing|providing|notifying|escalating)"
+    r"|"
+    r"(?:do|does)\s+not\s+need\s+to\s+(?:conduct|notify|log|record|perform|assess|report|escalate)"
+    r"|"
+    r"need\s+not\s+(?:conduct|notify|log|record|perform|assess|report|escalate)"
+    r")\b",
+    re.IGNORECASE,
+)
+
+_NON_REGULATORY_CORPORATE_NOISE_PATTERN = re.compile(
+    r"\b(?:"
+    r"corporate\s+typography|typography\s+palette|brand\s+logo\s+spacing|marketing\s+slide\s+decks?|executive\s+template\s+standards?"
+    r"|"
+    r"ceiling\s+acoustic\s+reverberation|decibels?\s+across\s+retail\s+waiting\s+lounges|branch\s+architectural\s+refurbishments?"
+    r"|"
+    r"carbon[-\s]intensity|megawatt|scope\s+2\s+esg|cooling\s+metrics"
+    r"|"
+    r"wcag|colour\s+contrast|contrast\s+ratios"
+    r"|"
+    r"executive\s+remuneration|bonus\s+vesting|payroll"
+    r"|"
+    r"physical\s+keycard|visitor\s+swipe|visitor\s+contractor|lobby\s+reception"
+    r")\b",
+    re.IGNORECASE,
 )
 
 CUSTOMER_RIGHT_GRANT_PATTERN = re.compile(
@@ -282,6 +329,91 @@ def _extract_timeframe_hours(text: str) -> Optional[float]:
     return val
 
 
+def _extract_all_timeframes_hours(text: str) -> List[float]:
+    hours_list: List[float] = []
+    for match in TIMEFRAME_PATTERN.finditer(text or ""):
+        val = float(match.group(1))
+        unit = match.group(2).lower()
+        hours_list.append(val * 24.0 if "day" in unit else val)
+    return hours_list
+
+
+def _split_compound_subclauses(text: str) -> List[str]:
+    if not text:
+        return []
+    parts = re.split(
+        r"(?:;\s*|,\s*(?:while|whereas)\s+|\b(?:while|whereas)\s+)",
+        text,
+        flags=re.IGNORECASE,
+    )
+    return [p.strip() for p in parts if p and p.strip()]
+
+
+def _subclause_matches_obligation(subclause: str, obligation: AtomicObligation) -> bool:
+    sub_lower = subclause.lower()
+    sub_scopes = set(_detect_operational_scopes(subclause))
+    ext_text = f"{obligation.instrument} {obligation.provision} {obligation.title} {obligation.concise_obligation_summary}"
+    ext_scopes = set(_detect_operational_scopes(ext_text))
+    if sub_scopes and ext_scopes and (sub_scopes & ext_scopes):
+        return True
+    for kw_list in (obligation.facet_keywords or {}).values():
+        if any(kw.lower() in sub_lower for kw in kw_list if kw):
+            return True
+    if obligation.source_id == "AU-PRIVACY-ACT" and any(
+        w in sub_lower for w in ("data breach", "data leakage", "oaic", "serious harm", "personal-data", "personal information")
+    ):
+        return True
+    if obligation.source_id == "ASIC-RG271" and any(
+        w in sub_lower for w in ("complaint", "dissatisfaction", "afca", "idr")
+    ):
+        return True
+    if obligation.source_id == "APRA-CPS234" and any(
+        w in sub_lower for w in ("cps 234", "apra", "information security incident", "cyber incident")
+    ):
+        return True
+    return False
+
+
+def _compare_obligation_bound_timeframes(
+    clause_text: str,
+    obligation: AtomicObligation,
+    ext_text: str,
+) -> Tuple[Optional[float], Optional[float], bool, bool]:
+    """Extract and compare numeric deadlines bound specifically to the target obligation's sub-clause."""
+    subclauses = _split_compound_subclauses(clause_text or "")
+    relevant_text = clause_text or ""
+    if len(subclauses) > 1:
+        matching_subs = [s for s in subclauses if _subclause_matches_obligation(s, obligation)]
+        if matching_subs:
+            relevant_text = " ; ".join(matching_subs)
+
+    ent_hours = _extract_timeframe_hours(relevant_text)
+    ext_all = _extract_all_timeframes_hours(ext_text or "")
+    if not ext_all:
+        ext_hours = None
+    elif len(ext_all) == 1:
+        ext_hours = ext_all[0]
+    else:
+        rel_lower = relevant_text.lower()
+        if any(w in rel_lower for w in ("hardship", "default notice", "credit default")):
+            ext_hours = min(ext_all)
+        else:
+            ext_hours = max(ext_all)
+
+    timeframe_conflict = False
+    timeframe_stricter = False
+    if ent_hours is not None and ext_hours is not None:
+        if any(
+            w in relevant_text.lower()
+            for w in ("notifi", "notify", "notification", "report", "respond", "response", "escalat", "assess", "initiate")
+        ):
+            if ent_hours > ext_hours:
+                timeframe_conflict = True
+            elif ent_hours < ext_hours:
+                timeframe_stricter = True
+    return ent_hours, ext_hours, timeframe_conflict, timeframe_stricter
+
+
 def _detect_operational_scopes(text: str) -> List[str]:
     scopes: List[str] = []
     for label, pattern in SCOPE_PATTERNS:
@@ -344,8 +476,30 @@ def _detect_external_timing(obligation: AtomicObligation) -> Optional[str]:
 
 
 def _is_ambiguous_clause(clause: EnterpriseClause) -> bool:
+    text = clause.text or ""
     for pattern in AMBIGUOUS_CLAUSE_PATTERNS:
-        if pattern.search(clause.text or ""):
+        if pattern is _INTERNAL_ATTACHMENT_DEPENDENCY_PATTERN:
+            matches = list(_INTERNAL_ATTACHMENT_DEPENDENCY_PATTERN.finditer(text))
+            if not matches:
+                continue
+            # Check whether every attachment match is an authoritative statutory annex/schedule citation
+            non_statutory = False
+            for m in matches:
+                kind = m.group(1).lower()
+                ident = m.group(2).lower()
+                if kind == "annexure":
+                    non_statutory = True
+                    break
+                if kind == "annex" and ident in {"i", "ii", "iii", "iv", "v", "1", "2", "3", "4", "5"}:
+                    if _STATUTORY_ANNEX_CITATION_PATTERN.search(text):
+                        continue
+                if kind == "schedule" and ident == "1" and _STATUTORY_ANNEX_CITATION_PATTERN.search(text):
+                    continue
+                non_statutory = True
+            if non_statutory:
+                return True
+            continue
+        if pattern.search(text):
             return True
     return False
 
@@ -353,6 +507,8 @@ def _is_ambiguous_clause(clause: EnterpriseClause) -> bool:
 def _detect_action_polarity(clause: EnterpriseClause) -> str:
     text = clause.text or ""
     if ABSENCE_OF_CONTROL_PATTERN.search(text):
+        return "absence_of_control"
+    if PERMISSIVE_CONTROL_OMISSION_PATTERN.search(text) and not clause.has_exception_clause:
         return "absence_of_control"
     if PROHIBITION_BLOCK_PATTERN.search(text) or STAFF_PROHIBITION_PATTERN.search(text) or re.search(
         r"\b(must\s+not|shall\s+not|prohibited\s+from|never\s+be)\b",
@@ -413,12 +569,39 @@ GENERIC_TO_CANONICAL_FACET_BRIDGES: Dict[str, Tuple[str, ...]] = {
 }
 
 
+def _stem_token(tok: str) -> str:
+    for suffix in ("ingly", "edly", "ment", "tion", "sion", "ance", "ence", "ly", "ed", "ing", "es", "s"):
+        if len(tok) > len(suffix) + 3 and tok.endswith(suffix):
+            return tok[: -len(suffix)]
+    return tok
+
+
+def _phrase_matches_normalized(phrase: str, text_norm: str, clause_tokens_list: Sequence[str]) -> bool:
+    p_norm = re.sub(r"[-/]", " ", phrase.lower()).strip()
+    if not p_norm:
+        return False
+    if p_norm in text_norm:
+        return True
+    p_words = [w for w in re.findall(r"[a-z0-9]+", p_norm) if len(w) >= 3 and w not in _RECON_STOP_WORDS]
+    if len(p_words) >= 2 and clause_tokens_list:
+        p_stems = [_stem_token(w) for w in p_words]
+        p_stem_set = set(p_stems)
+        window_size = len(p_words) + 2
+        for idx in range(len(clause_tokens_list)):
+            window_stems = set(clause_tokens_list[idx : idx + window_size])
+            if p_stem_set.issubset(window_stems):
+                return True
+    return False
+
+
 def _infer_canonical_obligation_facets_for_clause(
     clause: EnterpriseClause,
     obligation: AtomicObligation,
 ) -> Set[str]:
     """Deterministically infer canonical obligation coverage_facets from clause text and generic facets."""
     text_lower = (clause.text or "").lower()
+    text_norm = re.sub(r"[-/]", " ", text_lower)
+    clause_stem_seq = [_stem_token(t) for t in re.findall(r"[a-z0-9]+", text_norm) if len(t) >= 3]
     inferred: Set[str] = set()
     ob_facets = set(obligation.coverage_facets or [])
 
@@ -430,15 +613,20 @@ def _infer_canonical_obligation_facets_for_clause(
             if bridged in ob_facets:
                 inferred.add(bridged)
 
-    # 2. Obligation facet_keywords phrase matching
+    # 2. Obligation facet_keywords phrase & local-window stemmed content-word matching
     facet_kw_map = obligation.facet_keywords or {}
     for facet in obligation.coverage_facets or []:
+        if (
+            facet == "annex3_5b_credit_vs_fraud_exemption_assessed"
+            and "fraud" not in text_norm
+        ):
+            continue
         keywords = facet_kw_map.get(facet, [])
-        if any(kw.lower() in text_lower for kw in keywords if kw):
+        if any(_phrase_matches_normalized(kw, text_norm, clause_stem_seq) for kw in keywords if kw):
             inferred.add(facet)
             continue
         facet_phrase = facet.replace("_", " ").lower()
-        if facet_phrase in text_lower:
+        if facet_phrase in text_norm:
             inferred.add(facet)
 
     return inferred
@@ -601,6 +789,12 @@ def validate_candidate_relationship(
             comparison_rationale=rationale,
             dimension_comparison=dim,
             uncertainties=uncertainties,
+            missing_conditions_or_evidence=list(uncertainties),
+            candidate_relevance_state=(
+                "evidence_insufficient"
+                if rel == ReconciliationRelationship.UNDETERMINED
+                else "no_relevant_requirement_found"
+            ),
         )
 
     # ── External obligation is present: gather external metadata ──
@@ -833,24 +1027,14 @@ def validate_candidate_relationship(
         elif ent_threshold is not None and ext_threshold is None:
             threshold_comp = "enterprise_threshold_on_general_obligation"
 
-    # Timeframe SLA comparison (e.g., 24 hours vs 72 hours, or 14 days vs 72 hours)
-    ent_hours = _extract_timeframe_hours(clause.text)
-    ext_hours = _extract_timeframe_hours(ext_text)
-    timeframe_conflict = False
-    timeframe_stricter = False
-    if ent_hours is not None and ext_hours is not None:
-        # Check if this is a notification/response deadline ("within X hours/days")
-        if any(
-            w in (clause.text or "").lower()
-            for w in ("notifi", "notify", "notification", "report", "respond", "response", "escalat", "assess")
-        ):
-            if ent_hours > ext_hours:
-                timeframe_conflict = True
-                uncertainties.append(
-                    f"Enterprise timeframe ({ent_hours:g} hours) exceeds external obligation deadline ({ext_hours:g} hours)."
-                )
-            elif ent_hours < ext_hours:
-                timeframe_stricter = True
+    # Timeframe SLA comparison bound specifically to the target obligation's sub-clause
+    ent_hours, ext_hours, timeframe_conflict, timeframe_stricter = (
+        _compare_obligation_bound_timeframes(clause.text, obligation, ext_text)
+    )
+    if timeframe_conflict and ent_hours is not None and ext_hours is not None:
+        uncertainties.append(
+            f"Enterprise timeframe ({ent_hours:g} hours) exceeds external obligation deadline ({ext_hours:g} hours)."
+        )
 
     dim = ReconciliationDimensionComparison(
         scope_match=scope_match,
@@ -1094,6 +1278,36 @@ def validate_candidate_relationship(
             "and approved control mapping. Remains in 'proposed' decision_status until approved by an authorised reviewer."
         )
 
+    missing_evidence: List[str] = []
+    if external_unaddressed_facets:
+        missing_evidence.append(f"Unaddressed obligation facets: {external_unaddressed_facets}")
+    if clause.is_conditional and clause.condition_description:
+        missing_evidence.append(f"Conditional scope qualification: {clause.condition_description}")
+    if clause.has_exception_clause and clause.exception_description:
+        missing_evidence.append(f"Weakening exception carve-out: {clause.exception_description}")
+    for u in uncertainties:
+        if u not in missing_evidence:
+            missing_evidence.append(u)
+
+    if validated_rel == ReconciliationRelationship.EQUIVALENT:
+        rel_state = "equivalent_pending_human_review"
+    elif validated_rel == ReconciliationRelationship.POTENTIAL_CONFLICT:
+        rel_state = "requirement_apparently_contradicted"
+    elif validated_rel in {
+        ReconciliationRelationship.PARTIALLY_OVERLAPPING,
+        ReconciliationRelationship.STRICTER_ENTERPRISE_REQUIREMENT,
+    }:
+        rel_state = "requirement_partially_addressed"
+    elif validated_rel in {
+        ReconciliationRelationship.WEAKER_OR_POTENTIALLY_INSUFFICIENT,
+        ReconciliationRelationship.UNDETERMINED,
+    }:
+        rel_state = "evidence_insufficient"
+    elif validated_rel == ReconciliationRelationship.UNMAPPED_NO_RELIABLE_RELATIONSHIP:
+        rel_state = "no_relevant_requirement_found"
+    else:
+        rel_state = "requirement_potentially_relevant"
+
     return ReconciliationDecision(
         reconciliation_id=_deterministic_reconciliation_id(
             clause.tenant_id,
@@ -1130,6 +1344,8 @@ def validate_candidate_relationship(
         comparison_rationale=rationale,
         dimension_comparison=dim,
         uncertainties=uncertainties,
+        missing_conditions_or_evidence=missing_evidence,
+        candidate_relevance_state=rel_state,
     )
 
 
@@ -1149,11 +1365,50 @@ def _match_topic_obligations_for_unmapped_or_negative_clause(
     for ob in obligations:
         ob_text_lower = f"{ob.obligation_id} {ob.instrument} {ob.provision} {ob.title} {ob.concise_obligation_summary}".lower()
         # Check explicit citation or scope/keyword match
-        if "app 8" in text_lower or "cross-border" in text_lower or "overseas" in text_lower:
+        if (
+            "oaic" in text_lower
+            or "serious-harm" in text_lower
+            or "serious harm" in text_lower
+            or "eligible data breach" in text_lower
+            or "notifiable data breach" in text_lower
+            or "personal-data leakage" in text_lower
+            or "personal-information data breach" in text_lower
+            or "s 26we" in text_lower
+        ):
+            if ob.obligation_id == "AU-PRIV-NDB-S26WE":
+                matches.append((ob, "Topic/citation match on Privacy Act Part IIIC Notifiable Data Breaches (OAIC)."))
+                continue
+        if (
+            "annex iii" in text_lower
+            or "point 5(b)" in text_lower
+            or "fundamental rights impact assessment" in text_lower
+            or "article 26" in text_lower
+            or "article 27" in text_lower
+        ):
+            if ob.obligation_id == "EU-AIA-ART26-27-DEPLOYER-CREDIT":
+                matches.append((ob, "Topic/citation match on EU AI Act Annex III / Articles 26-27 credit deployer obligations."))
+                continue
+        if (
+            "article 50" in text_lower
+            or ("interacting with an ai" in text_lower and ("eu" in text_lower or "european union" in text_lower or "article 2" in text_lower))
+        ):
+            if ob.obligation_id == "EU-AIA-ART50-TRANSPARENCY":
+                matches.append((ob, "Topic/citation match on EU AI Act Article 50 transparency obligations."))
+                continue
+        if (
+            "app 8" in text_lower
+            or "cross-border" in text_lower
+            or "overseas" in text_lower
+            or ("outside australia" in text_lower and ("foreign recipient" in text_lower or "personal" in text_lower))
+        ):
             if ob.obligation_id == "AU-PRIV-APP8-CROSSBORDER":
                 matches.append((ob, "Topic/citation match on cross-border disclosure (APP 8)."))
                 continue
-        if "privacy impact assessment" in text_lower or "pia" in text_lower.split():
+        if (
+            "privacy impact assessment" in text_lower
+            or "pia" in text_lower.split()
+            or ("privacy harm" in text_lower and "mitigate privacy risk" in text_lower)
+        ):
             if ob.obligation_id in {"AU-PRIV-APP1-GOV", "AU-OAIC-APPG-CH1-PIA"}:
                 matches.append((ob, "Topic match on Privacy Impact Assessment / APP 1 governance."))
                 continue
@@ -1172,8 +1427,8 @@ def _match_topic_obligations_for_unmapped_or_negative_clause(
         if "complaints_idr" in scopes and ob.source_id == "ASIC-RG271":
             matches.append((ob, "Topic match on internal dispute resolution (ASIC RG 271)."))
             continue
-        # Check facet keyword overlap if clause has absence_of_control
-        if ABSENCE_OF_CONTROL_PATTERN.search(clause.text or ""):
+        # Check facet keyword overlap if clause has absence_of_control or permissive omission
+        if ABSENCE_OF_CONTROL_PATTERN.search(clause.text or "") or PERMISSIVE_CONTROL_OMISSION_PATTERN.search(clause.text or ""):
             for facet, keywords in (ob.facet_keywords or {}).items():
                 if any(kw.lower() in text_lower for kw in keywords):
                     matches.append((ob, f"Negative/exemption clause matches facet keyword for '{facet}'."))
@@ -1268,6 +1523,12 @@ def rank_reconciliation_candidates_for_clause(
     }
 
     text_lower = (clause.text or "").lower()
+    if (
+        _NON_REGULATORY_CORPORATE_NOISE_PATTERN.search(text_lower)
+        and not control_linked_ob_ids
+        and not topic_matches
+    ):
+        return []
     clause_toks = _lexical_tokens(clause.text)
     clause_facets = set(clause.control_facets or [])
 
@@ -1307,27 +1568,69 @@ def rank_reconciliation_candidates_for_clause(
             instrument_cues.append("APP 5")
         elif ob.obligation_id == "AU-PRIV-APP6-USE" and ("app 6" in text_lower or "secondary purpose" in text_lower):
             instrument_cues.append("APP 6")
-        elif ob.obligation_id == "AU-PRIV-APP8-CROSSBORDER" and ("app 8" in text_lower or "16c" in text_lower or "overseas recipient" in text_lower):
+        elif ob.obligation_id == "AU-PRIV-APP8-CROSSBORDER" and (
+            "app 8" in text_lower
+            or "16c" in text_lower
+            or "overseas recipient" in text_lower
+            or ("outside australia" in text_lower and "foreign recipient" in text_lower)
+        ):
             instrument_cues.append("APP 8 / s 16C")
         elif ob.obligation_id == "AU-PRIV-APP11-SECURITY" and ("app 11" in text_lower or "de-identify" in text_lower):
             instrument_cues.append("APP 11")
         elif ob.obligation_id == "AU-PRIV-APP12-13-RIGHTS" and ("app 12" in text_lower or "app 13" in text_lower):
             instrument_cues.append("APP 12/13")
+        elif ob.obligation_id == "AU-PRIV-NDB-S26WE" and (
+            "oaic" in text_lower
+            or "eligible data breach" in text_lower
+            or "notifiable data breach" in text_lower
+            or "serious-harm" in text_lower
+            or "serious harm" in text_lower
+            or "personal-data leakage" in text_lower
+            or "s 26we" in text_lower
+        ):
+            instrument_cues.append("Privacy Act Part IIIC NDB / OAIC")
+        elif ob.obligation_id == "AU-OAIC-APPG-CH1-PIA" and (
+            "privacy impact assessment" in text_lower
+            or ("privacy harm" in text_lower and "mitigate privacy risk" in text_lower)
+        ):
+            instrument_cues.append("OAIC PIA Guidelines")
+        elif ob.obligation_id == "EU-AIA-ART26-27-DEPLOYER-CREDIT" and (
+            "annex iii" in text_lower
+            or "point 5(b)" in text_lower
+            or "fundamental rights impact assessment" in text_lower
+            or "article 26" in text_lower
+            or "article 27" in text_lower
+        ):
+            instrument_cues.append("EU AI Act Annex III / Arts 26-27")
+        elif ob.obligation_id == "EU-AIA-ART50-TRANSPARENCY" and (
+            "article 50" in text_lower
+            or ("interacting with an ai" in text_lower and ("eu" in text_lower or "european union" in text_lower or "article 2" in text_lower))
+        ):
+            instrument_cues.append("EU AI Act Art 50")
         elif "cps 234" in text_lower and ob.source_id == "APRA-CPS234":
             instrument_cues.append("CPS 234")
         elif "cps 230" in text_lower and ob.source_id == "APRA-CPS230":
             instrument_cues.append("CPS 230")
         elif "cps 220" in text_lower and ob.source_id == "APRA-CPS220":
             instrument_cues.append("CPS 220")
-        elif ("rg 271" in text_lower or "internal dispute resolution" in text_lower) and ob.source_id == "ASIC-RG271":
+        elif ("rg 271" in text_lower or "internal dispute resolution" in text_lower or "afca" in text_lower or "dissatisfaction" in text_lower) and ob.source_id == "ASIC-RG271":
             instrument_cues.append("ASIC RG 271")
-        elif ("nccp" in text_lower or "s 128" in text_lower or "not unsuitable" in text_lower or "unsuitability" in text_lower) and ob.source_id == "AU-NCCP-ACT":
+        elif ("nccp" in text_lower or "s 128" in text_lower or "not unsuitable" in text_lower or "unsuitability" in text_lower or "living expenses" in text_lower) and ob.source_id == "AU-NCCP-ACT":
             instrument_cues.append("NCCP Act")
 
         if instrument_cues:
             score += 0.35
             topic_matched = True
             reasons.append(f"Instrument/provision reference ({', '.join(instrument_cues)})")
+
+        # Prioritize contradicted target obligation when a clause waives OAIC NDB on the basis of CPS 234 notification
+        if (
+            ob.obligation_id == "AU-PRIV-NDB-S26WE"
+            and ("oaic" in text_lower or "serious-harm" in text_lower or "notify affected individuals" in text_lower)
+            and PERMISSIVE_CONTROL_OMISSION_PATTERN.search(clause.text or "")
+        ):
+            score += 0.25
+            reasons.append("Primary target of permissive omission/waiver of OAIC NDB obligation")
 
         ob_target_toks = _lexical_tokens(
             f"{ob.title} {ob.concise_obligation_summary} {ob.control_objective or ''}"
@@ -1601,6 +1904,40 @@ def generate_reconciliation_candidates(
         pol_version = policy_versions.get(clause.policy_id, enterprise_baseline.version)
         pol_name = policy_names.get(clause.policy_id, clause.source_name)
 
+        # Indeterminate/vague clauses (e.g., missing internal Annexure G or unquantified discretion)
+        # MUST resolve safely to standalone UNDETERMINED while preserving any candidate topic links.
+        if _is_ambiguous_clause(clause) and not any(
+            m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
+            and not (m.rationale or "").startswith("Clause contains")
+            for m in (clause.control_mappings or [])
+        ):
+            preserved_ambig = [
+                {
+                    "obligation_id": ob.obligation_id,
+                    "provision": ob.provision,
+                    "reason": topic_reason,
+                    "status": "held_pending_unresolved_dependency",
+                }
+                for ob, topic_reason in _match_topic_obligations_for_unmapped_or_negative_clause(
+                    clause, candidate_obligations
+                )
+            ]
+            ambig_dec = validate_candidate_relationship(
+                clause=clause,
+                obligation=None,
+                regulatory_pack=reg_pack,
+                enterprise_baseline=enterprise_baseline,
+                policy_version=pol_version,
+                policy_name=pol_name,
+                stage_a_reason="Clause contains unresolved internal attachment/annexure or discretionary dependency.",
+            )
+            if preserved_ambig:
+                ambig_dec = ambig_dec.model_copy(
+                    update={"preserved_candidate_evidence": preserved_ambig}
+                )
+            decisions.append(ambig_dec)
+            continue
+
         # Stage A: Gather candidate (obligation, reason) pairs
         matched_obligations: Dict[str, Tuple[AtomicObligation, List[str]]] = {}
 
@@ -1646,7 +1983,7 @@ def generate_reconciliation_candidates(
         has_manual_canonical = any(
             f not in ENTERPRISE_GENERIC_FACETS for f in (clause.control_facets or [])
         )
-        if not matched_obligations and not has_manual_canonical and not _is_ambiguous_clause(clause):
+        if not has_manual_canonical and not _is_ambiguous_clause(clause):
             ranked = rank_reconciliation_candidates_for_clause(
                 clause=clause,
                 regulatory_pack=reg_pack,
@@ -1654,15 +1991,26 @@ def generate_reconciliation_candidates(
                 obligation_mappings=ob_map_cat,
                 use_case=use_case,
                 include_non_applicable=include_non_applicable,
-                top_k=3,
+                top_k=4,
             )
+            ranked_scores = {cand["obligation_id"]: cand["score"] for cand in ranked}
             for cand in ranked:
-                if cand["score"] >= 0.30 and (cand["inferred_facets"] or cand["topic_matched"]):
+                if (
+                    (not matched_obligations and cand["score"] >= 0.30 and (cand["inferred_facets"] or cand["topic_matched"]))
+                    or (cand["score"] >= 0.55 and cand["inferred_facets"] and cand["topic_matched"])
+                ):
                     ob_cand = cand["obligation"]
                     entry = matched_obligations.setdefault(ob_cand.obligation_id, (ob_cand, []))
                     for r_str in cand["reasons"]:
                         if r_str not in entry[1]:
                             entry[1].append(r_str)
+            if len(matched_obligations) > 1 and ranked_scores:
+                 matched_obligations = dict(
+                     sorted(
+                         matched_obligations.items(),
+                         key=lambda kv: (-ranked_scores.get(kv[0], 0.0), kv[0]),
+                     )
+                 )
 
         # If no external obligations matched, validate as standalone (additional or unmapped)
         if not matched_obligations:

@@ -72,6 +72,11 @@ STAFF_PROHIBITION_PATTERN = re.compile(
     r"\b(staff are prohibited from|employees are prohibited from|prohibited from conducting|prohibited from using)\b",
     re.IGNORECASE,
 )
+PROTECTIVE_STAFF_PROHIBITION_CUES = re.compile(
+    r"\b(unencrypted|without\s+(?:human\s+)?(?:approval|consent|authoris|sign[-\s]?off|encryption|safeguards?)|"
+    r"bypass(?:ing)?|circumvent(?:ing)?|overseas\s+recipients?\s+without)\b",
+    re.IGNORECASE,
+)
 EXEMPTION_PATTERN = re.compile(
     r"\b(is exempt|are exempt|exemption for|exempt from)\b",
     re.IGNORECASE,
@@ -758,6 +763,24 @@ FACET_TO_UNIFIED_CONTROLS: Dict[str, Sequence[str]] = {
     "model_inventory": ("CTRL-GOV-FRAMEWORK",),
 }
 
+# Ambiguous legacy control identifiers that span multiple canonical Unified Controls
+AMBIGUOUS_LEGACY_CONTROL_IDS: Set[str] = {
+    "CTRL-GOV-FRAMEWORK",
+    "CTRL-TECH-OBSERVABILITY",
+    "CTRL-OPS-OUTSOURCING",
+}
+
+# Minimum generic facets required before a heuristic keyword match on a legacy control
+# can even be considered functionally complete (still requires human review).
+CONTROL_REQUIRED_GENERIC_FACETS: Dict[str, Set[str]] = {
+    "CTRL-FIN-APPROVAL-THRESHOLDS": {
+        "human_approval_required",
+        "approval_threshold_defined",
+        "pre_execution_block",
+        "approval_logs_retained",
+    },
+}
+
 KNOWN_SHARED_INSTRUMENTS = (
     ("privacy act", "Privacy Act 1988 (Cth) / Australian Privacy Principles"),
     ("cps 230", "APRA CPS 230 (Operational Risk Management)"),
@@ -830,7 +853,10 @@ def extract_enterprise_policy(
             continue
 
         # Deterministic Category B (staff prohibition on activity): e.g. BASE-13
-        if STAFF_PROHIBITION_PATTERN.search(raw_clause):
+        # Preserve protective staff prohibitions (e.g. prohibiting unencrypted transmission or bypassing approval)
+        if STAFF_PROHIBITION_PATTERN.search(raw_clause) and not PROTECTIVE_STAFF_PROHIBITION_CUES.search(
+            raw_clause
+        ):
             clauses.append(
                 EnterpriseClause(
                     clause_id=clause_id,
@@ -929,28 +955,60 @@ def extract_enterprise_policy(
                 facets.append("human_approval_required")
 
         is_negated = bool(NEGATION_OR_EXEMPTION_PATTERN.search(raw_clause)) and not is_prohib_block
+        is_mand = bool(MANDATORY_PATTERN.search(raw_clause)) or is_prohib_block
+        is_cond, cond_desc = _detect_conditions(raw_clause)
+        has_exc, exc_desc = _detect_exceptions(raw_clause)
+        timing_val = _detect_approval_timing(raw_clause)
 
-        # Generate candidate mappings to 33 Unified Controls only if clause is NOT a negation or exemption
+        # Generate candidate mappings to Unified Controls only if clause is NOT a negation or exemption.
+        # E3.3 B2 Invariant: Keyword matches NEVER establish MappingRelationship.FULL by default.
+        # - Ambiguous legacy control targets emit MappingRelationship.RELATED with explicit ambiguity note.
+        # - Single-facet or partial keyword matches emit MappingRelationship.PARTIAL.
+        # - MappingRelationship.FULL requires all required control facets, mandatory language,
+        #   no weakening exception, and no post-execution weakening, and still remains PROPOSED.
         mappings: List[ClauseControlMapping] = []
         if not is_negated:
+            facet_set = set(facets)
             for facet in facets:
                 controls = FACET_TO_UNIFIED_CONTROLS.get(facet, ())
                 for ctrl_id in controls:
+                    req_facets = CONTROL_REQUIRED_GENERIC_FACETS.get(ctrl_id)
+                    if ctrl_id in AMBIGUOUS_LEGACY_CONTROL_IDS:
+                        rel_strength = MappingRelationship.RELATED
+                        rationale_str = (
+                            f"Candidate keyword match on facet '{facet}' associated with ambiguous legacy "
+                            f"control '{ctrl_id}'; requires human disambiguation against canonical UCL controls."
+                        )
+                    elif (
+                        req_facets
+                        and req_facets.issubset(facet_set)
+                        and is_mand
+                        and not is_cond
+                        and not has_exc
+                        and timing_val != "post_execution"
+                    ):
+                        rel_strength = MappingRelationship.FULL
+                        rationale_str = (
+                            f"Clause evidences all required facets ({sorted(req_facets)}) for control '{ctrl_id}' "
+                            "with mandatory pre-execution strength; proposed pending human review."
+                        )
+                    else:
+                        rel_strength = MappingRelationship.PARTIAL
+                        rationale_str = (
+                            f"Clause contains candidate facet '{facet}' partially addressing control {ctrl_id}; "
+                            "keyword match alone does not establish full control equivalence."
+                        )
                     mappings.append(
                         ClauseControlMapping(
                             tenant_id=tenant_id,
                             clause_id=clause_id,
                             control_id=ctrl_id,
-                            relationship=MappingRelationship.FULL,
+                            relationship=rel_strength,
                             mapped_facets=[facet],
-                            rationale=f"Clause contains facet '{facet}' associated with control {ctrl_id}.",
+                            rationale=rationale_str,
                             review_status=ClauseReviewStatus.PROPOSED,
                         )
                     )
-
-        is_mand = bool(MANDATORY_PATTERN.search(raw_clause)) or is_prohib_block
-        is_cond, cond_desc = _detect_conditions(raw_clause)
-        has_exc, exc_desc = _detect_exceptions(raw_clause)
 
         clauses.append(
             EnterpriseClause(
@@ -967,7 +1025,7 @@ def extract_enterprise_policy(
                 control_mappings=mappings,
                 threshold_operator=_detect_threshold_operator(raw_clause),
                 threshold_currency=_detect_threshold_currency(raw_clause),
-                approval_timing=_detect_approval_timing(raw_clause),
+                approval_timing=timing_val,
                 required_approval_role=_detect_approval_role(raw_clause),
                 is_conditional=is_cond,
                 condition_description=cond_desc,
@@ -1206,6 +1264,7 @@ def compile_enterprise_baseline(
             valid_relationship = m.relationship in {
                 MappingRelationship.FULL,
                 MappingRelationship.PARTIAL,
+                MappingRelationship.RELATED,
             }
             valid_control = bool(m.control_id and m.control_id in valid_controls)
             consistent_refs = (m.tenant_id == tenant_id and m.clause_id == c.clause_id)
