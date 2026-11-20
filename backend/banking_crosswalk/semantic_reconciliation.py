@@ -75,6 +75,7 @@ from .reconciliation import (
     _extract_timeframe_hours,
     _infer_canonical_obligation_facets_for_clause,
     _is_ambiguous_clause,
+    _is_auto_extracted_mapping_rationale,
     _match_topic_obligations_for_unmapped_or_negative_clause,
     compute_clause_sha256,
     generate_reconciliation_candidates,
@@ -807,7 +808,7 @@ def generate_hybrid_reconciliation_candidates(
             m.control_id
             for m in non_rejected_mappings
             if m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
-            and not (m.rationale or "").startswith("Clause contains facet '")
+            and not _is_auto_extracted_mapping_rationale(m.rationale)
         }
         has_manual_canonical = any(
             f not in ENTERPRISE_GENERIC_FACETS for f in (clause.control_facets or [])
