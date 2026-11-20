@@ -43,14 +43,14 @@ flowchart TD
 
 ## 3. Annotation Guidelines & Taxonomy Standards
 
-Reviewers must evaluate benchmark cases against the **33 Canonical Unified Controls** and **155 Canonical Control Facets** defined in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json).
+Reviewers must evaluate benchmark cases dynamically against the **33 Canonical Unified Controls** and **Canonical Control Facets** defined in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json) (**158 unique facets** in E4.1 / Pack `0.2.0`; **155** in pre-E4.1 `v1.0.0`).
 
 ### Annotation Tasks per Case:
 1. **Atomic Requirement Segmentation**:
    - Extract each independently enforceable obligation, condition, or exception as a distinct atomic clause.
    - Separate aspirational preamble (e.g. *"The bank is committed to ethical technology"*) from operative legal commands (e.g. *"Must obtain human approval prior to release"*).
 2. **Control Facet Assignment**:
-   - Assign one or more standardized facet identifiers from the 155 canonical UCL facets.
+   - Assign one or more standardized facet identifiers from the canonical UCL facets in `UNIFIED_CONTROL_LIBRARY.json` (158 in E4.1 / Pack `0.2.0`; 155 in pre-E4.1 `v1.0.0`).
    - Reject informal shorthands or non-standard synonyms.
 3. **Unified Control Mapping**:
    - Assign the primary and secondary Unified Control IDs.

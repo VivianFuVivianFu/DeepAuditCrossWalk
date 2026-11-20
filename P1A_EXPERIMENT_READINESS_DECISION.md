@@ -20,7 +20,7 @@ $$\mathbf{DECISION:\; GO\; FOR\; PHASE\; P1B\; EXPERIMENTATION}$$
 
 **Conditions of Authorization:**
 1. **Benchmark Invariant**: All Phase P1B experiments must evaluate against the newly versioned, partitioned [`P1_EVALUATION_DATASET_V2.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/P1_EVALUATION_DATASET_V2.json) using the 51-case untouched holdout split.
-2. **Taxonomy Invariant**: All candidate engines must output canonical identifiers from the **33 Canonical Unified Controls** and **155 Canonical Facets** defined in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json). Legacy synthetic identifiers are deprecated.
+2. **Taxonomy Invariant**: All candidate engines must output canonical identifiers from the **33 Canonical Unified Controls** and **Canonical Facets** defined dynamically in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json) (**158 unique facets** in E4.1 / Pack `0.2.0`; **155** in pre-E4.1 `v1.0.0`). Legacy synthetic identifiers are deprecated.
 3. **Safety Envelope Invariant**: Candidate models (Option B and Option C) are restricted to proposing candidate mappings (`review_status: "proposed"`). The deterministic safety envelope (negation suppression, AST numeric interval validation, human approval gating) remains the sole authoritative arbiter of compiled baselines.
 4. **No Production Code Alteration in P1A**: Production runtime code in `backend/` remains strictly unmodified during P1A.
 
@@ -54,7 +54,7 @@ All seven mandatory P1A criteria defined in Prompt P1A have been satisfied:
 
 | Acceptance Criterion | Verification Deliverable | Status |
 |---|---|:---:|
-| **1. Control Taxonomy & Missing Facets Identified** | Complete inventory of 46 obligations, 33 controls, 155 facets, and the 155 vs 8 facet gap documented in [`P1_CONTROL_TAXONOMY_GAP_AUDIT.md`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/P1_CONTROL_TAXONOMY_GAP_AUDIT.md). | **PASS** |
+| **1. Control Taxonomy & Missing Facets Identified** | Complete inventory of 46 obligations, 33 controls, and 155 facets (pre-E4.1 `v1.0.0`; now 158 canonical facets in E4.1 / Pack `0.2.0`), plus the 155 vs 8 facet gap documented in [`P1_CONTROL_TAXONOMY_GAP_AUDIT.md`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/P1_CONTROL_TAXONOMY_GAP_AUDIT.md). | **PASS** |
 | **2. Eleven False Negatives Diagnosed** | Clause-by-clause forensic root causes (5 missing facets, 3 token/context, 3 semantic) documented in [`P1_FALSE_NEGATIVE_ROOT_CAUSE_ANALYSIS.md`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/P1_FALSE_NEGATIVE_ROOT_CAUSE_ANALYSIS.md). | **PASS** |
 | **3. Metric & Provenance Inconsistencies Reconciled** | Mathematical audit trail tracking 53.85% $\rightarrow$ 58.33% $\rightarrow$ 63.64% and 3/25 $\rightarrow$ 1/25 $\rightarrow$ 0/25 reconciled with code commits. | **PASS** |
 | **4. Versioned Evaluation Dataset V2 Created** | 156 high-fidelity cases committed in [`P1_EVALUATION_DATASET_V2.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/P1_EVALUATION_DATASET_V2.json) with automated validation script ([`scripts/validate_p1_dataset.py`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/scripts/validate_p1_dataset.py)). | **PASS** |

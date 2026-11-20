@@ -51,14 +51,14 @@ def test_evaluate_case_affirmative_match():
 
 
 def test_evaluate_case_prohibition_suppression():
-    """Test that a must_not_generate_candidates case correctly suppresses candidate generation."""
+    """Test that a must_not_generate_candidates control-prohibition case suppresses candidate generation."""
     case = {
         "case_id": "TEST-SUPPRESS-01",
         "split": "development",
         "category": "prohibition",
-        "normative_type": "prohibition_absolute",
+        "normative_type": "control_prohibition",
         "expected_candidate_behavior": "must_not_generate_candidates",
-        "input_text": "Employees must not store unencrypted customer passwords under any circumstances.",
+        "input_text": "Credit scoring teams must not implement automated bias testing or record audit logs prior to deployment.",
         "expected_atomic_requirements": [],
         "expected_facets": [],
         "expected_controls": [],
@@ -77,16 +77,17 @@ def test_evaluate_case_prohibition_suppression():
     assert res1.false_control_trigger is False
     assert res1.correct_suppression is True
 
-    # Case 2: Engine fails and generates candidates (false trigger)
+    # Case 2: Engine fails and generates v0.2.0 canonical candidates (false trigger)
     pred_failed = ExtractionResult(
         case_id="TEST-SUPPRESS-01",
         extracted_clauses=[case["input_text"]],
-        candidate_facets=["security_controls_defined"],
+        candidate_facets=["technical_security_measures_implemented"],
         candidate_controls=["CTRL-PRIV-SECURITY-RETENTION"],
         ranked_mappings=[
             CandidatePrediction(
                 clause_id="POL-2",
                 canonical_control_id="CTRL-PRIV-SECURITY-RETENTION",
+                canonical_facet_id="technical_security_measures_implemented",
                 review_status="proposed",
             )
         ],
@@ -95,6 +96,43 @@ def test_evaluate_case_prohibition_suppression():
     res2 = evaluate_case(pred_failed, case)
     assert res2.false_control_trigger is True
     assert res2.correct_suppression is False
+
+
+def test_evaluate_case_protective_prohibition_canonical_v020():
+    """Test that a protective prohibition is evaluated as a valid preventive control in v0.2.0."""
+    case = {
+        "case_id": "TEST-PROTECTIVE-PROHIB-01",
+        "split": "development",
+        "category": "exact_match",
+        "normative_type": "protective_prohibition",
+        "expected_candidate_behavior": "should_generate_candidates",
+        "input_text": "Employees must not transmit unencrypted customer information over public networks.",
+        "expected_atomic_requirements": [
+            "Employees must not transmit unencrypted customer information over public networks."
+        ],
+        "expected_facets": ["controls_commensurate"],
+        "expected_controls": ["CTRL-SEC-COMMENSURATE"],
+    }
+    pred = ExtractionResult(
+        case_id="TEST-PROTECTIVE-PROHIB-01",
+        extracted_clauses=[case["input_text"]],
+        candidate_facets=["controls_commensurate"],
+        candidate_controls=["CTRL-SEC-COMMENSURATE"],
+        ranked_mappings=[
+            CandidatePrediction(
+                clause_id="POL-PROT-1",
+                canonical_control_id="CTRL-SEC-COMMENSURATE",
+                canonical_facet_id="controls_commensurate",
+                review_status="proposed",
+            )
+        ],
+        is_suppressed=False,
+        detected_normative_type="protective_prohibition",
+    )
+    res = evaluate_case(pred, case)
+    assert res.false_control_trigger is False
+    assert res.top1_match is True
+    assert res.facet_tp == 1
 
 
 def test_compute_aggregate_metrics():

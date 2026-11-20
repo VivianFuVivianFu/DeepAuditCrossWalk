@@ -49,57 +49,71 @@ def compute_sha256(file_path: Path) -> str:
 def run_all_experiments():
     repo_root = Path(__file__).resolve().parent.parent.parent
     v2_path = repo_root / "P1_EVALUATION_DATASET_V2.json"
+    v2_v020_path = repo_root / "P1_EVALUATION_DATASET_V2_PACK_V020.json"
     supp_path = repo_root / "P1B1_SUPPLEMENTAL_ADVERSARIAL_DATASET.json"
     ucl_path = repo_root / "UNIFIED_CONTROL_LIBRARY.json"
     artifacts_dir = repo_root / "scripts" / "experiments" / "artifacts"
     artifacts_dir.mkdir(parents=True, exist_ok=True)
 
+    adapter = CanonicalMappingAdapter(ucl_path)
+    with open(v2_path, "r", encoding="utf-8") as f:
+        v2_data = json.load(f)
+    v2_v020_data = adapter.build_v020_aligned_dataset(v2_data)
+    with open(v2_v020_path, "w", encoding="utf-8") as f:
+        json.dump(v2_v020_data, f, indent=2)
+        f.write("\n")
+
     git_commit = get_git_commit(repo_root)
     v2_hash = compute_sha256(v2_path)
+    v2_v020_hash = compute_sha256(v2_v020_path)
     supp_hash = compute_sha256(supp_path)
     ucl_hash = compute_sha256(ucl_path)
 
     print("================================================================================")
-    print("  PHASE P1B-1: DETERMINISTIC BASELINE EXPERIMENT (A0 vs A1)")
+    print("  PHASE P1B: DETERMINISTIC BASELINE & V0.2.0 TAXONOMY EXPERIMENT (A0 vs A1)")
     print("================================================================================")
-    print(f"Git Commit:              {git_commit}")
-    print(f"P1_EVALUATION_DATASET_V2 SHA-256: {v2_hash[:16]}...")
-    print(f"SUPPLEMENTAL DATASET SHA-256:     {supp_hash[:16]}...")
-    print(f"UNIFIED CONTROL LIBRARY SHA-256:  {ucl_hash[:16]}...")
+    print(f"Git Commit:                         {git_commit}")
+    print(f"P1_EVALUATION_DATASET_V2 SHA-256:   {v2_hash[:16]}... (historical v1.0.0)")
+    print(f"P1_EVALUATION_DATASET_V2_V020 SHA:  {v2_v020_hash[:16]}... (Pack v0.2.0 aligned)")
+    print(f"SUPPLEMENTAL DATASET SHA-256:       {supp_hash[:16]}...")
+    print(f"UNIFIED CONTROL LIBRARY SHA-256:    {ucl_hash[:16]}... ({adapter.canonical_facet_count} facets)")
     print("--------------------------------------------------------------------------------")
 
-    with open(v2_path, "r", encoding="utf-8") as f:
-        v2_data = json.load(f)
     with open(supp_path, "r", encoding="utf-8") as f:
         supp_data = json.load(f)
 
-    v2_dev = [c for c in v2_data["cases"] if c.get("split") == "development"]
-    v2_holdout = [c for c in v2_data["cases"] if c.get("split") == "holdout"]
+    v2_dev_hist = [c for c in v2_data["cases"] if c.get("split") == "development"]
+    v2_holdout_hist = [c for c in v2_data["cases"] if c.get("split") == "holdout"]
+    v2_dev = [c for c in v2_v020_data["cases"] if c.get("split") == "development"]
+    v2_holdout = [c for c in v2_v020_data["cases"] if c.get("split") == "holdout"]
     supp_dev = supp_data.get("cases", [])
 
     print("Loaded Splits:")
-    print(f"  - V2 Development:         {len(v2_dev)} cases")
-    print(f"  - Supplemental Adversarial:{len(supp_dev)} cases")
-    print(f"  - V2 Holdout (Frozen):    {len(v2_holdout)} cases")
+    print(f"  - V2 Development (Pack v0.2.0 / Historical): {len(v2_dev)} cases")
+    print(f"  - Supplemental Adversarial:                  {len(supp_dev)} cases")
+    print(f"  - V2 Holdout (Frozen):                       {len(v2_holdout)} cases")
     print("--------------------------------------------------------------------------------")
 
-    adapter = CanonicalMappingAdapter(ucl_path)
     engine_a0 = EngineA0(adapter)
-    engine_a1 = EngineA1(ucl_path)
+    engine_a1 = EngineA1(ucl_path, normative_mode="revised")
+    engine_a1_hist = EngineA1(ucl_path, normative_mode="historical_p1b1")
     canonical_facet_universe = adapter.canonical_facets
 
     experiments = [
         ("A0", "Production Baseline (A0)", engine_a0),
-        ("A1", "Enhanced Rules (A1)", engine_a1),
+        ("A1", "Enhanced Rules (A1 - Revised v0.2.0)", engine_a1),
+        ("A1_HIST", "Enhanced Rules (A1 - Historical P1B-1 Mode)", engine_a1_hist),
     ]
 
     splits = [
-        ("dev", "V2 Development", v2_dev),
-        ("supp", "Supplemental Adversarial", supp_dev),
-        ("holdout", "V2 Holdout", v2_holdout),
+        ("dev", "V2 Development (Pack v0.2.0)", v2_dev),
+        ("dev_hist", "V2 Development (Historical v1.0.0 Labels)", v2_dev_hist),
+        ("supp", "Supplemental Adversarial (Historical Labels)", supp_dev),
+        ("holdout", "V2 Holdout (Pack v0.2.0)", v2_holdout),
+        ("holdout_hist", "V2 Holdout (Historical v1.0.0 Labels)", v2_holdout_hist),
     ]
 
-    all_results: dict[str, dict[str, Any]] = {"A0": {}, "A1": {}}
+    all_results: dict[str, dict[str, Any]] = {code: {} for code, _, _ in experiments}
 
     for eng_code, eng_name, engine in experiments:
         print(f"\n[Executing Engine {eng_code}: {eng_name}]")
@@ -135,6 +149,7 @@ def run_all_experiments():
     for split_code, split_name, cases in splits:
         m0 = all_results["A0"][split_code]["overall"]
         m1 = all_results["A1"][split_code]["overall"]
+        m1_hist = all_results["A1_HIST"][split_code]["overall"]
 
         summary_table[split_code] = {
             "split_name": split_name,
@@ -165,6 +180,19 @@ def run_all_experiments():
                 "threshold_accuracy": m1["layer_f_thresholds"]["threshold_accuracy"],
                 "latency_mean_ms": m1["performance_latency_ms"]["mean"],
             },
+            "A1_HIST": {
+                "atomic_f1": m1_hist["layer_a_atomic"]["f1"],
+                "facet_f1_micro": m1_hist["layer_b_facets"]["f1_micro"],
+                "facet_coverage": m1_hist["layer_b_facets"]["canonical_facet_coverage_rate"],
+                "top1_recall": m1_hist["layer_c_controls"]["top1_recall"],
+                "top3_recall": m1_hist["layer_c_controls"]["top3_recall"],
+                "mrr": m1_hist["layer_c_controls"]["mrr"],
+                "ctrl_f1_micro": m1_hist["layer_c_controls"]["micro_f1"],
+                "suppression_accuracy": m1_hist["layer_c_normative_safety"]["suppression_accuracy"],
+                "false_trigger_rate": m1_hist["layer_c_normative_safety"]["false_trigger_rate"],
+                "threshold_accuracy": m1_hist["layer_f_thresholds"]["threshold_accuracy"],
+                "latency_mean_ms": m1_hist["performance_latency_ms"]["mean"],
+            },
             "delta_A1_minus_A0": {
                 "atomic_f1": round(m1["layer_a_atomic"]["f1"] - m0["layer_a_atomic"]["f1"], 4),
                 "facet_f1_micro": round(m1["layer_b_facets"]["f1_micro"] - m0["layer_b_facets"]["f1_micro"], 4),
@@ -184,6 +212,7 @@ def run_all_experiments():
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "dataset_hashes": {
             "v2_hash": v2_hash,
+            "v2_v020_hash": v2_v020_hash,
             "supp_hash": supp_hash,
             "ucl_hash": ucl_hash,
         },

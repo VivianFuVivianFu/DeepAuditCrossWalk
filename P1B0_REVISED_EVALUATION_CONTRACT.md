@@ -14,7 +14,7 @@ This document establishes the revised mathematical and algorithmic contract for 
 
 ### Key Corrections from P1A:
 1. **Replacement of Syntactic Negation Penalty**: Replaces the crude `if case["is_negated"] and len(controls) > 0` metric with a semantically sound rule based on `expected_candidate_behavior` and canonical control matching. Legitimate preventive controls (e.g. *cannot execute without approval*, *shall not bypass SAST*) are now evaluated as valid targets.
-2. **Strict Canonical Identifiers**: All evaluation layers mandate output conforming to the **33 Canonical Unified Controls** and **155 Canonical Facets** defined in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json).
+2. **Strict Canonical Identifiers**: All evaluation layers mandate output conforming to the **33 Canonical Unified Controls** and **Canonical Facets** loaded dynamically from [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json) (**158 canonical facets** in E4.1 / Pack `0.2.0`; **155** in the historical pre-E4.1 `v1.0.0` snapshot).
 3. **Explicit Multi-Label Formulations**: Formally defines micro- and macro-averaged precision, recall, and F1 to handle multi-facet and multi-control policy clauses.
 4. **Honest Scope Bounding**: Downstream assessment targets lacking production execution engines (AI Governance Strategy and Standalone Use Case Telemetry) truthfully return `HTTP 501 Not Implemented` and are excluded from synthetic accuracy claims.
 
@@ -46,7 +46,7 @@ Evaluates whether the engine segments complex text into discrete normative requi
 ---
 
 ### Layer B — Canonical Facet Extraction (Multi-Label)
-Evaluates classification into the 155 Canonical UCL Facets.
+Evaluates classification into the canonical UCL Facets loaded dynamically from `UNIFIED_CONTROL_LIBRARY.json` (**158** in E4.1 / Pack `0.2.0`; **155** in pre-E4.1 `v1.0.0`).
 Let $N$ be the number of test cases. For case $i$, let $Y_i$ be the set of reference facets and $\hat{Y}_i$ be the set of predicted candidate facets.
 
 - **Micro-Averaged Facet Precision ($P_{B,\text{micro}}$)**:
@@ -55,7 +55,7 @@ Let $N$ be the number of test cases. For case $i$, let $Y_i$ be the set of refer
   $$R_{B,\text{micro}} = \frac{\sum_{i=1}^N |Y_i \cap \hat{Y}_i|}{\sum_{i=1}^N |Y_i|}$$
 - **Micro-Averaged Facet F1 ($F1_{B,\text{micro}}$)**:
   $$F1_{B,\text{micro}} = \frac{2 \times P_{B,\text{micro}} \times R_{B,\text{micro}}}{P_{B,\text{micro}} + R_{B,\text{micro}}}$$
-- **Per-Facet Macro-Averaged F1 ($F1_{B,\text{macro}}$)**: Unweighted mean of $F1$ scores across all 155 canonical facets.
+- **Per-Facet Macro-Averaged F1 ($F1_{B,\text{macro}}$)**: Unweighted mean of $F1$ scores across all canonical UCL facets ($|F_{\text{UCL}}|$, 158 in E4.1 / Pack `0.2.0`; 155 in pre-E4.1 `v1.0.0`).
 
 ---
 

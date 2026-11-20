@@ -63,7 +63,7 @@ def extract_and_map(self, input_text: str, case_id: str = "") -> ExtractionResul
    Represents a single candidate mapping hypothesis emitted by an engine.
    - `clause_id: str`: Unique tracking ID for the clause segment.
    - `canonical_control_id: Optional[str]`: Must match one of the 33 Unified Controls in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json), or `None` if unmapped or ambiguous.
-   - `canonical_facet_id: Optional[str]`: Must match one of the 155 Unified Facets.
+   - `canonical_facet_id: Optional[str]`: Must match one of the canonical Unified Facets in `UNIFIED_CONTROL_LIBRARY.json` (**158** in E4.1 / Pack `0.2.0`; **155** in pre-E4.1 `v1.0.0`).
    - `score: float`: Confidence or ranking weight.
    - `review_status: str`: **Enforced Invariant**: Always `"proposed"`. Any candidate instantiated with `"approved"` or `"active"` raises an immediate runtime error.
    - `normative_type: Optional[str]`: Modality detected by the engine (`affirmative_obligation`, `prohibition_absolute`, etc.).
@@ -98,7 +98,7 @@ Evaluates segmentation of raw text into operative requirements.
 - **$F1_A$**: Harmonic mean of $P_A$ and $R_A$.
 
 ### 3.2 Layer B: Canonical Facet Multi-Label Classification
-Evaluates classification across the **155 Canonical UCL Facets**.
+Evaluates classification across the **Canonical UCL Facets** loaded dynamically from `UNIFIED_CONTROL_LIBRARY.json` (**158** in E4.1 / Pack `0.2.0`; **155** at P1B-1 pre-E4.1 `v1.0.0`).
 Let $N$ be the number of cases, $Y_i$ reference facets, and $\hat{Y}_i$ predicted facets:
 - **Micro-Averaged Facet Precision ($P_{B,\text{micro}}$)**:
   $$P_{B,\text{micro}} = \frac{\sum_{i=1}^N |Y_i \cap \hat{Y}_i|}{\max\left(1, \sum_{i=1}^N |\hat{Y}_i|\right)}$$
@@ -107,7 +107,8 @@ Let $N$ be the number of cases, $Y_i$ reference facets, and $\hat{Y}_i$ predicte
 - **Micro-Averaged Facet F1 ($F1_{B,\text{micro}}$)**:
   $$F1_{B,\text{micro}} = \frac{2 \cdot P_{B,\text{micro}} \cdot R_{B,\text{micro}}}{P_{B,\text{micro}} + R_{B,\text{micro}}}$$
 - **Canonical Facet Coverage Rate**:
-  $$\text{Coverage Rate} = \frac{|\bigcup_{i=1}^N \hat{Y}_i|}{155}$$
+  $$\text{Coverage Rate} = \frac{|\bigcup_{i=1}^N \hat{Y}_i|}{|F_{\text{UCL}}|}$$
+  *(where $|F_{\text{UCL}}|$ is derived dynamically from `UNIFIED_CONTROL_LIBRARY.json`: `158` in E4.1 / Pack `0.2.0`; `155` in pre-E4.1 `v1.0.0` historical runs).*
 
 ### 3.3 Layer C: Canonical Unified Control Ranking & Safety
 Evaluates mapping to the **33 Canonical Unified Controls**.

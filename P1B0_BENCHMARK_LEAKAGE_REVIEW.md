@@ -34,7 +34,7 @@ pie title Benchmark Partition Distribution (156 Cases Total)
 - **Development Partition**: 105 cases (67.3%)
 - **Holdout Partition**: 51 cases (32.7%)
 - **Identifier Uniqueness**: 156 unique case IDs (`P1-001` through `P1-156`).
-- **Taxonomy Validity**: 100% of expected control IDs map to canonical controls in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json). 100% of expected facets map to the 155 canonical UCL facets.
+- **Taxonomy Validity**: 100% of expected control IDs map to canonical controls in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json). At P1B-0 (pre-E4.1 `v1.0.0`), 100% of expected facets mapped to the 155 canonical UCL facets; under the current E4.1 (`0.2.0`) 158-facet UCL, `P1-009` (`security_controls_defined`) and `P1-151` (`deployer_human_oversight_and_6month_log_retention`) still reference two retired pre-E4.1 facet IDs.
 - **Provenance Truthfulness**: 151 synthetic reference cases, 5 legally ambiguous cases, 0 expert-verified cases.
 
 ---

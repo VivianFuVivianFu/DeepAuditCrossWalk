@@ -16,7 +16,7 @@ Phase P1B-1 has successfully completed all operational and experimental objectiv
 flowchart TD
     subgraph Deliverables_Completed ["Phase P1B-1 Verified Milestones"]
         D1["1. Shared Evaluation Harness (evaluator.py)<br><i>Multi-layer scoring (Layers A, B, C, F, Safety)</i>"]
-        D2["2. Canonical Mapping Adapter (canonical_adapter.py)<br><i>33 UCL Controls & 155 Facets; Ambiguity Preserved</i>"]
+        D2["2. Canonical Mapping Adapter (canonical_adapter.py)<br><i>Dynamic UCL Controls & Facets (33 / 158 E4.1; 155 pre-E4.1); Ambiguity Preserved</i>"]
         D3["3. Supplemental Adversarial Dataset<br><i>36 Cases, 18 Contrastive Pairs, Zero Leakage</i>"]
         D4["4. Baseline Experiment Execution (A0 vs A1)<br><i>105 Dev, 36 Supplemental, 51 Frozen Holdout Cases</i>"]
         D5["5. Complete Verification Artifacts<br><i>7 Machine-readable JSON Result Files</i>"]
@@ -32,7 +32,7 @@ flowchart TD
 1. **Standardised Evaluation Infrastructure Established**:
    The evaluation harness in [`scripts/experiments/evaluator.py`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/scripts/experiments/evaluator.py) provides objective, multi-layer evaluation across Atomic Segmentation (Layer A), Canonical Facet Classification (Layer B), Unified Control Ranking (Layer C), Candidate Suppression Safety, and Numeric Interval AST Validation (Layer F).
 2. **Taxonomy Integrity Locked**:
-   The [`CanonicalMappingAdapter`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/scripts/experiments/canonical_adapter.py) authoritatively reconciles all production heuristic pattern groups and legacy identifiers to the **33 Canonical Unified Controls** and **155 Canonical Facets** defined in [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json).
+   The [`CanonicalMappingAdapter`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/scripts/experiments/canonical_adapter.py) authoritatively reconciles production heuristic pattern groups and legacy identifiers to the **33 Canonical Unified Controls** and **Canonical Facets** loaded dynamically from [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json) (**158 canonical facets** in E4.1 / Pack `0.2.0`; **155** at P1B-1 pre-E4.1 `v1.0.0`).
 3. **Adversarial Safety Validated**:
    The [`P1B1_SUPPLEMENTAL_ADVERSARIAL_DATASET.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/P1B1_SUPPLEMENTAL_ADVERSARIAL_DATASET.json) dataset provides 36 development-only adversarial cases across all 6 normative classes with zero leakage into the 51 frozen holdout cases (maximum Jaccard overlap: **0.333**).
 4. **The "Rules Ceiling" Empirically Proven**:
@@ -50,7 +50,7 @@ Below are the definitive baseline benchmarks against which Phase P1B-2 (Embeddin
 | | Top-1 Control Recall | 3.81% | 20.95% | $\ge 50.0\%$ | $\ge 70.0\%$ |
 | | Top-3 Control Recall | 3.81% | 24.76% | $\ge 65.0\%$ | $\ge 85.0\%$ |
 | | Control Micro F1 | 8.40% | 33.13% | $\ge 60.0\%$ | $\ge 80.0\%$ |
-| | Facet UCL Coverage | 3.23% (5/155) | 17.42% (27/155) | $\ge 50.0\%$ | $\ge 80.0\%$ |
+| | Facet UCL Coverage *(pre-E4.1 `v1.0.0` 155-facet UCL)* | 3.23% (5/155) | 17.42% (27/155) | $\ge 50.0\%$ | $\ge 80.0\%$ |
 | **Supplemental (36)** | Top-1 Control Recall | 11.11% | **88.89%** | $\ge 85.0\%$ | $\ge 90.0\%$ |
 | | Suppression Accuracy | 83.33% | **100.00%** | $\ge 90.0\%$ | $\ge 95.0\%$ |
 | | False Trigger Rate | 16.67% | **0.00%** | $\le 10.0\%$ | $\le 5.0\%$ |
@@ -66,7 +66,7 @@ Phase P1B-2 will implement candidate retrieval via dense sentence embedding mode
 
 ### Readiness Checklist:
 - [x] **Reproducible Evaluation Harness**: Implemented in [`scripts/experiments/evaluator.py`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/scripts/experiments/evaluator.py).
-- [x] **Taxonomy Canonical Store**: Authoritative 33 controls and 155 facets loaded from `UNIFIED_CONTROL_LIBRARY.json`.
+- [x] **Taxonomy Canonical Store**: Authoritative controls and facets loaded dynamically from `UNIFIED_CONTROL_LIBRARY.json` (33 controls, 158 canonical facets in E4.1 / Pack `0.2.0`; 155 at P1B-1 pre-E4.1 `v1.0.0`).
 - [x] **Zero Production Modification Guard**: All experimental code strictly isolated under `scripts/experiments/`.
 - [x] **Candidate Safety Invariant**: All predictions enforce `review_status="proposed"`.
 - [x] **Holdout Split Frozen**: The 51 cases in `P1_EVALUATION_DATASET_V2.json` remain untouched and strictly evaluated out-of-sample.

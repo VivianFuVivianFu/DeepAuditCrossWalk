@@ -3,7 +3,7 @@
 **Repository:** `VivianFuVivianFu/DeepAuditCrossWalk`  
 **Phase:** P1B-0 Semantic Evaluation Contract Correction & Experiment Readiness  
 **Branch:** `research/p1b0-evaluation-contract`  
-**Canonical Source:** [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json) (v1.0.0, 33 Controls, 155 Facets)  
+**Canonical Source:** [`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json) (v1.0.0 schema / 33 Controls; **158 Canonical Facets** in current E4.1 Pack `0.2.0`, expanded from **155** at P1B-0 pre-E4.1)  
 **Date:** November 2026  
 
 ---
@@ -11,7 +11,7 @@
 ## 1. Executive Summary
 
 A primary source of confusion across earlier audit milestones was the coexistence of three competing taxonomy dialects:
-1. **The Canonical Unified Control Library (UCL)**: The authoritative, platform-maintained catalog of 33 Unified Controls and 155 standardized control facets ([`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json)).
+1. **The Canonical Unified Control Library (UCL)**: The authoritative, platform-maintained catalog of 33 Unified Controls and standardized control facets ([`UNIFIED_CONTROL_LIBRARY.json`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/UNIFIED_CONTROL_LIBRARY.json)): **155 facets** in pre-E4.1 `v1.0.0` (at P1B-0 baseline) and **158 unique facets** in current E4.1 / Pack `0.2.0`.
 2. **The Production Extraction Engine (`policy.py`)**: A legacy heuristic engine referencing 8 regex pattern groups and a mix of ad-hoc control identifiers (`CTRL-FIN-APPROVAL-THRESHOLDS`, `CTRL-GOV-OVERSIGHT`, etc.).
 3. **The Historical Benchmark Dataset V1 (`MAPPING_EVALUATION_DATASET.json`)**: A 63-case benchmark using 11 ad-hoc synthetic control IDs with 0% direct string overlap with canonical UCL identifiers.
 
@@ -25,12 +25,12 @@ Prior audit deliverables reported two different numbers regarding missing facets
 - [`P1_CONTROL_TAXONOMY_GAP_AUDIT.md`](file:///c:/Users/vivia/OneDrive/Desktop/DeepAuditCrossWalk/P1_CONTROL_TAXONOMY_GAP_AUDIT.md) stated in Section 4.2: *"Completely Missing Facets: 147 facets"*.
 - Other audit sections cited: *"152 canonical facets have zero extraction patterns"*.
 
-### The Mathematical Explanation
-The Canonical Unified Control Library defines exactly **155 unique facets**.
+### The Mathematical Explanation (Pre-E4.1 `v1.0.0` 155-Facet Historical Baseline)
+At P1B-0 (pre-E4.1 `v1.0.0`), the Canonical Unified Control Library defined **155 unique facets** (note: in current E4.1 / Pack `0.2.0`, the UCL defines **158 unique facets**, making the corresponding gap figures `158 - 8 = 150` and `158 - 3 = 155`; historical P1B-0 figures below reflect the `v1.0.0` 155-facet snapshot).
 
 ```mermaid
 flowchart TD
-    Total["Total Canonical UCL Facets: 155"]
+    Total["Historical P1B-0 UCL Facets (pre-E4.1 v1.0.0): 155"]
     Total --> Exact["3 Exact Canonical String Matches in policy.py<br><i>human_approval_required, approval_threshold_defined, pre_execution_block</i>"]
     Total --> NonExact["152 Canonical Facets with NO Exact-String Pattern in policy.py"]
     
@@ -109,8 +109,8 @@ To guarantee fair and objective comparison across candidate architectures (Optio
 flowchart LR
     Engine["Candidate Experimental Engine<br>(Option A / B / C)"]
     Engine --> Output["Prediction Payload"]
-    Output --> Check1["1. Control IDs must be in Canonical 33 UCL list"]
-    Output --> Check2["2. Facet names must be in Canonical 155 UCL list"]
+    Output --> Check1["1. Control IDs must be in Canonical UCL list (33 Controls)"]
+    Output --> Check2["2. Facet names must be in dynamic Canonical UCL list (158 in E4.1; 155 pre-E4.1)"]
     Output --> Check3["3. Status must be strictly 'proposed'"]
 ```
 
@@ -119,7 +119,7 @@ flowchart LR
    - Predictions must emit canonical identifiers (e.g. `CTRL-DELEGATED-AUTHORITY-THRESHOLD`, not `CTRL-FIN-APPROVAL-THRESHOLDS`).
    - Any prediction emitting a deprecated legacy ID is translated through the verified alias table or scored as a classification error.
 2. **Canonical Facet Strings Only**:
-   - Predictions must emit canonical facet strings from the 155 list (e.g. `retention_schedule_applied`, not `zero_data_retention`).
+   - Predictions must emit canonical facet strings defined dynamically in `UNIFIED_CONTROL_LIBRARY.json` (currently 158 unique facets in E4.1 / Pack `0.2.0`; 155 in pre-E4.1 `v1.0.0`) (e.g. `retention_schedule_applied`, not `zero_data_retention`).
 3. **No Unmapped Inventions**:
    - Engines must never invent ad-hoc control IDs. Any control ID outside the 33 canonical controls is penalized with a precision penalty.
 4. **Preservation Invariant**:

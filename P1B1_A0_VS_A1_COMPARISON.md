@@ -46,7 +46,7 @@ The table below presents the verified metrics extracted from the machine-readabl
 | **Layer B: Facet F1** | Micro F1 ($F1_B$) | V2 Development | 6.37% | **22.77%** | **+16.40%** | Yes ($p < 0.001$) |
 | | | Supplemental | 30.00% | **87.27%** | **+57.27%** | Yes ($p < 0.001$) |
 | | | V2 Holdout | 14.81% | **28.89%** | **+14.08%** | Yes ($p < 0.01$) |
-| **Facet UCL Coverage** | % of 155 Facets | V2 Development | 3.23% (5/155) | **17.42%** (27/155) | **+14.19%** | Yes (5.4x coverage) |
+| **Facet UCL Coverage** | % of Facets *(pre-E4.1 `v1.0.0` 155-facet UCL)* | V2 Development | 3.23% (5/155) | **17.42%** (27/155) | **+14.19%** | Yes (5.4x coverage) |
 | | | Supplemental | 5.16% (8/155) | **16.13%** (25/155) | **+10.97%** | Yes (3.1x coverage) |
 | | | V2 Holdout | 3.23% (5/155) | **8.39%** (13/155) | **+5.16%** | Yes (2.6x coverage) |
 | **Layer C: Top-1 Recall** | Top-1 ($R_{C@1}$) | V2 Development | 3.81% | **20.95%** | **+17.14%** | Yes (5.5x recall) |
@@ -141,7 +141,7 @@ flowchart LR
 ```
 
 1. **Massive Effort for Diminishing Returns**:
-   Expanding from 8 regex groups to 37 regex groups required extensive hand-crafted regex engineering, yet only improved development recall from 3.8% to 21.0%. To achieve 80% recall across 155 canonical facets would require hand-crafting thousands of interlocking regular expressions, creating an unmaintainable codebase.
+   Expanding from 8 regex groups to 37 regex groups required extensive hand-crafted regex engineering, yet only improved development recall from 3.8% to 21.0%. To achieve 80% recall across the canonical UCL facets (155 in pre-E4.1 `v1.0.0`; 158 in current E4.1 / Pack `0.2.0`) would require hand-crafting thousands of interlocking regular expressions, creating an unmaintainable codebase.
 2. **Failure on Open-Domain Generalization**:
    While A1 scored **88.89%** on synthetic sentences engineered with domain keywords, it managed only **20.95%** on realistic, varied policy clauses in the development set.
 3. **The Definitive Decision**:

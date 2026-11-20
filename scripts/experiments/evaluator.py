@@ -210,7 +210,7 @@ def compute_aggregate_metrics(
         else 0.0
     )
 
-    # Unique predicted facets and coverage across 155 UCL facets
+    # Unique predicted facets and coverage across canonical UCL facets
     all_pred_facets = set()
     for r in results:
         all_pred_facets.update(r.predicted_facets)

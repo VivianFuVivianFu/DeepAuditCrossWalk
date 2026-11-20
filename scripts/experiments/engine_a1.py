@@ -23,6 +23,39 @@ class EngineA1:
     """Enhanced Deterministic Rules Engine (A1)."""
 
     # Stage 1: Modality & Normative Regex Patterns
+    # 1a. Prohibitions that forbid or disable a beneficial control (MUST suppress)
+    CONTROL_PROHIBITION_PATTERN = re.compile(
+        r"\b((?:shall|must) not (?:implement|perform|conduct|execute|enable|log|record) "
+        r"(?:automated )?(?:bias testing|fairness|penetration testing|security testing|audit|validation)|"
+        r"prohibited from (?:performing|conducting|implementing|logging) "
+        r"(?:bias testing|fairness|audit|security testing|validation)|"
+        r"forbidden from publicly disclosing security incidents or apra notifications)\b",
+        re.IGNORECASE,
+    )
+
+    # 1b. Out-of-scope corporate/HR prohibitions with no UCL control target (MUST suppress)
+    UNMAPPED_PROHIBITION_PATTERN = re.compile(
+        r"\b(prohibited from taking adverse|retaliatory employment action)\b",
+        re.IGNORECASE,
+    )
+
+    # 1c. Protective / preventive prohibitions that enforce a security, privacy, or governance control (DO NOT suppress in revised mode)
+    PROTECTIVE_PROHIBITION_PATTERN = re.compile(
+        r"\b(prohibited from transmitting unencrypted|must not transmit unencrypted|"
+        r"must not collect or process .* without (?:formal )?(?:statutory )?consent|"
+        r"prohibited from collecting or processing sensitive data|"
+        r"under no circumstances shall .* retain .* local workstation|"
+        r"shall not disable .* scanning|bypass static analysis security testing|"
+        r"shall not deploy .* without an approved and tested business continuity plan|"
+        r"shall not execute agreements .* that exclude liability|"
+        r"shall not override .* without written concurrence|"
+        r"shall not refuse to register .* dissatisfaction|"
+        r"shall not approve .* without actual verification|"
+        r"strictly prohibited under article 5)\b",
+        re.IGNORECASE,
+    )
+
+    # 1d. Legacy P1B-1 syntactic prohibition pattern (used only when normative_mode == 'historical_p1b1')
     PROHIBITION_ABSOLUTE_PATTERN = re.compile(
         r"\b(strictly prohibited|strictly forbidden|prohibited under any circumstances|"
         r"under no circumstances shall|under no conditions|must not under any circumstances|"
@@ -32,10 +65,23 @@ class EngineA1:
         re.IGNORECASE,
     )
 
+    CONTROL_WAIVER_PATTERN = re.compile(
+        r"\b(is waived|are waived|waived for|control waiver|waiver of .* requirement)\b",
+        re.IGNORECASE,
+    )
+
+    MISSING_IMPLEMENTATION_PATTERN = re.compile(
+        r"\b(does not currently (?:implement|encrypt|maintain|perform)|"
+        r"has not implemented|no .* controls? are currently in place|"
+        r"has zero .* compliance obligations|no .* compliance obligations apply)\b",
+        re.IGNORECASE,
+    )
+
     SCOPE_EXEMPTION_PATTERN = re.compile(
         r"\b(is exempt from|are exempt from|exemption for|exempt from|"
         r"does not apply to|do not apply to|excluded from the scope of|"
-        r"are excluded from|out of scope|sandboxes are exempt|publicly available .* are exempt)\b",
+        r"are excluded from|out of scope|sandboxes are exempt|publicly available .* are exempt|"
+        r"not classified as third-party service providers)\b",
         re.IGNORECASE,
     )
 
@@ -82,7 +128,13 @@ class EngineA1:
             re.compile(r"\b(before payment|before execution|prior to payment|prior to execution|prior to transaction release|pre-execution|prevent execution|cannot proceed|shall not proceed without|must not execute without)\b", re.IGNORECASE),
         ],
         "approval_logs_retained": [
-            re.compile(r"\b(approval log|audit log|record approval|retain approval|approval record|immutable audit|immutable log|audit trail)\b", re.IGNORECASE),
+            re.compile(r"\b(approval log|audit log|record approval|retain approval|approval record|immutable audit|immutable log|audit trail|human review records|officer signature hashes)\b", re.IGNORECASE),
+        ],
+        "clear_escalation_and_override_authority": [
+            re.compile(r"\b(clear escalation|escalation pathways?|manual override authority|override authority|override .* assessments? .* concurrence)\b", re.IGNORECASE),
+        ],
+        "meaningful_human_oversight_and_kill_switch": [
+            re.compile(r"\b(kill-switch|kill switch|meaningful human oversight|immediate suspension of automated)\b", re.IGNORECASE),
         ],
         "board_or_senior_oversight": [
             re.compile(r"\b(board risk committee|board oversight|senior executive oversight|risk appetite metrics?)\b", re.IGNORECASE),
@@ -120,13 +172,16 @@ class EngineA1:
             re.compile(r"\b(overseas recipient|cross-border|sovereignty|on-shore|data center location|transmission path|overseas storage|app 8)\b", re.IGNORECASE),
         ],
         "retention_schedule_applied": [
-            re.compile(r"\b(retention schedule|retention period|statutory retention|retain .* years?|retention limit|7 years)\b", re.IGNORECASE),
+            re.compile(r"\b(retention schedule|retention period|statutory retention|retain .* years?|retention limit|7 years|retain customer identification documents on local workstation)\b", re.IGNORECASE),
         ],
         "destruction_or_deidentification_verified": [
             re.compile(r"\b(permanently purge|de-identify|deidentification|secure deletion|destruction|dispose|disposal)\b", re.IGNORECASE),
         ],
-        "security_controls_defined": [
-            re.compile(r"\b(security controls?|information security|cyber security|cryptography|encryption)\b", re.IGNORECASE),
+        "technical_security_measures_implemented": [
+            re.compile(r"\b(technical security measures?|aes-256|encryption at rest|private tenant vpcs?|vpc isolation|cryptographic storage|de-identification and encryption of personal information)\b", re.IGNORECASE),
+        ],
+        "organisational_security_measures_implemented": [
+            re.compile(r"\b(organisational security measures?|organizational security measures?|staff privacy training|information handling procedures?|access review procedures?|need-to-know access governance|personnel security vetting)\b", re.IGNORECASE),
         ],
         "access_and_correction_timeframes_tracked": [
             re.compile(r"\b(access and correction|app 12|app 13|personal information access|correction procedure|correction request)\b", re.IGNORECASE),
@@ -134,7 +189,7 @@ class EngineA1:
 
         # Security & Cyber (APRA CPS 234)
         "controls_commensurate": [
-            re.compile(r"\b(commensurate|tls 1\.[23]|encryption in transit|encryption at rest|mfa|multi-factor|access control)\b", re.IGNORECASE),
+            re.compile(r"\b(commensurate|tls 1\.[23]|encryption in transit|mfa|multi-factor|access control|transmitting unencrypted customer information|transmit unencrypted customer information|disable automated runtime dependency scanning|bypass static analysis security testing)\b", re.IGNORECASE),
         ],
         "security_roles_and_asset_owners_assigned": [
             re.compile(r"\b(asset owner|ciso|chief information security officer|security role)\b", re.IGNORECASE),
@@ -196,14 +251,28 @@ class EngineA1:
         "article50_ai_interaction_transparency_provided": [
             re.compile(r"\b(transparency disclosure|inform users .* ai|conversational bot|customer-facing bot|communicating with an ai)\b", re.IGNORECASE),
         ],
+        "deployer_human_oversight_assigned": [
+            re.compile(r"\b(assign(?:ed|ing)? natural persons? .* oversee|deployer human oversight|competence, training and authority .* high-risk|article 26\(2\))\b", re.IGNORECASE),
+        ],
+        "automatic_logs_retained_6months": [
+            re.compile(r"\b(retain(?:ed|ing)? .* logs? .* (?:at least )?6 months|logs generated by the ai system for at least 6 months|automatically generated logs? .* 6 months|article 26\(6\))\b", re.IGNORECASE),
+        ],
+        "synthetic_content_marking_and_disclosure_applied": [
+            re.compile(r"\b(synthetic (?:audio|image|video|text|content)|machine-readable .* artificially generated|deepfake disclosure|article 50\([234]\))\b", re.IGNORECASE),
+        ],
+        "article5_prohibited_practices_screened_out": [
+            re.compile(r"\b(subliminal techniques|exploit vulnerabilities of specific demographic groups|strictly prohibited under article 5|article 5 prohibited)\b", re.IGNORECASE),
+        ],
     }
 
-    # Direct Facet to Primary Canonical Control Binding
+    # Direct Facet to Primary Canonical Control Binding ( strictly validated against UCL parent control )
     FACET_TO_CANONICAL_CONTROL: ClassVar[dict[str, str]] = {
-        "human_approval_required": "CTRL-HUMAN-OVERSIGHT",
+        "human_approval_required": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
         "approval_threshold_defined": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
         "pre_execution_block": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
-        "approval_logs_retained": "CTRL-PRIV-SECURITY-RETENTION",
+        "approval_logs_retained": "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "clear_escalation_and_override_authority": "CTRL-HUMAN-OVERSIGHT",
+        "meaningful_human_oversight_and_kill_switch": "CTRL-HUMAN-OVERSIGHT",
         "board_or_senior_oversight": "CTRL-RISK-FRAMEWORK",
         "ai_risk_identified": "CTRL-RISK-FRAMEWORK",
         "independent_framework_review_covers_ai": "CTRL-INDEPENDENT-AUDIT-ASSURANCE",
@@ -217,7 +286,8 @@ class EngineA1:
         "overseas_recipients_and_regions_mapped": "CTRL-PRIV-CROSS-BORDER",
         "retention_schedule_applied": "CTRL-PRIV-SECURITY-RETENTION",
         "destruction_or_deidentification_verified": "CTRL-PRIV-SECURITY-RETENTION",
-        "security_controls_defined": "CTRL-SEC-COMMENSURATE",
+        "technical_security_measures_implemented": "CTRL-PRIV-SECURITY-RETENTION",
+        "organisational_security_measures_implemented": "CTRL-PRIV-SECURITY-RETENTION",
         "access_and_correction_timeframes_tracked": "CTRL-PRIV-ACCESS-CORRECTION",
         "controls_commensurate": "CTRL-SEC-COMMENSURATE",
         "security_roles_and_asset_owners_assigned": "CTRL-SEC-COMMENSURATE",
@@ -238,25 +308,48 @@ class EngineA1:
         "fairness_and_explainability_metrics_evaluated": "CTRL-AI-DRIFT-MONITORING",
         "residual_risk_acceptance_and_drift_response_logged": "CTRL-AI-DRIFT-MONITORING",
         "article50_ai_interaction_transparency_provided": "CTRL-EU-HIGH-RISK",
+        "deployer_human_oversight_assigned": "CTRL-EU-HIGH-RISK",
+        "automatic_logs_retained_6months": "CTRL-EU-HIGH-RISK",
+        "synthetic_content_marking_and_disclosure_applied": "CTRL-EU-HIGH-RISK",
+        "article5_prohibited_practices_screened_out": "CTRL-EU-HIGH-RISK",
     }
 
-    def __init__(self, ucl_path: Path | str | None = None) -> None:
+    def __init__(
+        self,
+        ucl_path: Path | str | None = None,
+        normative_mode: str = "revised",
+    ) -> None:
         if ucl_path is None:
             repo_root = Path(__file__).resolve().parent.parent.parent
             ucl_path = repo_root / "UNIFIED_CONTROL_LIBRARY.json"
+
+        assert normative_mode in {"revised", "historical_p1b1"}, (
+            f"Unsupported normative_mode: {normative_mode}"
+        )
+        self.normative_mode = normative_mode
 
         with open(ucl_path, "r", encoding="utf-8") as f:
             ucl_data = json.load(f)
 
         self.canonical_controls: set[str] = {c["control_id"] for c in ucl_data["controls"]}
-        self.canonical_facets: set[str] = {
-            f for c in ucl_data["controls"] for f in c.get("control_facets", [])
-        }
+        self.canonical_facets: set[str] = set()
+        self.facet_to_ucl_control: dict[str, str] = {}
+        for c in ucl_data["controls"]:
+            cid = c["control_id"]
+            for f_name in c.get("control_facets", []):
+                self.canonical_facets.add(f_name)
+                self.facet_to_ucl_control[f_name] = cid
 
-        # Verify all mapped targets exist in UCL
+        # Verify all regex keys and mapped targets exist in UCL and match their UCL parent control
+        assert set(self.FACET_REGEX_PATTERNS.keys()) == set(
+            self.FACET_TO_CANONICAL_CONTROL.keys()
+        ), "FACET_REGEX_PATTERNS and FACET_TO_CANONICAL_CONTROL keys must match"
         for f, cid in self.FACET_TO_CANONICAL_CONTROL.items():
             assert f in self.canonical_facets, f"Facet {f} not in UCL"
             assert cid in self.canonical_controls, f"Control {cid} not in UCL"
+            assert self.facet_to_ucl_control.get(f) == cid, (
+                f"Facet {f} mapped to {cid}, but UCL parent control is {self.facet_to_ucl_control.get(f)}"
+            )
 
     def _detect_threshold(self, text: str) -> ThresholdAST | None:
         m = self.THRESHOLD_AMOUNT_PATTERN.search(text)
@@ -290,40 +383,87 @@ class EngineA1:
     def classify_normative_modality(self, text: str) -> tuple[str, bool]:
         """Classify clause text into normative modality and determine suppression status.
 
+        In default 'revised' mode, distinguishes protective prohibitions (which express
+        preventive security, privacy, or approval controls and must NOT be suppressed)
+        from control prohibitions, waivers, exemptions, optional guidance, aspirational
+        statements, and statements of missing implementation (which MUST be suppressed).
+
         Returns:
             Tuple of (detected_normative_type, should_suppress_candidates)
         """
-        # First check if text is a conditional block (e.g. "must not execute without approval")
-        # In financial policy, conditional blocks are affirmative control mandates!
         is_conditional_block = bool(self.CONDITIONAL_BLOCK_PATTERN.search(text))
 
-        # 1. Absolute Prohibitions
-        if self.PROHIBITION_ABSOLUTE_PATTERN.search(text) and not is_conditional_block:
-            return "prohibition_absolute", True
+        if self.normative_mode == "historical_p1b1":
+            if self.PROHIBITION_ABSOLUTE_PATTERN.search(text) and not is_conditional_block:
+                return "prohibition_absolute", True
+            if (
+                self.SCOPE_EXEMPTION_PATTERN.search(text)
+                and not is_conditional_block
+                and (
+                    not self.MANDATORY_PATTERN.search(text)
+                    or "exempt from" in text.lower()
+                    or "excluded from" in text.lower()
+                )
+            ):
+                return "scope_exemption", True
+            if self.PERMISSIVE_GUIDANCE_PATTERN.search(text) and not self.MANDATORY_PATTERN.search(text):
+                return "permissive_guidance", True
+            if self.ASPIRATIONAL_PATTERN.search(text) and not self.MANDATORY_PATTERN.search(text):
+                return "aspirational_statement", True
+            if is_conditional_block:
+                if "shall not proceed without" in text.lower() or "must not disburse" in text.lower():
+                    return "prohibition_conditional", True
+                return "affirmative_obligation", False
+            return "affirmative_obligation", False
 
-        # 2. Scope Exemptions
+        # Revised v0.2.0 Evidence-Preserving Normative Modality Classification:
+        # 1. Control Prohibitions (forbidding a beneficial governance/security control)
+        if self.CONTROL_PROHIBITION_PATTERN.search(text):
+            return "control_prohibition", True
+
+        # 2. Unmapped Out-of-Scope Prohibitions
+        if self.UNMAPPED_PROHIBITION_PATTERN.search(text):
+            return "unmapped_prohibition", True
+
+        # 3. Control Waivers
+        if self.CONTROL_WAIVER_PATTERN.search(text):
+            return "control_waiver", True
+
+        # 4. Statements of Missing Implementation or Non-Applicability
+        if self.MISSING_IMPLEMENTATION_PATTERN.search(text):
+            return "missing_implementation", True
+
+        # 5. Scope Exemptions
         if (
             self.SCOPE_EXEMPTION_PATTERN.search(text)
             and not is_conditional_block
-            and (not self.MANDATORY_PATTERN.search(text) or "exempt from" in text.lower() or "excluded from" in text.lower())
+            and (
+                not self.MANDATORY_PATTERN.search(text)
+                or "exempt from" in text.lower()
+                or "excluded from" in text.lower()
+                or "not classified as" in text.lower()
+            )
         ):
             return "scope_exemption", True
 
-        # 3. Permissive Guidance
+        # 6. Permissive / Optional Guidance
         if self.PERMISSIVE_GUIDANCE_PATTERN.search(text) and not self.MANDATORY_PATTERN.search(text):
             return "permissive_guidance", True
 
-        # 4. Aspirational Statements
+        # 7. Aspirational Statements
         if self.ASPIRATIONAL_PATTERN.search(text) and not self.MANDATORY_PATTERN.search(text):
             return "aspirational_statement", True
 
-        # 5. Conditional Prohibition / Block
-        if is_conditional_block:
-            # If text is phrased as a negative block, check if it's explicitly testing suppression or affirmative
-            # In our benchmark, "shall not proceed without sign-off" in contrastive pairs is marked prohibition_conditional
-            if "shall not proceed without" in text.lower() or "must not disburse" in text.lower():
-                return "prohibition_conditional", True
-            return "affirmative_obligation", False
+        # 8. Protective Prohibitions & Conditional Pre-Execution Gates (DO NOT suppress!)
+        if self.PROTECTIVE_PROHIBITION_PATTERN.search(text) or (
+            is_conditional_block
+            and re.search(r"\b(must not|shall not|cannot|prohibited)\b", text, re.IGNORECASE)
+        ):
+            return "protective_prohibition", False
+
+        # 9. Remaining generic absolute prohibitions without a protective control target
+        if self.PROHIBITION_ABSOLUTE_PATTERN.search(text) and not is_conditional_block:
+            return "prohibition_absolute", True
 
         return "affirmative_obligation", False
 
@@ -376,9 +516,34 @@ class EngineA1:
                 facet_attribution.setdefault(cid, []).append(facet)
 
         # Special domain combinations
-        # When financial threshold and human approval are present, prioritize CTRL-DELEGATED-AUTHORITY-THRESHOLD
+        # 1. When financial threshold and human approval are present, prioritize CTRL-DELEGATED-AUTHORITY-THRESHOLD
         if "approval_threshold_defined" in matched_facets and "human_approval_required" in matched_facets:
-            control_scores["CTRL-DELEGATED-AUTHORITY-THRESHOLD"] = control_scores.get("CTRL-DELEGATED-AUTHORITY-THRESHOLD", 0.0) + 2.0
+            control_scores["CTRL-DELEGATED-AUTHORITY-THRESHOLD"] = (
+                control_scores.get("CTRL-DELEGATED-AUTHORITY-THRESHOLD", 0.0) + 2.0
+            )
+            # Also surface CTRL-HUMAN-OVERSIGHT as secondary candidate when joint/dual human review is required
+            if "CTRL-HUMAN-OVERSIGHT" not in control_scores:
+                control_scores["CTRL-HUMAN-OVERSIGHT"] = 0.5
+                facet_attribution["CTRL-HUMAN-OVERSIGHT"] = ["human_approval_required"]
+
+        # 2. When manual override / escalation is matched without a financial threshold, prioritize CTRL-HUMAN-OVERSIGHT
+        if (
+            "clear_escalation_and_override_authority" in matched_facets
+            and "approval_threshold_defined" not in matched_facets
+        ):
+            control_scores["CTRL-HUMAN-OVERSIGHT"] = (
+                control_scores.get("CTRL-HUMAN-OVERSIGHT", 0.0) + 1.5
+            )
+
+        # 3. When explicit retention schedule is paired with audit logging (without officer approval gate), prioritize CTRL-PRIV-SECURITY-RETENTION
+        if (
+            "retention_schedule_applied" in matched_facets
+            and "approval_logs_retained" in matched_facets
+            and "human_approval_required" not in matched_facets
+        ):
+            control_scores["CTRL-PRIV-SECURITY-RETENTION"] = (
+                control_scores.get("CTRL-PRIV-SECURITY-RETENTION", 0.0) + 1.5
+            )
 
         # Sort candidate controls by score descending
         sorted_controls = sorted(control_scores.keys(), key=lambda c: control_scores[c], reverse=True)
