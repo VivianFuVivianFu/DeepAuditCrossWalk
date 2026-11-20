@@ -43,6 +43,10 @@ from e32_independent_holdout import (  # noqa: E402
     E32_INDEPENDENT_HOLDOUT,
     E32_QUESTIONNAIRE_HOLDOUT,
 )
+from e34_independent_evaluation_dataset import (  # noqa: E402
+    E34_INDEPENDENT_EVALUATION_CLAUSES,
+    E34_INDEPENDENT_QUESTIONNAIRE_CASES,
+)
 
 
 def _build_benchmark_doc_bytes(paragraphs: Sequence[str], fmt: str, title: str) -> bytes:
@@ -65,7 +69,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--benchmark",
-        choices=("e11", "e3", "e31", "e32", "questionnaire", "all"),
+        choices=("e11", "e3", "e31", "e32", "e34", "questionnaire", "all"),
         default="e31",
         help="Benchmark suite to execute (default: e31).",
     )
@@ -139,12 +143,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         datasets["e31"] = E31_CALIBRATION_CLAUSES
     if args.benchmark in {"e32", "all"}:
         datasets["e32"] = E32_INDEPENDENT_HOLDOUT
+    if args.benchmark == "e34":
+        datasets["e34"] = E34_INDEPENDENT_EVALUATION_CLAUSES
 
     q_cases: Sequence[Any] = ()
     if args.benchmark == "questionnaire":
         q_cases = E3_QUESTIONNAIRE_CASES
     elif args.benchmark == "e32":
         q_cases = E32_QUESTIONNAIRE_HOLDOUT
+    elif args.benchmark == "e34":
+        q_cases = E34_INDEPENDENT_QUESTIONNAIRE_CASES
     elif args.benchmark == "all":
         q_cases = tuple(E3_QUESTIONNAIRE_CASES) + tuple(E32_QUESTIONNAIRE_HOLDOUT)
 
