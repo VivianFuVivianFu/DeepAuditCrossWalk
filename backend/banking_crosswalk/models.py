@@ -631,7 +631,7 @@ class ClauseControlMapping(BaseModel):
     tenant_id: str
     clause_id: str
     control_id: str
-    relationship: MappingRelationship = MappingRelationship.FULL
+    relationship: MappingRelationship = MappingRelationship.PARTIAL
     mapped_facets: List[str] = Field(default_factory=list)
     rationale: Optional[str] = None
     review_status: ClauseReviewStatus = ClauseReviewStatus.PROPOSED
@@ -905,6 +905,7 @@ class ReconciliationDecision(BaseModel):
     stage_a_candidate_reason: str = ""
     proposed_relationship: ReconciliationRelationship
     validated_relationship: ReconciliationRelationship
+    ai_proposed_relationship: Optional[ReconciliationRelationship] = None
     approved_relationship: Optional[ReconciliationRelationship] = None
     decision_status: ReconciliationDecisionStatus = ReconciliationDecisionStatus.PROPOSED
     supporting_passages: List[str] = Field(default_factory=list)
@@ -913,6 +914,20 @@ class ReconciliationDecision(BaseModel):
         default_factory=ReconciliationDimensionComparison
     )
     uncertainties: List[str] = Field(default_factory=list)
+    deterministic_veto_applied: bool = False
+    deterministic_veto_reasons: List[str] = Field(default_factory=list)
+    missing_conditions_or_evidence: List[str] = Field(default_factory=list)
+    candidate_relevance_state: Literal[
+        "no_relevant_requirement_found",
+        "requirement_potentially_relevant",
+        "requirement_partially_addressed",
+        "requirement_apparently_contradicted",
+        "evidence_insufficient",
+        "equivalent_pending_human_review",
+        "human_approved_relationship",
+        "irrelevant_candidate_dismissed",
+    ] = "requirement_potentially_relevant"
+    preserved_candidate_evidence: List[Dict[str, Any]] = Field(default_factory=list)
     matching_mode: Literal[
         "deterministic_only",
         "embedding_plus_deterministic",

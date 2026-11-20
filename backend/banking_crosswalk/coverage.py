@@ -612,7 +612,11 @@ def evaluate_questionnaire_coverage(
                 control_mapping_status = ClauseReviewStatus.UNREVIEWED
             elif any(
                 m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
-                and m.relationship in {MappingRelationship.FULL, MappingRelationship.PARTIAL}
+                and m.relationship in {
+                    MappingRelationship.FULL,
+                    MappingRelationship.PARTIAL,
+                    MappingRelationship.RELATED,
+                }
                 for m in clause.control_mappings
             ):
                 control_mapping_status = ClauseReviewStatus.APPROVED
@@ -665,7 +669,11 @@ def evaluate_questionnaire_coverage(
             for m in clause.control_mappings:
                 if (
                     m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
-                    and m.relationship in {MappingRelationship.FULL, MappingRelationship.PARTIAL}
+                    and m.relationship in {
+                        MappingRelationship.FULL,
+                        MappingRelationship.PARTIAL,
+                        MappingRelationship.RELATED,
+                    }
                 ):
                     for mf in getattr(m, "mapped_facets", []) or []:
                         if mf not in resolved_facets:
