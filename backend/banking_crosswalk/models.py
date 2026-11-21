@@ -697,6 +697,8 @@ class EnterpriseClause(BaseModel):
     has_exception_clause: bool = False
     exception_description: Optional[str] = None
     implementation_status: Optional[Literal["implemented", "unimplemented", "unverified"]] = None
+    normative_type: Optional[str] = None
+    is_declarative_assertion: bool = False
 
 
 class EnterprisePolicy(BaseModel):

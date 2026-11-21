@@ -97,8 +97,20 @@ ENTERPRISE_ONLY_CONTROL_IDS: Set[str] = {
 }
 
 _INTERNAL_ATTACHMENT_DEPENDENCY_PATTERN = re.compile(
-    r"\b(?:in\s+accordance\s+with|follow(?:s|ing)?|specified\s+in|under|per|refer\s+to|set\s+out\s+in)\s+"
+    r"\b(?:in\s+accordance\s+with|follow(?:s|ing)?|specified\s+in|under|per|refer\s+to|set\s+out\s+in|"
+    r"comply\s+with|in\s+compliance\s+with|subject\s+to|pursuant\s+to|as\s+defined\s+in|as\s+detailed\s+in|"
+    r"as\s+listed\s+in|outlined\s+in|described\s+in)\s+"
     r"(schedule|appendix|annex|annexure|exhibit|attachment)\s+([a-z0-9]+)\b",
+    re.IGNORECASE,
+)
+
+_INDEFINITE_RETENTION_CONFLICT_PATTERN = re.compile(
+    r"\b(retained?\s+indefinitely|must\s+not\s+be\s+destroyed|never\s+be\s+destroyed|indefinite\s+retention|retained?\s+permanently|permanent\s+retention)\b",
+    re.IGNORECASE,
+)
+
+OPTIONALITY_PATTERN = re.compile(
+    r"\b(?:remains?\s+optional|is\s+optional|are\s+optional|may\s+optionally|at\s+(?:the\s+)?discretion\s+of|optional\s+(?:to|for)|discretionary\s+closure|not\s+mandatory(?:\s+to)?)\b",
     re.IGNORECASE,
 )
 
@@ -166,7 +178,7 @@ CURRENCY_AMOUNT_PATTERN = re.compile(
 )
 
 TIMEFRAME_PATTERN = re.compile(
-    r"\b(?:within|up\s+to|no\s+later\s+than|after|every)\s+(\d+)\s*(hours?|days?|business\s+days?)\b",
+    r"\b(?:within|up\s+to|no\s+later\s+than|after|every)\s+(\d+)\s*(hours?|calendar\s+days?|business\s+days?|days?)\b",
     re.IGNORECASE,
 )
 
@@ -548,14 +560,6 @@ ENTERPRISE_GENERIC_FACETS: Set[str] = {
 }
 
 GENERIC_TO_CANONICAL_FACET_BRIDGES: Dict[str, Tuple[str, ...]] = {
-    "human_approval_required": (
-        "human_oversight_and_override_defined",
-        "human_oversight_for_high_risk",
-    ),
-    "pre_execution_block": (
-        "adverse_impact_intervention_mechanism",
-        "human_oversight_and_override_defined",
-    ),
     "zero_data_retention": (
         "destruction_or_deidentification_verified",
         "retention_schedule_applied",
@@ -564,11 +568,15 @@ GENERIC_TO_CANONICAL_FACET_BRIDGES: Dict[str, Tuple[str, ...]] = {
         "overseas_recipients_and_regions_mapped",
     ),
     "bias_testing": (
-        "bias_and_fairness_testing",
+        "fairness_and_explainability_metrics_evaluated",
     ),
     "model_inventory": (
-        "ai_inventory_and_classification",
-        "ai_use_case_register_maintained",
+        "use_case_registered_in_enterprise_ai_inventory",
+        "ai_assets_classified_by_criticality_and_sensitivity",
+    ),
+    "prompt_logging": (
+        "approval_logs_retained",
+        "incident_detection_defined",
     ),
 }
 
@@ -890,6 +898,20 @@ def validate_candidate_relationship(
             f"Enterprise clause '{clause.clause_id}' has review_status='{clause.review_status.value}' and is not yet approved."
         )
 
+    has_optionality = bool(OPTIONALITY_PATTERN.search(clause.text or ""))
+    is_decl_assertion = (
+        getattr(clause, "is_declarative_assertion", False)
+        or getattr(clause, "normative_type", None) == "declarative_assertion"
+    )
+    if is_decl_assertion:
+        uncertainties.append(
+            "Clause is a declarative policy commitment asserting control existence; implementation and operational effectiveness remain unverified."
+        )
+    if has_optionality:
+        uncertainties.append(
+            "Enterprise clause incorporates explicit optionality or discretion, preventing confirmation of mandatory control closure."
+        )
+
     # Authority & Modality comparison
     ext_auth_str = (
         obligation.legal_authority_classification.value
@@ -905,26 +927,28 @@ def validate_candidate_relationship(
         )
     elif ext_auth_str == "regulatory_guidance_and_expectation" or obligation.authority.value == "guidance":
         authority_comp = f"external_regulatory_guidance_vs_{clause.authority_level.value}"
-        modality_comp = (
-            "customer_right_grant_aligned"
-            if (not clause.mandatory and CUSTOMER_RIGHT_GRANT_PATTERN.search(clause.text or ""))
-            else (
-                "enterprise_discretionary_vs_mandatory"
-                if not clause.mandatory
-                else "aligned"
-            )
-        )
+        if has_optionality:
+            modality_comp = "enterprise_optional_vs_mandatory"
+        elif is_decl_assertion:
+            modality_comp = "declarative_assertion_aligned"
+        elif not clause.mandatory and CUSTOMER_RIGHT_GRANT_PATTERN.search(clause.text or ""):
+            modality_comp = "customer_right_grant_aligned"
+        elif not clause.mandatory:
+            modality_comp = "enterprise_discretionary_vs_mandatory"
+        else:
+            modality_comp = "aligned"
     else:
         authority_comp = f"external_binding_obligation_vs_{clause.authority_level.value}"
-        modality_comp = (
-            "customer_right_grant_aligned"
-            if (not clause.mandatory and CUSTOMER_RIGHT_GRANT_PATTERN.search(clause.text or ""))
-            else (
-                "enterprise_discretionary_vs_mandatory"
-                if not clause.mandatory
-                else "aligned"
-            )
-        )
+        if has_optionality:
+            modality_comp = "enterprise_optional_vs_mandatory"
+        elif is_decl_assertion:
+            modality_comp = "declarative_assertion_aligned"
+        elif not clause.mandatory and CUSTOMER_RIGHT_GRANT_PATTERN.search(clause.text or ""):
+            modality_comp = "customer_right_grant_aligned"
+        elif not clause.mandatory:
+            modality_comp = "enterprise_discretionary_vs_mandatory"
+        else:
+            modality_comp = "aligned"
 
     # Scope comparison
     if ent_scopes and ext_scopes:
@@ -1069,6 +1093,15 @@ def validate_candidate_relationship(
         external_unaddressed_facets=external_unaddressed_facets,
     )
 
+    is_indefinite_retention_conflict = bool(
+        _INDEFINITE_RETENTION_CONFLICT_PATTERN.search(clause.text or "")
+        and (
+            "destruction_or_deidentification_verified" in ob_facets
+            or "APP 11.2" in ext_text
+            or obligation.obligation_id == "AU-PRIV-APP11-SECURITY"
+        )
+    )
+
     # ── Decision Tree for Stage B Validated Relationship ──
     proposed_rel = (
         ReconciliationRelationship.PARTIALLY_OVERLAPPING
@@ -1119,11 +1152,16 @@ def validate_candidate_relationship(
             f"'{dim.enterprise_scope}' whereas external obligation '{obligation.obligation_id}' "
             f"governs '{dim.external_scope}'. Shared control or terminology does not establish equivalence."
         )
-    # 3. Direct conflict: absence of control / exemption on a required control or deadline exceeding statutory limit
-    elif polarity == "absence_of_control" or timeframe_conflict:
+    # 3. Direct conflict: absence of control / exemption on a required control, indefinite retention vs destruction, or deadline exceeding statutory limit
+    elif polarity == "absence_of_control" or timeframe_conflict or is_indefinite_retention_conflict:
         validated_rel = ReconciliationRelationship.POTENTIAL_CONFLICT
         decision_status = ReconciliationDecisionStatus.NEEDS_REVIEW
-        if polarity == "absence_of_control":
+        if is_indefinite_retention_conflict:
+            rationale = (
+                f"Potential conflict: enterprise clause mandates indefinite retention / prohibits destruction ('{clause.text}'), "
+                f"directly contradicting statutory destruction and de-identification obligations under APP 11.2 in '{obligation.obligation_id}'."
+            )
+        elif polarity == "absence_of_control":
             rationale = (
                 f"Potential conflict: enterprise clause '{clause.clause_id}' waives or states that "
                 f"a control is not required ('{clause.text}'), contradicting external obligation "
@@ -1159,7 +1197,7 @@ def validate_candidate_relationship(
         threshold_comp == "weaker_enterprise"
         or timing_comp == "weaker_post_execution"
         or exception_status == "enterprise_exception_weakens"
-        or modality_comp == "enterprise_discretionary_vs_mandatory"
+        or modality_comp in {"enterprise_discretionary_vs_mandatory", "enterprise_optional_vs_mandatory"}
     ):
         validated_rel = ReconciliationRelationship.WEAKER_OR_POTENTIALLY_INSUFFICIENT
         decision_status = ReconciliationDecisionStatus.NEEDS_REVIEW
@@ -1180,6 +1218,10 @@ def validate_candidate_relationship(
         if modality_comp == "enterprise_discretionary_vs_mandatory":
             reasons.append(
                 "enterprise clause uses discretionary/non-mandatory language against a mandatory external obligation"
+            )
+        elif modality_comp == "enterprise_optional_vs_mandatory":
+            reasons.append(
+                "enterprise clause incorporates explicit optionality/discretion against a mandatory external obligation"
             )
         rationale = (
             f"Enterprise clause '{clause.clause_id}' is weaker or potentially insufficient "
@@ -2061,7 +2103,7 @@ def generate_reconciliation_candidates(
         )
         if has_enterprise_only_control and any(
             f in (clause.control_facets or [])
-            for f in ("approval_threshold_defined", " approval_logs_retained", "dual_approval_required")
+            for f in ("approval_threshold_defined", "approval_logs_retained", "dual_approval_required")
         ):
             # In addition to reconciling against human-oversight obligations, record its
             # enterprise-specific threshold nature if no human-oversight obligation matched

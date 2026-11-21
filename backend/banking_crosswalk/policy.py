@@ -81,6 +81,21 @@ EXEMPTION_PATTERN = re.compile(
     r"\b(is exempt|are exempt|exemption for|exempt from)\b",
     re.IGNORECASE,
 )
+DECLARATIVE_POLICY_ASSERTION_PATTERN = re.compile(
+    r"\b(?:the\s+bank|the\s+organisation|the\s+organization|the\s+entity|the\s+institution|management|line\s+of\s+business)\s+"
+    r"(?:maintains?|operates?|enforces?|applies?|implements?|documents?|conducts?|retains?|ensures?|monitors?|executes?)\b|"
+    r"\b(?:maintains?|operates?|enforces?)\s+(?:documented|formal|approved|established)\s+(?:controls?|policies|procedures?|safeguards?|frameworks?)\b",
+    re.IGNORECASE,
+)
+OPTIONALITY_PATTERN = re.compile(
+    r"\b(?:remains?\s+optional|is\s+optional|are\s+optional|may\s+optionally|at\s+(?:the\s+)?discretion\s+of|optional\s+(?:to|for)|discretionary\s+closure|not\s+mandatory(?:\s+to)?)\b",
+    re.IGNORECASE,
+)
+PERMISSIVE_EXECUTION_BEFORE_REVIEW_PATTERN = re.compile(
+    r"\b(?:may\s+be\s+executed\s+(?:before|prior\s+to)|executed\s+(?:before|prior\s+to)\s+(?:manager\s+)?(?:review|approval)|"
+    r"may\s+proceed\s+(?:before|prior\s+to)\s+(?:manager\s+)?(?:review|approval))\b",
+    re.IGNORECASE,
+)
 UNIMPLEMENTED_PATTERN = re.compile(
     r"\b(not yet implemented|has not yet been implemented|have not yet been implemented|workflow has not been (?:built|deployed)|not currently operational|not currently implemented|pending implementation)\b",
     re.IGNORECASE,
@@ -124,6 +139,25 @@ def _detect_threshold_currency(clause_text: str) -> Optional[str]:
 
 def _detect_approval_timing(clause_text: str) -> Optional[str]:
     lower = clause_text.lower()
+    if PERMISSIVE_EXECUTION_BEFORE_REVIEW_PATTERN.search(clause_text):
+        return "post_execution"
+    if any(
+        p in lower
+        for p in (
+            "after payment",
+            "after execution",
+            "post-execution",
+            "post execution",
+            "retrospective",
+            "audit review after",
+            "subsequent review",
+            "executed before manager review",
+            "executed prior to manager review",
+            "executed before review",
+            "executed prior to review",
+        )
+    ):
+        return "post_execution"
     if any(
         p in lower
         for p in (
@@ -142,19 +176,6 @@ def _detect_approval_timing(clause_text: str) -> Optional[str]:
         )
     ):
         return "pre_execution"
-    if any(
-        p in lower
-        for p in (
-            "after payment",
-            "after execution",
-            "post-execution",
-            "post execution",
-            "retrospective",
-            "audit review after",
-            "subsequent review",
-        )
-    ):
-        return "post_execution"
     return None
 
 
@@ -750,6 +771,17 @@ ENTERPRISE_FACET_PATTERNS: Dict[str, Sequence[str]] = {
         "ai catalog",
         "model card",
     ),
+    "approval_logs_retained": (
+        "approval log",
+        "approval logs",
+        "audit log",
+        "audit logs",
+        "record approval",
+        "retain approval",
+        "approval record",
+        "approval records retained",
+        "traceability log",
+    ),
 }
 
 FACET_TO_UNIFIED_CONTROLS: Dict[str, Sequence[str]] = {
@@ -761,6 +793,7 @@ FACET_TO_UNIFIED_CONTROLS: Dict[str, Sequence[str]] = {
     "data_sovereignty": ("CTRL-PRIV-CROSS-BORDER",),
     "bias_testing": ("CTRL-FAIR-BIAS-DETECTION",),
     "model_inventory": ("CTRL-GOV-FRAMEWORK",),
+    "approval_logs_retained": ("CTRL-FIN-APPROVAL-THRESHOLDS", "CTRL-DELEGATED-AUTHORITY-THRESHOLD"),
 }
 
 # Ambiguous legacy control identifiers that span multiple canonical Unified Controls
@@ -848,6 +881,7 @@ def extract_enterprise_policy(
                     thresholds_aud=[],
                     is_unmapped=True,
                     control_mappings=[],
+                    normative_type="absence_of_control",
                 )
             )
             continue
@@ -870,6 +904,7 @@ def extract_enterprise_policy(
                     thresholds_aud=[],
                     is_unmapped=True,
                     control_mappings=[],
+                    normative_type="prohibition",
                 )
             )
             continue
@@ -894,6 +929,7 @@ def extract_enterprise_policy(
                     control_mappings=[],
                     has_exception_clause=has_exc,
                     exception_description=exc_desc,
+                    normative_type="waiver_exemption",
                 )
             )
             continue
@@ -918,6 +954,7 @@ def extract_enterprise_policy(
                     thresholds_aud=[],
                     is_unmapped=True,
                     control_mappings=[],
+                    normative_type="permissive_guidance",
                 )
             )
             continue
@@ -959,6 +996,26 @@ def extract_enterprise_policy(
         is_cond, cond_desc = _detect_conditions(raw_clause)
         has_exc, exc_desc = _detect_exceptions(raw_clause)
         timing_val = _detect_approval_timing(raw_clause)
+
+        is_declarative = bool(DECLARATIVE_POLICY_ASSERTION_PATTERN.search(raw_clause))
+        has_optionality = bool(OPTIONALITY_PATTERN.search(raw_clause))
+
+        is_decl_assertion = False
+        if is_declarative and not is_mand and not is_negated:
+            is_mand = True
+            is_decl_assertion = True
+            normative_type = "declarative_assertion"
+        elif has_optionality:
+            is_mand = False
+            normative_type = "optionality"
+        elif is_prohib_block:
+            normative_type = "protective_prohibition"
+        elif is_mand:
+            normative_type = "mandatory_requirement"
+        elif is_topic:
+            normative_type = "permissive_guidance"
+        else:
+            normative_type = "discretionary"
 
         # Generate candidate mappings to Unified Controls only if clause is NOT a negation or exemption.
         # E3.3 B2 Invariant: Keyword matches NEVER establish MappingRelationship.FULL by default.
@@ -1032,6 +1089,8 @@ def extract_enterprise_policy(
                 has_exception_clause=has_exc,
                 exception_description=exc_desc,
                 implementation_status=_detect_implementation_status(raw_clause),
+                normative_type=normative_type,
+                is_declarative_assertion=is_decl_assertion,
             )
         )
 
