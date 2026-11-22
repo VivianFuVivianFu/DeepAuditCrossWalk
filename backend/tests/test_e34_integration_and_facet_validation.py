@@ -231,7 +231,7 @@ def test_e34_phase4_frozen_independent_dataset_integrity_and_evaluation():
     )
     assert det_res["recall_at_1"] == 21
     assert det_res["recall_at_5"] == 25
-    assert det_res["exact_accuracy"] == 17
+    assert det_res["exact_accuracy"] in {17, 18}  # 18 with E3.5 internal attachment resolution (E34-IND-19)
     assert det_res["false_conflict"] == 0
     assert det_res["false_coverage"] == 0
 
@@ -245,7 +245,7 @@ def test_e34_phase4_frozen_independent_dataset_integrity_and_evaluation():
     )
     assert hyb_res["recall_at_1"] == 22
     assert hyb_res["recall_at_5"] == 25
-    assert hyb_res["exact_accuracy"] == 18
+    assert hyb_res["exact_accuracy"] in {18, 19}  # 19 with E3.5 internal attachment resolution (E34-IND-19)
     assert hyb_res["false_positive_coverage_proposals"] == 0
     assert hyb_res["false_conflict"] == 0
     assert hyb_res["false_coverage"] == 0
