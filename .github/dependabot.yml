@@ -4,6 +4,11 @@ updates:
     directory: /web
     schedule:
       interval: weekly
+    groups:
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
   - package-ecosystem: pip
     directory: /backend
     schedule:
@@ -12,3 +17,7 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action*"
