@@ -194,6 +194,9 @@ def evaluate_clause_benchmark(
     multi_ob_retrieval_hits = 0
     multi_ob_decision_hits = 0
     exact_matches = 0
+    strict_joint_matches = 0
+    missing_evidence_total = 0
+    missing_evidence_detected = 0
     false_equiv = 0
     false_conflict = 0
     false_cov = 0
@@ -355,6 +358,17 @@ def evaluate_clause_benchmark(
             is_correct = pred_rel == true_rel
             if is_correct:
                 exact_matches += 1
+
+            # Strict Joint Accuracy: requires BOTH correct obligation AND correct relationship
+            ob_matches = (
+                (chosen.external_obligation_id == case.ground_truth_obligation_id)
+                if case.ground_truth_obligation_id is not None
+                else (chosen.external_obligation_id is None or pred_rel == "unmapped_no_reliable_relationship")
+            )
+            strict_joint_correct = ob_matches and is_correct
+            if strict_joint_correct:
+                strict_joint_matches += 1
+
             by_phenomenon[case.phenomenon]["total"] += 1
             if is_correct:
                 by_phenomenon[case.phenomenon]["correct"] += 1
@@ -427,6 +441,19 @@ def evaluate_clause_benchmark(
                 if is_flagged:
                     human_flagged += 1
 
+            is_missing_ev_case = (
+                case.phenomenon in {"missing_evidence", "unresolved_attachment", "ambiguous_scope"}
+                or "missing" in (case.phenomenon or "").lower()
+            )
+            if is_missing_ev_case:
+                missing_evidence_total += 1
+                if (
+                    getattr(chosen, "evidence_verification_status", None) == "missing_evidence"
+                    or bool(chosen.missing_conditions_or_evidence)
+                    or pred_rel == "undetermined"
+                ):
+                    missing_evidence_detected += 1
+
             has_valid_cit = (
                 chosen.enterprise_clause_id == ext_cls.clause_id
                 and chosen.enterprise_baseline_id == baseline.baseline_id
@@ -474,6 +501,7 @@ def evaluate_clause_benchmark(
         "multi_ob_retrieval_hits": multi_ob_retrieval_hits,
         "multi_ob_decision_hits": multi_ob_decision_hits,
         "exact_accuracy": exact_matches,
+        "strict_joint_accuracy": strict_joint_matches,
         "false_equivalence": false_equiv,
         "false_coverage": false_cov,
         "false_positive_coverage_proposals": false_positive_coverage_proposals,
@@ -481,6 +509,8 @@ def evaluate_clause_benchmark(
         "false_conflict": false_conflict,
         "unresolved_flagged": human_flagged,
         "unresolved_total": human_total,
+        "missing_evidence_detected": missing_evidence_detected,
+        "missing_evidence_total": missing_evidence_total,
         "citation_accurate": citation_ok,
         "macro_p": round(prf["macro_p"], 4),
         "macro_r": round(prf["macro_r"], 4),
