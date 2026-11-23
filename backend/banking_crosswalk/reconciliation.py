@@ -193,14 +193,14 @@ SCOPE_PATTERNS: Tuple[Tuple[str, re.Pattern[str]], ...] = (
     (
         "credit_decisions",
         re.compile(
-            r"\b(credit\s+suitability|unsuitability|responsible\s+lending|loan\s+applications?|credit\s+decisions?|creditworthiness|nccp)\b",
+            r"\b(credit\s+suitability|unsuitability|responsible\s+lending|loan\s+applications?|credit\s+decisions?|creditworthiness|nccp|credit\s+activit(?:y|ies)|credit\s+licens(?:e|ing)|s\s*47)\b",
             re.IGNORECASE,
         ),
     ),
     (
         "complaints_idr",
         re.compile(
-            r"\b(internal\s+dispute\s+resolution|\bidr\b|afca|rg\s*271|regulated\s+complaints?|complaint\s+resolution)\b",
+            r"\b(internal\s+dispute\s+resolution|\bidr\b|afca|rg\s*271|regulated\s+complaints?|complaint\s+resolution|expression\s+of\s+dissatisfaction|grievance|customer\s+disputes?)\b",
             re.IGNORECASE,
         ),
     ),
@@ -236,6 +236,13 @@ SCOPE_PATTERNS: Tuple[Tuple[str, re.Pattern[str]], ...] = (
         "third_party_service_providers",
         re.compile(
             r"\b(material\s+service\s+providers?|\bmsps?\b|third[-\s]party\s+ai|fourth[-\s]party|cps\s*230)\b",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "operational_risk_management",
+        re.compile(
+            r"\b(operational\s+risks?|critical\s+operations?|disruption\s+risk|tolerance\s+limits?|cps\s*230|business\s+continuity|service\s+provider\s+management)\b",
             re.IGNORECASE,
         ),
     ),
@@ -1467,12 +1474,35 @@ def _match_topic_obligations_for_unmapped_or_negative_clause(
                 matches.append((ob, "Topic match on human oversight and approval gate."))
                 continue
         if "credit" in scopes or "credit_decisions" in scopes:
-            if ob.obligation_id == "AU-NCCP-S128-131-LENDING":
-                matches.append((ob, "Topic match on consumer credit suitability (NCCP Act)."))
+            if ob.obligation_id in {"AU-NCCP-S128-131-LENDING", "AU-NCCP-S47-CONDUCT"}:
+                matches.append((ob, "Topic match on consumer credit suitability / conduct (NCCP Act)."))
                 continue
         if "complaints_idr" in scopes and ob.source_id == "ASIC-RG271":
             matches.append((ob, "Topic match on internal dispute resolution (ASIC RG 271)."))
             continue
+        if "operational_risk_management" in scopes and ob.source_id == "APRA-CPS230":
+            matches.append((ob, "Topic match on APRA CPS 230 operational risk management."))
+            continue
+        if (
+            "tevv" in text_lower
+            or "test, evaluation, verification, and validation" in text_lower
+            or "nist ai rmf" in text_lower
+            or "measure 2.5" in text_lower
+            or "measure 2.6" in text_lower
+            or ("nist" in text_lower and "risk management framework" in text_lower)
+        ):
+            if ob.obligation_id == "NIST-AI-RMF-MEASURE-MANAGE":
+                matches.append((ob, "Topic match on NIST AI RMF TEVV evaluation."))
+                continue
+        if (
+            "s 47" in text_lower
+            or "efficiently, honestly and fairly" in text_lower
+            or "credit activities" in text_lower
+            or "credit licensing" in text_lower
+        ):
+            if ob.obligation_id == "AU-NCCP-S47-CONDUCT":
+                matches.append((ob, "Topic match on credit licensee general conduct (NCCP s 47)."))
+                continue
         # Check facet keyword overlap if clause has absence_of_control or permissive omission
         if ABSENCE_OF_CONTROL_PATTERN.search(clause.text or "") or PERMISSIVE_CONTROL_OMISSION_PATTERN.search(clause.text or ""):
             for facet, keywords in (ob.facet_keywords or {}).items():
@@ -1665,14 +1695,16 @@ def rank_reconciliation_candidates_for_clause(
             instrument_cues.append("EU AI Act Art 50")
         elif "cps 234" in text_lower and ob.source_id == "APRA-CPS234":
             instrument_cues.append("CPS 234")
-        elif "cps 230" in text_lower and ob.source_id == "APRA-CPS230":
+        elif ("cps 230" in text_lower or "critical business operations" in text_lower or "critical operations" in text_lower) and ob.source_id == "APRA-CPS230":
             instrument_cues.append("CPS 230")
-        elif "cps 220" in text_lower and ob.source_id == "APRA-CPS220":
+        elif ("cps 220" in text_lower or "risk management framework" in text_lower or "board risk" in text_lower) and ob.source_id == "APRA-CPS220":
             instrument_cues.append("CPS 220")
-        elif ("rg 271" in text_lower or "internal dispute resolution" in text_lower or "afca" in text_lower or "dissatisfaction" in text_lower) and ob.source_id == "ASIC-RG271":
+        elif ("rg 271" in text_lower or "internal dispute resolution" in text_lower or "afca" in text_lower or "dissatisfaction" in text_lower or "complaint" in text_lower) and ob.source_id == "ASIC-RG271":
             instrument_cues.append("ASIC RG 271")
-        elif ("nccp" in text_lower or "s 128" in text_lower or "not unsuitable" in text_lower or "unsuitability" in text_lower or "living expenses" in text_lower) and ob.source_id == "AU-NCCP-ACT":
+        elif ("nccp" in text_lower or "s 128" in text_lower or "s 47" in text_lower or "credit licensee" in text_lower or "credit activit" in text_lower or "not unsuitable" in text_lower or "unsuitability" in text_lower or "living expenses" in text_lower) and ob.source_id == "AU-NCCP-ACT":
             instrument_cues.append("NCCP Act")
+        elif ("nist" in text_lower or "ai rmf" in text_lower or "tevv" in text_lower) and ob.source_id == "NIST-AI-RMF":
+            instrument_cues.append("NIST AI RMF")
 
         if instrument_cues:
             score += 0.35

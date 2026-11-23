@@ -242,7 +242,9 @@ def retrieve_reconciliation_candidates_hybrid(
 
         reasons: List[str] = list(det_item["reasons"]) if det_item else []
         if emb_score is not None:
-            if det_score >= 0.35:
+            if det_score >= 0.70:
+                hybrid_score = 0.25 * emb_score + 0.75 * det_score
+            elif det_score >= 0.35:
                 hybrid_score = 0.42 * emb_score + 0.58 * det_score
             elif det_score > 0.0:
                 hybrid_score = 0.62 * emb_score + 0.38 * det_score
