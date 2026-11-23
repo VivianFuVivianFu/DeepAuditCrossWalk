@@ -32,6 +32,7 @@ from .models import (
     CoverageAssessment,
     GapRecord,
     MappingDecision,
+    MappingOrigin,
     MappingRelationship,
     PolicyGapAssessment,
     PolicyPack,
@@ -1436,6 +1437,7 @@ class ClauseMappingReviewRequest(BaseModel):
     relationship: Optional[MappingRelationship] = None
     mapped_facets: Optional[List[str]] = None
     review_comment: Optional[str] = None
+    mapping_origin: Optional[MappingOrigin] = None
 
 
 class DeleteResponse(BaseModel):
@@ -1635,6 +1637,7 @@ def review_enterprise_clause_mapping_endpoint(
             relationship=req.relationship,
             mapped_facets=req.mapped_facets,
             review_comment=req.review_comment,
+            mapping_origin=req.mapping_origin,
         )
     except NotFoundError as exc:
         raise _not_found(exc) from exc

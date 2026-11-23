@@ -626,6 +626,13 @@ class ClauseReviewStatus(str, Enum):
     REJECTED = "rejected"
 
 
+class MappingOrigin(str, Enum):
+    AUTO_EXTRACTED = "auto_extracted"
+    HUMAN_AUTHORED = "human_authored"
+    IMPORTED = "imported"
+    LEGACY_UNKNOWN = "legacy_unknown"
+
+
 class ClauseControlMapping(BaseModel):
     mapping_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     tenant_id: str
@@ -640,6 +647,19 @@ class ClauseControlMapping(BaseModel):
     review_comment: Optional[str] = None
     reviewed_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=utc_now)
+    mapping_origin: MappingOrigin = Field(default=MappingOrigin.LEGACY_UNKNOWN)
+
+    @field_validator("mapping_origin", mode="before")
+    @classmethod
+    def _validate_mapping_origin(cls, v: Any) -> Any:
+        if v is None or v == "":
+            return MappingOrigin.LEGACY_UNKNOWN
+        if isinstance(v, str):
+            try:
+                return MappingOrigin(v)
+            except ValueError:
+                return MappingOrigin.LEGACY_UNKNOWN
+        return v
 
 
 class EnterpriseClauseCoverage(BaseModel):
@@ -869,6 +889,7 @@ class ReconciliationDimensionComparison(BaseModel):
     shared_facets: List[str] = Field(default_factory=list)
     enterprise_only_facets: List[str] = Field(default_factory=list)
     external_unaddressed_facets: List[str] = Field(default_factory=list)
+    contradicted_facets: List[str] = Field(default_factory=list)
 
 
 class ReconciliationAuditEntry(BaseModel):
@@ -919,6 +940,12 @@ class ReconciliationDecision(BaseModel):
     deterministic_veto_applied: bool = False
     deterministic_veto_reasons: List[str] = Field(default_factory=list)
     missing_conditions_or_evidence: List[str] = Field(default_factory=list)
+    evidence_verification_status: Literal[
+        "unverified_policy_assertion",
+        "documentary_evidence_attached",
+        "operational_evidence_verified",
+        "missing_evidence",
+    ] = "unverified_policy_assertion"
     candidate_relevance_state: Literal[
         "no_relevant_requirement_found",
         "requirement_potentially_relevant",

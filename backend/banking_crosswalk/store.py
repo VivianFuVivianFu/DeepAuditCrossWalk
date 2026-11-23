@@ -24,6 +24,7 @@ from .models import (
     CoverageAssessment,
     GapRecord,
     MappingDecision,
+    MappingOrigin,
     PolicyGapAssessment,
     PolicyPack,
     QuestionBank,
@@ -420,6 +421,7 @@ class TenantStore:
         relationship: Optional[Any] = None,
         mapped_facets: Optional[List[str]] = None,
         review_comment: Optional[str] = None,
+        mapping_origin: Optional[MappingOrigin] = None,
     ) -> ClauseControlMapping:
         clause = self.get_enterprise_clause(tenant_id, clause_id).model_copy(deep=True)
         target_mapping: Optional[ClauseControlMapping] = None
@@ -437,6 +439,8 @@ class TenantStore:
                     updated_m.relationship = relationship
                 if mapped_facets is not None:
                     updated_m.mapped_facets = list(mapped_facets)
+                if mapping_origin is not None:
+                    updated_m.mapping_origin = mapping_origin
                 updated_m.reviewed_at = datetime.now(timezone.utc)
                 clause.control_mappings[idx] = updated_m
                 target_mapping = updated_m

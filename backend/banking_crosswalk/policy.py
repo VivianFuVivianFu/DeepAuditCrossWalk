@@ -22,6 +22,7 @@ from .models import (
     EnterpriseBaseline,
     EnterpriseClause,
     EnterprisePolicy,
+    MappingOrigin,
     MappingRelationship,
     utc_now,
     ApplicabilityStatus,
@@ -1133,6 +1134,7 @@ def extract_enterprise_policy(
                             mapped_facets=[facet],
                             rationale=rationale_str,
                             review_status=ClauseReviewStatus.PROPOSED,
+                            mapping_origin=MappingOrigin.AUTO_EXTRACTED,
                         )
                     )
 

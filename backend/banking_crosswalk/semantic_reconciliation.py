@@ -79,6 +79,7 @@ from .reconciliation import (
     _match_topic_obligations_for_unmapped_or_negative_clause,
     compute_clause_sha256,
     generate_reconciliation_candidates,
+    is_human_authored_mapping,
     rank_reconciliation_candidates_for_clause,
     validate_candidate_relationship,
 )
@@ -810,7 +811,7 @@ def generate_hybrid_reconciliation_candidates(
             m.control_id
             for m in non_rejected_mappings
             if m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
-            and not _is_auto_extracted_mapping_rationale(m.rationale)
+            and is_human_authored_mapping(m)
         }
         has_manual_canonical = any(
             f not in ENTERPRISE_GENERIC_FACETS for f in (clause.control_facets or [])
