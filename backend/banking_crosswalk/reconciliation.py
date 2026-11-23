@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import re
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, Set, Tuple
 
 from .applicability import decide_applicability, select_applicable_obligations
 from .catalog import (
@@ -41,6 +41,7 @@ from .models import (
     EnterpriseBaseline,
     EnterpriseClause,
     EnterprisePolicy,
+    MappingOrigin,
     MappingRelationship,
     ObligationControlMappingCatalogue,
     ReconciliationAuditEntry,
@@ -193,14 +194,14 @@ SCOPE_PATTERNS: Tuple[Tuple[str, re.Pattern[str]], ...] = (
     (
         "credit_decisions",
         re.compile(
-            r"\b(credit\s+suitability|unsuitability|responsible\s+lending|loan\s+applications?|credit\s+decisions?|creditworthiness|nccp)\b",
+            r"\b(credit\s+suitability|unsuitability|responsible\s+lending|loan\s+applications?|credit\s+decisions?|creditworthiness|nccp|credit\s+activit(?:y|ies)|credit\s+licens(?:e|ing)|s\s*47)\b",
             re.IGNORECASE,
         ),
     ),
     (
         "complaints_idr",
         re.compile(
-            r"\b(internal\s+dispute\s+resolution|\bidr\b|afca|rg\s*271|regulated\s+complaints?|complaint\s+resolution)\b",
+            r"\b(internal\s+dispute\s+resolution|\bidr\b|afca|rg\s*271|regulated\s+complaints?|complaint\s+resolution|expression\s+of\s+dissatisfaction|grievance|customer\s+disputes?)\b",
             re.IGNORECASE,
         ),
     ),
@@ -236,6 +237,13 @@ SCOPE_PATTERNS: Tuple[Tuple[str, re.Pattern[str]], ...] = (
         "third_party_service_providers",
         re.compile(
             r"\b(material\s+service\s+providers?|\bmsps?\b|third[-\s]party\s+ai|fourth[-\s]party|cps\s*230)\b",
+            re.IGNORECASE,
+        ),
+    ),
+    (
+        "operational_risk_management",
+        re.compile(
+            r"\b(operational\s+risks?|critical\s+operations?|disruption\s+risk|tolerance\s+limits?|cps\s*230|business\s+continuity|service\s+provider\s+management)\b",
             re.IGNORECASE,
         ),
     ),
@@ -802,6 +810,7 @@ def validate_candidate_relationship(
             dimension_comparison=dim,
             uncertainties=uncertainties,
             missing_conditions_or_evidence=list(uncertainties),
+            evidence_verification_status="missing_evidence" if uncertainties else "unverified_policy_assertion",
             candidate_relevance_state=(
                 "evidence_insufficient"
                 if rel == ReconciliationRelationship.UNDETERMINED
@@ -1102,6 +1111,18 @@ def validate_candidate_relationship(
         )
     )
 
+    contradicted_facets: List[str] = []
+    if (
+        polarity in {"permissive_control_omission", "absence_of_control"}
+        or is_indefinite_retention_conflict
+        or timeframe_conflict
+        or (clause.has_exception_clause and clause.exception_description)
+    ):
+        for f in (obligation.coverage_facets or []):
+            if f in shared_facets or f in external_unaddressed_facets:
+                contradicted_facets.append(f)
+    dim.contradicted_facets = contradicted_facets
+
     # ── Decision Tree for Stage B Validated Relationship ──
     proposed_rel = (
         ReconciliationRelationship.PARTIALLY_OVERLAPPING
@@ -1354,6 +1375,23 @@ def validate_candidate_relationship(
     else:
         rel_state = "requirement_potentially_relevant"
 
+    evidence_status: Literal[
+        "unverified_policy_assertion",
+        "documentary_evidence_attached",
+        "operational_evidence_verified",
+        "missing_evidence",
+    ] = "unverified_policy_assertion"
+    cl_text_lower = (clause.text or "").lower()
+    if (
+        _is_ambiguous_clause(clause)
+        or any(kw in cl_text_lower for kw in ("annexure", "attachment", "pending distribution", "schedule pending", "tbd"))
+    ):
+        evidence_status = "missing_evidence"
+    elif any(kw in cl_text_lower for kw in ("tested", "verification", "verified", "monitor", "audit procedure", "sampled", "operational test")):
+        evidence_status = "operational_evidence_verified"
+    elif any(kw in cl_text_lower for kw in ("log", "retained", "documented", "register", "records", "file")):
+        evidence_status = "documentary_evidence_attached"
+
     return ReconciliationDecision(
         reconciliation_id=_deterministic_reconciliation_id(
             clause.tenant_id,
@@ -1391,6 +1429,7 @@ def validate_candidate_relationship(
         dimension_comparison=dim,
         uncertainties=uncertainties,
         missing_conditions_or_evidence=missing_evidence,
+        evidence_verification_status=evidence_status,
         candidate_relevance_state=rel_state,
     )
 
@@ -1467,12 +1506,35 @@ def _match_topic_obligations_for_unmapped_or_negative_clause(
                 matches.append((ob, "Topic match on human oversight and approval gate."))
                 continue
         if "credit" in scopes or "credit_decisions" in scopes:
-            if ob.obligation_id == "AU-NCCP-S128-131-LENDING":
-                matches.append((ob, "Topic match on consumer credit suitability (NCCP Act)."))
+            if ob.obligation_id in {"AU-NCCP-S128-131-LENDING", "AU-NCCP-S47-CONDUCT"}:
+                matches.append((ob, "Topic match on consumer credit suitability / conduct (NCCP Act)."))
                 continue
         if "complaints_idr" in scopes and ob.source_id == "ASIC-RG271":
             matches.append((ob, "Topic match on internal dispute resolution (ASIC RG 271)."))
             continue
+        if "operational_risk_management" in scopes and ob.source_id == "APRA-CPS230":
+            matches.append((ob, "Topic match on APRA CPS 230 operational risk management."))
+            continue
+        if (
+            "tevv" in text_lower
+            or "test, evaluation, verification, and validation" in text_lower
+            or "nist ai rmf" in text_lower
+            or "measure 2.5" in text_lower
+            or "measure 2.6" in text_lower
+            or ("nist" in text_lower and "risk management framework" in text_lower)
+        ):
+            if ob.obligation_id == "NIST-AI-RMF-MEASURE-MANAGE":
+                matches.append((ob, "Topic match on NIST AI RMF TEVV evaluation."))
+                continue
+        if (
+            "s 47" in text_lower
+            or "efficiently, honestly and fairly" in text_lower
+            or "credit activities" in text_lower
+            or "credit licensing" in text_lower
+        ):
+            if ob.obligation_id == "AU-NCCP-S47-CONDUCT":
+                matches.append((ob, "Topic match on credit licensee general conduct (NCCP s 47)."))
+                continue
         # Check facet keyword overlap if clause has absence_of_control or permissive omission
         if ABSENCE_OF_CONTROL_PATTERN.search(clause.text or "") or PERMISSIVE_CONTROL_OMISSION_PATTERN.search(clause.text or ""):
             for facet, keywords in (ob.facet_keywords or {}).items():
@@ -1665,14 +1727,16 @@ def rank_reconciliation_candidates_for_clause(
             instrument_cues.append("EU AI Act Art 50")
         elif "cps 234" in text_lower and ob.source_id == "APRA-CPS234":
             instrument_cues.append("CPS 234")
-        elif "cps 230" in text_lower and ob.source_id == "APRA-CPS230":
+        elif ("cps 230" in text_lower or "critical business operations" in text_lower or "critical operations" in text_lower) and ob.source_id == "APRA-CPS230":
             instrument_cues.append("CPS 230")
-        elif "cps 220" in text_lower and ob.source_id == "APRA-CPS220":
+        elif ("cps 220" in text_lower or "risk management framework" in text_lower or "board risk" in text_lower) and ob.source_id == "APRA-CPS220":
             instrument_cues.append("CPS 220")
-        elif ("rg 271" in text_lower or "internal dispute resolution" in text_lower or "afca" in text_lower or "dissatisfaction" in text_lower) and ob.source_id == "ASIC-RG271":
+        elif ("rg 271" in text_lower or "internal dispute resolution" in text_lower or "afca" in text_lower or "dissatisfaction" in text_lower or "complaint" in text_lower) and ob.source_id == "ASIC-RG271":
             instrument_cues.append("ASIC RG 271")
-        elif ("nccp" in text_lower or "s 128" in text_lower or "not unsuitable" in text_lower or "unsuitability" in text_lower or "living expenses" in text_lower) and ob.source_id == "AU-NCCP-ACT":
+        elif ("nccp" in text_lower or "s 128" in text_lower or "s 47" in text_lower or "credit licensee" in text_lower or "credit activit" in text_lower or "not unsuitable" in text_lower or "unsuitability" in text_lower or "living expenses" in text_lower) and ob.source_id == "AU-NCCP-ACT":
             instrument_cues.append("NCCP Act")
+        elif ("nist" in text_lower or "ai rmf" in text_lower or "tevv" in text_lower) and ob.source_id == "NIST-AI-RMF":
+            instrument_cues.append("NIST AI RMF")
 
         if instrument_cues:
             score += 0.35
@@ -1864,6 +1928,23 @@ def _is_auto_extracted_mapping_rationale(rationale: Optional[str]) -> bool:
     )
 
 
+def is_human_authored_mapping(m: ClauseControlMapping) -> bool:
+    """Return True if a ClauseControlMapping has confirmed human authorship.
+
+    Origin authority is decoupled from rationale prose: if mapping_origin is explicitly
+    HUMAN_AUTHORED, it is human-authored regardless of text edits. If AUTO_EXTRACTED,
+    it is not. If LEGACY_UNKNOWN, fallback to checking legacy rationale conventions.
+    """
+    origin = getattr(m, "mapping_origin", None)
+    if origin == MappingOrigin.HUMAN_AUTHORED:
+        return True
+    if origin == MappingOrigin.AUTO_EXTRACTED:
+        return False
+    if origin == MappingOrigin.LEGACY_UNKNOWN or origin is None:
+        return not _is_auto_extracted_mapping_rationale(m.rationale)
+    return False
+
+
 def generate_reconciliation_candidates(
     *,
     tenant_id: str,
@@ -1977,7 +2058,7 @@ def generate_reconciliation_candidates(
         # MUST resolve safely to standalone UNDETERMINED while preserving any candidate topic links.
         if _is_ambiguous_clause(clause) and not any(
             m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
-            and not _is_auto_extracted_mapping_rationale(m.rationale)
+            and is_human_authored_mapping(m)
             for m in (clause.control_mappings or [])
         ):
             preserved_ambig = [

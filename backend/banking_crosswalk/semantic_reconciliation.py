@@ -79,6 +79,7 @@ from .reconciliation import (
     _match_topic_obligations_for_unmapped_or_negative_clause,
     compute_clause_sha256,
     generate_reconciliation_candidates,
+    is_human_authored_mapping,
     rank_reconciliation_candidates_for_clause,
     validate_candidate_relationship,
 )
@@ -242,7 +243,9 @@ def retrieve_reconciliation_candidates_hybrid(
 
         reasons: List[str] = list(det_item["reasons"]) if det_item else []
         if emb_score is not None:
-            if det_score >= 0.35:
+            if det_score >= 0.70:
+                hybrid_score = 0.25 * emb_score + 0.75 * det_score
+            elif det_score >= 0.35:
                 hybrid_score = 0.42 * emb_score + 0.58 * det_score
             elif det_score > 0.0:
                 hybrid_score = 0.62 * emb_score + 0.38 * det_score
@@ -808,7 +811,7 @@ def generate_hybrid_reconciliation_candidates(
             m.control_id
             for m in non_rejected_mappings
             if m.review_status in {ClauseReviewStatus.APPROVED, ClauseReviewStatus.CONFIRMED}
-            and not _is_auto_extracted_mapping_rationale(m.rationale)
+            and is_human_authored_mapping(m)
         }
         has_manual_canonical = any(
             f not in ENTERPRISE_GENERIC_FACETS for f in (clause.control_facets or [])

@@ -22,6 +22,7 @@ from .models import (
     EnterpriseBaseline,
     EnterpriseClause,
     EnterprisePolicy,
+    MappingOrigin,
     MappingRelationship,
     utc_now,
     ApplicabilityStatus,
@@ -782,18 +783,87 @@ ENTERPRISE_FACET_PATTERNS: Dict[str, Sequence[str]] = {
         "approval records retained",
         "traceability log",
     ),
+    "complaints_broadly_recognised": (
+        "expression of dissatisfaction",
+        "dissatisfaction",
+        "grievance",
+        "complaint",
+        "customer dispute",
+    ),
+    "response_timeframes_enforced": (
+        "maximum response time",
+        "response timeframe",
+        "timeframe",
+        "calendar days",
+        "business days",
+        "idr response",
+        "written response",
+    ),
+    "credit_activity_fairness_and_honesty_verified": (
+        "efficiently, honestly and fairly",
+        "honestly and fairly",
+        "credit activities",
+        "credit licensing",
+        "licensing conditions",
+        "credit conduct",
+    ),
+    "credit_compliance_and_breach_monitoring_active": (
+        "credit licensing obligations",
+        "credit compliance",
+        "breach monitoring",
+        "compliance monitoring",
+        "licensing obligations",
+    ),
+    "operational_risks_assessed": (
+        "operational risk",
+        "material service provider",
+        "business continuity",
+        "tolerance limit",
+        "critical operations",
+        "critical business operations",
+        "disruption risk",
+        "offline recovery",
+    ),
 }
 
 FACET_TO_UNIFIED_CONTROLS: Dict[str, Sequence[str]] = {
-    "human_approval_required": ("CTRL-FIN-APPROVAL-THRESHOLDS", "CTRL-GOV-OVERSIGHT"),
-    "approval_threshold_defined": ("CTRL-FIN-APPROVAL-THRESHOLDS",),
-    "pre_execution_block": ("CTRL-FIN-APPROVAL-THRESHOLDS", "CTRL-GOV-OVERSIGHT"),
+    "human_approval_required": (
+        "CTRL-FIN-APPROVAL-THRESHOLDS",
+        "CTRL-GOV-OVERSIGHT",
+        "CTRL-OPS-RISK",
+        "CTRL-HUMAN-OVERSIGHT",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+    ),
+    "approval_threshold_defined": (
+        "CTRL-FIN-APPROVAL-THRESHOLDS",
+        "CTRL-OPS-RISK",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+    ),
+    "pre_execution_block": (
+        "CTRL-FIN-APPROVAL-THRESHOLDS",
+        "CTRL-GOV-OVERSIGHT",
+        "CTRL-OPS-RISK",
+        "CTRL-HUMAN-OVERSIGHT",
+    ),
     "zero_data_retention": ("CTRL-OPS-OUTSOURCING", "CTRL-PRIV-COLLECTION"),
     "prompt_logging": ("CTRL-TECH-OBSERVABILITY",),
     "data_sovereignty": ("CTRL-PRIV-CROSS-BORDER",),
-    "bias_testing": ("CTRL-FAIR-BIAS-DETECTION",),
+    "bias_testing": (
+        "CTRL-FAIR-BIAS-DETECTION",
+        "CTRL-AI-DRIFT-MONITORING",
+        "CTRL-AI-IMPACT-ASSESSMENT",
+    ),
     "model_inventory": ("CTRL-GOV-FRAMEWORK",),
-    "approval_logs_retained": ("CTRL-FIN-APPROVAL-THRESHOLDS", "CTRL-DELEGATED-AUTHORITY-THRESHOLD"),
+    "approval_logs_retained": (
+        "CTRL-FIN-APPROVAL-THRESHOLDS",
+        "CTRL-DELEGATED-AUTHORITY-THRESHOLD",
+        "CTRL-PRIV-GOVERNANCE",
+    ),
+    "complaints_broadly_recognised": ("CTRL-IDR-HANDLING",),
+    "response_timeframes_enforced": ("CTRL-IDR-HANDLING",),
+    "credit_activity_fairness_and_honesty_verified": ("CTRL-AI-GOV-ACCOUNTABILITY",),
+    "credit_compliance_and_breach_monitoring_active": ("CTRL-AI-GOV-ACCOUNTABILITY",),
+    "operational_risks_assessed": ("CTRL-OPS-RISK",),
 }
 
 # Ambiguous legacy control identifiers that span multiple canonical Unified Controls
@@ -1064,6 +1134,7 @@ def extract_enterprise_policy(
                             mapped_facets=[facet],
                             rationale=rationale_str,
                             review_status=ClauseReviewStatus.PROPOSED,
+                            mapping_origin=MappingOrigin.AUTO_EXTRACTED,
                         )
                     )
 
